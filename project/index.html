@@ -1,0 +1,1654 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>tend, the brain that powers autonomous businesses</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root {
+  --bg: #0A0B0D;
+  --bg-2: #101215;
+  --bg-3: #16191D;
+  --line: rgba(255,255,255,0.09);
+  --line-2: rgba(255,255,255,0.16);
+  --fg: #ECE7DE;
+  --fg-dim: rgba(236,231,222,0.62);
+  --fg-mute: rgba(236,231,222,0.38);
+  --paper: #ECE7DE;
+  --paper-ink: #14150F;
+  /* accent, variant A (warm grey) by default */
+  --accent: oklch(0.78 0.012 70);
+  --accent-ink: #14150F;
+  --accent-soft: oklch(0.78 0.012 70 / 0.14);
+  --grid-col: 1fr;
+}
+html[data-variant="B"] {
+  --accent: oklch(0.88 0.008 70);
+  --accent-ink: #14150F;
+  --accent-soft: oklch(0.88 0.008 70 / 0.14);
+}
+* { box-sizing: border-box; }
+em, i, blockquote, cite, address { font-style: normal; }
+html, body { margin: 0; padding: 0; background: var(--bg); color: var(--fg); }
+body {
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+.mono { font-family: 'IBM Plex Mono', ui-monospace, monospace; }
+.serif { font-family: 'IBM Plex Sans', system-ui, sans-serif; font-weight: 400; font-style: normal; letter-spacing: -0.015em; color: var(--accent); }
+
+/* ---------- layout primitives ---------- */
+.wrap { max-width: 1440px; margin: 0 auto; padding: 0 40px; }
+.hair { height: 1px; background: var(--line); width: 100%; }
+.hair-v { width: 1px; background: var(--line); }
+
+section { position: relative; border-top: 1px solid var(--line); }
+section:first-of-type { border-top: none; }
+
+.meta {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+}
+.meta strong { color: var(--fg-dim); font-weight: 500; }
+
+.sec-head {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  padding: 28px 0 48px;
+}
+.sec-num { color: var(--fg-mute); }
+.sec-num em { color: var(--accent); font-style: normal; }
+
+/* ---------- nav ---------- */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 50;
+  background: rgba(10,11,13,0.75);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--line);
+}
+.nav-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 40px;
+  max-width: 1440px; margin: 0 auto;
+}
+.brand {
+  display: flex; align-items: center; gap: 10px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 500;
+  text-decoration: none;
+  color: var(--fg);
+  letter-spacing: 0.02em;
+  font-size: 15px;
+}
+.brand .dot {
+  width: 20px; height: 16px;
+  display: inline-block;
+  flex-shrink: 0;
+  background-image:
+    linear-gradient(var(--fg), var(--fg)),
+    linear-gradient(var(--fg), var(--fg)),
+    linear-gradient(var(--fg), var(--fg));
+  background-repeat: no-repeat;
+  background-size:
+    100% 3px,
+    100% 3px,
+    35% 6px;
+  background-position:
+    0 0,
+    0 5px,
+    50% 100%;
+}
+.brand .tld { color: var(--fg-mute); }
+.nav-links { display: flex; gap: 28px; font-size: 13px; }
+.nav-links a { color: var(--fg-dim); text-decoration: none; font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.02em; }
+.nav-links a:hover { color: var(--fg); }
+.nav-cta {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  color: var(--bg);
+  background: var(--fg);
+  padding: 9px 16px;
+  text-decoration: none;
+  display: inline-flex; align-items: center; gap: 8px;
+  border: 1px solid var(--fg);
+  transition: background 0.15s, color 0.15s;
+}
+.nav-cta:hover { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+
+/* ---------- HERO ---------- */
+.hero {
+  padding-top: 72px;
+  position: relative;
+  overflow: hidden;
+}
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 520px;
+  gap: 80px;
+  padding: 96px 0 80px;
+  align-items: start;
+}
+.hero h1 {
+  font-weight: 300;
+  font-size: clamp(56px, 7vw, 104px);
+  line-height: 0.96;
+  letter-spacing: -0.04em;
+  margin: 0 0 32px;
+  text-wrap: balance;
+}
+.hero h1 .serif { font-weight: 400; letter-spacing: -0.015em; color: var(--accent); }
+
+.hero-sub {
+  font-size: 19px;
+  line-height: 1.5;
+  color: var(--fg-dim);
+  max-width: 520px;
+  margin: 0 0 40px;
+  text-wrap: pretty;
+}
+.hero-ctas { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.btn {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  padding: 13px 20px;
+  text-decoration: none;
+  border: 1px solid var(--line-2);
+  color: var(--fg);
+  display: inline-flex; align-items: center; gap: 10px;
+  transition: all 0.18s;
+  cursor: pointer;
+  background: transparent;
+}
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn.primary:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.btn:hover { border-color: var(--fg-dim); }
+.btn .arr { display: inline-block; transition: transform 0.2s; }
+.btn:hover .arr { transform: translateX(3px); }
+
+/* hero schematic panel */
+.hero-schem {
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, var(--bg-2), var(--bg));
+  padding: 20px;
+  position: relative;
+  aspect-ratio: 1 / 1.1;
+  overflow: hidden;
+}
+.hero-schem::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: 0.45;
+  pointer-events: none;
+}
+.schem-label {
+  position: absolute;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--fg-mute);
+  text-transform: uppercase;
+  background: var(--bg);
+  padding: 3px 7px;
+  border: 1px solid var(--line);
+  z-index: 3;
+}
+.schem-label.tl { top: 12px; left: 12px; }
+.schem-label.tr { top: 12px; right: 12px; color: var(--accent); border-color: var(--accent); }
+.schem-label.bl { bottom: 12px; left: 12px; }
+.schem-label.br { bottom: 12px; right: 12px; }
+
+/* hero ticker */
+.ticker-row {
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 18px 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 40px;
+}
+.ticker-row .cell {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--fg-dim);
+  display: flex; align-items: baseline; gap: 10px;
+  letter-spacing: 0.04em;
+}
+.ticker-row .cell::before {
+  content: ''; display: inline-block; width: 6px; height: 6px; background: var(--accent);
+  flex: 0 0 6px;
+}
+.ticker-row .cell strong { color: var(--fg); font-weight: 500; }
+
+/* ---------- WHAT WE DO ---------- */
+.what {
+  padding: 80px 0 100px;
+}
+.what-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: start;
+}
+.what-lead {
+  font-size: clamp(36px, 3.8vw, 56px);
+  line-height: 1.06;
+  letter-spacing: -0.025em;
+  font-weight: 300;
+  margin: 0;
+  text-wrap: pretty;
+}
+.what-lead .muted { color: var(--fg-mute); }
+.what-lead .accent { color: var(--accent); }
+.what-lead .serif { font-weight: 400; }
+.what-side p {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--fg-dim);
+  margin: 0 0 20px;
+}
+.what-side p:last-child { margin-bottom: 0; }
+.what-side .kicker {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 20px;
+}
+
+/* ---------- HOW IT WORKS ---------- */
+.how { padding: 80px 0 120px; background: var(--bg-2); }
+.how-steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.step {
+  padding: 32px 28px 40px;
+  border-right: 1px solid var(--line);
+  position: relative;
+  min-height: 320px;
+  display: flex; flex-direction: column;
+}
+.step:last-child { border-right: none; }
+.step .n {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--fg-mute);
+  margin-bottom: 48px;
+  letter-spacing: 0.05em;
+}
+.step h3 {
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  margin: 0 0 12px;
+  line-height: 1.15;
+}
+.step p {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--fg-dim);
+  margin: 0;
+}
+.step .diag {
+  margin-top: auto;
+  padding-top: 32px;
+  color: var(--accent);
+}
+
+/* ---------- ONTOLOGY DEMO ---------- */
+.demo {
+  padding: 80px 0 120px;
+}
+.demo-frame {
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+  display: grid;
+  grid-template-columns: 280px 1fr 320px;
+  min-height: 620px;
+}
+.demo-col {
+  border-right: 1px solid var(--line);
+  padding: 20px;
+  display: flex; flex-direction: column;
+  gap: 4px;
+  overflow: hidden;
+}
+.demo-col:last-child { border-right: none; }
+.demo-col .col-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+  margin-bottom: 14px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.demo-col .col-label .count { color: var(--accent); }
+
+.entity {
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex; justify-content: space-between; align-items: center;
+  background: var(--bg);
+  transition: all 0.15s;
+  color: var(--fg-dim);
+}
+.entity:hover { border-color: var(--fg-mute); color: var(--fg); }
+.entity.active { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+.entity .tag { font-size: 10px; color: var(--fg-mute); }
+.entity.active .tag { color: var(--accent); }
+
+/* graph center */
+.graph { position: relative; overflow: hidden; aspect-ratio: 800 / 560; }
+.graph svg { width: 100%; height: 100%; display: block; }
+.graph .col-header {
+  position: absolute;
+  top: 16px;
+  transform: translateX(-50%);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+  color: var(--fg-mute);
+  text-transform: uppercase;
+  pointer-events: none;
+  white-space: nowrap;
+  text-align: center;
+  line-height: 1.4;
+}
+.graph .col-header .count {
+  display: block;
+  margin-top: 3px;
+  color: var(--accent);
+  font-size: 10px;
+}
+/* count styled above in col-header block */
+.graph .col-guide {
+  position: absolute;
+  top: 60px;
+  bottom: 40px;
+  width: 1px;
+  background: repeating-linear-gradient(to bottom, var(--line) 0 4px, transparent 4px 8px);
+  opacity: 0.5;
+  pointer-events: none;
+}
+.graph .node-label {
+  position: absolute;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10.5px;
+  padding: 3px 7px;
+  color: var(--fg-dim);
+  white-space: nowrap;
+  transform: translateX(-50%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease, color 0.2s ease;
+  letter-spacing: 0.01em;
+}
+.graph .node-label.neighbor {
+  opacity: 0.85 !important;
+  color: var(--fg-dim);
+}
+.graph .node-label.active {
+  opacity: 1 !important;
+  color: var(--accent);
+  background: var(--bg);
+  border: 1px solid var(--accent);
+  padding: 4px 9px;
+}
+.graph .node-label.dim { opacity: 0 !important; }
+
+/* right panel */
+.detail-head {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+  margin-bottom: 10px;
+}
+.detail-title {
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: -0.015em;
+  margin: 0 0 18px;
+  color: var(--fg);
+}
+.detail-title .type { color: var(--accent); font-family: 'IBM Plex Mono', monospace; font-size: 12px; margin-left: 8px; letter-spacing: 0.05em; vertical-align: middle; }
+.prop-row {
+  display: flex; justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+}
+.prop-row .k { color: var(--fg-mute); }
+.prop-row .v { color: var(--fg); }
+
+.automations {
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line-2);
+}
+.automations .kicker {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+.auto-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px dashed var(--line);
+  font-size: 13px;
+  color: var(--fg-dim);
+  line-height: 1.4;
+}
+.auto-item .bullet {
+  flex: 0 0 6px; width: 6px; height: 6px;
+  background: var(--accent); margin-top: 7px;
+}
+
+/* ---------- CAPABILITIES ---------- */
+.caps { padding: 80px 0 120px; }
+.caps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border: 1px solid var(--line);
+}
+.cap {
+  padding: 32px 28px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  min-height: 260px;
+  display: flex; flex-direction: column;
+  background: var(--bg);
+  transition: background 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.cap:hover { background: var(--bg-2); }
+.cap:nth-child(3n) { border-right: none; }
+.cap:nth-last-child(-n+3) { border-bottom: none; }
+.cap .num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--fg-mute);
+  letter-spacing: 0.05em;
+  margin-bottom: 40px;
+}
+.cap h4 {
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  margin: 0 0 10px;
+  line-height: 1.2;
+}
+.cap p {
+  font-size: 13.5px;
+  color: var(--fg-dim);
+  line-height: 1.55;
+  margin: 0;
+}
+.cap .glyph {
+  position: absolute;
+  bottom: 24px; right: 24px;
+  width: 40px; height: 40px;
+  opacity: 0.7;
+}
+
+/* ---------- USE CASES ---------- */
+.uc { padding: 80px 0 120px; background: var(--paper); color: var(--paper-ink); border-top: 1px solid var(--line); }
+.uc .meta { color: rgba(20,21,15,0.5); }
+.uc .meta strong { color: rgba(20,21,15,0.72); }
+.uc .sec-num em { color: var(--paper-ink); }
+.uc h2 {
+  font-size: clamp(44px, 5vw, 72px);
+  font-weight: 300;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin: 0;
+}
+.uc h2 .serif { font-weight: 400; }
+.uc-tabs {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 60px;
+  margin-top: 40px;
+}
+.uc-list {
+  display: flex; flex-direction: column;
+  border-top: 1px solid rgba(20,21,15,0.18);
+}
+.uc-item {
+  padding: 22px 0;
+  border-bottom: 1px solid rgba(20,21,15,0.18);
+  cursor: pointer;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 22px;
+  letter-spacing: -0.01em;
+  color: rgba(20,21,15,0.55);
+  transition: color 0.15s;
+  font-weight: 400;
+}
+.uc-item:hover { color: var(--paper-ink); }
+.uc-item.active { color: var(--paper-ink); font-weight: 500; }
+.uc-item .idx {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: rgba(20,21,15,0.45);
+}
+.uc-item.active .idx { color: var(--accent); }
+.uc-panel {
+  border: 1px solid rgba(20,21,15,0.18);
+  padding: 40px;
+  min-height: 420px;
+  background: rgba(20,21,15,0.02);
+  display: flex; flex-direction: column;
+}
+.uc-panel .kicker {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(20,21,15,0.5);
+  margin-bottom: 20px;
+}
+.uc-panel h3 {
+  font-size: 38px;
+  font-weight: 300;
+  letter-spacing: -0.025em;
+  line-height: 1.06;
+  margin: 0 0 18px;
+  text-wrap: pretty;
+}
+.uc-panel h3 .serif { font-weight: 400; font-style: normal; }
+.uc-panel p {
+  font-size: 16px;
+  line-height: 1.55;
+  color: rgba(20,21,15,0.72);
+  margin: 0 0 24px;
+  max-width: 560px;
+}
+.uc-stats {
+  margin-top: auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(20,21,15,0.18);
+}
+.uc-stat .v {
+  font-size: 36px;
+  font-weight: 300;
+  letter-spacing: -0.025em;
+  line-height: 1;
+}
+.uc-stat .v .unit { font-size: 18px; color: rgba(20,21,15,0.5); margin-left: 2px; }
+.uc-stat .k {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: rgba(20,21,15,0.5);
+  margin-top: 8px;
+  text-transform: uppercase;
+}
+
+/* ---------- METRICS ---------- */
+.metrics {
+  padding: 80px 0 100px;
+}
+.metrics-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr 1fr;
+  gap: 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.metric {
+  padding: 40px 32px;
+  border-right: 1px solid var(--line);
+  min-height: 220px;
+  display: flex; flex-direction: column; justify-content: space-between;
+}
+.metric:last-child { border-right: none; }
+.metric .v {
+  font-size: clamp(48px, 5vw, 76px);
+  font-weight: 300;
+  letter-spacing: -0.035em;
+  line-height: 0.95;
+}
+.metric .v .unit { color: var(--accent); }
+.metric .k {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+  margin-top: 16px;
+}
+.metric.quote {
+  padding: 40px 32px;
+}
+.metric.quote blockquote {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+  font-weight: 300;
+}
+.metric.quote blockquote .serif { color: var(--accent); }
+.metric.quote .attr {
+  margin-top: 16px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--fg-mute);
+  letter-spacing: 0.04em;
+}
+
+/* ---------- FAQ ---------- */
+.faq { padding: 80px 0 120px; }
+.faq-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 80px;
+  align-items: start;
+}
+.faq h2 {
+  font-size: clamp(44px, 5vw, 64px);
+  font-weight: 300;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin: 0 0 20px;
+}
+.faq h2 .serif { font-weight: 400; color: var(--accent); }
+.faq .intro {
+  color: var(--fg-dim);
+  font-size: 15px;
+  line-height: 1.55;
+  max-width: 340px;
+}
+.qa {
+  border-top: 1px solid var(--line);
+}
+.qa-item { border-bottom: 1px solid var(--line); }
+.qa-q {
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 22px 0;
+  display: flex; justify-content: space-between; align-items: flex-start;
+  text-align: left;
+  color: var(--fg);
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  gap: 20px;
+}
+.qa-q:hover { color: var(--accent); }
+.qa-q .sign {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  color: var(--fg-mute);
+  flex: 0 0 auto;
+  margin-top: 4px;
+  transition: transform 0.25s;
+}
+.qa-item.open .qa-q .sign { transform: rotate(45deg); color: var(--accent); }
+.qa-a {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.32s ease, opacity 0.2s;
+  opacity: 0;
+  color: var(--fg-dim);
+  font-size: 15px;
+  line-height: 1.6;
+  padding-right: 60px;
+}
+.qa-item.open .qa-a {
+  max-height: 300px;
+  opacity: 1;
+  padding-bottom: 22px;
+}
+
+/* ---------- FINAL CTA + FOOTER ---------- */
+.final {
+  padding: 120px 0 80px;
+  border-top: 1px solid var(--line);
+  text-align: center;
+}
+.final h2 {
+  font-size: clamp(56px, 7vw, 104px);
+  font-weight: 300;
+  letter-spacing: -0.04em;
+  line-height: 0.98;
+  margin: 0 0 40px;
+  text-wrap: balance;
+}
+.final h2 .serif { font-weight: 400; color: var(--accent); }
+.final .cta-row {
+  display: flex; justify-content: center; gap: 12px;
+  flex-wrap: wrap;
+}
+footer {
+  border-top: 1px solid var(--line);
+  padding: 40px 0 32px;
+  color: var(--fg-mute);
+}
+.foot-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 40px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 24px;
+}
+.foot-row .col .h {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg);
+  margin-bottom: 14px;
+}
+.foot-row .col a {
+  display: block;
+  color: var(--fg-dim);
+  text-decoration: none;
+  font-size: 14px;
+  padding: 4px 0;
+}
+.foot-row .col a:hover { color: var(--fg); }
+.foot-bottom {
+  display: flex; justify-content: space-between; align-items: center;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+}
+
+/* ---------- TWEAKS PANEL ---------- */
+.tweaks {
+  position: fixed;
+  bottom: 20px; right: 20px;
+  z-index: 100;
+  background: var(--bg-2);
+  border: 1px solid var(--line-2);
+  padding: 16px;
+  width: 260px;
+  display: none;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+}
+.tweaks.show { display: block; }
+.tweaks .th {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--fg-mute);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  display: flex; justify-content: space-between;
+}
+.tweaks .th .dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; }
+.tweak-row { margin-bottom: 12px; }
+.tweak-row .lbl { color: var(--fg-dim); margin-bottom: 6px; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; }
+.variant-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.variant-btns button {
+  background: var(--bg);
+  border: 1px solid var(--line-2);
+  color: var(--fg);
+  padding: 10px 8px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+}
+.variant-btns button.active { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+
+@keyframes tend-orbit {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* small screens */
+@media (max-width: 980px) {
+  .wrap { padding: 0 24px; }
+  .hero-grid, .what-grid, .faq-grid { grid-template-columns: 1fr; gap: 40px; }
+  .how-steps, .caps-grid, .metrics-grid, .foot-row { grid-template-columns: 1fr 1fr; }
+  .metric, .step, .cap { border-right: 1px solid var(--line) !important; }
+  .demo-frame { grid-template-columns: 1fr; }
+  .demo-col { border-right: none; border-bottom: 1px solid var(--line); }
+  .uc-tabs { grid-template-columns: 1fr; }
+  .ticker-row { grid-template-columns: 1fr 1fr; gap: 16px; }
+  .nav-links { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html">
+      <span class="dot"></span>
+      <span>tend</span>
+    </a>
+    <div class="nav-links">
+      <a href="platform.html">Platform</a>
+      <a href="use-cases.html">Use cases</a>
+      <a href="docs/index.html">Docs</a>
+      <a href="about.html">About</a>
+    </div>
+    <a href="#contact" class="nav-cta">Book a demo <span>→</span></a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <div class="meta" style="margin-bottom:28px;">
+          <strong>§01</strong> &nbsp;/&nbsp; THE THESIS
+        </div>
+        <h1>
+          The <span class="serif">brain</span> that&nbsp;powers<br/>
+          autonomous businesses.
+        </h1>
+        <p class="hero-sub">
+          One living ontology for your whole business. Agents act on it. Operators trust it.
+        </p>
+        <div class="hero-ctas">
+          <a href="#contact" class="btn primary">Book a demo <span class="arr">→</span></a>
+          <a href="#demo" class="btn">See the ontology <span class="arr">↓</span></a>
+        </div>
+      </div>
+
+      <div class="hero-schem" aria-hidden="true">
+        <span class="schem-label tl">FIG. 01 / TEND / SYSTEM MAP</span>
+        <span class="schem-label tr">● LIVE</span>
+        <span class="schem-label bl">t = continuous</span>
+        <span class="schem-label br">REV 04.2026</span>
+        <svg viewBox="0 0 440 440" preserveAspectRatio="xMidYMid meet" style="position:absolute;inset:0;width:100%;height:100%;">
+          <defs>
+            <radialGradient id="core-glow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%"  stop-color="var(--accent)" stop-opacity="0.28"/>
+              <stop offset="70%" stop-color="var(--accent)" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+
+          <!-- core glow -->
+          <circle cx="220" cy="220" r="120" fill="url(#core-glow)"/>
+
+          <!-- orbit rings -->
+          <circle cx="220" cy="220" r="74" fill="none" stroke="rgba(236,231,222,0.14)" stroke-dasharray="2 3"/>
+          <circle cx="220" cy="220" r="150" fill="none" stroke="rgba(236,231,222,0.08)" stroke-dasharray="1 4"/>
+
+          <!-- connections: systems <-> ontology -->
+          <g stroke="rgba(236,231,222,0.22)" stroke-width="1" fill="none" class="system-lines">
+            <line x1="60"  y1="80"  x2="220" y2="220" data-sys="0"/>
+            <line x1="380" y1="80"  x2="220" y2="220" data-sys="1"/>
+            <line x1="40"  y1="220" x2="220" y2="220" data-sys="2"/>
+            <line x1="400" y1="220" x2="220" y2="220" data-sys="3"/>
+            <line x1="60"  y1="360" x2="220" y2="220" data-sys="4"/>
+            <line x1="380" y1="360" x2="220" y2="220" data-sys="5"/>
+          </g>
+
+          <!-- agent orbit lines (core <-> agents) -->
+          <g stroke="var(--accent)" stroke-opacity="0.55" stroke-width="1" fill="none" class="agent-lines">
+            <line x1="220" y1="220" x2="220" y2="146" data-agent="0"/>
+            <line x1="220" y1="220" x2="284" y2="257" data-agent="1"/>
+            <line x1="220" y1="220" x2="156" y2="257" data-agent="2"/>
+          </g>
+
+          <!-- flowing data packets: systems -> core -->
+          <g class="packets-in">
+            <circle r="2.5" fill="var(--fg)">
+              <animateMotion dur="3.2s" repeatCount="indefinite" path="M60,80 L220,220"/>
+              <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.85;1" dur="3.2s" repeatCount="indefinite"/>
+            </circle>
+            <circle r="2.5" fill="var(--fg)">
+              <animateMotion dur="3.6s" begin="0.4s" repeatCount="indefinite" path="M380,80 L220,220"/>
+              <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.85;1" dur="3.6s" begin="0.4s" repeatCount="indefinite"/>
+            </circle>
+            <circle r="2.5" fill="var(--fg)">
+              <animateMotion dur="3.0s" begin="0.9s" repeatCount="indefinite" path="M40,220 L220,220"/>
+              <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.85;1" dur="3.0s" begin="0.9s" repeatCount="indefinite"/>
+            </circle>
+            <circle r="2.5" fill="var(--fg)">
+              <animateMotion dur="3.4s" begin="1.3s" repeatCount="indefinite" path="M400,220 L220,220"/>
+              <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.85;1" dur="3.4s" begin="1.3s" repeatCount="indefinite"/>
+            </circle>
+            <circle r="2.5" fill="var(--fg)">
+              <animateMotion dur="3.8s" begin="0.2s" repeatCount="indefinite" path="M60,360 L220,220"/>
+              <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.85;1" dur="3.8s" begin="0.2s" repeatCount="indefinite"/>
+            </circle>
+            <circle r="2.5" fill="var(--fg)">
+              <animateMotion dur="3.2s" begin="1.7s" repeatCount="indefinite" path="M380,360 L220,220"/>
+              <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.85;1" dur="3.2s" begin="1.7s" repeatCount="indefinite"/>
+            </circle>
+          </g>
+
+          <!-- flowing insights: core -> systems (accent) -->
+          <g class="packets-out">
+            <circle r="2.5" fill="var(--accent)">
+              <animateMotion dur="2.8s" begin="1.4s" repeatCount="indefinite" path="M220,220 L400,220"/>
+              <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.12;0.85;1" dur="2.8s" begin="1.4s" repeatCount="indefinite"/>
+            </circle>
+            <circle r="2.5" fill="var(--accent)">
+              <animateMotion dur="3.0s" begin="2.0s" repeatCount="indefinite" path="M220,220 L60,80"/>
+              <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.12;0.85;1" dur="3.0s" begin="2.0s" repeatCount="indefinite"/>
+            </circle>
+            <circle r="2.5" fill="var(--accent)">
+              <animateMotion dur="3.2s" begin="0.7s" repeatCount="indefinite" path="M220,220 L380,360"/>
+              <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.12;0.85;1" dur="3.2s" begin="0.7s" repeatCount="indefinite"/>
+            </circle>
+          </g>
+
+          <!-- agent orbit group (rotates around core) -->
+          <g style="transform-origin: 220px 220px; animation: tend-orbit 24s linear infinite;">
+            <!-- agent A -->
+            <g>
+              <circle cx="220" cy="146" r="8" fill="var(--bg)" stroke="var(--accent)" stroke-width="1.2"/>
+              <circle cx="220" cy="146" r="3" fill="var(--accent)"/>
+            </g>
+            <!-- agent B -->
+            <g>
+              <circle cx="284" cy="257" r="8" fill="var(--bg)" stroke="var(--accent)" stroke-width="1.2"/>
+              <circle cx="284" cy="257" r="3" fill="var(--accent)"/>
+            </g>
+            <!-- agent C -->
+            <g>
+              <circle cx="156" cy="257" r="8" fill="var(--bg)" stroke="var(--accent)" stroke-width="1.2"/>
+              <circle cx="156" cy="257" r="3" fill="var(--accent)"/>
+            </g>
+          </g>
+
+          <!-- external systems (static, not rotating) -->
+          <g class="systems">
+            <!-- CRM -->
+            <g transform="translate(60,80)">
+              <rect x="-36" y="-14" width="72" height="28" fill="var(--bg)" stroke="rgba(236,231,222,0.28)"/>
+              <text text-anchor="middle" y="4" font-family="IBM Plex Mono" font-size="10" fill="var(--fg)" letter-spacing="0.6">CRM</text>
+            </g>
+            <!-- ERP -->
+            <g transform="translate(380,80)">
+              <rect x="-36" y="-14" width="72" height="28" fill="var(--bg)" stroke="rgba(236,231,222,0.28)"/>
+              <text text-anchor="middle" y="4" font-family="IBM Plex Mono" font-size="10" fill="var(--fg)" letter-spacing="0.6">ERP</text>
+            </g>
+            <!-- SUPPORT -->
+            <g transform="translate(40,220)">
+              <rect x="-36" y="-14" width="72" height="28" fill="var(--bg)" stroke="rgba(236,231,222,0.28)"/>
+              <text text-anchor="middle" y="4" font-family="IBM Plex Mono" font-size="10" fill="var(--fg)" letter-spacing="0.6">SUPPORT</text>
+            </g>
+            <!-- WAREHOUSE -->
+            <g transform="translate(400,220)">
+              <rect x="-42" y="-14" width="84" height="28" fill="var(--bg)" stroke="rgba(236,231,222,0.28)"/>
+              <text text-anchor="middle" y="4" font-family="IBM Plex Mono" font-size="10" fill="var(--fg)" letter-spacing="0.6">WAREHOUSE</text>
+            </g>
+            <!-- BILLING -->
+            <g transform="translate(60,360)">
+              <rect x="-36" y="-14" width="72" height="28" fill="var(--bg)" stroke="rgba(236,231,222,0.28)"/>
+              <text text-anchor="middle" y="4" font-family="IBM Plex Mono" font-size="10" fill="var(--fg)" letter-spacing="0.6">BILLING</text>
+            </g>
+            <!-- HRIS -->
+            <g transform="translate(380,360)">
+              <rect x="-36" y="-14" width="72" height="28" fill="var(--bg)" stroke="rgba(236,231,222,0.28)"/>
+              <text text-anchor="middle" y="4" font-family="IBM Plex Mono" font-size="10" fill="var(--fg)" letter-spacing="0.6">HRIS</text>
+            </g>
+          </g>
+
+          <!-- core: the ontology -->
+          <g>
+            <circle cx="220" cy="220" r="38" fill="var(--bg)" stroke="var(--accent)" stroke-width="1.2"/>
+            <circle cx="220" cy="220" r="38" fill="none" stroke="var(--accent)" stroke-opacity="0.6">
+              <animate attributeName="r" values="38;46;38" dur="3.2s" repeatCount="indefinite"/>
+              <animate attributeName="stroke-opacity" values="0.6;0;0.6" dur="3.2s" repeatCount="indefinite"/>
+            </circle>
+            <text x="220" y="224" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="var(--fg)" letter-spacing="1.5">ONTOLOGY</text>
+          </g>
+
+          <!-- agent labels (static, not rotating, above orbit group) -->
+          <g font-family="IBM Plex Mono" font-size="9" fill="var(--accent)" letter-spacing="0.6">
+            <text x="220" y="128" text-anchor="middle">AGENT · REVENUE</text>
+            <text x="296" y="275" text-anchor="start">AGENT · OPS</text>
+            <text x="144" y="275" text-anchor="end">AGENT · FINANCE</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- WHAT -->
+<section id="what" class="what">
+  <div class="wrap">
+    <div class="meta"><strong>§02 / THE PLATFORM</strong> &nbsp;/&nbsp; what we do</div>
+    <div class="hair" style="margin:14px 0 48px;"></div>
+
+    <div class="what-grid">
+      <div>
+        <p class="what-lead">
+          Not a <span class="serif">data problem</span>.<br/>
+          A <span class="accent">meaning</span> problem.
+        </p>
+      </div>
+      <div class="what-side">
+        <div class="kicker">→ OUR ANSWER</div>
+        <p>
+          tend builds your <strong style="color:var(--fg);font-weight:500;">business ontology</strong> — one governed graph of every entity and state that matters.
+        </p>
+        <p>
+          Then agents and workflows read from it. Same definitions, same history, same boundaries.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW -->
+<section id="how" class="how">
+  <div class="wrap">
+    <div class="meta"><strong>§03 / OPERATING MODEL</strong> &nbsp;/&nbsp; how it works</div>
+    <div class="hair" style="margin:14px 0 48px;"></div>
+
+    <div class="how-steps">
+      <div class="step">
+        <div class="n">STEP 01 / INGEST</div>
+        <h3>Connect your stack.</h3>
+        <p>Salesforce, HubSpot, Zendesk, NetSuite, Snowflake, Zapier. tend pulls from 180+ sources through managed connectors or your own warehouse.</p>
+        <div class="diag" aria-hidden="true">
+          <svg width="80" height="60" viewBox="0 0 80 60"><g stroke="currentColor" fill="none" stroke-width="1"><rect x="2" y="6" width="14" height="10"/><rect x="2" y="25" width="14" height="10"/><rect x="2" y="44" width="14" height="10"/><path d="M16,11 L64,30 M16,30 L64,30 M16,49 L64,30"/><rect x="64" y="24" width="14" height="12" fill="currentColor"/></g></svg>
+        </div>
+      </div>
+      <div class="step">
+        <div class="n">STEP 02 / RESOLVE</div>
+        <h3>Build the ontology.</h3>
+        <p>Entities, relationships, lifecycle states, derived facts. We reconcile duplicates, join across systems, and write a graph your team can finally point at.</p>
+        <div class="diag" aria-hidden="true">
+          <svg width="80" height="60" viewBox="0 0 80 60"><g stroke="currentColor" fill="none" stroke-width="1"><circle cx="14" cy="14" r="5"/><circle cx="66" cy="14" r="5"/><circle cx="40" cy="38" r="6" fill="currentColor"/><circle cx="14" cy="52" r="4"/><circle cx="66" cy="52" r="4"/><path d="M14,19 L40,34 M66,19 L40,34 M40,44 L14,50 M40,44 L66,50"/></g></svg>
+        </div>
+      </div>
+      <div class="step">
+        <div class="n">STEP 03 / GOVERN</div>
+        <h3>Define the rules.</h3>
+        <p>Policies, permissions, lifecycle transitions, SLAs. Your logic lives in one versioned place. Auditable, testable, legible to the rest of the team.</p>
+        <div class="diag" aria-hidden="true">
+          <svg width="80" height="60" viewBox="0 0 80 60"><g stroke="currentColor" fill="none" stroke-width="1"><rect x="10" y="8" width="60" height="10"/><rect x="10" y="24" width="60" height="10"/><rect x="10" y="40" width="60" height="10"/><circle cx="18" cy="13" r="2" fill="currentColor"/><circle cx="18" cy="29" r="2" fill="currentColor"/><circle cx="18" cy="45" r="2" fill="currentColor"/></g></svg>
+        </div>
+      </div>
+      <div class="step">
+        <div class="n">STEP 04 / AUTOMATE</div>
+        <h3>Deploy agents &amp; flows.</h3>
+        <p>Trigger playbooks on graph events, assign agents to watch entities, push actions back to source systems. Everything reads the same truth.</p>
+        <div class="diag" aria-hidden="true">
+          <svg width="80" height="60" viewBox="0 0 80 60"><g stroke="currentColor" fill="none" stroke-width="1"><circle cx="14" cy="30" r="6"/><path d="M20,30 L40,30 M46,30 L62,30" /><rect x="36" y="24" width="12" height="12"/><polygon points="62,30 72,24 72,36" fill="currentColor"/><path d="M14,30 L14,12 M14,30 L14,48" stroke-dasharray="2 2"/></g></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ONTOLOGY DEMO -->
+<section id="demo" class="demo">
+  <div class="wrap">
+    <div class="meta"><strong>§04 / LIVE ARTIFACT</strong> &nbsp;/&nbsp; the ontology, explored</div>
+    <div class="hair" style="margin:14px 0 28px;"></div>
+    <div class="sec-head">
+      <div>
+        <h2 style="font-size:clamp(36px,3.8vw,56px);font-weight:300;letter-spacing:-0.025em;line-height:1.04;margin:0;">
+          Click any entity. <span class="serif" style="color:var(--accent)">Watch it reason.</span>
+        </h2>
+      </div>
+      <div style="color:var(--fg-dim);font-size:15px;line-height:1.55;">
+        Every account, deal, contact and playbook is a typed entity in one shared graph. Click any node to see its properties and the agents operating on it.
+      </div>
+    </div>
+
+    <div class="demo-frame" id="demo-frame">
+      <!-- left: entity list -->
+      <div class="demo-col" id="entity-list">
+        <div class="col-label"><span>ENTITIES</span><span class="count" id="entity-count">12</span></div>
+        <!-- populated by JS -->
+      </div>
+
+      <!-- middle: graph -->
+      <div class="demo-col graph" id="graph-pane" style="padding:0;position:relative;">
+        <svg id="graph-svg" viewBox="0 0 800 560" preserveAspectRatio="none">
+          <g id="edges" stroke="rgba(236,231,222,0.22)" stroke-width="1" fill="none"></g>
+          <g id="nodes"></g>
+        </svg>
+        <div id="labels"></div>
+        <div style="position:absolute;bottom:14px;left:14px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--fg-mute);letter-spacing:0.06em;">FIG. 02 / GRAPH VIEW / TYPED COLUMNS</div>
+        <div style="position:absolute;bottom:14px;right:14px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:0.06em;">● SYNCED 04:22:18</div>
+      </div>
+
+      <!-- right: detail -->
+      <div class="demo-col" id="detail-pane">
+        <div class="detail-head">SELECTED ENTITY</div>
+        <h3 class="detail-title" id="det-title"><span class="type" id="det-type"></span></h3>
+        <div id="det-props"></div>
+        <div class="automations">
+          <div class="kicker" id="det-auto-kicker">ACTIVE AUTOMATIONS</div>
+          <div id="det-automations"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CAPABILITIES -->
+<section id="caps" class="caps">
+  <div class="wrap">
+    <div class="meta"><strong>§05 / CAPABILITY MATRIX</strong> &nbsp;/&nbsp; what's in the box</div>
+    <div class="hair" style="margin:14px 0 28px;"></div>
+    <div class="sec-head">
+      <div>
+        <h2 style="font-size:clamp(36px,3.8vw,56px);font-weight:300;letter-spacing:-0.025em;line-height:1.04;margin:0;">
+          One platform. <span class="serif" style="color:var(--accent)">Every layer</span> of the stack.
+        </h2>
+      </div>
+      <div style="color:var(--fg-dim);font-size:15px;line-height:1.55;">
+        From the graph all the way up to the agents acting on it. tend covers the full loop so you don't have to glue five vendors together.
+      </div>
+    </div>
+
+    <div class="caps-grid">
+      <div class="cap">
+        <div class="num">01 / CORE</div>
+        <h4>Ontology modeler</h4>
+        <p>Define entities, relationships and lifecycle states in a versioned, diff-able schema. Zero-downtime migrations.</p>
+        <svg class="glyph" viewBox="0 0 40 40"><g stroke="currentColor" stroke-width="1" fill="none"><rect x="2" y="2" width="14" height="14"/><rect x="24" y="2" width="14" height="14"/><rect x="2" y="24" width="14" height="14"/><rect x="24" y="24" width="14" height="14"/><path d="M16,9 L24,9 M9,16 L9,24 M31,16 L31,24 M16,31 L24,31"/></g></svg>
+      </div>
+      <div class="cap">
+        <div class="num">02 / INGEST</div>
+        <h4>Connector fabric</h4>
+        <p>180+ managed connectors plus a declarative SDK for the rest. Stream CDC from your warehouse or write directly to the graph.</p>
+        <svg class="glyph" viewBox="0 0 40 40"><g stroke="currentColor" stroke-width="1" fill="none"><circle cx="20" cy="20" r="4" fill="currentColor"/><path d="M20,16 L20,4 M20,24 L20,36 M16,20 L4,20 M24,20 L36,20 M16,16 L7,7 M24,16 L33,7 M16,24 L7,33 M24,24 L33,33"/></g></svg>
+      </div>
+      <div class="cap">
+        <div class="num">03 / RESOLVE</div>
+        <h4>Identity &amp; reconciliation</h4>
+        <p>Deterministic + probabilistic entity resolution. Merge duplicates across systems, keep provenance, roll back when you're wrong.</p>
+        <svg class="glyph" viewBox="0 0 40 40"><g stroke="currentColor" stroke-width="1" fill="none"><circle cx="13" cy="20" r="9"/><circle cx="27" cy="20" r="9"/></g></svg>
+      </div>
+      <div class="cap">
+        <div class="num">04 / POLICY</div>
+        <h4>Governance &amp; access</h4>
+        <p>Attribute-level permissions, row-level policy, full audit trail. Ship agents that can't read what they shouldn't.</p>
+        <svg class="glyph" viewBox="0 0 40 40"><g stroke="currentColor" stroke-width="1" fill="none"><path d="M20,4 L34,10 L34,22 C34,30 28,34 20,36 C12,34 6,30 6,22 L6,10 Z"/><path d="M14,20 L18,24 L26,16"/></g></svg>
+      </div>
+      <div class="cap">
+        <div class="num">05 / REASON</div>
+        <h4>Agents &amp; copilots</h4>
+        <p>LLM-native agents that read the ontology as typed context, propose actions, and respect your policies and boundaries.</p>
+        <svg class="glyph" viewBox="0 0 40 40"><g stroke="currentColor" stroke-width="1" fill="none"><rect x="8" y="10" width="24" height="20" rx="2"/><circle cx="16" cy="20" r="2" fill="currentColor"/><circle cx="24" cy="20" r="2" fill="currentColor"/><path d="M20,4 L20,10 M14,32 L14,36 M26,32 L26,36"/></g></svg>
+      </div>
+      <div class="cap">
+        <div class="num">06 / ACT</div>
+        <h4>Workflow engine</h4>
+        <p>Event-driven flows with retries, SLAs, and writebacks to your source systems. The graph triggers; the world reacts.</p>
+        <svg class="glyph" viewBox="0 0 40 40"><g stroke="currentColor" stroke-width="1" fill="none"><circle cx="8" cy="20" r="4"/><circle cx="32" cy="20" r="4"/><path d="M12,20 L28,20"/><polygon points="28,20 22,16 22,24" fill="currentColor"/></g></svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- USE CASES -->
+<section id="uc" class="uc">
+  <div class="wrap">
+    <div class="meta"><strong>§06 / APPLICATIONS</strong> &nbsp;/&nbsp; where teams put tend to work</div>
+    <div class="hair" style="margin:14px 0 28px;background:rgba(20,21,15,0.18);"></div>
+    <h2>Where <span class="serif">ops</span> become autonomous.</h2>
+
+    <div class="uc-tabs">
+      <div class="uc-list" id="uc-list">
+        <!-- populated -->
+      </div>
+      <div class="uc-panel" id="uc-panel">
+        <!-- populated -->
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- METRICS -->
+<section class="metrics">
+  <div class="wrap">
+    <div class="meta"><strong>§07 / SIGNAL</strong> &nbsp;/&nbsp; in production at mid-market operators</div>
+    <div class="hair" style="margin:14px 0 28px;"></div>
+    <div class="metrics-grid">
+      <div class="metric quote">
+        <blockquote>
+          <span class="serif">"</span>We replaced a Zapier graveyard and two contractors. The ontology is now the thing our revops team <em>argues about</em>. Which is exactly what a source of truth should feel like.<span class="serif">"</span>
+        </blockquote>
+        <div class="attr">HEAD OF REVOPS &nbsp;/&nbsp; SERIES C FINTECH</div>
+      </div>
+      <div class="metric">
+        <div class="v">78<span class="unit">%</span></div>
+        <div class="k">Reduction in manual ops touches</div>
+      </div>
+      <div class="metric">
+        <div class="v">4.1<span class="unit">×</span></div>
+        <div class="k">Faster to onboard a new tool into the stack</div>
+      </div>
+      <div class="metric">
+        <div class="v">$2.8<span class="unit">M</span></div>
+        <div class="k">Median annualized ops cost saved</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" class="faq">
+  <div class="wrap">
+    <div class="meta"><strong>§08 / FAQ</strong> &nbsp;/&nbsp; the questions we get most</div>
+    <div class="hair" style="margin:14px 0 40px;"></div>
+    <div class="faq-grid">
+      <div>
+        <h2>Plainly <span class="serif">asked.</span></h2>
+        <p class="intro">If you don't see your question here, book a working session. We'll sketch it against your real stack.</p>
+      </div>
+      <div class="qa" id="qa-list"></div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section id="contact" class="final">
+  <div class="wrap">
+    <div class="meta" style="text-align:center;">§09 &nbsp;/&nbsp; START</div>
+    <h2 style="margin-top:24px;">
+      Point agents at the <span class="serif">same truth</span> your team already argues about.
+    </h2>
+    <div class="cta-row">
+      <a href="#" class="btn primary">Book a demo <span class="arr">→</span></a>
+      <a href="#" class="btn">Read the architecture brief</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <div class="col">
+        <div class="brand" style="margin-bottom:14px;"><span class="dot"></span> tend</div>
+        <div class="mono" style="color:var(--fg-mute);font-size:11px;letter-spacing:0.04em;line-height:1.6;">
+          hello@withtend.ai
+        </div>
+      </div>
+      <div class="col">
+        <div class="h">Platform</div>
+        <a href="docs/ontology.html">Ontology</a>
+        <a href="docs/agents.html">Agents</a>
+        <a href="docs/workflows.html">Workflows</a>
+        <a href="docs/connectors.html">Connectors</a>
+        <a href="docs/policy.html">Governance</a>
+      </div>
+      <div class="col">
+        <div class="h">Company</div>
+        <a href="about.html">About</a>
+        <a href="use-cases.html">Use cases</a>
+        <a href="mailto:careers@withtend.ai">Careers</a>
+      </div>
+      <div class="col">
+        <div class="h">Resources</div>
+        <a href="docs/index.html">Docs</a>
+        <a href="docs/getting-started.html">Getting started</a>
+        <a href="docs/api.html">API reference</a>
+        <a href="docs/changelog.html">Changelog</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <div>© 2026 tend, inc.</div>
+    </div>
+  </div>
+</footer>
+
+<!-- TWEAKS -->
+<div class="tweaks" id="tweaks">
+  <div class="th"><span>TWEAKS / WITHTEND.AI</span><span class="dot"></span></div>
+  <div class="tweak-row">
+    <div class="lbl">Accent variant</div>
+    <div class="variant-btns">
+      <button data-variant="A" class="active">A · Warm grey</button>
+      <button data-variant="B">B · Light grey</button>
+    </div>
+  </div>
+  <div style="font-size:10px;color:var(--fg-mute);letter-spacing:0.04em;margin-top:10px;line-height:1.5;">
+    Swaps the primary accent and a handful of motif details across the page.
+  </div>
+</div>
+
+<script>
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "variant": "B"
+}/*EDITMODE-END*/;
+
+/* ---------------- TWEAKS plumbing ---------------- */
+(function(){
+  const state = {...TWEAK_DEFAULTS};
+  const tweaks = document.getElementById('tweaks');
+
+  function apply() {
+    document.documentElement.setAttribute('data-variant', state.variant);
+    tweaks.querySelectorAll('.variant-btns button').forEach(b => {
+      b.classList.toggle('active', b.dataset.variant === state.variant);
+    });
+  }
+  apply();
+
+  tweaks.querySelectorAll('.variant-btns button').forEach(b => {
+    b.addEventListener('click', () => {
+      state.variant = b.dataset.variant;
+      apply();
+      try { window.parent.postMessage({type: '__edit_mode_set_keys', edits: {variant: state.variant}}, '*'); } catch(e){}
+    });
+  });
+
+  window.addEventListener('message', (e) => {
+    const d = e.data || {};
+    if (d.type === '__activate_edit_mode') tweaks.classList.add('show');
+    else if (d.type === '__deactivate_edit_mode') tweaks.classList.remove('show');
+  });
+  try { window.parent.postMessage({type:'__edit_mode_available'}, '*'); } catch(e){}
+})();
+
+/* ---------------- ONTOLOGY DEMO ---------------- */
+const ENTITIES = [
+  { id:'acc-northwind',  type:'Account',  name:'Northwind Traders', tag:'ENT', props:{'ID':'acc_01HZ7','Tier':'Enterprise','ARR':'$1.24M','Health':'Green','Owner':'k.chen@','Region':'NA-East'}, automations:['Churn-watch (playbook: renewal-risk-v3)','Exec QBR scheduler','CSAT → NPS pipeline'] },
+  { id:'acc-globex',     type:'Account',  name:'Globex Logistics', tag:'ENT', props:{'ID':'acc_02FA9','Tier':'Mid-Market','ARR':'$428K','Health':'Yellow','Owner':'j.kim@','Region':'EMEA'}, automations:['Expansion signal detection','Invoice dunning (policy: strict)'] },
+  { id:'acc-vandelay',   type:'Account',  name:'Vandelay Industries', tag:'ENT', props:{'ID':'acc_11BB2','Tier':'SMB','ARR':'$84K','Health':'Red','Owner':'m.rios@','Region':'LATAM'}, automations:['Win-back sequence v2','Downgrade-guardrail'] },
+  { id:'deal-nw-q2',     type:'Deal',     name:'Northwind / Seat exp. Q2', tag:'DEA', props:{'ID':'deal_8841','Stage':'Commit','Value':'$312K','Close':'2026-05-18','Prob.':'82%','Rep':'k.chen@'}, automations:['Auto-summarize call to CRM','Finance approval flow'] },
+  { id:'deal-glx-pilot', type:'Deal',     name:'Globex / Pilot expansion', tag:'DEA', props:{'ID':'deal_9042','Stage':'Proposal','Value':'$120K','Close':'2026-06-30','Prob.':'46%','Rep':'j.kim@'}, automations:['Legal redline watcher','Security-review scheduler'] },
+  { id:'contact-ec',     type:'Contact',  name:'Elena Costa, CFO', tag:'PER', props:{'ID':'c_77104','Company':'Northwind','Role':'Decision-maker','Email':'e.costa@nw','Last touch':'3d ago'}, automations:['Exec-check-in cadence','Content routing (finance)'] },
+  { id:'play-renewal',   type:'Playbook', name:'Renewal risk v3', tag:'PLA', props:{'ID':'pb_ren_v3','Owner':'Ops','Triggers':'Health ↓ | Usage ↓','SLA':'24h','Runs':'142 / mo'}, automations:['Monitors 218 accounts','Escalates to CSMs','Writes notes to CRM'] },
+  { id:'play-expansion', type:'Playbook', name:'Expansion signal', tag:'PLA', props:{'ID':'pb_exp_v1','Owner':'RevOps','Triggers':'Feat. adopt. > .6','SLA':'48h','Runs':'38 / mo'}, automations:['Scores 340 accounts','Routes to AEs','Drafts exec email'] },
+  { id:'agent-csm',      type:'Agent',    name:'CSM copilot', tag:'AGT', props:{'ID':'ag_csm_prod','Model':'tend-reason-2','Scope':'All accounts','Guardrails':'Policy v7','Tickets / wk':'240'}, automations:['Reads account history','Drafts follow-ups','Opens Jira tickets'] },
+  { id:'agent-ar',       type:'Agent',    name:'AR collections', tag:'AGT', props:{'ID':'ag_ar_v2','Model':'tend-ops-1','Scope':'Invoices > 30d','Guardrails':'Finance v2','DSO Δ':'-6.2 days'}, automations:['Dunning cadence','Payment plan proposer','Writes to NetSuite'] },
+  { id:'sku-pro',        type:'Product',  name:'tend Pro (seat)', tag:'PRD', props:{'ID':'sku_pro_2026','Price':'$54/mo','Billing':'Annual','Active seats':'8,142'}, automations:['Seat true-up','Usage→invoice join'] },
+  { id:'sku-agents',     type:'Product',  name:'Agent pack', tag:'PRD', props:{'ID':'sku_agt_pk','Price':'$2,400/mo','Billing':'Monthly','Active tenants':'64'}, automations:['Agent-usage metering','Policy-breach alerts'] },
+];
+
+// graph layout — columnar by type (contacts | accounts | deals | playbooks | agents | products)
+// viewBox 600 x 560. Y band 110 to 480, leaves room for column headers + guides.
+const COLS = {
+  'Contact':  { x: 100, label: 'Contacts'  },
+  'Account':  { x: 230, label: 'Accounts'  },
+  'Deal':     { x: 360, label: 'Deals'     },
+  'Playbook': { x: 490, label: 'Playbooks' },
+  'Agent':    { x: 620, label: 'Agents'    },
+  'Product':  { x: 730, label: 'Products'  },
+};
+const GRAPH_POS = {
+  'contact-ec':     {x: COLS.Contact.x,  y: 220},
+
+  'acc-northwind':  {x: COLS.Account.x,  y: 170},
+  'acc-globex':     {x: COLS.Account.x,  y: 280},
+  'acc-vandelay':   {x: COLS.Account.x,  y: 390},
+
+  'deal-nw-q2':     {x: COLS.Deal.x,     y: 200},
+  'deal-glx-pilot': {x: COLS.Deal.x,     y: 310},
+
+  'play-renewal':   {x: COLS.Playbook.x, y: 225},
+  'play-expansion': {x: COLS.Playbook.x, y: 345},
+
+  'agent-csm':      {x: COLS.Agent.x,    y: 235},
+  'agent-ar':       {x: COLS.Agent.x,    y: 355},
+
+  'sku-pro':        {x: COLS.Product.x,  y: 265},
+  'sku-agents':     {x: COLS.Product.x,  y: 385},
+};
+const EDGES = [
+  ['acc-northwind','contact-ec'],
+  ['acc-northwind','deal-nw-q2'],
+  ['acc-globex','deal-glx-pilot'],
+  ['acc-northwind','play-renewal'],
+  ['acc-globex','play-renewal'],
+  ['acc-vandelay','play-renewal'],
+  ['acc-northwind','play-expansion'],
+  ['acc-globex','play-expansion'],
+  ['play-renewal','agent-csm'],
+  ['play-expansion','agent-csm'],
+  ['deal-nw-q2','agent-ar'],
+  ['deal-glx-pilot','agent-ar'],
+  ['acc-northwind','sku-pro'],
+  ['acc-globex','sku-pro'],
+  ['acc-northwind','sku-agents'],
+  ['agent-csm','sku-agents'],
+];
+
+const TYPE_COLORS = {
+  'Account':'var(--accent)',
+  'Deal':'#ECE7DE',
+  'Contact':'#ECE7DE',
+  'Playbook':'#ECE7DE',
+  'Agent':'var(--accent)',
+  'Product':'#ECE7DE',
+};
+
+(function initDemo(){
+  const list = document.getElementById('entity-list');
+  ENTITIES.forEach(e => {
+    const el = document.createElement('div');
+    el.className = 'entity';
+    el.dataset.id = e.id;
+    el.innerHTML = `<span>${e.name}</span><span class="tag">${e.tag}</span>`;
+    el.addEventListener('click', () => select(e.id));
+    list.appendChild(el);
+  });
+  document.getElementById('entity-count').textContent = ENTITIES.length;
+
+  // draw edges
+  const edgeG = document.getElementById('edges');
+  EDGES.forEach(([a,b]) => {
+    const pa = GRAPH_POS[a], pb = GRAPH_POS[b];
+    if (!pa || !pb) return;
+    const l = document.createElementNS('http://www.w3.org/2000/svg','line');
+    l.setAttribute('x1', pa.x); l.setAttribute('y1', pa.y);
+    l.setAttribute('x2', pb.x); l.setAttribute('y2', pb.y);
+    l.dataset.a = a; l.dataset.b = b;
+    edgeG.appendChild(l);
+  });
+
+  // nodes + labels
+  const nodeG = document.getElementById('nodes');
+  const labels = document.getElementById('labels');
+  const svg = document.getElementById('graph-svg');
+  // column headers
+  const typeCounts = {};
+  ENTITIES.forEach(e => { typeCounts[e.type] = (typeCounts[e.type]||0) + 1; });
+  Object.entries(COLS).forEach(([type, info]) => {
+    const h = document.createElement('div');
+    h.className = 'col-header';
+    h.style.left = (info.x / 800 * 100) + '%';
+    h.innerHTML = info.label + '<span class="count">' + (typeCounts[type]||0) + '</span>';
+    labels.appendChild(h);
+    const g = document.createElement('div');
+    g.className = 'col-guide';
+    g.style.left = (info.x / 800 * 100) + '%';
+    labels.appendChild(g);
+  });
+
+  ENTITIES.forEach(e => {
+    const p = GRAPH_POS[e.id]; if (!p) return;
+    const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    c.setAttribute('cx', p.x); c.setAttribute('cy', p.y);
+    c.setAttribute('r', e.type === 'Account' || e.type === 'Agent' ? 6 : 4.5);
+    c.setAttribute('fill', TYPE_COLORS[e.type] || '#ECE7DE');
+    c.dataset.id = e.id;
+    c.style.cursor = 'pointer';
+    c.addEventListener('click', () => select(e.id));
+    c.addEventListener('mouseenter', () => select(e.id));
+    nodeG.appendChild(c);
+
+    const lbl = document.createElement('div');
+    lbl.className = 'node-label';
+    lbl.dataset.id = e.id;
+    lbl.textContent = e.name.length > 20 ? e.name.slice(0,20)+'…' : e.name;
+    // place label BELOW the node
+    lbl.style.left = (p.x / 800 * 100) + '%';
+    lbl.style.top  = ((p.y + 14) / 560 * 100) + '%';
+    labels.appendChild(lbl);
+  });
+
+  select('acc-northwind');
+})();
+
+function select(id) {
+  const e = ENTITIES.find(x => x.id === id);
+  if (!e) return;
+
+  // list highlight
+  document.querySelectorAll('#entity-list .entity').forEach(el => {
+    el.classList.toggle('active', el.dataset.id === id);
+    if (el.dataset.id === id) el.scrollIntoView && el.scrollIntoView({block:'nearest'});
+  });
+
+  // detail
+  document.getElementById('det-title').childNodes[0].textContent = e.name + ' ';
+  document.getElementById('det-type').textContent = '/ ' + e.type.toLowerCase();
+  const props = document.getElementById('det-props');
+  props.innerHTML = '';
+  Object.entries(e.props).forEach(([k,v]) => {
+    const row = document.createElement('div');
+    row.className = 'prop-row';
+    row.innerHTML = `<span class="k">${k}</span><span class="v">${v}</span>`;
+    props.appendChild(row);
+  });
+  const aw = document.getElementById('det-automations');
+  aw.innerHTML = '';
+  e.automations.forEach(a => {
+    const row = document.createElement('div');
+    row.className = 'auto-item';
+    row.innerHTML = `<div class="bullet"></div><div>${a}</div>`;
+    aw.appendChild(row);
+  });
+
+  // connected set
+  const conn = new Set([id]);
+  EDGES.forEach(([a,b]) => { if (a===id) conn.add(b); else if (b===id) conn.add(a); });
+
+  // labels: selected = active, directly connected = neighbor, rest hidden
+  document.querySelectorAll('#labels .node-label').forEach(l => {
+    const isSel = l.dataset.id === id;
+    const isNbr = conn.has(l.dataset.id) && !isSel;
+    l.classList.toggle('active', isSel);
+    l.classList.toggle('neighbor', isNbr);
+    l.classList.toggle('dim', !isSel && !isNbr);
+  });
+
+  // edges
+  document.querySelectorAll('#edges line').forEach(l => {
+    const touches = l.dataset.a === id || l.dataset.b === id;
+    l.setAttribute('stroke', touches ? 'var(--accent)' : 'rgba(236,231,222,0.12)');
+    l.setAttribute('stroke-width', touches ? '1.2' : '1');
+  });
+
+  // nodes
+  document.querySelectorAll('#nodes circle').forEach(c => {
+    const isSel = c.dataset.id === id;
+    const connected = conn.has(c.dataset.id);
+    c.setAttribute('opacity', connected ? 1 : 0.3);
+    const type = ENTITIES.find(x=>x.id===c.dataset.id).type;
+    const baseR = type === 'Account' || type === 'Agent' ? 6 : 4.5;
+    c.setAttribute('r', isSel ? 8 : baseR);
+  });
+}
+
+/* ---------------- USE CASES ---------------- */
+const USE_CASES = [
+  { k:'REVENUE OPS', title:'From lead to renewal, one ontology.', copy:'Every account, contact, deal and playbook lives in one graph. CSMs, AEs, and agents all act on the same definitions. No more Zapier graveyards and contradictory Salesforce fields.', stats:[['−78','%','Manual touches'], ['4.1','×','Faster tool rollout'], ['99.7','%','Field accuracy']] },
+  { k:'FINANCE OPS', title:'Close the books without the 3am Slack.', copy:'Join invoices, contracts, payments, and product usage into a single auditable ledger. Agents reconcile, flag variances, and file the exceptions before your controller wakes up.', stats:[['−6.2','d','DSO reduction'], ['92','%','Auto-reconciled'], ['$2.8','M','Median saved']] },
+  { k:'SUPPORT OPS', title:'Tickets that know what a customer <em>is</em>.', copy:'Route by tier, risk, and history, not a flat priority field. Agents draft responses grounded in the ontology, escalate when policy demands, and close the loop back to product.', stats:[['−41','%','First-touch time'], ['+22','pt','CSAT'], ['64','%','Auto-resolved']] },
+  { k:'SUPPLY CHAIN', title:'Inventory that reasons about itself.', copy:'SKUs, lots, shipments, and vendor contracts as first-class entities. Flows react to graph events. A late container becomes a rerouting decision, not a spreadsheet emergency.', stats:[['−19','%','Stockouts'], ['1.7','×','Turn velocity'], ['18','hr','Avg response']] },
+  { k:'PEOPLE OPS', title:'Org state, not org chart.', copy:'Roles, skills, access, and workflow ownership live in the graph. Access provisioning, onboarding, and role changes become automations, not tickets filed in three tools.', stats:[['−86','%','Onboarding delays'], ['100','%','Access audited'], ['3.4','d','→ productive']] },
+];
+(function initUseCases(){
+  const list = document.getElementById('uc-list');
+  const panel = document.getElementById('uc-panel');
+  function render(i){
+    const uc = USE_CASES[i];
+    list.querySelectorAll('.uc-item').forEach((el, j) => el.classList.toggle('active', j===i));
+    panel.innerHTML = `
+      <div class="kicker">${uc.k}</div>
+      <h3>${uc.title}</h3>
+      <p>${uc.copy}</p>
+      <div class="uc-stats">
+        ${uc.stats.map(s => `<div class="uc-stat"><div class="v">${s[0]}<span class="unit">${s[1]}</span></div><div class="k">${s[2]}</div></div>`).join('')}
+      </div>
+    `;
+  }
+  USE_CASES.forEach((uc, i) => {
+    const el = document.createElement('div');
+    el.className = 'uc-item';
+    el.innerHTML = `<span>${uc.k.toLowerCase().replace('_',' ')}</span><span class="idx">${String(i+1).padStart(2,'0')} / 0${USE_CASES.length}</span>`;
+    el.addEventListener('click', () => render(i));
+    el.addEventListener('mouseenter', () => render(i));
+    list.appendChild(el);
+  });
+  render(0);
+})();
+
+/* ---------------- FAQ ---------------- */
+const FAQ = [
+  ['Isn\'t this just a reverse-ETL tool with better branding?', 'No. Reverse-ETL moves rows between systems. tend gives those rows <em>meaning</em>. A typed, governed ontology that workflows and agents reason over. Moving data is table stakes; agreeing on what it means is the hard part.'],
+  ['Do we have to rip out our existing stack?', 'Never. tend connects to Salesforce, HubSpot, Zendesk, NetSuite, Snowflake, BigQuery, and 170+ other sources. Your systems stay where they are. The ontology sits above them and writes back where it needs to.'],
+  ['How long until we see value?', 'Most customers are in production on their first 2 to 3 use cases within 4 weeks. Full platform adoption takes 8 to 12 weeks, depending on how many sources you connect and how opinionated your existing policies are.'],
+  ['What about security and compliance?', 'SOC 2 Type II, HIPAA, GDPR. Attribute-level permissions, row-level policy, full audit trail, region-pinned deployments, and BYO-cloud for regulated customers.'],
+  ['Where do the agents actually run?', 'Inside tend, with read/write scoped by the same governance model that covers humans. Agents receive typed ontology context, not raw rows, so you can reason about what they can and can\'t touch.'],
+  ['How is this priced?', 'Platform fee + usage across entities resolved and agent actions taken. No per-seat billing. Happy to send a sample quote against your stack in a working session.'],
+];
+(function initFaq(){
+  const list = document.getElementById('qa-list');
+  FAQ.forEach(([q,a], i) => {
+    const item = document.createElement('div');
+    item.className = 'qa-item' + (i===0 ? ' open' : '');
+    item.innerHTML = `
+      <button class="qa-q"><span>${q}</span><span class="sign">+</span></button>
+      <div class="qa-a">${a}</div>
+    `;
+    item.querySelector('.qa-q').addEventListener('click', () => {
+      item.classList.toggle('open');
+    });
+    list.appendChild(item);
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>API reference · tend docs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../shared.css">
+<link rel="stylesheet" href="docs.css">
+<style>
+.ep {
+  border: 1px solid var(--line);
+  margin: 0 0 16px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13.5px;
+}
+.ep .bar {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  background: var(--bg-2);
+  gap: 14px;
+}
+.ep .m {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  color: var(--bg);
+}
+.ep .m.get { background: #9EC09C; }
+.ep .m.post { background: #D9A05B; }
+.ep .m.put { background: #8FA9CC; }
+.ep .m.del { background: #D18577; }
+.ep .path { color: var(--fg); flex: 1; }
+.ep .desc {
+  padding: 14px 16px;
+  border-top: 1px solid var(--line);
+  color: var(--fg-dim);
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 14px;
+  line-height: 1.55;
+}
+</style>
+</head>
+<body data-docs-page="api">
+
+<div class="docs-shell">
+  <aside class="docs-side"></aside>
+
+  <main class="docs-main">
+    <div class="crumb"><a href="../index.html">tend</a><span class="sep">/</span><a href="index.html">docs</a><span class="sep">/</span>api</div>
+    <h1>API <span class="serif">reference.</span></h1>
+    <p class="lede">
+      tend exposes a REST API, a GraphQL endpoint, and a gRPC streaming interface. All three compile to the same typed surface and share the same policy enforcement. Choose by ergonomics, not by capability.
+    </p>
+
+    <h2 id="auth">Authentication</h2>
+    <p>All requests must be signed with a workspace-scoped token. Tokens are HMAC-SHA256 keyed, rotatable, and bound to an identity — either a human (SSO-mapped) or a service account.</p>
+
+    <pre><span class="hdr">HTTP</span>Authorization: Bearer tnd_sk_live_<span class="str">a7f2…</span>
+X-Tend-Workspace: <span class="str">acme</span>
+X-Tend-Idempotency-Key: <span class="str">req_8f2c…</span> <span class="cm"># optional, 24h window</span></pre>
+
+    <h2 id="base">Base URLs</h2>
+    <table>
+      <thead><tr><th>Region</th><th>REST / GraphQL</th><th>gRPC</th></tr></thead>
+      <tbody>
+        <tr><td>US</td><td><code>https://api.us.tend.ai/v1</code></td><td><code>grpc.us.tend.ai:443</code></td></tr>
+        <tr><td>EU</td><td><code>https://api.eu.tend.ai/v1</code></td><td><code>grpc.eu.tend.ai:443</code></td></tr>
+        <tr><td>APAC</td><td><code>https://api.apac.tend.ai/v1</code></td><td><code>grpc.apac.tend.ai:443</code></td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="rest">REST endpoints</h2>
+
+    <div class="ep">
+      <div class="bar"><span class="m get">GET</span><span class="path">/v1/entities/:type/:id</span></div>
+      <div class="desc">Fetch a single entity by id. Supports <code>?at=ISO8601</code> for point-in-time reads and <code>?depth=N</code> for eager relation expansion (max depth 3).</div>
+    </div>
+
+    <div class="ep">
+      <div class="bar"><span class="m post">POST</span><span class="path">/v1/entities/:type</span></div>
+      <div class="desc">Create or upsert an entity. Idempotent when <code>X-Tend-Idempotency-Key</code> is set. Returns the committed entity plus its lineage record.</div>
+    </div>
+
+    <div class="ep">
+      <div class="bar"><span class="m put">PUT</span><span class="path">/v1/entities/:type/:id/fields</span></div>
+      <div class="desc">Partial update. Payload is a field-level patch; the runtime validates against the current schema version and enforces lifecycle transitions.</div>
+    </div>
+
+    <div class="ep">
+      <div class="bar"><span class="m del">DEL</span><span class="path">/v1/entities/:type/:id</span></div>
+      <div class="desc">Soft-delete with configurable grace period (default 14d). Hard-delete requires the <code>delete:hard</code> capability and a signed operator approval.</div>
+    </div>
+
+    <div class="ep">
+      <div class="bar"><span class="m post">POST</span><span class="path">/v1/query</span></div>
+      <div class="desc">Execute a typed query expression. Supports graph traversal, aggregation, temporal filters. Returns a streaming NDJSON body for result sets &gt;10k rows.</div>
+    </div>
+
+    <div class="ep">
+      <div class="bar"><span class="m post">POST</span><span class="path">/v1/agents/:name/invoke</span></div>
+      <div class="desc">Synchronously invoke a deployed agent against a supplied entity id. Respects all declared budgets and policies. Returns the run record including the typed write set and lineage.</div>
+    </div>
+
+    <div class="ep">
+      <div class="bar"><span class="m get">GET</span><span class="path">/v1/runs/:id</span></div>
+      <div class="desc">Fetch a run record — context snapshot, tool-call trace, model output, policy decisions, write set, cost.</div>
+    </div>
+
+    <h2 id="graphql">GraphQL</h2>
+    <p>The GraphQL schema is generated from your ontology. Every entity type produces query roots, mutation roots, and a subscription root for temporal change streams.</p>
+
+    <pre><span class="hdr">graphql</span><span class="kw">query</span> AccountWithContext($id: ID!) {
+  <span class="fn">account</span>(id: $id) {
+    id
+    name
+    tier
+    health
+    deals(where: { stage: <span class="nm">OPEN</span> }) {
+      id
+      amount
+      stage
+    }
+    contacts(limit: <span class="num">3</span>, orderBy: <span class="nm">LAST_TOUCH_DESC</span>) {
+      id
+      name
+      title
+    }
+  }
+}</pre>
+
+    <h2 id="webhooks">Webhooks</h2>
+    <p>Subscribe to ontology events via signed webhooks. Delivery is at-least-once with exponential backoff (max 7 retries over 24h). Events carry the entity snapshot plus a lineage pointer — you never need a secondary fetch to interpret a delivery.</p>
+
+    <pre><span class="hdr">HTTP</span>POST https://your-endpoint
+X-Tend-Signature: <span class="str">t=1713500000,v1=a7f2…</span>
+X-Tend-Event-Type: <span class="str">entity.written</span>
+Content-Type: application/json
+
+{
+  <span class="str">"event_id"</span>: <span class="str">"evt_8f2c…"</span>,
+  <span class="str">"entity_type"</span>: <span class="str">"Account"</span>,
+  <span class="str">"entity_id"</span>: <span class="str">"acct_4102"</span>,
+  <span class="str">"changed_fields"</span>: [<span class="str">"tier"</span>, <span class="str">"arr"</span>],
+  <span class="str">"tx_at"</span>: <span class="str">"2026-04-19T21:14:02.318Z"</span>,
+  <span class="str">"lineage"</span>: <span class="str">"ln_8f2c…"</span>
+}</pre>
+
+    <h2 id="rate">Rate limits</h2>
+    <table>
+      <thead><tr><th>Tier</th><th>Reads / sec</th><th>Writes / sec</th><th>Agent invokes / min</th></tr></thead>
+      <tbody>
+        <tr><td>Starter</td><td>200</td><td>40</td><td>60</td></tr>
+        <tr><td>Team</td><td>2,000</td><td>400</td><td>600</td></tr>
+        <tr><td>Enterprise</td><td>Negotiated</td><td>Negotiated</td><td>Negotiated</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="errors">Error model</h2>
+    <p>Every error response uses a consistent envelope with a stable error code, a human-readable message, and a pointer to a lineage or policy trace when relevant. Error codes are listed in the appendix.</p>
+
+    <pre><span class="hdr">HTTP 403</span>{
+  <span class="str">"error"</span>: {
+    <span class="str">"code"</span>: <span class="str">"policy.denied"</span>,
+    <span class="str">"message"</span>: <span class="str">"Read on Account.pii denied by policy eu-pii-read"</span>,
+    <span class="str">"policy"</span>:  <span class="str">"eu-pii-read@v4"</span>,
+    <span class="str">"trace"</span>:   <span class="str">"ptr_8f2c…"</span>
+  }
+}</pre>
+
+    <div class="pn">
+      <a class="prev" href="cli.html"><div class="k">← Previous</div><div class="t">CLI</div></a>
+      <a class="next" href="limits.html"><div class="k">Next →</div><div class="t">Limits &amp; SLAs</div></a>
+    </div>
+  </main>
+
+  <aside class="toc">
+    <div class="h">On this page</div>
+    <div class="toc-list"></div>
+  </aside>
+</div>
+
+<script src="docs.js"></script>
+</body>
+</html>

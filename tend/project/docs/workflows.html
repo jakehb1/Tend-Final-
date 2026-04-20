@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Workflows · tend docs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../shared.css">
+<link rel="stylesheet" href="docs.css">
+</head>
+<body data-docs-page="workflows">
+<div class="docs-shell">
+  <aside class="docs-side"></aside>
+  <main class="docs-main">
+    <div class="crumb"><a href="../index.html">tend</a><span class="sep">/</span><a href="index.html">docs</a><span class="sep">/</span>workflows</div>
+    <h1>Workflows, sagas, <span class="serif">and retries.</span></h1>
+    <p class="lede">
+      Workflows are typed, durable, event-driven. They subscribe to ontology change streams, compose agents and tools, and execute with transactional guarantees. Crashes resume at the last committed step.
+    </p>
+
+    <h2 id="anatomy">Anatomy</h2>
+    <pre><span class="hdr">workflows/renewal_intervention.py</span><span class="kw">from</span> tend <span class="kw">import</span> workflow, ontology <span class="kw">as</span> o
+
+<span class="cm">@workflow(</span>
+    <span class="nm">name</span>    = <span class="str">"renewal-intervention"</span>,
+    <span class="nm">on</span>      = o.Account.health.changed_to(<span class="str">"red"</span>),
+    <span class="nm">retry</span>   = <span class="fn">ExponentialBackoff</span>(max=<span class="num">5</span>, base=<span class="fn">seconds</span>(<span class="num">30</span>)),
+    <span class="nm">timeout</span> = <span class="fn">hours</span>(<span class="num">4</span>),
+    <span class="nm">sla</span>     = <span class="fn">hours</span>(<span class="num">1</span>),
+<span class="cm">)</span>
+<span class="kw">async def</span> <span class="fn">run</span>(account: o.Account):
+
+    verdict = <span class="kw">await</span> agents.renewal_risk.<span class="fn">invoke</span>(account)
+    <span class="kw">if</span> verdict.risk &lt; <span class="num">0.6</span>:
+        <span class="kw">return</span>
+
+    owner   = account.owner()
+    channel = owner.preferred_channel() <span class="kw">or</span> <span class="str">"slack"</span>
+
+    draft   = <span class="kw">await</span> agents.outreach_drafter.<span class="fn">invoke</span>(account, verdict)
+    approved = <span class="kw">await</span> human.<span class="fn">approve</span>(
+        channel=channel, to=owner, draft=draft, sla=<span class="fn">hours</span>(<span class="num">1</span>),
+    )
+    <span class="kw">if not</span> approved:
+        <span class="kw">return</span>
+
+    <span class="kw">await</span> tools.slack.<span class="fn">post</span>(channel=<span class="fn">f</span><span class="str">"#csm-{owner.region}"</span>, text=draft.text)
+    account.<span class="fn">log</span>(<span class="str">"intervention_triggered"</span>, verdict=verdict.id)</pre>
+
+    <h2 id="triggers">Triggers</h2>
+    <table>
+      <thead><tr><th>Trigger</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>Entity.*</code></td><td>Any change to the entity type</td></tr>
+        <tr><td><code>Entity.field.changed</code></td><td>Field value changed (any → any)</td></tr>
+        <tr><td><code>Entity.field.changed_to(v)</code></td><td>Field reached value v</td></tr>
+        <tr><td><code>Entity.lifecycle.enters(s)</code></td><td>Lifecycle transition into state s</td></tr>
+        <tr><td><code>Event.type(T)</code></td><td>Immutable event of type T was emitted</td></tr>
+        <tr><td><code>Schedule.cron(expr)</code></td><td>Time-based (24×5, 0 9 * * 1-5, etc.)</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="durability">Durability</h2>
+    <p>Every <code>await</code> is a durable boundary. The scheduler persists workflow state after each awaited step. If a worker dies, another worker resumes the workflow at the next unfinished step — no lost work, no double-commits.</p>
+
+    <div class="callout">
+      <div class="label">Exactly-once effects</div>
+      Tools that have side effects (Slack post, Salesforce write) are invoked through an idempotency-keyed wrapper. Re-running a workflow after a crash will not duplicate the side effect.
+    </div>
+
+    <h2 id="sagas">Sagas</h2>
+    <p>For multi-step workflows that span multiple systems, declare a compensating action per step. If a later step fails unrecoverably, the saga runs compensations in reverse order.</p>
+
+    <pre><span class="hdr">python</span><span class="kw">async with</span> <span class="fn">saga</span>():
+    invoice  = <span class="kw">await</span> netsuite.<span class="fn">create_invoice</span>(...)
+    <span class="kw">on_fail</span>:   <span class="kw">await</span> netsuite.<span class="fn">void_invoice</span>(invoice.id)
+
+    charge   = <span class="kw">await</span> stripe.<span class="fn">charge</span>(customer, amount)
+    <span class="kw">on_fail</span>:   <span class="kw">await</span> stripe.<span class="fn">refund</span>(charge.id)
+
+    <span class="kw">await</span> hubspot.<span class="fn">mark_paid</span>(deal)</pre>
+
+    <h2 id="sla">SLAs &amp; alerting</h2>
+    <p>A declared <code>sla</code> is a soft deadline. The scheduler emits <code>sla_at_risk</code> at 80% and <code>sla_breached</code> at 100%. These are first-class events — subscribe workflows to them to escalate, page, or downgrade gracefully.</p>
+
+    <h2 id="concurrency">Concurrency</h2>
+    <p>By default, one workflow instance runs per (workflow, entity) key. Override with <code>concurrency=</code> to allow N parallel instances, or <code>concurrency="serial"</code> to force strict ordering.</p>
+
+    <h2 id="observability">Observability</h2>
+    <p>Every run emits a span tree. The console renders a Gantt of steps with their durations, retries, and tool costs. Open a failed run to see the exact payload at the failure point.</p>
+
+    <pre><span class="hdr">shell</span>tend wf runs --workflow renewal-intervention --status failed --last 24h
+tend wf explain run_8f2c</pre>
+
+    <div class="pn">
+      <a class="prev" href="agents.html"><div class="k">← Previous</div><div class="t">Agents</div></a>
+      <a class="next" href="sdk.html"><div class="k">Next →</div><div class="t">SDK reference</div></a>
+    </div>
+  </main>
+  <aside class="toc"><div class="h">On this page</div><div class="toc-list"></div></aside>
+</div>
+<script src="docs.js"></script>
+</body>
+</html>

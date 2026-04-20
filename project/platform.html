@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Platform · tend.ai</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="shared.css">
+<style>
+/* layer cards */
+.layers {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 60px;
+  margin-top: 40px;
+}
+.layer-nav {
+  position: sticky;
+  top: 100px;
+  align-self: start;
+  border-top: 1px solid var(--line);
+}
+.layer-nav a {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--fg-dim);
+  text-decoration: none;
+  font-size: 17px;
+  letter-spacing: -0.005em;
+  transition: color 0.15s;
+}
+.layer-nav a:hover, .layer-nav a.active { color: var(--fg); }
+.layer-nav a.active .idx { color: var(--accent); }
+.layer-nav a .idx {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: var(--fg-mute);
+}
+.layer-body { display: flex; flex-direction: column; gap: 56px; }
+.layer {
+  border-top: 1px solid var(--line);
+  padding-top: 36px;
+  scroll-margin-top: 100px;
+}
+.layer-kicker {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+.layer h3 {
+  font-size: 40px;
+  font-weight: 300;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  margin: 0 0 20px;
+}
+.layer h3 .serif { font-weight: 400; }
+.layer p {
+  font-size: 16.5px;
+  line-height: 1.55;
+  color: var(--fg-dim);
+  max-width: 580px;
+  margin: 0 0 24px;
+}
+.layer-diag {
+  margin-top: 12px;
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+}
+.diag-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+  margin-bottom: 18px;
+  display: flex; justify-content: space-between;
+}
+.diag-label .right { color: var(--accent); }
+
+/* 3-col spec strip */
+.spec {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border: 1px solid var(--line);
+}
+.spec .cell {
+  padding: 20px 22px;
+  border-right: 1px solid var(--line);
+  font-family: 'IBM Plex Mono', monospace;
+}
+.spec .cell:last-child { border-right: none; }
+.spec .cell .k {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+  margin-bottom: 8px;
+}
+.spec .cell .v {
+  font-size: 15px;
+  color: var(--fg);
+  letter-spacing: -0.005em;
+}
+
+/* code block */
+pre.code {
+  background: #08090B;
+  border: 1px solid var(--line);
+  padding: 20px 22px;
+  margin: 20px 0 0;
+  overflow-x: auto;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--fg-dim);
+}
+pre.code .kw { color: var(--accent); }
+pre.code .str { color: #B8D1B4; }
+pre.code .cm { color: var(--fg-mute); font-style: normal; }
+pre.code .nm { color: var(--fg); }
+
+/* matrix */
+.matrix {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border: 1px solid var(--line);
+  margin-top: 48px;
+}
+.matrix .cell {
+  padding: 28px 24px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  min-height: 180px;
+}
+.matrix .cell:nth-child(3n) { border-right: none; }
+.matrix .cell:nth-last-child(-n+3) { border-bottom: none; }
+.matrix .cell .num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--fg-mute);
+  letter-spacing: 0.05em;
+  margin-bottom: 24px;
+}
+.matrix .cell h4 {
+  font-size: 18px;
+  font-weight: 400;
+  margin: 0 0 8px;
+  letter-spacing: -0.01em;
+}
+.matrix .cell p {
+  font-size: 13.5px;
+  color: var(--fg-dim);
+  line-height: 1.55;
+  margin: 0;
+}
+
+@media (max-width: 980px) {
+  .layers { grid-template-columns: 1fr; gap: 24px; }
+  .layer-nav { position: static; }
+  .matrix, .spec { grid-template-columns: 1fr; }
+  .matrix .cell { border-right: none; }
+  .spec .cell { border-right: none; border-bottom: 1px solid var(--line); }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html">
+      <span class="dot"></span>
+      <span>tend</span>
+    </a>
+    <div class="nav-links">
+      <a href="platform.html" class="active">Platform</a>
+      <a href="use-cases.html">Use cases</a>
+      <a href="docs/index.html">Docs</a>
+      <a href="about.html">About</a>
+    </div>
+    <a href="index.html#contact" class="nav-cta">Book a demo <span>→</span></a>
+  </div>
+</nav>
+
+<!-- PAGE HEAD -->
+<section class="page-head">
+  <div class="wrap">
+    <div class="kicker">§ PLATFORM / OVERVIEW</div>
+    <h1>One graph. <span class="serif">Every layer</span> of the stack.</h1>
+    <p class="lede">
+      tend is a four-layer platform: a governed ontology at the core, a connector fabric that feeds it, a policy engine that controls it, and an agent runtime that acts on it. Built to replace the fragile glue between your tools, not another one of them.
+    </p>
+  </div>
+</section>
+
+<!-- LAYERS -->
+<section class="sec" style="border-top:none;">
+  <div class="wrap">
+    <div class="meta"><strong>§01</strong> &nbsp;/&nbsp; THE FOUR LAYERS</div>
+    <div class="hair" style="margin:14px 0 0;"></div>
+
+    <div class="layers">
+      <aside class="layer-nav" id="layer-nav">
+        <a href="#ontology" class="active"><span>Ontology</span><span class="idx">01</span></a>
+        <a href="#ingest"><span>Ingest &amp; resolve</span><span class="idx">02</span></a>
+        <a href="#govern"><span>Govern &amp; policy</span><span class="idx">03</span></a>
+        <a href="#agents"><span>Agents &amp; workflows</span><span class="idx">04</span></a>
+      </aside>
+
+      <div class="layer-body">
+
+        <div class="layer" id="ontology">
+          <div class="layer-kicker">LAYER 01 / CORE</div>
+          <h3>The <span class="serif">ontology</span>. Your business as a typed graph.</h3>
+          <p>Define the entities, relationships, and lifecycle states your team actually operates on. Version them. Diff them. Migrate without downtime. Every other layer reads from here.</p>
+          <div class="spec">
+            <div class="cell"><div class="k">Types</div><div class="v">Entities, relations, states, derived facts</div></div>
+            <div class="cell"><div class="k">Schema</div><div class="v">Versioned, diffable, migratable</div></div>
+            <div class="cell"><div class="k">Latency</div><div class="v">Sub-second reads on 10M+ entities</div></div>
+          </div>
+          <pre class="code"><span class="cm"># schema / account.tend</span>
+<span class="kw">entity</span> <span class="nm">Account</span> {
+  id: <span class="kw">uuid</span>
+  name: <span class="kw">string</span>
+  tier: <span class="kw">enum</span>(<span class="str">"smb"</span>, <span class="str">"mid"</span>, <span class="str">"ent"</span>)
+  health: <span class="kw">computed</span> { <span class="nm">risk_score</span>() &lt; <span class="nm">0.3</span> ? <span class="str">"green"</span> : <span class="str">"yellow"</span> }
+  owned_by: <span class="nm">Contact</span> <span class="kw">via</span> <span class="str">"primary_owner"</span>
+}</pre>
+        </div>
+
+        <div class="layer" id="ingest">
+          <div class="layer-kicker">LAYER 02 / INGEST</div>
+          <h3>Ingest. Resolve. <span class="serif">Reconcile.</span></h3>
+          <p>Pull from 180+ managed connectors or stream CDC from your warehouse. Deterministic plus probabilistic entity resolution merges duplicates across systems while keeping full provenance.</p>
+          <div class="spec">
+            <div class="cell"><div class="k">Sources</div><div class="v">180+ connectors · warehouse CDC · SDK</div></div>
+            <div class="cell"><div class="k">Resolution</div><div class="v">Rules + ML, roll-back safe</div></div>
+            <div class="cell"><div class="k">Throughput</div><div class="v">Real-time or batch</div></div>
+          </div>
+          <div class="layer-diag">
+            <div class="diag-label"><span>FIG. 02 / RESOLVE FLOW</span><span class="right">● LIVE</span></div>
+            <svg viewBox="0 0 720 200" style="width:100%;height:auto;display:block;">
+              <g font-family="IBM Plex Mono" font-size="11" fill="var(--fg-dim)">
+                <rect x="20" y="40" width="110" height="36" fill="var(--bg)" stroke="var(--line-2)"/>
+                <text x="75" y="62" text-anchor="middle" fill="var(--fg)">Salesforce</text>
+                <rect x="20" y="90" width="110" height="36" fill="var(--bg)" stroke="var(--line-2)"/>
+                <text x="75" y="112" text-anchor="middle" fill="var(--fg)">HubSpot</text>
+                <rect x="20" y="140" width="110" height="36" fill="var(--bg)" stroke="var(--line-2)"/>
+                <text x="75" y="162" text-anchor="middle" fill="var(--fg)">Zendesk</text>
+
+                <rect x="280" y="80" width="140" height="56" fill="var(--bg)" stroke="var(--accent)" stroke-width="1.3"/>
+                <text x="350" y="102" text-anchor="middle" fill="var(--fg)">resolve()</text>
+                <text x="350" y="120" text-anchor="middle" font-size="9" fill="var(--fg-mute)">dedupe · merge · keep history</text>
+
+                <rect x="560" y="90" width="140" height="36" fill="var(--bg)" stroke="var(--line-2)"/>
+                <text x="630" y="112" text-anchor="middle" fill="var(--fg)">Account #4102</text>
+              </g>
+              <g stroke="var(--line-2)" fill="none">
+                <path d="M130,58 L280,100"/>
+                <path d="M130,108 L280,108"/>
+                <path d="M130,158 L280,116"/>
+                <path d="M420,108 L560,108"/>
+              </g>
+              <g>
+                <circle r="3" fill="var(--accent)">
+                  <animateMotion dur="2.4s" repeatCount="indefinite" path="M130,58 L280,100"/>
+                </circle>
+                <circle r="3" fill="var(--accent)">
+                  <animateMotion dur="2.4s" begin="0.5s" repeatCount="indefinite" path="M130,108 L280,108"/>
+                </circle>
+                <circle r="3" fill="var(--accent)">
+                  <animateMotion dur="2.4s" begin="1.0s" repeatCount="indefinite" path="M130,158 L280,116"/>
+                </circle>
+                <circle r="3" fill="var(--accent)">
+                  <animateMotion dur="1.8s" begin="0.8s" repeatCount="indefinite" path="M420,108 L560,108"/>
+                </circle>
+              </g>
+            </svg>
+          </div>
+        </div>
+
+        <div class="layer" id="govern">
+          <div class="layer-kicker">LAYER 03 / POLICY</div>
+          <h3>Governance agents can't <span class="serif">wriggle around.</span></h3>
+          <p>Attribute-level permissions, row-level policies, versioned decision logic. Every read and write, from humans or agents, passes through the same rules. Full audit trail by default.</p>
+          <div class="spec">
+            <div class="cell"><div class="k">Access</div><div class="v">Row + attribute level, ABAC</div></div>
+            <div class="cell"><div class="k">Audit</div><div class="v">Immutable, queryable, replay-safe</div></div>
+            <div class="cell"><div class="k">Compliance</div><div class="v">SOC 2 II · HIPAA · GDPR</div></div>
+          </div>
+          <pre class="code"><span class="cm"># policy / agent_revenue.policy</span>
+<span class="kw">policy</span> <span class="nm">agent_revenue</span> {
+  <span class="kw">can read</span> <span class="nm">Account</span>, <span class="nm">Deal</span>, <span class="nm">Contact</span>
+  <span class="kw">can write</span> <span class="nm">Deal.notes</span>, <span class="nm">Contact.last_touch</span>
+  <span class="kw">cannot read</span> <span class="nm">Account.pii</span> <span class="kw">where</span> <span class="nm">region</span> == <span class="str">"EU"</span>
+  <span class="kw">rate</span>: <span class="nm">120</span> ops/min, <span class="nm">$50</span>/day
+}</pre>
+        </div>
+
+        <div class="layer" id="agents">
+          <div class="layer-kicker">LAYER 04 / ACT</div>
+          <h3>Agents and workflows that share one <span class="serif">source of meaning.</span></h3>
+          <p>LLM-native agents consume the ontology as typed context, propose actions, and respect the same policies as humans. Event-driven workflows trigger on graph changes and write back to source systems.</p>
+          <div class="spec">
+            <div class="cell"><div class="k">Agents</div><div class="v">Typed context, tool-call bounded</div></div>
+            <div class="cell"><div class="k">Triggers</div><div class="v">On entity change, schedule, or API</div></div>
+            <div class="cell"><div class="k">Write-back</div><div class="v">160+ destinations, retry + SLA</div></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- what's in the box grid -->
+<section class="sec">
+  <div class="wrap">
+    <div class="meta"><strong>§02</strong> &nbsp;/&nbsp; MODULE INDEX</div>
+    <div class="hair" style="margin:14px 0 28px;"></div>
+    <h2>Nine modules, one <span class="serif">runtime.</span></h2>
+    <p class="lede">The platform ships as one product, not nine. These are the surface areas your team will touch.</p>
+
+    <div class="matrix">
+      <div class="cell">
+        <div class="num">M01 / SCHEMA</div>
+        <h4>Ontology modeler</h4>
+        <p>Visual + code editor with diffs, migrations, and test runners.</p>
+      </div>
+      <div class="cell">
+        <div class="num">M02 / INGEST</div>
+        <h4>Connector fabric</h4>
+        <p>180+ managed connectors, declarative SDK for the rest.</p>
+      </div>
+      <div class="cell">
+        <div class="num">M03 / RESOLVE</div>
+        <h4>Identity service</h4>
+        <p>Rule + ML entity resolution with full provenance.</p>
+      </div>
+      <div class="cell">
+        <div class="num">M04 / STORE</div>
+        <h4>Graph store</h4>
+        <p>Temporal, columnar, and vector indexes in one engine.</p>
+      </div>
+      <div class="cell">
+        <div class="num">M05 / POLICY</div>
+        <h4>Governance</h4>
+        <p>ABAC, row-level rules, test harness, full audit trail.</p>
+      </div>
+      <div class="cell">
+        <div class="num">M06 / QUERY</div>
+        <h4>Query &amp; API</h4>
+        <p>GraphQL, SQL, and natural language queries, all governed.</p>
+      </div>
+      <div class="cell">
+        <div class="num">M07 / AGENT</div>
+        <h4>Agent runtime</h4>
+        <p>Model-agnostic, typed context, bounded tools, replay-safe.</p>
+      </div>
+      <div class="cell">
+        <div class="num">M08 / FLOW</div>
+        <h4>Workflow engine</h4>
+        <p>Event-driven, retries, SLAs, saga support, write-back.</p>
+      </div>
+      <div class="cell">
+        <div class="num">M09 / OBS</div>
+        <h4>Observability</h4>
+        <p>Lineage, run history, token &amp; cost reporting, alerts.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="sec">
+  <div class="wrap" style="text-align:center; padding: 40px 0;">
+    <h2 style="max-width:20ch;margin:0 auto 28px;">See your stack on <span class="serif">one page.</span></h2>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <a href="index.html#contact" class="btn primary">Book a demo <span class="arr">→</span></a>
+      <a href="docs/index.html" class="btn">Read the docs</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <div class="col">
+        <a class="brand" href="index.html" style="margin-bottom:14px;"><span class="dot"></span> tend</a>
+        <div class="mono" style="color:var(--fg-mute);font-size:11px;letter-spacing:0.04em;line-height:1.6;margin-top:14px;">
+          
+          hello@withtend.ai
+        </div>
+      </div>
+      <div class="col">
+        <div class="h">Platform</div>
+        <a href="platform.html#ontology">Ontology</a>
+        <a href="platform.html#agents">Agents</a>
+        <a href="platform.html#agents">Workflows</a>
+        <a href="platform.html#ingest">Connectors</a>
+        <a href="platform.html#govern">Governance</a>
+      </div>
+      <div class="col">
+        <div class="h">Company</div>
+        <a href="about.html">About</a>
+        <a href="use-cases.html">Use cases</a>
+        <a href="#">Careers</a>
+        <a href="#">Press</a>
+      </div>
+      <div class="col">
+        <div class="h">Resources</div>
+        <a href="docs/index.html">Docs</a>
+        <a href="docs/api.html">API reference</a>
+        <a href="#">Changelog</a>
+        <a href="#">Trust center</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <div>© 2026 tend, inc.</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// layer nav highlight on scroll
+(function(){
+  const links = document.querySelectorAll('#layer-nav a');
+  const secs = [...links].map(a => document.querySelector(a.getAttribute('href')));
+  function onScroll() {
+    const y = window.scrollY + 160;
+    let active = 0;
+    secs.forEach((s, i) => { if (s && s.offsetTop <= y) active = i; });
+    links.forEach((a, i) => a.classList.toggle('active', i === active));
+  }
+  document.addEventListener('scroll', onScroll, { passive: true });
+})();
+</script>
+</body>
+</html>

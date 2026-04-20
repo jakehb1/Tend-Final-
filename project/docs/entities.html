@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Entities &amp; types · tend docs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../shared.css">
+<link rel="stylesheet" href="docs.css">
+</head>
+<body data-docs-page="entities">
+<div class="docs-shell">
+  <aside class="docs-side"></aside>
+  <main class="docs-main">
+    <div class="crumb"><a href="../index.html">tend</a><span class="sep">/</span><a href="index.html">docs</a><span class="sep">/</span>entities</div>
+    <h1>Entities <span class="serif">&amp; types.</span></h1>
+    <p class="lede">
+      The full type system: scalars, enums, money, temporal types, relations, collections, lifecycle-bearing entities, and first-class events. Everything is strongly typed, versioned, and checked at compile time.
+    </p>
+
+    <h2 id="scalars">Scalar types</h2>
+    <table>
+      <thead><tr><th>Type</th><th>Storage</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td><code>string</code></td><td>utf-8, up to 1MiB</td><td>Use <code>string(n)</code> to cap length at compile time.</td></tr>
+        <tr><td><code>int</code></td><td>int64</td><td>Ranges enforced at write.</td></tr>
+        <tr><td><code>float</code></td><td>float64</td><td>Avoid for money — use <code>money</code>.</td></tr>
+        <tr><td><code>money</code></td><td>int64 minor units + ISO 4217 currency</td><td>Arithmetic errors on mixed currencies.</td></tr>
+        <tr><td><code>bool</code></td><td>1 bit</td><td>—</td></tr>
+        <tr><td><code>uuid</code></td><td>128-bit</td><td>The only allowed primary-key type for new entities.</td></tr>
+        <tr><td><code>timestamp</code></td><td>UTC, microsecond precision</td><td>Always stored UTC; display tz at render.</td></tr>
+        <tr><td><code>date</code></td><td>local-date</td><td>No tz.</td></tr>
+        <tr><td><code>duration</code></td><td>nanoseconds</td><td>ISO 8601 literals accepted.</td></tr>
+        <tr><td><code>json</code></td><td>binary-encoded</td><td>Discouraged. Lint warns by default.</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="enums">Enums</h2>
+    <p>Enums are closed sets of string literals. Adding a value is additive and safe. Removing or renaming a value requires an explicit migration.</p>
+    <pre><span class="hdr">schema</span>stage: <span class="kw">enum</span>(<span class="str">"lead"</span>, <span class="str">"qual"</span>, <span class="str">"evaluation"</span>, <span class="str">"closed_won"</span>, <span class="str">"closed_lost"</span>)</pre>
+
+    <h2 id="relations">Relations</h2>
+    <p>A relation is an edge with identity. Unlike a foreign key, it can carry its own fields and participate in its own lifecycle.</p>
+    <pre><span class="hdr">schema/subscription.tend</span><span class="kw">relation</span> <span class="nm">Subscription</span> {
+  <span class="kw">from</span>: <span class="nm">Account</span>
+  <span class="kw">to</span>:   <span class="nm">Product</span>
+  started_at: <span class="kw">timestamp</span>
+  tier:       <span class="kw">enum</span>(<span class="str">"starter"</span>, <span class="str">"team"</span>, <span class="str">"ent"</span>)
+  mrr:        <span class="kw">money</span>
+}</pre>
+
+    <h2 id="collections">Collections</h2>
+    <p>Use <code>collection&lt;T&gt;</code> for one-to-many relationships where the child's identity is meaningful, and <code>list&lt;T&gt;</code> for ordered value arrays.</p>
+
+    <pre><span class="hdr">schema</span>deals:  <span class="kw">collection</span>&lt;<span class="nm">Deal</span>&gt;     <span class="cm">// typed, query-able, policy-scoped</span>
+tags:   <span class="kw">list</span>&lt;<span class="kw">string</span>&gt;       <span class="cm">// ordered values, no identity</span></pre>
+
+    <h2 id="lifecycle">Lifecycle</h2>
+    <p>Entities that travel through business states declare a <code>lifecycle</code> block. The compiler refuses transitions not defined there — there's no such thing as an invalid state in production.</p>
+    <pre><span class="hdr">schema</span><span class="kw">lifecycle</span> {
+  draft     → review     <span class="kw">requires</span> author
+  review    → approved   <span class="kw">requires</span> approver <span class="kw">and</span> approver &#33;= author
+  approved  → published  <span class="kw">sets</span> published_at = <span class="fn">now</span>()
+  published → archived   <span class="kw">after</span> <span class="num">180</span> <span class="kw">days</span>
+}</pre>
+
+    <h2 id="computed">Computed fields</h2>
+    <p>Computed fields are pure functions of other ontology facts. The runtime maintains a dependency graph and invalidates transitively on writes. Compute cost is amortized — the first read after invalidation pays, subsequent reads are O(1).</p>
+    <pre><span class="hdr">schema</span>health: <span class="kw">computed</span>&lt;<span class="kw">enum</span>(<span class="str">"green"</span>, <span class="str">"yellow"</span>, <span class="str">"red"</span>)&gt; {
+  <span class="kw">let</span> open_support = <span class="fn">count</span>(tickets <span class="kw">where</span> status == <span class="str">"open"</span>)
+  <span class="kw">let</span> overdue      = <span class="fn">any</span>(invoices <span class="kw">where</span> days_overdue &gt; <span class="num">30</span>)
+
+  <span class="kw">if</span> overdue             → <span class="str">"red"</span>
+  <span class="kw">if</span> open_support &gt; <span class="num">3</span>   → <span class="str">"yellow"</span>
+  <span class="kw">else</span>                  → <span class="str">"green"</span>
+}</pre>
+
+    <h2 id="tags">Field tags</h2>
+    <p>Tags attach metadata that the policy layer and UI layer key off of. Tags are not comments — they have type-level consequences.</p>
+    <table>
+      <thead><tr><th>Tag</th><th>Effect</th></tr></thead>
+      <tbody>
+        <tr><td><code>@pii</code></td><td>Read requires <code>pii:read</code> capability. Logged on every access.</td></tr>
+        <tr><td><code>@secret</code></td><td>Never logged. Encrypted at rest with workspace KMS key.</td></tr>
+        <tr><td><code>@index</code></td><td>Adds a secondary index for the named key.</td></tr>
+        <tr><td><code>@deprecated</code></td><td>Lint warning on read. Blocks new writes after N days.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="pn">
+      <a class="prev" href="ontology.html"><div class="k">← Previous</div><div class="t">Ontology</div></a>
+      <a class="next" href="resolution.html"><div class="k">Next →</div><div class="t">Entity resolution</div></a>
+    </div>
+  </main>
+  <aside class="toc"><div class="h">On this page</div><div class="toc-list"></div></aside>
+</div>
+<script src="docs.js"></script>
+</body>
+</html>

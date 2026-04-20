@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>About · tend.ai</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="shared.css">
+<style>
+.manifesto {
+  padding: 40px 0 80px;
+}
+.manifesto p {
+  font-size: clamp(24px, 2.4vw, 34px);
+  line-height: 1.25;
+  font-weight: 300;
+  letter-spacing: -0.015em;
+  max-width: 22ch;
+  margin: 0 0 32px;
+  color: var(--fg);
+}
+.manifesto p.dim { color: var(--fg-dim); }
+.manifesto p .serif { font-weight: 400; }
+
+.principles {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border: 1px solid var(--line);
+  margin-top: 32px;
+}
+.principle {
+  padding: 28px 24px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  min-height: 200px;
+}
+.principle:nth-child(3n) { border-right: none; }
+.principle:nth-last-child(-n+3) { border-bottom: none; }
+.principle .num { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: 0.06em; margin-bottom: 20px; }
+.principle h4 { font-size: 18px; font-weight: 400; letter-spacing: -0.01em; margin: 0 0 8px; line-height: 1.2; }
+.principle p { font-size: 13.5px; color: var(--fg-dim); line-height: 1.55; margin: 0; }
+
+/* team */
+.team {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border: 1px solid var(--line);
+  margin-top: 32px;
+}
+.person {
+  padding: 24px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.person:nth-child(4n) { border-right: none; }
+.person:nth-last-child(-n+4) { border-bottom: none; }
+.avatar {
+  width: 100%; aspect-ratio: 1 / 1;
+  background: repeating-linear-gradient(-45deg, var(--bg-2) 0 6px, var(--bg-3) 6px 12px);
+  border: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 16px;
+  position: relative;
+}
+.avatar .initials {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 24px;
+  color: var(--fg-mute);
+  letter-spacing: 0.1em;
+}
+.person h5 { font-size: 16px; font-weight: 500; letter-spacing: -0.005em; margin: 0 0 4px; }
+.person .role { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.04em; color: var(--fg-mute); margin-bottom: 8px; }
+.person .prev { font-size: 12.5px; color: var(--fg-dim); line-height: 1.5; }
+
+/* timeline */
+.timeline { margin-top: 32px; border-top: 1px solid var(--line); }
+.tl-row {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--line);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13.5px;
+}
+.tl-row .t { color: var(--accent); }
+.tl-row .e { color: var(--fg); }
+
+/* investors */
+.investors {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border: 1px solid var(--line);
+  margin-top: 32px;
+}
+.inv {
+  padding: 32px 24px;
+  border-right: 1px solid var(--line);
+  text-align: center;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  color: var(--fg);
+  letter-spacing: 0.03em;
+}
+.inv:last-child { border-right: none; }
+.inv .kind { display: block; font-size: 10px; color: var(--fg-mute); letter-spacing: 0.08em; margin-top: 8px; text-transform: uppercase; }
+
+@media (max-width: 980px) {
+  .principles { grid-template-columns: 1fr 1fr; }
+  .team { grid-template-columns: 1fr 1fr; }
+  .investors { grid-template-columns: 1fr 1fr; }
+  .principles .principle:nth-child(3n), .team .person:nth-child(4n) { border-right: 1px solid var(--line); }
+  .tl-row { grid-template-columns: 1fr; gap: 4px; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html"><span class="dot"></span><span>tend</span></a>
+    <div class="nav-links">
+      <a href="platform.html">Platform</a>
+      <a href="use-cases.html">Use cases</a>
+      <a href="docs/index.html">Docs</a>
+      <a href="about.html" class="active">About</a>
+    </div>
+    <a href="index.html#contact" class="nav-cta">Book a demo <span>→</span></a>
+  </div>
+</nav>
+
+<section class="page-head">
+  <div class="wrap">
+    <div class="kicker">§ ABOUT / MANIFESTO</div>
+    <h1>We are building the <span class="serif">semantic substrate</span> for autonomous operations.</h1>
+    <p class="lede">
+      Businesses don't run on rows and columns. They run on shared meaning, enforced by humans, across a dozen disagreeing systems. tend replaces that labor with a governed ontology that agents and workflows share.
+    </p>
+  </div>
+</section>
+
+<section class="sec" style="border-top:none;">
+  <div class="wrap">
+    <div class="meta"><strong>§01</strong> &nbsp;/&nbsp; THESIS</div>
+    <div class="hair" style="margin:14px 0 0;"></div>
+
+    <div class="manifesto">
+      <p>The last decade gave us better <span class="serif">rails.</span> Warehouses, event streams, reverse-ETL.</p>
+      <p class="dim">None of it agreed on what an <em>account</em> was. Or a <em>renewal</em>. Or a <em>ticket</em>.</p>
+      <p>The next decade needs <span class="serif">shared meaning,</span> not more pipes.</p>
+      <p class="dim">Agents can't act on rows. They act on <em>entities,</em> typed and governed, with a history.</p>
+      <p>We are building that layer. One ontology. One policy engine. One runtime.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <div class="meta"><strong>§02</strong> &nbsp;/&nbsp; OPERATING PRINCIPLES</div>
+    <div class="hair" style="margin:14px 0 0;"></div>
+
+    <div class="principles">
+      <div class="principle">
+        <div class="num">P01</div>
+        <h4>Types over rows</h4>
+        <p>A business is made of entities, not tables. We model what things <em>are,</em> not where they sit.</p>
+      </div>
+      <div class="principle">
+        <div class="num">P02</div>
+        <h4>Governance first</h4>
+        <p>If an agent can do it, a policy can bound it. No ungoverned writes, no shadow automations.</p>
+      </div>
+      <div class="principle">
+        <div class="num">P03</div>
+        <h4>Lineage always</h4>
+        <p>Every fact in the graph points back to its source. Every action points back to its actor.</p>
+      </div>
+      <div class="principle">
+        <div class="num">P04</div>
+        <h4>No magic defaults</h4>
+        <p>The platform doesn't guess. Your team writes the rules; we make them legible and testable.</p>
+      </div>
+      <div class="principle">
+        <div class="num">P05</div>
+        <h4>Boring in production</h4>
+        <p>Agents that surprise you in staging shouldn't surprise you in prod. Replay, retry, observe.</p>
+      </div>
+      <div class="principle">
+        <div class="num">P06</div>
+        <h4>Customer telemetry, not trust</h4>
+        <p>You see every token, every tool-call, every write. We ship the dashboards that prove it.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <div class="meta"><strong>§03</strong> &nbsp;/&nbsp; BACKED BY</div>
+    <div class="hair" style="margin:14px 0 0;"></div>
+
+    <div class="investors">
+      <div class="inv">[ LEAD INVESTOR ]<span class="kind">Series A</span></div>
+      <div class="inv">[ INFRA FUND ]<span class="kind">Seed · A</span></div>
+      <div class="inv">[ OPERATOR SYNDICATE ]<span class="kind">Seed</span></div>
+      <div class="inv">[ RESEARCH FUND ]<span class="kind">A</span></div>
+    </div>
+    <p class="meta" style="margin-top:16px;">Names on request. Our customers come first.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap" style="text-align:center;padding:40px 0;">
+    <h2 style="max-width:24ch;margin:0 auto 28px;">Come build the <span class="serif">substrate.</span></h2>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <a href="#" class="btn primary">See open roles <span class="arr">→</span></a>
+      <a href="index.html#contact" class="btn">Talk to founders</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <div class="col">
+        <a class="brand" href="index.html"><span class="dot"></span> tend</a>
+        <div class="mono" style="color:var(--fg-mute);font-size:11px;letter-spacing:0.04em;line-height:1.6;margin-top:14px;">hello@withtend.ai</div>
+      </div>
+      <div class="col"><div class="h">Platform</div><a href="platform.html#ontology">Ontology</a><a href="platform.html#agents">Agents</a><a href="platform.html#ingest">Connectors</a></div>
+      <div class="col"><div class="h">Company</div><a href="about.html">About</a><a href="use-cases.html">Use cases</a><a href="#">Careers</a></div>
+      <div class="col"><div class="h">Resources</div><a href="docs/index.html">Docs</a><a href="docs/api.html">API reference</a><a href="#">Trust center</a></div>
+    </div>
+    <div class="foot-bottom"><div>© 2026 tend, inc.</div></div>
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Changelog · tend docs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../shared.css">
+<link rel="stylesheet" href="docs.css">
+<style>
+.release {
+  border-top: 1px solid var(--line);
+  padding: 28px 0;
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 40px;
+}
+.release:last-child { border-bottom: 1px solid var(--line); }
+.release .when {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: var(--fg-mute);
+  text-transform: uppercase;
+}
+.release .when .v {
+  display: block;
+  color: var(--accent);
+  font-size: 14px;
+  margin-top: 4px;
+  letter-spacing: 0.02em;
+}
+.release h3 {
+  margin: 0 0 12px;
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--fg);
+  letter-spacing: -0.005em;
+}
+.release ul { margin: 0 0 0 18px; padding: 0; }
+.release li { font-size: 14.5px; color: var(--fg-dim); margin-bottom: 6px; }
+.release li .k {
+  display: inline-block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: var(--accent);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-right: 8px;
+}
+.release li .k.fix { color: oklch(0.74 0.1 150); }
+.release li .k.break { color: oklch(0.72 0.14 30); }
+</style>
+</head>
+<body data-docs-page="changelog">
+<div class="docs-shell">
+  <aside class="docs-side"></aside>
+  <main class="docs-main">
+    <div class="crumb"><a href="../index.html">tend</a><span class="sep">/</span><a href="index.html">docs</a><span class="sep">/</span>changelog</div>
+    <h1>Changelog.</h1>
+    <p class="lede">
+      Platform releases, runtime versions, connector updates. Dated and signed. Subscribe via RSS at <code>/changelog.atom</code> or the weekly digest email.
+    </p>
+
+    <div class="release">
+      <div class="when">APR 15, 2026<span class="v">runtime 2026.04</span></div>
+      <div>
+        <h3>Temporal reads get first-class type inference</h3>
+        <ul>
+          <li><span class="k">new</span> <code>Entity.at(ts)</code> infers the returned entity's schema version from the timestamp — no more casts on historical reads.</li>
+          <li><span class="k">new</span> Agent replay now takes an optional <code>--with-prompt</code> to test prompt diffs against real runs.</li>
+          <li><span class="k">fix</span> Resolution scorer was over-weighting geocoded proximity for shared-office tenants. Retrained. +1.8pt precision.</li>
+          <li><span class="k">fix</span> GraphQL subscriptions occasionally missed the terminal frame on workflow completion. Closed.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="release">
+      <div class="when">APR 01, 2026<span class="v">runtime 2026.03</span></div>
+      <div>
+        <h3>Policy simulator, hardened</h3>
+        <ul>
+          <li><span class="k">new</span> Policy simulator replays against a rolling 14d window by default, emits a per-subject delta report.</li>
+          <li><span class="k">new</span> New connectors: <code>Workday</code>, <code>Rippling</code>, <code>Ramp</code>, <code>Mercury</code>. All GA.</li>
+          <li><span class="k break">break</span> <code>tend policy apply</code> removed; use <code>tend policy deploy</code>. Shim in place for 30 days.</li>
+          <li><span class="k">fix</span> Workflow saga compensation ran in forward order on nested sagas. Reversed.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="release">
+      <div class="when">MAR 18, 2026<span class="v">runtime 2026.02</span></div>
+      <div>
+        <h3>Agent budgets are now per-invocation</h3>
+        <ul>
+          <li><span class="k break">break</span> <code>@agent(budget=...)</code> is now per-invocation, not per-day. Per-day budgets moved to workspace policy.</li>
+          <li><span class="k">new</span> <code>BudgetExhausted</code> is a typed event; workflows can subscribe.</li>
+          <li><span class="k">new</span> Run explorer adds a cost breakdown lane per span.</li>
+          <li><span class="k">fix</span> Rare CDC connector deadlock on Postgres 16. Patched.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="release">
+      <div class="when">MAR 04, 2026<span class="v">runtime 2026.01</span></div>
+      <div>
+        <h3>GraphQL subscriptions, BYO-cloud for APAC</h3>
+        <ul>
+          <li><span class="k">new</span> GraphQL subscriptions GA. Backpressure-aware, multi-tenant.</li>
+          <li><span class="k">new</span> BYO-cloud deployments available in APAC (Tokyo, Sydney).</li>
+          <li><span class="k">new</span> <code>@deprecated</code> field tag. Writes blocked after 90 days.</li>
+          <li><span class="k">fix</span> Lineage traversal n+1 on deeply-nested <code>computed</code> fields. Memoized.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="release">
+      <div class="when">FEB 19, 2026<span class="v">runtime 2025.12</span></div>
+      <div>
+        <h3>Migrations are now reversible by default</h3>
+        <ul>
+          <li><span class="k">new</span> Every <code>tend deploy</code> produces a reverse-migration artifact. <code>tend rollback</code> uses it.</li>
+          <li><span class="k">new</span> Ingest pipeline replay from any stage boundary.</li>
+          <li><span class="k">fix</span> Agent tool registry cached stale JSON schemas for 5 minutes after workspace-level tool updates. Now invalidated per-deploy.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="pn">
+      <a class="prev" href="limits.html"><div class="k">← Previous</div><div class="t">Limits &amp; SLAs</div></a>
+      <a class="next" href="index.html"><div class="k">Back to →</div><div class="t">Docs overview</div></a>
+    </div>
+  </main>
+  <aside class="toc"><div class="h">On this page</div><div class="toc-list"></div></aside>
+</div>
+<script src="docs.js"></script>
+</body>
+</html>

@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Use cases · tend.ai</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="shared.css">
+<style>
+.uc-index {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border: 1px solid var(--line);
+  margin-top: 40px;
+}
+.uc-cell {
+  padding: 32px 28px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  min-height: 280px;
+  display: flex; flex-direction: column;
+  text-decoration: none;
+  color: var(--fg);
+  background: var(--bg);
+  transition: background 0.2s;
+}
+.uc-cell:hover { background: var(--bg-2); }
+.uc-cell:nth-child(3n) { border-right: none; }
+.uc-cell:nth-last-child(-n+3) { border-bottom: none; }
+.uc-cell .tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--fg-mute);
+  margin-bottom: 40px;
+}
+.uc-cell h3 {
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  margin: 0 0 10px;
+  line-height: 1.15;
+}
+.uc-cell p {
+  font-size: 13.5px;
+  color: var(--fg-dim);
+  line-height: 1.55;
+  margin: 0 0 20px;
+}
+.uc-cell .arrow {
+  margin-top: auto;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 0.05em;
+}
+
+/* case study */
+.case {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 0;
+  border: 1px solid var(--line);
+  margin-top: 56px;
+}
+.case-meta { padding: 40px; border-right: 1px solid var(--line); display: flex; flex-direction: column; }
+.case-meta .tag { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; color: var(--accent); margin-bottom: 24px; }
+.case-meta h3 { font-size: 28px; font-weight: 300; letter-spacing: -0.02em; margin: 0 0 16px; line-height: 1.1; }
+.case-meta blockquote { margin: 24px 0 0; font-size: 16px; color: var(--fg-dim); line-height: 1.5; font-weight: 300; }
+.case-meta .attr { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--fg-mute); letter-spacing: 0.04em; margin-top: 16px; }
+.case-nums { padding: 40px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px; align-content: start; }
+.case-num .v { font-size: 56px; font-weight: 300; letter-spacing: -0.035em; line-height: 0.95; }
+.case-num .v .unit { color: var(--accent); font-size: 22px; margin-left: 2px; }
+.case-num .k { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--fg-mute); margin-top: 10px; }
+
+/* stack table */
+.stack {
+  border: 1px solid var(--line);
+  margin-top: 24px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12.5px;
+}
+.stack .row {
+  display: grid;
+  grid-template-columns: 160px 1fr 160px;
+  border-bottom: 1px solid var(--line);
+}
+.stack .row:last-child { border-bottom: none; }
+.stack .row > div {
+  padding: 14px 18px;
+  border-right: 1px solid var(--line);
+  color: var(--fg);
+}
+.stack .row > div:last-child { border-right: none; }
+.stack .row .k { color: var(--fg-mute); font-size: 11px; letter-spacing: 0.05em; }
+.stack .row .st { color: var(--accent); text-align: right; }
+.stack .head { background: var(--bg-2); }
+.stack .head > div { color: var(--fg-mute); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; }
+
+@media (max-width: 980px) {
+  .uc-index { grid-template-columns: 1fr; }
+  .uc-cell { border-right: none; }
+  .case { grid-template-columns: 1fr; }
+  .case-meta { border-right: none; border-bottom: 1px solid var(--line); }
+  .stack .row { grid-template-columns: 1fr; }
+  .stack .row > div { border-right: none; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html"><span class="dot"></span><span>tend</span></a>
+    <div class="nav-links">
+      <a href="platform.html">Platform</a>
+      <a href="use-cases.html" class="active">Use cases</a>
+      <a href="docs/index.html">Docs</a>
+      <a href="about.html">About</a>
+    </div>
+    <a href="index.html#contact" class="nav-cta">Book a demo <span>→</span></a>
+  </div>
+</nav>
+
+<section class="page-head">
+  <div class="wrap">
+    <div class="kicker">§ USE CASES / INDEX</div>
+    <h1>Where <span class="serif">ops</span> become autonomous.</h1>
+    <p class="lede">
+      A short tour of what customers run on tend in production. Every deployment starts with one narrow wedge, then expands as the ontology earns trust across the org.
+    </p>
+  </div>
+</section>
+
+<!-- grid -->
+<section class="sec" style="border-top:none;">
+  <div class="wrap">
+    <div class="meta"><strong>§01</strong> &nbsp;/&nbsp; BY FUNCTION</div>
+    <div class="hair" style="margin:14px 0 0;"></div>
+
+    <div class="uc-index">
+      <a class="uc-cell" href="#revops">
+        <div class="tag">01 / REVENUE OPS</div>
+        <h3>Lead-to-renewal, one graph</h3>
+        <p>Accounts, deals, contacts, playbooks — all typed, all governed. CSMs, AEs, and agents read the same truth.</p>
+        <div class="arrow">READ CASE →</div>
+      </a>
+      <a class="uc-cell" href="#finops">
+        <div class="tag">02 / FINANCE OPS</div>
+        <h3>Close-the-books, on rails</h3>
+        <p>Invoices, contracts, usage, and payments joined into an auditable ledger. Agents reconcile, flag, and file.</p>
+        <div class="arrow">READ CASE →</div>
+      </a>
+      <a class="uc-cell" href="#support">
+        <div class="tag">03 / SUPPORT OPS</div>
+        <h3>Tickets that know who's asking</h3>
+        <p>Route by tier, risk, and history, not a flat priority field. Agents draft responses grounded in ontology.</p>
+        <div class="arrow">READ CASE →</div>
+      </a>
+      <a class="uc-cell" href="#supply">
+        <div class="tag">04 / SUPPLY CHAIN</div>
+        <h3>Inventory that reasons</h3>
+        <p>SKUs, lots, shipments, and vendor contracts as first-class entities. Flows react to graph events.</p>
+        <div class="arrow">READ CASE →</div>
+      </a>
+      <a class="uc-cell" href="#people">
+        <div class="tag">05 / PEOPLE OPS</div>
+        <h3>Org state, not org chart</h3>
+        <p>Roles, skills, access, and ownership in the graph. Provisioning and onboarding become automations.</p>
+        <div class="arrow">READ CASE →</div>
+      </a>
+      <a class="uc-cell" href="#data">
+        <div class="tag">06 / DATA OPS</div>
+        <h3>Semantic layer, governed</h3>
+        <p>Replace the reverse-ETL sprawl with a typed, versioned, auditable model of the business.</p>
+        <div class="arrow">READ CASE →</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- REV OPS -->
+<section class="sec" id="revops">
+  <div class="wrap">
+    <div class="meta"><strong>§02.01</strong> &nbsp;/&nbsp; REVENUE OPS</div>
+    <div class="hair" style="margin:14px 0 28px;"></div>
+    <h2>Lead-to-renewal, <span class="serif">one graph.</span></h2>
+    <p class="lede">Replace the Zapier graveyard and the three duplicate Salesforce fields. Agents score, route, and draft against a typed account ontology with full lineage.</p>
+
+    <div class="case">
+      <div class="case-meta">
+        <div class="tag">CASE 01 · SERIES C FINTECH</div>
+        <h3>CSM capacity up 3×. Renewal surprises down to zero.</h3>
+        <blockquote>The ontology is now the thing our revops team argues about. Which is exactly what a source of truth should feel like.</blockquote>
+        <div class="attr">HEAD OF REVOPS, SERIES C FINTECH</div>
+      </div>
+      <div class="case-nums">
+        <div class="case-num"><div class="v">78<span class="unit">%</span></div><div class="k">Manual touches removed</div></div>
+        <div class="case-num"><div class="v">4.1<span class="unit">×</span></div><div class="k">Faster onboarding of new tools</div></div>
+        <div class="case-num"><div class="v">0</div><div class="k">Surprise churn events in H2</div></div>
+        <div class="case-num"><div class="v">218</div><div class="k">Accounts watched by one agent</div></div>
+      </div>
+    </div>
+
+    <div class="stack">
+      <div class="row head"><div>LAYER</div><div>COMPONENT</div><div>STATUS</div></div>
+      <div class="row"><div class="k">Source</div><div>Salesforce · HubSpot · Gong · Intercom · Stripe</div><div class="st">connected</div></div>
+      <div class="row"><div class="k">Ontology</div><div>Account · Deal · Contact · Playbook · Touchpoint</div><div class="st">v12</div></div>
+      <div class="row"><div class="k">Agents</div><div>renewal-risk-v3 · expansion-signal · exec-qbr</div><div class="st">in prod</div></div>
+      <div class="row"><div class="k">Write-back</div><div>Salesforce · Slack · Outlook · Notion</div><div class="st">bidirectional</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FIN OPS -->
+<section class="sec" id="finops">
+  <div class="wrap">
+    <div class="meta"><strong>§02.02</strong> &nbsp;/&nbsp; FINANCE OPS</div>
+    <div class="hair" style="margin:14px 0 28px;"></div>
+    <h2>Close-the-books <span class="serif">without the 3am Slack.</span></h2>
+    <p class="lede">Join invoices, contracts, payments, and usage into a single auditable ledger. Agents reconcile variances, file exceptions, and close line items before your controller logs in.</p>
+
+    <div class="case">
+      <div class="case-meta">
+        <div class="tag">CASE 02 · INDUSTRIAL SAAS</div>
+        <h3>Days-sales-outstanding cut by a week.</h3>
+        <blockquote>We retired 4,000 lines of Python glue. The AR agent runs the dunning cadence our senior controller used to script by hand.</blockquote>
+        <div class="attr">VP FINANCE, INDUSTRIAL SAAS</div>
+      </div>
+      <div class="case-nums">
+        <div class="case-num"><div class="v">6.2<span class="unit">d</span></div><div class="k">DSO reduction</div></div>
+        <div class="case-num"><div class="v">92<span class="unit">%</span></div><div class="k">Auto-reconciled line items</div></div>
+        <div class="case-num"><div class="v">$2.8<span class="unit">M</span></div><div class="k">Annualized ops cost saved</div></div>
+        <div class="case-num"><div class="v">14</div><div class="k">Hour book-close window</div></div>
+      </div>
+    </div>
+
+    <div class="stack">
+      <div class="row head"><div>LAYER</div><div>COMPONENT</div><div>STATUS</div></div>
+      <div class="row"><div class="k">Source</div><div>NetSuite · Stripe · Ramp · Mercury · Ironclad</div><div class="st">connected</div></div>
+      <div class="row"><div class="k">Ontology</div><div>Invoice · Contract · Payment · Vendor · GLLine</div><div class="st">v7</div></div>
+      <div class="row"><div class="k">Agents</div><div>ar-collections · variance-flagger · accrual-proposer</div><div class="st">in prod</div></div>
+      <div class="row"><div class="k">Policy</div><div>finance-v2 · SOX-v1 · 4-eye approval above $50k</div><div class="st">enforced</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SUPPORT -->
+<section class="sec" id="support">
+  <div class="wrap">
+    <div class="meta"><strong>§02.03</strong> &nbsp;/&nbsp; SUPPORT OPS</div>
+    <div class="hair" style="margin:14px 0 28px;"></div>
+    <h2>Tickets that know <span class="serif">who's asking.</span></h2>
+    <p class="lede">Route by tier, risk, product area, and history. Agents consume typed ticket context, propose responses, escalate on policy breach, and close the loop back into product.</p>
+
+    <div class="case">
+      <div class="case-meta">
+        <div class="tag">CASE 03 · CONSUMER MARKETPLACE</div>
+        <h3>CSAT up 22 points. First-touch time cut almost in half.</h3>
+        <blockquote>Support agents finally have the context that took us three Looker dashboards to assemble.</blockquote>
+        <div class="attr">VP SUPPORT, CONSUMER MARKETPLACE</div>
+      </div>
+      <div class="case-nums">
+        <div class="case-num"><div class="v">41<span class="unit">%</span></div><div class="k">Reduction in first-touch time</div></div>
+        <div class="case-num"><div class="v">22<span class="unit">pt</span></div><div class="k">CSAT delta</div></div>
+        <div class="case-num"><div class="v">64<span class="unit">%</span></div><div class="k">Auto-resolved tier-1</div></div>
+        <div class="case-num"><div class="v">7.1<span class="unit">k</span></div><div class="k">Agent assists per week</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SUPPLY -->
+<section class="sec" id="supply">
+  <div class="wrap">
+    <div class="meta"><strong>§02.04</strong> &nbsp;/&nbsp; SUPPLY CHAIN</div>
+    <div class="hair" style="margin:14px 0 28px;"></div>
+    <h2>Inventory that <span class="serif">reasons about itself.</span></h2>
+    <p class="lede">SKUs, lots, shipments, and vendor contracts as first-class typed entities. A late container becomes a rerouting decision, not a spreadsheet emergency.</p>
+
+    <div class="stack">
+      <div class="row head"><div>LAYER</div><div>COMPONENT</div><div>STATUS</div></div>
+      <div class="row"><div class="k">Source</div><div>SAP S/4 · Flexport · ShipBob · Oracle · custom EDI</div><div class="st">connected</div></div>
+      <div class="row"><div class="k">Ontology</div><div>SKU · Lot · Shipment · Vendor · PO · Forecast</div><div class="st">v4</div></div>
+      <div class="row"><div class="k">Agents</div><div>reroute-planner · safety-stock-tuner · vendor-sla</div><div class="st">in prod</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PEOPLE -->
+<section class="sec" id="people">
+  <div class="wrap">
+    <div class="meta"><strong>§02.05</strong> &nbsp;/&nbsp; PEOPLE OPS</div>
+    <div class="hair" style="margin:14px 0 28px;"></div>
+    <h2>Org state, <span class="serif">not org chart.</span></h2>
+    <p class="lede">Roles, skills, access, and workflow ownership live in the graph. Provisioning, onboarding, and access reviews become declarative automations, not tickets filed in three tools.</p>
+  </div>
+</section>
+
+<!-- DATA -->
+<section class="sec" id="data">
+  <div class="wrap">
+    <div class="meta"><strong>§02.06</strong> &nbsp;/&nbsp; DATA OPS</div>
+    <div class="hair" style="margin:14px 0 28px;"></div>
+    <h2>Semantic layer, <span class="serif">governed.</span></h2>
+    <p class="lede">Retire the reverse-ETL sprawl. One typed, versioned model of the business with lineage back to source, consumed by BI, agents, and operational workflows alike.</p>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="sec">
+  <div class="wrap" style="text-align:center;padding:40px 0;">
+    <h2 style="max-width:22ch;margin:0 auto 28px;">Pick a wedge. <span class="serif">Ship in four weeks.</span></h2>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <a href="index.html#contact" class="btn primary">Book a demo <span class="arr">→</span></a>
+      <a href="docs/index.html" class="btn">Read the docs</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <div class="col">
+        <a class="brand" href="index.html"><span class="dot"></span> tend</a>
+        <div class="mono" style="color:var(--fg-mute);font-size:11px;letter-spacing:0.04em;line-height:1.6;margin-top:14px;">
+          hello@withtend.ai
+        </div>
+      </div>
+      <div class="col">
+        <div class="h">Platform</div>
+        <a href="platform.html#ontology">Ontology</a>
+        <a href="platform.html#agents">Agents</a>
+        <a href="platform.html#ingest">Connectors</a>
+        <a href="platform.html#govern">Governance</a>
+      </div>
+      <div class="col">
+        <div class="h">Company</div>
+        <a href="about.html">About</a>
+        <a href="use-cases.html">Use cases</a>
+        <a href="#">Careers</a>
+      </div>
+      <div class="col">
+        <div class="h">Resources</div>
+        <a href="docs/index.html">Docs</a>
+        <a href="docs/api.html">API reference</a>
+        <a href="#">Trust center</a>
+      </div>
+    </div>
+    <div class="foot-bottom"><div>© 2026 tend, inc.</div></div>
+  </div>
+</footer>
+</body>
+</html>
