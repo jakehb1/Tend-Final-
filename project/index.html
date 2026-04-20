@@ -1527,17 +1527,24 @@ const TYPE_COLORS = {
     labels.appendChild(lbl);
   });
 
-  select('acc-northwind');
+  select('acc-northwind', {scroll: false});
 })();
 
-function select(id) {
+function select(id, opts) {
   const e = ENTITIES.find(x => x.id === id);
   if (!e) return;
+  const scroll = !opts || opts.scroll !== false;
 
   // list highlight
   document.querySelectorAll('#entity-list .entity').forEach(el => {
     el.classList.toggle('active', el.dataset.id === id);
-    if (el.dataset.id === id) el.scrollIntoView && el.scrollIntoView({block:'nearest'});
+    if (scroll && el.dataset.id === id) {
+      const list = document.getElementById('entity-list');
+      if (list) {
+        const top = el.offsetTop - list.offsetTop;
+        list.scrollTo({top, behavior: 'smooth'});
+      }
+    }
   });
 
   // detail
