@@ -1,0 +1,12 @@
+{
+  "name": "tend-final",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Tend marketing site — static HTML/CSS served via a minimal Node server.",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
