@@ -66,7 +66,7 @@ source_system ──▶ <span class="kw">extract</span>   <span class="cm"># con
         <tr><td><code>realtime</code></td><td>&lt; 2s</td><td>Webhooks, event streams, CDC</td></tr>
         <tr><td><code>near-realtime</code></td><td>15-60s</td><td>Polling APIs with high cadence</td></tr>
         <tr><td><code>batch</code></td><td>5 min - 24 h</td><td>Warehouse syncs, nightly reloads</td></tr>
-        <tr><td><code>on-demand</code></td><td>—</td><td>Triggered by agent or workflow</td></tr>
+        <tr><td><code>on-demand</code></td><td> </td><td>Triggered by agent or workflow</td></tr>
       </tbody>
     </table>
 
@@ -132,7 +132,7 @@ source_system ──▶ <span class="kw">extract</span>   <span class="cm"># con
     </div>
 
     <h2 id="custom">Custom connectors</h2>
-    <p>When the catalog doesn't cover your source, write a connector in ~150 lines. The SDK handles cursoring, retries, schema emission, and lineage — you implement <code>extract()</code>.</p>
+    <p>When the catalog doesn't cover your source, write a connector in ~150 lines. The SDK handles cursoring, retries, schema emission, and lineage. You implement <code>extract()</code>.</p>
 
     <pre><span class="hdr">connectors/internal_billing.py</span><span class="kw">from</span> tend.connectors <span class="kw">import</span> Connector, Source, Cursor
 

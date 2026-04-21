@@ -34,7 +34,7 @@ def read_config() -> dict:
 
 
 def _parse_toml(text: str) -> dict:
-    """Tiny TOML reader — enough for the sandbox config shape."""
+    """Tiny TOML reader. Enough for the sandbox config shape."""
     out: dict = {}
     cur = out
     for raw in text.splitlines():

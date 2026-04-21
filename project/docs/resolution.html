@@ -27,7 +27,7 @@
           ──▶ <span class="kw">commit</span>      <span class="cm"># write merge record + lineage</span></pre>
 
     <h2 id="deterministic">Deterministic rules</h2>
-    <p>Express any number of deterministic rules. A match on any rule short-circuits scoring with full confidence. Rules are compiled to index lookups — they run in microseconds.</p>
+    <p>Express any number of deterministic rules. A match on any rule short-circuits scoring with full confidence. Rules are compiled to index lookups. They run in microseconds.</p>
     <pre><span class="hdr">resolution/account.tend</span><span class="kw">resolve</span> <span class="nm">Account</span> {
   <span class="kw">rule</span> <span class="str">"salesforce_id"</span>    = external.salesforce_id <span class="kw">exact</span>
   <span class="kw">rule</span> <span class="str">"domain_match"</span>     = <span class="fn">normalize_domain</span>(primary_domain) <span class="kw">exact</span>
@@ -40,12 +40,12 @@
     <table>
       <thead><tr><th>Feature</th><th>Weight (default)</th><th>Signal</th></tr></thead>
       <tbody>
-        <tr><td>Name — normalized Jaro</td><td>0.28</td><td>High for exact names, tolerant of case/punct</td></tr>
-        <tr><td>Domain — eTLD+1 match</td><td>0.22</td><td>Strong when present</td></tr>
-        <tr><td>Address — geocoded proximity</td><td>0.12</td><td>Tolerates formatting drift</td></tr>
-        <tr><td>Industry — SIC/NAICS agreement</td><td>0.08</td><td>Weak but additive</td></tr>
-        <tr><td>Embedding — description cosine</td><td>0.18</td><td>Catches paraphrases, aliases</td></tr>
-        <tr><td>Temporal — co-occurrence</td><td>0.12</td><td>Rewards records seen together</td></tr>
+        <tr><td>Name. Normalized Jaro</td><td>0.28</td><td>High for exact names, tolerant of case/punct</td></tr>
+        <tr><td>Domain. ETLD+1 match</td><td>0.22</td><td>Strong when present</td></tr>
+        <tr><td>Address. Geocoded proximity</td><td>0.12</td><td>Tolerates formatting drift</td></tr>
+        <tr><td>Industry. SIC/NAICS agreement</td><td>0.08</td><td>Weak but additive</td></tr>
+        <tr><td>Embedding. Description cosine</td><td>0.18</td><td>Catches paraphrases, aliases</td></tr>
+        <tr><td>Temporal. Co-occurrence</td><td>0.12</td><td>Rewards records seen together</td></tr>
       </tbody>
     </table>
 
@@ -55,7 +55,7 @@
       <tbody>
         <tr><td>≥ τ<sub>merge</sub></td><td>Auto-merge, commit</td><td>0.92</td></tr>
         <tr><td>[τ<sub>review</sub>, τ<sub>merge</sub>)</td><td>Queue for human review</td><td>0.72</td></tr>
-        <tr><td>&lt; τ<sub>review</sub></td><td>Drop, log as negative pair</td><td>—</td></tr>
+        <tr><td>&lt; τ<sub>review</sub></td><td>Drop, log as negative pair</td><td> </td></tr>
       </tbody>
     </table>
 

@@ -47,11 +47,11 @@
 acct = Account.<span class="fn">get</span>(ticket.account_id, <span class="nm">at</span>=ticket.created_at)</pre>
 
     <h2 id="policy">Policy is part of the model</h2>
-    <p>Policy is not a layer on top of the data — it's part of the type system. A field with a <code>pii</code> tag is structurally distinct from an untagged field; the compiler refuses to let an agent read it without the <code>pii:read</code> capability.</p>
+    <p>Policy is not a layer on top of the data. It's part of the type system. A field with a <code>pii</code> tag is structurally distinct from an untagged field; the compiler refuses to let an agent read it without the <code>pii:read</code> capability.</p>
 
     <div class="callout">
       <div class="label">Consequence</div>
-      You cannot accidentally exfiltrate a field. The runtime will refuse, and the refusal is a typed exception your workflow can catch — not a silent omission from the response.
+      You cannot accidentally exfiltrate a field. The runtime will refuse, and the refusal is a typed exception your workflow can catch. Not a silent omission from the response.
     </div>
 
     <h2 id="flow">How a change propagates</h2>
@@ -69,7 +69,7 @@ acct = Account.<span class="fn">get</span>(ticket.account_id, <span class="nm">a
     <p>If you find yourself writing <code>payload: json</code>, stop. Either model the fields, or use an <code>event</code>. Blob-typed fields undermine every downstream capability (resolution, policy, lineage, query).</p>
 
     <h3>Using an entity for a log</h3>
-    <p>If records are append-only and never mutated after creation, they're events. Entities carry the overhead of versioning, resolution, and lifecycle — wasted on logs.</p>
+    <p>If records are append-only and never mutated after creation, they're events. Entities carry the overhead of versioning, resolution, and lifecycle. Wasted on logs.</p>
 
     <h3>Bypassing computed fields</h3>
     <p>When two agents compute <em>health</em> the same way, extract a computed field. You will never convince both agents to stay in sync on their own.</p>

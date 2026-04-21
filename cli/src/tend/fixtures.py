@@ -35,7 +35,7 @@ ACCOUNT_SCHEMA = """entity Account {
   owned_by: Contact via "primary_owner"
   deals:    collection<Deal>
 
-  // derived fact — recomputes on any upstream write
+  // derived fact. Recomputes on any upstream write
   health: computed {
     risk_score() < 0.3 ? "green"
       : risk_score() < 0.6 ? "yellow"
@@ -137,7 +137,7 @@ def sample_runs() -> list[dict]:
 
 
 def tail_events(agent: str) -> list[tuple[float, str]]:
-    """Delay-in-seconds, line — streamed by `tend runs tail`."""
+    """Delay-in-seconds, line. Streamed by `tend runs tail`."""
     return [
         (0.0, f"[tail] connected, agent={agent}, runtime=2026.04"),
         (0.4, "[tail] waiting for events…"),

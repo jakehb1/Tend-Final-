@@ -51,7 +51,7 @@
     </table>
 
     <h2 id="four-eye">Four-eye approvals</h2>
-    <p>Any policy or any action can require a second, independent approval. The approver must satisfy a different predicate than the initiator — same person cannot approve their own request.</p>
+    <p>Any policy or any action can require a second, independent approval. The approver must satisfy a different predicate than the initiator. Same person cannot approve their own request.</p>
 
     <pre><span class="hdr">policy</span><span class="kw">policy</span> <span class="str">"production-write-agent"</span> {
   <span class="kw">target</span> action == <span class="str">"agent.deploy"</span> <span class="kw">and</span> env.target == <span class="str">"production"</span>
@@ -64,7 +64,7 @@
 }</pre>
 
     <h2 id="row">Row-level predicates</h2>
-    <p>Row-level rules narrow a resource set at query time. They're compiled into the query plan — there is no path that sidesteps them.</p>
+    <p>Row-level rules narrow a resource set at query time. They're compiled into the query plan. There is no path that sidesteps them.</p>
 
     <pre><span class="hdr">policy</span><span class="kw">row_policy</span> <span class="str">"tenant-isolation"</span> <span class="kw">on</span> <span class="nm">Account</span> {
   <span class="kw">visible</span> account.tenant_id == subject.tenant_id

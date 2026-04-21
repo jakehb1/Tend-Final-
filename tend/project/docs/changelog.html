@@ -69,7 +69,7 @@
       <div>
         <h3>Temporal reads get first-class type inference</h3>
         <ul>
-          <li><span class="k">new</span> <code>Entity.at(ts)</code> infers the returned entity's schema version from the timestamp — no more casts on historical reads.</li>
+          <li><span class="k">new</span> <code>Entity.at(ts)</code> infers the returned entity's schema version from the timestamp. No more casts on historical reads.</li>
           <li><span class="k">new</span> Agent replay now takes an optional <code>--with-prompt</code> to test prompt diffs against real runs.</li>
           <li><span class="k">fix</span> Resolution scorer was over-weighting geocoded proximity for shared-office tenants. Retrained. +1.8pt precision.</li>
           <li><span class="k">fix</span> GraphQL subscriptions occasionally missed the terminal frame on workflow completion. Closed.</li>

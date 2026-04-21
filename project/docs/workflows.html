@@ -63,7 +63,7 @@
     </table>
 
     <h2 id="durability">Durability</h2>
-    <p>Every <code>await</code> is a durable boundary. The scheduler persists workflow state after each awaited step. If a worker dies, another worker resumes the workflow at the next unfinished step — no lost work, no double-commits.</p>
+    <p>Every <code>await</code> is a durable boundary. The scheduler persists workflow state after each awaited step. If a worker dies, another worker resumes the workflow at the next unfinished step. No lost work, no double-commits.</p>
 
     <div class="callout">
       <div class="label">Exactly-once effects</div>
@@ -83,7 +83,7 @@
     <span class="kw">await</span> hubspot.<span class="fn">mark_paid</span>(deal)</pre>
 
     <h2 id="sla">SLAs &amp; alerting</h2>
-    <p>A declared <code>sla</code> is a soft deadline. The scheduler emits <code>sla_at_risk</code> at 80% and <code>sla_breached</code> at 100%. These are first-class events — subscribe workflows to them to escalate, page, or downgrade gracefully.</p>
+    <p>A declared <code>sla</code> is a soft deadline. The scheduler emits <code>sla_at_risk</code> at 80% and <code>sla_breached</code> at 100%. These are first-class events. Subscribe workflows to them to escalate, page, or downgrade gracefully.</p>
 
     <h2 id="concurrency">Concurrency</h2>
     <p>By default, one workflow instance runs per (workflow, entity) key. Override with <code>concurrency=</code> to allow N parallel instances, or <code>concurrency="serial"</code> to force strict ordering.</p>

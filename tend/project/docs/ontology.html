@@ -45,7 +45,7 @@
   stage:   <span class="kw">enum</span>(<span class="str">"lead"</span>, <span class="str">"qual"</span>, <span class="str">"evaluation"</span>, <span class="str">"closed_won"</span>, <span class="str">"closed_lost"</span>)
   closed_at: <span class="kw">timestamp?</span>
 
-  <span class="cm">// lifecycle — declarative state machine</span>
+  <span class="cm">// lifecycle. Declarative state machine</span>
   <span class="kw">lifecycle</span> {
     lead      → qual       <span class="kw">requires</span> owner
     qual      → evaluation <span class="kw">requires</span> amount &gt; <span class="num">0</span>
@@ -60,9 +60,9 @@
     <h2 id="temporal">Temporal semantics</h2>
     <p>Every write to the ontology is append-only. The storage engine maintains three time axes per entity:</p>
     <ul>
-      <li><code>observed_at</code> — when tend ingested the fact</li>
-      <li><code>effective_at</code> — when the fact was true in the world</li>
-      <li><code>tx_at</code> — the monotonic transaction timestamp for causal ordering</li>
+      <li><code>observed_at</code>. When tend ingested the fact</li>
+      <li><code>effective_at</code>. When the fact was true in the world</li>
+      <li><code>tx_at</code>. The monotonic transaction timestamp for causal ordering</li>
     </ul>
     <p>This lets you ask questions like <em>"what did we believe about Account 4102 at 09:00 last Tuesday?"</em> in a single query. Temporal reads are first-class:</p>
     <pre><span class="hdr">query</span><span class="kw">from</span> o <span class="kw">import</span> Account
@@ -70,7 +70,7 @@
 <span class="cm"># point-in-time read</span>
 acct = Account.<span class="fn">get</span>(<span class="str">"acct_4102"</span>, <span class="nm">at</span>=<span class="str">"2026-04-15T09:00:00Z"</span>)
 
-<span class="cm"># changelog — every state transition</span>
+<span class="cm"># changelog. Every state transition</span>
 history = acct.<span class="fn">history</span>(<span class="nm">fields</span>=[<span class="str">"tier"</span>, <span class="str">"arr"</span>])</pre>
 
     <h2 id="versioning">Schema versioning</h2>

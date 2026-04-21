@@ -26,9 +26,9 @@
       <tbody>
         <tr><td><code>string</code></td><td>utf-8, up to 1MiB</td><td>Use <code>string(n)</code> to cap length at compile time.</td></tr>
         <tr><td><code>int</code></td><td>int64</td><td>Ranges enforced at write.</td></tr>
-        <tr><td><code>float</code></td><td>float64</td><td>Avoid for money — use <code>money</code>.</td></tr>
+        <tr><td><code>float</code></td><td>float64</td><td>Avoid for money. Use <code>money</code>.</td></tr>
         <tr><td><code>money</code></td><td>int64 minor units + ISO 4217 currency</td><td>Arithmetic errors on mixed currencies.</td></tr>
-        <tr><td><code>bool</code></td><td>1 bit</td><td>—</td></tr>
+        <tr><td><code>bool</code></td><td>1 bit</td><td> </td></tr>
         <tr><td><code>uuid</code></td><td>128-bit</td><td>The only allowed primary-key type for new entities.</td></tr>
         <tr><td><code>timestamp</code></td><td>UTC, microsecond precision</td><td>Always stored UTC; display tz at render.</td></tr>
         <tr><td><code>date</code></td><td>local-date</td><td>No tz.</td></tr>
@@ -58,7 +58,7 @@
 tags:   <span class="kw">list</span>&lt;<span class="kw">string</span>&gt;       <span class="cm">// ordered values, no identity</span></pre>
 
     <h2 id="lifecycle">Lifecycle</h2>
-    <p>Entities that travel through business states declare a <code>lifecycle</code> block. The compiler refuses transitions not defined there — there's no such thing as an invalid state in production.</p>
+    <p>Entities that travel through business states declare a <code>lifecycle</code> block. The compiler refuses transitions not defined there. There's no such thing as an invalid state in production.</p>
     <pre><span class="hdr">schema</span><span class="kw">lifecycle</span> {
   draft     → review     <span class="kw">requires</span> author
   review    → approved   <span class="kw">requires</span> approver <span class="kw">and</span> approver &#33;= author
@@ -67,7 +67,7 @@ tags:   <span class="kw">list</span>&lt;<span class="kw">string</span>&gt;      
 }</pre>
 
     <h2 id="computed">Computed fields</h2>
-    <p>Computed fields are pure functions of other ontology facts. The runtime maintains a dependency graph and invalidates transitively on writes. Compute cost is amortized — the first read after invalidation pays, subsequent reads are O(1).</p>
+    <p>Computed fields are pure functions of other ontology facts. The runtime maintains a dependency graph and invalidates transitively on writes. Compute cost is amortized. The first read after invalidation pays, subsequent reads are O(1).</p>
     <pre><span class="hdr">schema</span>health: <span class="kw">computed</span>&lt;<span class="kw">enum</span>(<span class="str">"green"</span>, <span class="str">"yellow"</span>, <span class="str">"red"</span>)&gt; {
   <span class="kw">let</span> open_support = <span class="fn">count</span>(tickets <span class="kw">where</span> status == <span class="str">"open"</span>)
   <span class="kw">let</span> overdue      = <span class="fn">any</span>(invoices <span class="kw">where</span> days_overdue &gt; <span class="num">30</span>)
@@ -78,7 +78,7 @@ tags:   <span class="kw">list</span>&lt;<span class="kw">string</span>&gt;      
 }</pre>
 
     <h2 id="tags">Field tags</h2>
-    <p>Tags attach metadata that the policy layer and UI layer key off of. Tags are not comments — they have type-level consequences.</p>
+    <p>Tags attach metadata that the policy layer and UI layer key off of. Tags are not comments. They have type-level consequences.</p>
     <table>
       <thead><tr><th>Tag</th><th>Effect</th></tr></thead>
       <tbody>

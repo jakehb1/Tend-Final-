@@ -1,4 +1,4 @@
-// Shared docs chrome — nav + sidebar injected client-side.
+// Shared docs chrome. Nav + sidebar injected client-side.
 // Pages set <body data-docs-page="getting-started"> etc.
 
 (function(){

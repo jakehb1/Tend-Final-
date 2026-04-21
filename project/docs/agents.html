@@ -36,7 +36,7 @@
 <span class="cm">)</span></pre>
 
     <h2 id="context">Typed context</h2>
-    <p>Agents don't see rows — they see typed context. <code>account.typed_context(depth=2)</code> returns a validated view of the account, its direct relations, and their direct relations, with every field filtered through the active policy set.</p>
+    <p>Agents don't see rows. They see typed context. <code>account.typed_context(depth=2)</code> returns a validated view of the account, its direct relations, and their direct relations, with every field filtered through the active policy set.</p>
 
     <pre><span class="hdr">python</span>ctx = account.<span class="fn">typed_context</span>(
     <span class="nm">depth</span>=<span class="num">2</span>,
@@ -63,22 +63,22 @@
     </table>
 
     <h2 id="budgets">Budgets &amp; rate limits</h2>
-    <p>Every agent declares a per-invocation budget (tokens + USD) and inherits a workspace-level rate limit. Exhaustion is a first-class signal, not a failure — the runtime emits a <code>budget_exhausted</code> event which workflows can subscribe to.</p>
+    <p>Every agent declares a per-invocation budget (tokens + USD) and inherits a workspace-level rate limit. Exhaustion is a first-class signal, not a failure. The runtime emits a <code>budget_exhausted</code> event which workflows can subscribe to.</p>
 
     <div class="callout warn">
       <div class="label">Budgets are enforced per-invocation</div>
-      If your agent needs more than the declared budget, the <em>right</em> answer is almost always a workflow split — one agent drafts, a second critiques, a third commits. Stretching a single agent's budget is a design smell.
+      If your agent needs more than the declared budget, the <em>right</em> answer is almost always a workflow split. One agent drafts, a second critiques, a third commits. Stretching a single agent's budget is a design smell.
     </div>
 
     <h2 id="replay">Replay &amp; determinism</h2>
-    <p>Every invocation is captured with: the typed context snapshot, the full tool-call trace, the model output, the policy decisions, and the final write set. Replay re-executes against the captured snapshot — useful for testing prompt changes against real historical inputs.</p>
+    <p>Every invocation is captured with: the typed context snapshot, the full tool-call trace, the model output, the policy decisions, and the final write set. Replay re-executes against the captured snapshot. Useful for testing prompt changes against real historical inputs.</p>
 
     <pre><span class="hdr">shell</span>tend runs replay run_8f2c \
   --with-prompt ./prompts/renewal-risk-v4.md \
   --diff</pre>
 
     <h2 id="policies">Policies that bind agents</h2>
-    <p>Three enforcement layers, applied in order. If any returns <code>deny</code>, the operation aborts with a structured <code>PolicyDenied</code> and the agent sees a typed exception — never silent data loss.</p>
+    <p>Three enforcement layers, applied in order. If any returns <code>deny</code>, the operation aborts with a structured <code>PolicyDenied</code> and the agent sees a typed exception. Never silent data loss.</p>
 
     <ol>
       <li><strong>Declaration check.</strong> Did the agent declare this read/write/tool at deploy time?</li>

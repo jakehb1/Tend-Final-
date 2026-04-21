@@ -59,7 +59,7 @@
     </p>
 
     <h2 id="auth">Authentication</h2>
-    <p>All requests must be signed with a workspace-scoped token. Tokens are HMAC-SHA256 keyed, rotatable, and bound to an identity — either a human (SSO-mapped) or a service account.</p>
+    <p>All requests must be signed with a workspace-scoped token. Tokens are HMAC-SHA256 keyed, rotatable, and bound to an identity. Either a human (SSO-mapped) or a service account.</p>
 
     <pre><span class="hdr">HTTP</span>Authorization: Bearer tnd_sk_live_<span class="str">a7f2…</span>
 X-Tend-Workspace: <span class="str">acme</span>
@@ -109,7 +109,7 @@ X-Tend-Idempotency-Key: <span class="str">req_8f2c…</span> <span class="cm"># 
 
     <div class="ep">
       <div class="bar"><span class="m get">GET</span><span class="path">/v1/runs/:id</span></div>
-      <div class="desc">Fetch a run record — context snapshot, tool-call trace, model output, policy decisions, write set, cost.</div>
+      <div class="desc">Fetch a run record. Context snapshot, tool-call trace, model output, policy decisions, write set, cost.</div>
     </div>
 
     <h2 id="graphql">GraphQL</h2>
@@ -135,7 +135,7 @@ X-Tend-Idempotency-Key: <span class="str">req_8f2c…</span> <span class="cm"># 
 }</pre>
 
     <h2 id="webhooks">Webhooks</h2>
-    <p>Subscribe to ontology events via signed webhooks. Delivery is at-least-once with exponential backoff (max 7 retries over 24h). Events carry the entity snapshot plus a lineage pointer — you never need a secondary fetch to interpret a delivery.</p>
+    <p>Subscribe to ontology events via signed webhooks. Delivery is at-least-once with exponential backoff (max 7 retries over 24h). Events carry the entity snapshot plus a lineage pointer. You never need a secondary fetch to interpret a delivery.</p>
 
     <pre><span class="hdr">HTTP</span>POST https://your-endpoint
 X-Tend-Signature: <span class="str">t=1713500000,v1=a7f2…</span>

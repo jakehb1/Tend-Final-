@@ -2,7 +2,7 @@
 
 A zero-dependency Python implementation of the `tend` CLI advertised in the
 docs. Everything runs locally against a state file in `~/.tend/`. No network,
-no backend, no signup — the goal is to let people actually run the commands
+no backend, no signup. The goal is to let people actually run the commands
 from the docs and see real output.
 
 ## Install
