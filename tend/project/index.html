@@ -126,8 +126,14 @@ section:first-of-type { border-top: none; }
   display: inline-flex; align-items: center; gap: 8px;
   border: 1px solid var(--fg);
   transition: background 0.15s, color 0.15s;
+  cursor: pointer;
+  line-height: normal;
+  -webkit-appearance: none;
+  appearance: none;
 }
 .nav-cta:hover { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+button.nav-cta, button.btn { font: inherit; }
+button.nav-cta { font-family: 'IBM Plex Mono', monospace; font-size: 13px; }
 
 /* ---------- HERO ---------- */
 .hero {
@@ -901,7 +907,7 @@ footer {
       <a href="docs/index.html">Docs</a>
       <a href="about.html">About</a>
     </div>
-    <a href="https://cal.com/kyros-sync/30min" target="_blank" rel="noopener" class="nav-cta">Book a demo <span>→</span></a>
+    <button type="button" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}' class="nav-cta">Book a demo <span>→</span></button>
   </div>
 </nav>
 
@@ -918,7 +924,7 @@ footer {
           We build the brain, then the agents that reason across it.
         </p>
         <div class="hero-ctas">
-          <a href="https://cal.com/kyros-sync/30min" target="_blank" rel="noopener" class="btn primary">Book a demo <span class="arr">→</span></a>
+          <button type="button" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}' class="btn primary">Book a demo <span class="arr">→</span></button>
           <a href="#demo" class="btn">See the ontology <span class="arr">↓</span></a>
         </div>
       </div>
@@ -1307,7 +1313,7 @@ footer {
       One <span class="serif">source of truth</span>. Every agent, every team.
     </h2>
     <div class="cta-row">
-      <a href="https://cal.com/kyros-sync/30min" target="_blank" rel="noopener" class="btn primary">Book a demo <span class="arr">→</span></a>
+      <button type="button" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}' class="btn primary">Book a demo <span class="arr">→</span></button>
       <a href="#" class="btn">Read the architecture brief</a>
     </div>
   </div>
@@ -1679,6 +1685,12 @@ const FAQ = [
     list.appendChild(item);
   });
 })();
+</script>
+<!-- Cal overlay init -->
+<script type="text/javascript">
+  (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if(typeof namespace === "string"){cal.ns[namespace] = cal.ns[namespace] || api;p(cal.ns[namespace], ar);p(cal, ["initNamespace", namespace]);} else p(cal, ar); return;} p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
+  Cal("init", "30min", {origin:"https://app.cal.com"});
+  Cal.ns["30min"]("ui", {"hideEventTypeDetails":false,"layout":"month_view"});
 </script>
 </body>
 </html>

@@ -15,7 +15,7 @@
           <a href="index.html" class="active">Docs</a>
           <a href="../about.html">About</a>
         </div>
-        <a href="https://cal.com/kyros-sync/30min" target="_blank" rel="noopener" class="nav-cta">Book a demo <span>→</span></a>
+        <button type="button" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}' class="nav-cta">Book a demo <span>→</span></button>
       </div>
     </nav>
   `);
