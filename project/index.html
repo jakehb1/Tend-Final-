@@ -141,11 +141,32 @@ button.nav-cta { font-family: 'IBM Plex Mono', monospace; font-size: 13px; }
   position: relative;
   overflow: hidden;
 }
+.hero-video {
+  position: absolute;
+  inset: 72px 0 0 0;
+  width: 100%;
+  height: calc(100% - 72px);
+  object-fit: cover;
+  z-index: 0;
+  opacity: 0.85;
+  pointer-events: none;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 72px 0 0 0;
+  background:
+    linear-gradient(90deg, rgba(10,11,13,0.78) 0%, rgba(10,11,13,0.45) 55%, rgba(10,11,13,0.2) 100%),
+    linear-gradient(180deg, rgba(10,11,13,0.2) 0%, rgba(10,11,13,0) 30%, rgba(10,11,13,0.6) 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+.hero > .wrap { position: relative; z-index: 2; }
 .hero-grid {
   display: grid;
-  grid-template-columns: 1fr 460px;
+  grid-template-columns: minmax(0, 720px);
   gap: 80px;
-  padding: 96px 0 80px;
+  padding: 140px 0 160px;
   align-items: start;
 }
 .hero h1 {
@@ -185,6 +206,38 @@ button.nav-cta { font-family: 'IBM Plex Mono', monospace; font-size: 13px; }
 .btn:hover { border-color: var(--fg-dim); }
 .btn .arr { display: inline-block; transition: transform 0.2s; }
 .btn:hover .arr { transform: translateX(3px); }
+
+/* ontology showcase (schematic section below hero) */
+.ontology-showcase {
+  border-top: 1px solid var(--line);
+  padding: 96px 0;
+}
+.ontology-showcase .showcase-head {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 32px;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.ontology-showcase h2 {
+  font-size: clamp(28px, 3vw, 44px);
+  font-weight: 300;
+  letter-spacing: -0.025em;
+  margin: 0;
+  max-width: 20ch;
+}
+.ontology-showcase h2 .serif { font-weight: 400; color: var(--accent); }
+.ontology-showcase .showcase-sub {
+  color: var(--fg-dim);
+  max-width: 420px;
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+}
+.ontology-showcase .hero-schem {
+  max-width: 720px;
+  margin: 0 auto;
+  aspect-ratio: 1 / 0.85;
+}
 
 /* hero schematic panel */
 .hero-schem {
@@ -913,6 +966,10 @@ footer {
 
 <!-- HERO -->
 <section class="hero">
+  <video class="hero-video" autoplay muted loop playsinline preload="auto" aria-hidden="true">
+    <source src="videos/WEB_TEND.mp4" type="video/mp4">
+    <source src="videos/WEB_TEND.mov" type="video/quicktime">
+  </video>
   <div class="wrap">
     <div class="hero-grid">
       <div>
@@ -925,10 +982,20 @@ footer {
         </p>
         <div class="hero-ctas">
           <button type="button" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}' class="btn primary">Book a demo <span class="arr">→</span></button>
-          <a href="#demo" class="btn">See the ontology <span class="arr">↓</span></a>
+          <a href="#ontology" class="btn">See the ontology <span class="arr">↓</span></a>
         </div>
       </div>
+    </div>
+  </div>
+</section>
 
+<!-- ONTOLOGY SHOWCASE (moved from hero) -->
+<section id="ontology" class="ontology-showcase">
+  <div class="wrap">
+    <div class="showcase-head">
+      <h2>One <span class="serif">ontology</span>. Every system routes through it.</h2>
+      <p class="showcase-sub">Live view of the graph: connectors feed in on the left, agents reason on the right, policy wraps it all.</p>
+    </div>
       <div class="hero-schem" aria-hidden="true">
         <span class="schem-label tl">FIG. 01 / TEND / SYSTEM MAP</span>
         <span class="schem-label tr">● LIVE</span>
@@ -1081,9 +1148,6 @@ footer {
           </g>
         </svg>
       </div>
-    </div>
-
-    </div>
   </div>
 </section>
 

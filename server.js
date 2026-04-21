@@ -21,6 +21,9 @@ const MIME = {
   '.woff2': 'font/woff2',
   '.ttf': 'font/ttf',
   '.otf': 'font/otf',
+  '.mp4': 'video/mp4',
+  '.mov': 'video/quicktime',
+  '.webm': 'video/webm',
   '.txt': 'text/plain; charset=utf-8',
 };
 
@@ -50,9 +53,35 @@ const server = http.createServer((req, res) => {
     return;
   }
   const ext = path.extname(filePath).toLowerCase();
+  const stat = fs.statSync(filePath);
+  const contentType = MIME[ext] || 'application/octet-stream';
+  const cacheControl = ext === '.html' || ext === '.css' || ext === '.js' ? 'no-cache' : 'public, max-age=3600';
+
+  if (req.headers.range && (ext === '.mp4' || ext === '.mov' || ext === '.webm')) {
+    const m = /bytes=(\d*)-(\d*)/.exec(req.headers.range);
+    const start = m && m[1] ? parseInt(m[1], 10) : 0;
+    const end = m && m[2] ? parseInt(m[2], 10) : stat.size - 1;
+    if (start >= stat.size || end >= stat.size) {
+      res.writeHead(416, { 'Content-Range': `bytes */${stat.size}` });
+      res.end();
+      return;
+    }
+    res.writeHead(206, {
+      'Content-Type': contentType,
+      'Content-Length': end - start + 1,
+      'Content-Range': `bytes ${start}-${end}/${stat.size}`,
+      'Accept-Ranges': 'bytes',
+      'Cache-Control': cacheControl,
+    });
+    fs.createReadStream(filePath, { start, end }).pipe(res);
+    return;
+  }
+
   res.writeHead(200, {
-    'Content-Type': MIME[ext] || 'application/octet-stream',
-    'Cache-Control': ext === '.html' || ext === '.css' || ext === '.js' ? 'no-cache' : 'public, max-age=3600',
+    'Content-Type': contentType,
+    'Content-Length': stat.size,
+    'Accept-Ranges': 'bytes',
+    'Cache-Control': cacheControl,
   });
   fs.createReadStream(filePath).pipe(res);
 });
