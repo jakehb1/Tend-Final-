@@ -9,125 +9,87 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="../shared.css">
 <link rel="stylesheet" href="docs.css">
-<style>
-.docs-teaser {
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 80px 24px 120px;
-}
-.docs-teaser .crumb { margin-bottom: 32px; }
-.docs-teaser h1 {
-  font-size: clamp(36px, 4vw, 56px);
-  font-weight: 300;
-  letter-spacing: -0.025em;
-  line-height: 1.04;
-  margin: 0 0 20px;
-}
-.docs-teaser .lede {
-  font-size: 18px;
-  color: var(--fg-dim);
-  line-height: 1.55;
-  max-width: 56ch;
-  margin: 0 0 40px;
-}
-.term {
-  background: #08090B;
-  border: 1px solid var(--line);
-  padding: 20px 22px;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 13.5px;
-  line-height: 1.8;
-  color: var(--fg-dim);
-  position: relative;
-  margin: 0 0 32px;
-}
-.term .hdr {
-  position: absolute;
-  top: 0; right: 0;
-  font-size: 10px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--fg-mute);
-  padding: 6px 10px;
-  border-left: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-  background: var(--bg);
-}
-.term .prompt { color: var(--accent); }
-.term .out { color: var(--fg); }
-.term .cm { color: var(--fg-mute); }
-.term a {
-  color: var(--fg);
-  text-decoration: underline;
-  text-decoration-color: var(--accent);
-  text-underline-offset: 3px;
-}
-.term a:hover { color: var(--accent); }
-.cta-row {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin-top: 32px;
-}
-</style>
 </head>
-<body>
+<body data-docs-page="index">
 
-<nav class="nav">
-  <div class="nav-inner">
-    <a class="brand" href="../index.html"><span class="dot"></span><span>tend</span></a>
-    <div class="nav-links">
-      <a href="../platform.html">Platform</a>
-      <a href="../use-cases.html">Use cases</a>
-      <a href="index.html" class="active">Docs</a>
-      <a href="../about.html">About</a>
+<div class="docs-shell">
+  <aside class="docs-side"></aside>
+
+  <main class="docs-main">
+    <div class="crumb"><a href="../index.html">tend</a><span class="sep">/</span><a href="index.html">docs</a><span class="sep">/</span>overview</div>
+    <h1>Docs <span class="serif">overview.</span></h1>
+    <p class="lede">
+      tend is a four-layer platform. Ontology, ingest, policy, runtime. These docs cover the concepts, the DSL, the APIs, and the operational envelope. Start with the mental model if you've never touched an ontology-native system before.
+    </p>
+
+    <h2 id="quickstart">Quickstart</h2>
+    <p>The fastest path from zero to a live ontology is four commands. You'll need a Python 3.11 runtime and a <code>TEND_WORKSPACE_TOKEN</code> from the console.</p>
+    <pre><span class="hdr">shell</span><span class="cm"># install</span>
+pip install tend-sdk
+tend login <span class="str">--workspace acme</span>
+
+<span class="cm"># bootstrap a schema from your warehouse</span>
+tend init <span class="str">--from-warehouse snowflake://acme/prod</span>
+
+<span class="cm"># push &amp; compile</span>
+tend push
+tend deploy <span class="str">--target staging</span></pre>
+
+    <div class="callout">
+      <div class="label">Note</div>
+      First push takes 4–8 minutes for the planner to reconcile your schema against detected sources. Subsequent pushes are incremental (≤30s for typical diffs).
     </div>
-    <a href="https://cal.com/kyros-sync/30min" target="_blank" rel="noopener" class="nav-cta">Book a demo <span>→</span></a>
-  </div>
-</nav>
 
-<div class="docs-teaser">
-  <div class="crumb"><a href="../index.html">tend</a><span class="sep">/</span>docs</div>
-  <h1>Docs are <span class="serif">shipping with the product.</span></h1>
-  <p class="lede">
-    Ontology DSL, CLI, policy engine, API reference. All of it lands when we open the product to design partners. Until then, the fastest way to see how tend would slot into your stack is a working session with a founder.
-  </p>
+    <h2 id="map">Map of the docs</h2>
+    <p>Each section is self-contained. The order below is the recommended reading path for a new platform engineer.</p>
 
-  <div class="term">
-    <span class="hdr">tend</span>
-<span class="prompt">$</span> tend docs
-<span class="cm"># Docs are in private release with design partners.</span>
-<span class="cm"># Book a session to walk through the platform against your stack.</span>
+    <table>
+      <thead><tr><th>Section</th><th>What you get</th><th>Read time</th></tr></thead>
+      <tbody>
+        <tr><td><a href="getting-started.html">Getting started</a></td><td>CLI, first schema, first agent</td><td>12 min</td></tr>
+        <tr><td><a href="mental-model.html">Mental model</a></td><td>Entities, events, temporal state, lineage</td><td>8 min</td></tr>
+        <tr><td><a href="ontology.html">Ontology</a></td><td>DSL, versioning, migrations, computed facts</td><td>18 min</td></tr>
+        <tr><td><a href="resolution.html">Entity resolution</a></td><td>Deterministic + probabilistic merge, rollback</td><td>11 min</td></tr>
+        <tr><td><a href="policy.html">Policy &amp; governance</a></td><td>ABAC, audit, 4-eye approvals</td><td>14 min</td></tr>
+        <tr><td><a href="connectors.html">Connectors</a></td><td>180+ managed sources, custom SDK</td><td>9 min</td></tr>
+        <tr><td><a href="agents.html">Agents</a></td><td>Typed context, bounded tools, replay</td><td>16 min</td></tr>
+        <tr><td><a href="workflows.html">Workflows</a></td><td>Event-driven flows, sagas, retries</td><td>13 min</td></tr>
+        <tr><td><a href="api.html">REST &amp; GraphQL API</a></td><td>Every endpoint, signed, versioned</td><td>ref</td></tr>
+      </tbody>
+    </table>
 
-<span class="prompt">$</span> tend schedule <span class="out">--demo</span>
-<span class="out">→ <a href="https://cal.com/kyros-sync/30min" target="_blank" rel="noopener">book now</a></span>
-  </div>
+    <h2 id="versioning">Versioning &amp; stability</h2>
+    <p>tend uses a two-track versioning model. The <strong>platform</strong> ships on a rolling two-week cadence with zero-downtime migrations. The <strong>ontology runtime API</strong> is pinned per-workspace and held stable for a minimum of 18 months from GA of each major.</p>
+    <ul>
+      <li><span class="tag-pill ok">GA</span> Covered by SLA, versioned contract.</li>
+      <li><span class="tag-pill beta">Beta</span> Semver may break. Behind <code>experimental=true</code> flag.</li>
+      <li><span class="tag-pill">Preview</span> Design partners only. Undocumented.</li>
+    </ul>
 
-  <div class="cta-row">
-    <a href="https://cal.com/kyros-sync/30min" target="_blank" rel="noopener" class="btn primary">Book a call <span class="arr">→</span></a>
-  </div>
+    <h2 id="support">Getting help</h2>
+    <p>Support is staffed 24×7 for enterprise customers. Response SLAs:</p>
+    <table>
+      <thead><tr><th>Severity</th><th>Response</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td>SEV-1</td><td>15 min</td><td>Production agent writes blocked</td></tr>
+        <tr><td>SEV-2</td><td>2 hr</td><td>Connector sync degraded</td></tr>
+        <tr><td>SEV-3</td><td>1 biz day</td><td>Schema validation warning</td></tr>
+        <tr><td>SEV-4</td><td>3 biz days</td><td>Doc correction</td></tr>
+      </tbody>
+    </table>
+
+    <div class="pn">
+      <a class="prev" href="../index.html"><div class="k">← Back</div><div class="t">tend.ai</div></a>
+      <a class="next" href="getting-started.html"><div class="k">Next →</div><div class="t">Getting started</div></a>
+    </div>
+  </main>
+
+  <aside class="toc">
+    <div class="h">On this page</div>
+    <div class="toc-list"></div>
+  </aside>
 </div>
 
-<footer>
-  <div class="wrap">
-    <div class="foot-row">
-      <div class="col">
-        <a class="brand" href="../index.html"><span class="dot"></span> tend</a>
-        <div class="mono" style="color:var(--fg-mute);font-size:11px;letter-spacing:0.04em;line-height:1.6;margin-top:14px;">hello@withtend.ai</div>
-      </div>
-      <div class="col"><div class="h">Platform</div><a href="../platform.html#ontology">Ontology</a><a href="../platform.html#agents">Agents</a><a href="../platform.html#ingest">Connectors</a></div>
-      <div class="col"><div class="h">Company</div><a href="../about.html">About</a><a href="../use-cases.html">Use cases</a><a href="mailto:careers@withtend.ai">Careers</a></div>
-      <div class="col"><div class="h">Resources</div><a href="index.html">Docs</a><a href="https://cal.com/kyros-sync/30min" target="_blank" rel="noopener">Book a demo</a></div>
-    </div>
-    <div class="foot-bottom"><div>© 2026 tend, inc.</div></div>
-  </div>
-</footer>
-<!-- Cal floating-popup embed -->
-<script type="text/javascript">
-  (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if(typeof namespace === "string"){cal.ns[namespace] = cal.ns[namespace] || api;p(cal.ns[namespace], ar);p(cal, ["initNamespace", namespace]);} else p(cal, ar); return;} p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
-  Cal("init", "30min", {origin:"https://app.cal.com"});
-  Cal.ns["30min"]("floatingButton", {"calLink":"kyros-sync/30min","config":{"layout":"month_view","useSlotsViewOnSmallScreen":"true"},"buttonText":"Book A Call"});
-  Cal.ns["30min"]("ui", {"hideEventTypeDetails":false,"layout":"month_view"});
-</script>
+<script src="docs.js"></script>
 </body>
 </html>

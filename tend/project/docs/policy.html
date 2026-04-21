@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Policy &amp; governance · tend docs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../shared.css">
+<link rel="stylesheet" href="docs.css">
+</head>
+<body data-docs-page="policy">
+<div class="docs-shell">
+  <aside class="docs-side"></aside>
+  <main class="docs-main">
+    <div class="crumb"><a href="../index.html">tend</a><span class="sep">/</span><a href="index.html">docs</a><span class="sep">/</span>policy</div>
+    <h1>Policy <span class="serif">&amp; governance.</span></h1>
+    <p class="lede">
+      Attribute-based access control, row-level predicates, four-eye approvals, and an append-only audit log. The same gauntlet applies to a human, an agent, a webhook, or a connector. No exceptions.
+    </p>
+
+    <h2 id="model">The ABAC model</h2>
+    <p>Every access decision is a pure function of four inputs: subject attributes, resource attributes, action, and environment. The policy engine evaluates rules in order until one returns a terminal verdict.</p>
+
+    <pre><span class="hdr">policy</span><span class="kw">policy</span> <span class="str">"eu-pii-read"</span> {
+  <span class="kw">target</span> resource.tagged(<span class="str">"pii"</span>) <span class="kw">and</span> resource.region == <span class="str">"eu"</span>
+
+  <span class="kw">allow if</span> subject.employment == <span class="str">"eu"</span>
+     <span class="kw">and</span> subject.training.gdpr &gt;= <span class="str">"2025-12"</span>
+     <span class="kw">and</span> env.ip.country <span class="kw">in</span> eu_countries
+     <span class="kw">and</span> env.purpose <span class="kw">in</span> [<span class="str">"support"</span>, <span class="str">"billing"</span>]
+
+  <span class="kw">deny otherwise</span>
+}</pre>
+
+    <h2 id="capabilities">Capabilities</h2>
+    <p>Coarse-grained capability grants are the base layer. Fine-grained ABAC rules refine from there.</p>
+    <table>
+      <thead><tr><th>Capability</th><th>Grants</th></tr></thead>
+      <tbody>
+        <tr><td><code>read:all</code></td><td>All untagged fields across all entities</td></tr>
+        <tr><td><code>pii:read</code></td><td>Read of fields tagged <code>@pii</code>, subject to ABAC</td></tr>
+        <tr><td><code>secret:read</code></td><td>Read of fields tagged <code>@secret</code>. Never granted to agents.</td></tr>
+        <tr><td><code>write:scoped</code></td><td>Write to fields declared in the agent's manifest</td></tr>
+        <tr><td><code>delete:soft</code></td><td>Soft-delete within 14d grace window</td></tr>
+        <tr><td><code>delete:hard</code></td><td>Hard-delete. Requires operator approval.</td></tr>
+        <tr><td><code>migrate</code></td><td>Apply schema migrations</td></tr>
+        <tr><td><code>policy:author</code></td><td>Edit policy source</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="four-eye">Four-eye approvals</h2>
+    <p>Any policy or any action can require a second, independent approval. The approver must satisfy a different predicate than the initiator. Same person cannot approve their own request.</p>
+
+    <pre><span class="hdr">policy</span><span class="kw">policy</span> <span class="str">"production-write-agent"</span> {
+  <span class="kw">target</span> action == <span class="str">"agent.deploy"</span> <span class="kw">and</span> env.target == <span class="str">"production"</span>
+
+  <span class="kw">require</span> approver {
+    <span class="kw">count</span>:  <span class="num">2</span>
+    <span class="kw">role</span>:   <span class="str">"platform-admin"</span>
+    <span class="kw">disjoint from</span> subject
+  }
+}</pre>
+
+    <h2 id="row">Row-level predicates</h2>
+    <p>Row-level rules narrow a resource set at query time. They're compiled into the query plan. There is no path that sidesteps them.</p>
+
+    <pre><span class="hdr">policy</span><span class="kw">row_policy</span> <span class="str">"tenant-isolation"</span> <span class="kw">on</span> <span class="nm">Account</span> {
+  <span class="kw">visible</span> account.tenant_id == subject.tenant_id
+}</pre>
+
+    <h2 id="simulation">Policy simulation</h2>
+    <p>Before deploying a policy change, simulate it against historical traffic. The simulator replays the last N days of access requests and reports how each would resolve under the proposed policy.</p>
+
+    <pre><span class="hdr">shell</span>tend policy simulate \
+  --policy ./policies/eu-pii-read.v5.tend \
+  --window 14d
+
+<span class="cm"># 142,081 requests replayed
+# → 140,402 allow (unchanged)
+# →   1,402 allow → deny (new restriction)
+# →     277 deny → allow (relaxation)
+# Top denied subjects: alex@... (40), bot:csm-watcher (38)</span></pre>
+
+    <h2 id="audit">The audit log</h2>
+    <p>Every access decision is recorded, append-only, with a cryptographic chain hash across records. A tampered record breaks the chain and is visible to auditors. Logs are exported to your S3/GCS bucket in batched Parquet.</p>
+
+    <table>
+      <thead><tr><th>Field</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td><code>at</code></td><td>2026-04-19T21:14:02.318Z</td></tr>
+        <tr><td><code>subject</code></td><td>agent:renewal-risk-v3 @ deploy_8f2c</td></tr>
+        <tr><td><code>action</code></td><td>read</td></tr>
+        <tr><td><code>resource</code></td><td>Account[acct_4102].pii.email</td></tr>
+        <tr><td><code>verdict</code></td><td>deny</td></tr>
+        <tr><td><code>policy</code></td><td>eu-pii-read@v4</td></tr>
+        <tr><td><code>chain</code></td><td>sha256:a7f2… (prev: b3e9…)</td></tr>
+      </tbody>
+    </table>
+
+    <div class="pn">
+      <a class="prev" href="resolution.html"><div class="k">← Previous</div><div class="t">Entity resolution</div></a>
+      <a class="next" href="connectors.html"><div class="k">Next →</div><div class="t">Connectors</div></a>
+    </div>
+  </main>
+  <aside class="toc"><div class="h">On this page</div><div class="toc-list"></div></aside>
+</div>
+<script src="docs.js"></script>
+</body>
+</html>

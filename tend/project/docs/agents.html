@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Agents · tend docs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../shared.css">
+<link rel="stylesheet" href="docs.css">
+</head>
+<body data-docs-page="agents">
+
+<div class="docs-shell">
+  <aside class="docs-side"></aside>
+
+  <main class="docs-main">
+    <div class="crumb"><a href="../index.html">tend</a><span class="sep">/</span><a href="index.html">docs</a><span class="sep">/</span>agents</div>
+    <h1>Agents, <span class="serif">typed and bounded.</span></h1>
+    <p class="lede">
+      An agent in tend is a declared function with a typed context window, a bounded tool surface, and a replay-safe execution envelope. The runtime refuses any read or write the agent didn't declare at deploy time.
+    </p>
+
+    <h2 id="anatomy">Anatomy of an agent</h2>
+    <p>Every agent has five required declarations. The SDK decorator validates them at import; the runtime re-validates at deploy and at every invocation.</p>
+
+    <pre><span class="hdr">agent declaration</span><span class="cm">@agent(</span>
+    <span class="nm">name</span>    = <span class="str">"expansion-signal-v2"</span>,
+    <span class="nm">reads</span>   = [o.Account, o.Deal, o.Usage],
+    <span class="nm">writes</span>  = [o.Account.expansion_note],
+    <span class="nm">tools</span>   = [<span class="str">"slack.post"</span>, <span class="str">"hubspot.upsert_note"</span>],
+    <span class="nm">model</span>   = <span class="str">"claude-sonnet-4.5"</span>,
+    <span class="nm">budget</span>  = <span class="fn">Budget</span>(<span class="nm">tokens</span>=<span class="num">8000</span>, <span class="nm">usd</span>=<span class="num">0.05</span>),
+    <span class="nm">timeout</span> = <span class="fn">seconds</span>(<span class="num">30</span>),
+<span class="cm">)</span></pre>
+
+    <h2 id="context">Typed context</h2>
+    <p>Agents don't see rows. They see typed context. <code>account.typed_context(depth=2)</code> returns a validated view of the account, its direct relations, and their direct relations, with every field filtered through the active policy set.</p>
+
+    <pre><span class="hdr">python</span>ctx = account.<span class="fn">typed_context</span>(
+    <span class="nm">depth</span>=<span class="num">2</span>,
+    <span class="nm">include</span>=[<span class="str">"deals.open"</span>, <span class="str">"contacts.exec"</span>, <span class="str">"usage.last_30d"</span>],
+    <span class="nm">exclude_pii</span>=<span class="kw">True</span>,
+)
+
+<span class="cm"># ctx is a typed object, not a blob.</span>
+<span class="cm"># ctx.deals        : list[Deal]    (7 open)</span>
+<span class="cm"># ctx.contacts     : list[Contact] (3 execs, PII stripped)</span>
+<span class="cm"># ctx.usage.last_30d.events_per_week : 1_842</span></pre>
+
+    <h2 id="tools">Tools</h2>
+    <p>A tool is any callable that touches the world outside the ontology. Tools are registered per workspace with a JSON schema, a cost model, and a policy handle. The runtime refuses any tool invocation not listed in the agent's declaration.</p>
+
+    <table>
+      <thead><tr><th>Category</th><th>Examples</th><th>Cost model</th></tr></thead>
+      <tbody>
+        <tr><td><code>notify</code></td><td>slack.post · email.send · pagerduty.page</td><td>flat per call</td></tr>
+        <tr><td><code>write</code></td><td>hubspot.upsert · salesforce.update</td><td>flat + per-field</td></tr>
+        <tr><td><code>reason</code></td><td>reason · classify · extract · rank</td><td>per-token, model-priced</td></tr>
+        <tr><td><code>human</code></td><td>approve · review · escalate</td><td>per-request SLA</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="budgets">Budgets &amp; rate limits</h2>
+    <p>Every agent declares a per-invocation budget (tokens + USD) and inherits a workspace-level rate limit. Exhaustion is a first-class signal, not a failure. The runtime emits a <code>budget_exhausted</code> event which workflows can subscribe to.</p>
+
+    <div class="callout warn">
+      <div class="label">Budgets are enforced per-invocation</div>
+      If your agent needs more than the declared budget, the <em>right</em> answer is almost always a workflow split. One agent drafts, a second critiques, a third commits. Stretching a single agent's budget is a design smell.
+    </div>
+
+    <h2 id="replay">Replay &amp; determinism</h2>
+    <p>Every invocation is captured with: the typed context snapshot, the full tool-call trace, the model output, the policy decisions, and the final write set. Replay re-executes against the captured snapshot. Useful for testing prompt changes against real historical inputs.</p>
+
+    <pre><span class="hdr">shell</span>tend runs replay run_8f2c \
+  --with-prompt ./prompts/renewal-risk-v4.md \
+  --diff</pre>
+
+    <h2 id="policies">Policies that bind agents</h2>
+    <p>Three enforcement layers, applied in order. If any returns <code>deny</code>, the operation aborts with a structured <code>PolicyDenied</code> and the agent sees a typed exception. Never silent data loss.</p>
+
+    <ol>
+      <li><strong>Declaration check.</strong> Did the agent declare this read/write/tool at deploy time?</li>
+      <li><strong>ABAC.</strong> Do the caller attributes satisfy the row-level predicate?</li>
+      <li><strong>Rate &amp; budget.</strong> Does the invocation fit in the declared envelope?</li>
+    </ol>
+
+    <h2 id="patterns">Common patterns</h2>
+    <h3>Watcher</h3>
+    <p>A long-lived binding that fires on any change to a watched entity or its depth-N neighborhood. Use for risk scoring, anomaly detection, notify-on-threshold.</p>
+
+    <h3>Drafter</h3>
+    <p>A human-in-the-loop pattern: the agent produces a typed draft (a reply, a note, a forecast), writes it to a staging field, and blocks on a <code>human.approve</code> tool call before committing.</p>
+
+    <h3>Reconciler</h3>
+    <p>Consumes two sources of truth, produces a typed diff, writes a <code>ReconciliationReport</code> entity. Used heavily in finance ops.</p>
+
+    <div class="pn">
+      <a class="prev" href="connectors.html"><div class="k">← Previous</div><div class="t">Connectors</div></a>
+      <a class="next" href="workflows.html"><div class="k">Next →</div><div class="t">Workflows</div></a>
+    </div>
+  </main>
+
+  <aside class="toc">
+    <div class="h">On this page</div>
+    <div class="toc-list"></div>
+  </aside>
+</div>
+
+<script src="docs.js"></script>
+</body>
+</html>

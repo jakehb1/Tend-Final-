@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Entity resolution · tend docs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../shared.css">
+<link rel="stylesheet" href="docs.css">
+</head>
+<body data-docs-page="resolution">
+<div class="docs-shell">
+  <aside class="docs-side"></aside>
+  <main class="docs-main">
+    <div class="crumb"><a href="../index.html">tend</a><span class="sep">/</span><a href="index.html">docs</a><span class="sep">/</span>resolution</div>
+    <h1>Entity <span class="serif">resolution.</span></h1>
+    <p class="lede">
+      A three-stage hybrid pipeline. Deterministic keys first, probabilistic similarity second, human-in-loop confirmation for the long tail. Every merge is reversible, logged, and attributed.
+    </p>
+
+    <h2 id="pipeline">The pipeline</h2>
+    <pre><span class="hdr">resolution pipeline</span>candidate ──▶ <span class="kw">block</span>       <span class="cm"># reduce N² comparisons via blocking keys</span>
+          ──▶ <span class="kw">score</span>       <span class="cm"># deterministic + embedding similarity</span>
+          ──▶ <span class="kw">decide</span>      <span class="cm"># auto-merge / defer / drop</span>
+          ──▶ <span class="kw">commit</span>      <span class="cm"># write merge record + lineage</span></pre>
+
+    <h2 id="deterministic">Deterministic rules</h2>
+    <p>Express any number of deterministic rules. A match on any rule short-circuits scoring with full confidence. Rules are compiled to index lookups. They run in microseconds.</p>
+    <pre><span class="hdr">resolution/account.tend</span><span class="kw">resolve</span> <span class="nm">Account</span> {
+  <span class="kw">rule</span> <span class="str">"salesforce_id"</span>    = external.salesforce_id <span class="kw">exact</span>
+  <span class="kw">rule</span> <span class="str">"domain_match"</span>     = <span class="fn">normalize_domain</span>(primary_domain) <span class="kw">exact</span>
+  <span class="kw">rule</span> <span class="str">"dunsbridge"</span>       = external.dun_bradstreet <span class="kw">exact</span>
+}</pre>
+
+    <h2 id="probabilistic">Probabilistic scoring</h2>
+    <p>For candidates that don't hit a deterministic rule, the resolver emits a feature vector and scores with a per-entity-type model. The default model is trained on ~2.4B labeled pairs across the tend fleet; you can retrain against your own labels.</p>
+
+    <table>
+      <thead><tr><th>Feature</th><th>Weight (default)</th><th>Signal</th></tr></thead>
+      <tbody>
+        <tr><td>Name. Normalized Jaro</td><td>0.28</td><td>High for exact names, tolerant of case/punct</td></tr>
+        <tr><td>Domain. ETLD+1 match</td><td>0.22</td><td>Strong when present</td></tr>
+        <tr><td>Address. Geocoded proximity</td><td>0.12</td><td>Tolerates formatting drift</td></tr>
+        <tr><td>Industry. SIC/NAICS agreement</td><td>0.08</td><td>Weak but additive</td></tr>
+        <tr><td>Embedding. Description cosine</td><td>0.18</td><td>Catches paraphrases, aliases</td></tr>
+        <tr><td>Temporal. Co-occurrence</td><td>0.12</td><td>Rewards records seen together</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="thresholds">Decision thresholds</h2>
+    <table>
+      <thead><tr><th>Score</th><th>Action</th><th>Default threshold</th></tr></thead>
+      <tbody>
+        <tr><td>≥ τ<sub>merge</sub></td><td>Auto-merge, commit</td><td>0.92</td></tr>
+        <tr><td>[τ<sub>review</sub>, τ<sub>merge</sub>)</td><td>Queue for human review</td><td>0.72</td></tr>
+        <tr><td>&lt; τ<sub>review</sub></td><td>Drop, log as negative pair</td><td> </td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      <div class="label">Tuning</div>
+      Thresholds are per-entity-type. For finance entities (invoices, contracts) the defaults are higher; for support entities (contacts, tickets) they're lower. Override in <code>resolve</code> blocks.
+    </div>
+
+    <h2 id="merge">The merge record</h2>
+    <p>Every merge produces a first-class <code>MergeDecision</code> entity. It records the winning id, the losing id(s), the rule or model version, the score, and the principal (agent or human). Unmerge is <code>tend merge reverse &lt;id&gt;</code> and restores the prior state verbatim.</p>
+
+    <pre><span class="hdr">query</span>Account.<span class="fn">get</span>(<span class="str">"acct_4102"</span>).<span class="fn">merge_history</span>()
+
+<span class="cm"># [
+#   { at: "2026-03-14...", kept: "acct_4102", merged: "acct_1984",
+#     rule: "domain_match", score: 1.00, by: "system" },
+#   { at: "2026-04-02...", kept: "acct_4102", merged: "acct_7721",
+#     model: "acct-resolver@v12", score: 0.94, by: "agent:dedupe-v3" },
+# ]</span></pre>
+
+    <h2 id="human">Human-in-loop</h2>
+    <p>Items queued for review appear in the console and the CLI. A reviewer sees a side-by-side of the two candidates with differing fields highlighted, the score breakdown, and the resolver's confidence. One-click merge, split, or label-as-negative.</p>
+
+    <pre><span class="hdr">shell</span>tend resolve queue --entity Account --limit 20
+tend resolve approve q_8f2c --into acct_4102
+tend resolve reject  q_8f2d --reason <span class="str">"different parent company"</span></pre>
+
+    <div class="pn">
+      <a class="prev" href="entities.html"><div class="k">← Previous</div><div class="t">Entities &amp; types</div></a>
+      <a class="next" href="policy.html"><div class="k">Next →</div><div class="t">Policy</div></a>
+    </div>
+  </main>
+  <aside class="toc"><div class="h">On this page</div><div class="toc-list"></div></aside>
+</div>
+<script src="docs.js"></script>
+</body>
+</html>
