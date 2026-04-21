@@ -93,9 +93,10 @@ h1, h2, h3, h4, h5, h6 {
   display: inline-flex; align-items: center;
   text-decoration: none;
   color: var(--fg);
+  line-height: 0;
 }
-.brand img { height: 22px; width: auto; display: block; }
-.brand.brand-sm img { height: 20px; }
+.brand img { height: 22px; width: auto; max-width: 140px; display: block; }
+.brand.brand-sm img { height: 20px; max-width: 130px; }
 .nav-links { display: flex; gap: 28px; font-size: 13px; }
 .nav-links a {
   color: var(--fg-dim);
