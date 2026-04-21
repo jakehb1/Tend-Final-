@@ -8,7 +8,7 @@
   document.body.insertAdjacentHTML('afterbegin', `
     <nav class="nav">
       <div class="nav-inner">
-        <a class="brand" href="../index.html"><span class="dot"></span><span>tend</span></a>
+        <a class="brand" href="../index.html"><img src="../images/tend-logo.png" alt="tend" /></a>
         <div class="nav-links">
           <a href="../platform.html">Platform</a>
           <a href="../use-cases.html">Use cases</a>

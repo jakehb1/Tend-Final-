@@ -103,33 +103,16 @@ section:first-of-type { border-top: none; }
   max-width: 1440px; margin: 0 auto;
 }
 .brand {
-  display: flex; align-items: center; gap: 10px;
-  font-family: 'IBM Plex Mono', monospace;
-  font-weight: 500;
+  display: inline-flex; align-items: center;
   text-decoration: none;
   color: var(--fg);
-  letter-spacing: 0.02em;
-  font-size: 15px;
 }
-.brand .dot {
-  width: 20px; height: 16px;
-  display: inline-block;
-  flex-shrink: 0;
-  background-image:
-    linear-gradient(var(--fg), var(--fg)),
-    linear-gradient(var(--fg), var(--fg)),
-    linear-gradient(var(--fg), var(--fg));
-  background-repeat: no-repeat;
-  background-size:
-    100% 3px,
-    100% 3px,
-    35% 6px;
-  background-position:
-    0 0,
-    0 5px,
-    50% 100%;
+.brand img {
+  height: 22px;
+  width: auto;
+  display: block;
 }
-.brand .tld { color: var(--fg-mute); }
+.brand.brand-sm img { height: 20px; }
 .nav-links { display: flex; gap: 28px; font-size: 13px; }
 .nav-links a { color: var(--fg-dim); text-decoration: none; font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.02em; }
 .nav-links a:hover { color: var(--fg); }
@@ -154,7 +137,7 @@ section:first-of-type { border-top: none; }
 }
 .hero-grid {
   display: grid;
-  grid-template-columns: 1fr 520px;
+  grid-template-columns: 1fr 460px;
   gap: 80px;
   padding: 96px 0 80px;
   align-items: start;
@@ -910,8 +893,7 @@ footer {
 <nav class="nav">
   <div class="nav-inner">
     <a class="brand" href="index.html">
-      <span class="dot"></span>
-      <span>tend</span>
+      <img src="images/tend-logo.png" alt="tend" />
     </a>
     <div class="nav-links">
       <a href="platform.html">Platform</a>
@@ -933,7 +915,7 @@ footer {
           for every decision.
         </h1>
         <p class="hero-sub">
-          Agents act on it. Operators trust it.
+          We build the brain, then the agents that reason across it.
         </p>
         <div class="hero-ctas">
           <a href="https://cal.com/kyros-sync/30min" target="_blank" rel="noopener" class="btn primary">Book a demo <span class="arr">→</span></a>
@@ -1336,7 +1318,7 @@ footer {
   <div class="wrap">
     <div class="foot-row">
       <div class="col">
-        <div class="brand" style="margin-bottom:14px;"><span class="dot"></span> tend</div>
+        <div class="brand brand-sm" style="margin-bottom:14px;"><img src="images/tend-logo.png" alt="tend" /></div>
         <div class="mono" style="color:var(--fg-mute);font-size:11px;letter-spacing:0.04em;line-height:1.6;">
           hello@withtend.ai
         </div>
