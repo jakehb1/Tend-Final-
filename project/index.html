@@ -8,6 +8,20 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
+@font-face {
+  font-family: 'FH Lecturis Rounded';
+  src: url('fonts/FHLecturisRoundedTest-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'FH Premier';
+  src: url('fonts/FHPremierTest-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
 :root {
   --bg: #0A0B0D;
   --bg-2: #101215;
@@ -34,7 +48,7 @@ html[data-variant="B"] {
 em, i, blockquote, cite, address { font-style: normal; }
 html, body { margin: 0; padding: 0; background: var(--bg); color: var(--fg); }
 body {
-  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  font-family: 'FH Premier', 'IBM Plex Sans', system-ui, sans-serif;
   font-weight: 400;
   font-size: 16px;
   line-height: 1.5;
@@ -43,7 +57,10 @@ body {
   overflow-x: hidden;
 }
 .mono { font-family: 'IBM Plex Mono', ui-monospace, monospace; }
-.serif { font-family: 'IBM Plex Sans', system-ui, sans-serif; font-weight: 400; font-style: normal; letter-spacing: -0.015em; color: var(--accent); }
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'FH Lecturis Rounded', 'IBM Plex Sans', system-ui, sans-serif;
+}
+.serif { font-family: 'FH Lecturis Rounded', 'IBM Plex Sans', system-ui, sans-serif; font-weight: 400; font-style: normal; letter-spacing: -0.015em; color: var(--accent); }
 
 /* ---------- layout primitives ---------- */
 .wrap { max-width: 1440px; margin: 0 auto; padding: 0 40px; }

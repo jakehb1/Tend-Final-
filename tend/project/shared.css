@@ -2,6 +2,20 @@
    tend.ai. Shared styles for sub-pages & docs
    Kept small on purpose. The homepage has its own inlined styles.
 --------------------------------------------------------------------------- */
+@font-face {
+  font-family: 'FH Lecturis Rounded';
+  src: url('fonts/FHLecturisRoundedTest-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'FH Premier';
+  src: url('fonts/FHPremierTest-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
 :root {
   --bg: #0A0B0D;
   --bg-2: #101215;
@@ -28,7 +42,7 @@ html, body {
   background: var(--bg); color: var(--fg);
 }
 body {
-  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  font-family: 'FH Premier', 'IBM Plex Sans', system-ui, sans-serif;
   font-weight: 400;
   font-size: 16px;
   line-height: 1.5;
@@ -38,8 +52,11 @@ body {
 }
 a { color: inherit; }
 .mono { font-family: 'IBM Plex Mono', ui-monospace, monospace; }
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'FH Lecturis Rounded', 'IBM Plex Sans', system-ui, sans-serif;
+}
 .serif {
-  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  font-family: 'FH Lecturis Rounded', 'IBM Plex Sans', system-ui, sans-serif;
   font-weight: 400;
   letter-spacing: -0.015em;
   color: var(--accent);
