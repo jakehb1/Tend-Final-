@@ -966,7 +966,7 @@ footer {
 
 <!-- HERO -->
 <section class="hero">
-  <video class="hero-video" autoplay muted loop playsinline preload="auto" aria-hidden="true">
+  <video class="hero-video" autoplay muted loop playsinline webkit-playsinline x5-playsinline preload="auto" disableremoteplayback aria-hidden="true">
     <source src="videos/WEB_TEND.mp4" type="video/mp4">
     <source src="videos/WEB_TEND.mov" type="video/quicktime">
   </video>
@@ -1748,6 +1748,24 @@ const FAQ = [
     list.appendChild(item);
   });
 })();
+</script>
+<!-- Hero video mobile autoplay kick -->
+<script>
+  (function () {
+    var v = document.querySelector('.hero-video');
+    if (!v) return;
+    v.muted = true;
+    v.setAttribute('muted', '');
+    var kick = function () {
+      var p = v.play();
+      if (p && typeof p.catch === 'function') p.catch(function () {});
+    };
+    kick();
+    document.addEventListener('visibilitychange', function () { if (!document.hidden) kick(); });
+    ['touchstart', 'click', 'scroll'].forEach(function (ev) {
+      window.addEventListener(ev, kick, { once: true, passive: true });
+    });
+  })();
 </script>
 <!-- Cal overlay init -->
 <script type="text/javascript">
