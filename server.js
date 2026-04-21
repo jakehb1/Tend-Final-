@@ -52,7 +52,7 @@ const server = http.createServer((req, res) => {
   const ext = path.extname(filePath).toLowerCase();
   res.writeHead(200, {
     'Content-Type': MIME[ext] || 'application/octet-stream',
-    'Cache-Control': ext === '.html' ? 'no-cache' : 'public, max-age=3600',
+    'Cache-Control': ext === '.html' || ext === '.css' || ext === '.js' ? 'no-cache' : 'public, max-age=3600',
   });
   fs.createReadStream(filePath).pipe(res);
 });
