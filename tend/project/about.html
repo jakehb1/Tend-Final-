@@ -129,7 +129,7 @@
       <a href="docs/index.html">Docs</a>
       <a href="about.html" class="active">About</a>
     </div>
-    <a href="https://cal.com/clawdbotdfw/15min" target="_blank" rel="noopener" class="nav-cta">Book a demo <span>→</span></a>
+    <a href="https://cal.com/kyros-sync/30min" target="_blank" rel="noopener" class="nav-cta">Book a demo <span>→</span></a>
   </div>
 </nav>
 
@@ -210,10 +210,17 @@
       </div>
       <div class="col"><div class="h">Platform</div><a href="platform.html#ontology">Ontology</a><a href="platform.html#agents">Agents</a><a href="platform.html#ingest">Connectors</a></div>
       <div class="col"><div class="h">Company</div><a href="about.html">About</a><a href="use-cases.html">Use cases</a><a href="#">Careers</a></div>
-      <div class="col"><div class="h">Resources</div><a href="docs/index.html">Docs</a><a href="docs/api.html">API reference</a><a href="#">Trust center</a></div>
+      <div class="col"><div class="h">Resources</div><a href="docs/index.html">Docs</a><a href="https://cal.com/kyros-sync/30min" target="_blank" rel="noopener">Book a demo</a></div>
     </div>
     <div class="foot-bottom"><div>© 2026 tend, inc.</div></div>
   </div>
 </footer>
+<!-- Cal floating-popup embed -->
+<script type="text/javascript">
+  (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if(typeof namespace === "string"){cal.ns[namespace] = cal.ns[namespace] || api;p(cal.ns[namespace], ar);p(cal, ["initNamespace", namespace]);} else p(cal, ar); return;} p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
+  Cal("init", "30min", {origin:"https://app.cal.com"});
+  Cal.ns["30min"]("floatingButton", {"calLink":"kyros-sync/30min","config":{"layout":"month_view","useSlotsViewOnSmallScreen":"true"},"buttonText":"Book A Call"});
+  Cal.ns["30min"]("ui", {"hideEventTypeDetails":false,"layout":"month_view"});
+</script>
 </body>
 </html>

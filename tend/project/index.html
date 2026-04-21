@@ -902,7 +902,7 @@ footer {
       <a href="docs/index.html">Docs</a>
       <a href="about.html">About</a>
     </div>
-    <a href="https://cal.com/clawdbotdfw/15min" target="_blank" rel="noopener" class="nav-cta">Book a demo <span>→</span></a>
+    <a href="https://cal.com/kyros-sync/30min" target="_blank" rel="noopener" class="nav-cta">Book a demo <span>→</span></a>
   </div>
 </nav>
 
@@ -919,7 +919,7 @@ footer {
           Agents act on it. Operators trust it.
         </p>
         <div class="hero-ctas">
-          <a href="https://cal.com/clawdbotdfw/30min" target="_blank" rel="noopener" class="btn primary">Book a demo <span class="arr">→</span></a>
+          <a href="https://cal.com/kyros-sync/30min" target="_blank" rel="noopener" class="btn primary">Book a demo <span class="arr">→</span></a>
           <a href="#demo" class="btn">See the ontology <span class="arr">↓</span></a>
         </div>
       </div>
@@ -1308,7 +1308,7 @@ footer {
       One <span class="serif">source of truth</span>. Every agent, every team.
     </h2>
     <div class="cta-row">
-      <a href="https://cal.com/clawdbotdfw/30min" target="_blank" rel="noopener" class="btn primary">Book a demo <span class="arr">→</span></a>
+      <a href="https://cal.com/kyros-sync/30min" target="_blank" rel="noopener" class="btn primary">Book a demo <span class="arr">→</span></a>
       <a href="#" class="btn">Read the architecture brief</a>
     </div>
   </div>
@@ -1326,11 +1326,10 @@ footer {
       </div>
       <div class="col">
         <div class="h">Platform</div>
-        <a href="docs/ontology.html">Ontology</a>
-        <a href="docs/agents.html">Agents</a>
-        <a href="docs/workflows.html">Workflows</a>
-        <a href="docs/connectors.html">Connectors</a>
-        <a href="docs/policy.html">Governance</a>
+        <a href="platform.html#ontology">Ontology</a>
+        <a href="platform.html#agents">Agents</a>
+        <a href="platform.html#ingest">Connectors</a>
+        <a href="platform.html">Overview</a>
       </div>
       <div class="col">
         <div class="h">Company</div>
@@ -1341,9 +1340,7 @@ footer {
       <div class="col">
         <div class="h">Resources</div>
         <a href="docs/index.html">Docs</a>
-        <a href="docs/getting-started.html">Getting started</a>
-        <a href="docs/api.html">API reference</a>
-        <a href="docs/changelog.html">Changelog</a>
+        <a href="https://cal.com/kyros-sync/30min" target="_blank" rel="noopener">Book a demo</a>
       </div>
     </div>
     <div class="foot-bottom">
@@ -1680,6 +1677,13 @@ const FAQ = [
     list.appendChild(item);
   });
 })();
+</script>
+<!-- Cal floating-popup embed -->
+<script type="text/javascript">
+  (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if(typeof namespace === "string"){cal.ns[namespace] = cal.ns[namespace] || api;p(cal.ns[namespace], ar);p(cal, ["initNamespace", namespace]);} else p(cal, ar); return;} p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
+  Cal("init", "30min", {origin:"https://app.cal.com"});
+  Cal.ns["30min"]("floatingButton", {"calLink":"kyros-sync/30min","config":{"layout":"month_view","useSlotsViewOnSmallScreen":"true"},"buttonText":"Book A Call"});
+  Cal.ns["30min"]("ui", {"hideEventTypeDetails":false,"layout":"month_view"});
 </script>
 </body>
 </html>
