@@ -1434,7 +1434,7 @@ const ENTITIES = [
   { id:'agent-csm',      type:'Agent',    name:'CSM copilot', tag:'AGT', props:{'ID':'ag_csm_prod','Model':'tend-reason-2','Scope':'All accounts','Guardrails':'Policy v7','Tickets / wk':'240'}, automations:['Reads account history','Drafts follow-ups','Opens Jira tickets'] },
   { id:'agent-ar',       type:'Agent',    name:'AR collections', tag:'AGT', props:{'ID':'ag_ar_v2','Model':'tend-ops-1','Scope':'Invoices > 30d','Guardrails':'Finance v2','DSO Δ':'-6.2 days'}, automations:['Dunning cadence','Payment plan proposer','Writes to NetSuite'] },
   { id:'sku-pro',        type:'Endpoint', name:'Salesforce (CRM)', tag:'INT', props:{'ID':'int_sfdc_prod','Host':'acme.my.salesforce.com','Auth':'OAuth2 · refresh','Last sync':'2m ago','Rows synced':'8.4M'}, automations:['Accounts · Contacts · Opportunities','Writes notes + tasks back','Delta sync every 5m'] },
-  { id:'sku-agents',     type:'Endpoint', name:'Zendesk (Support)', tag:'INT', props:{'ID':'int_zd_prod','Host':'acme.zendesk.com','Auth':'API token','Last sync':'48s ago','Tickets synced':'312k'}, automations:['Ticket + comment ingest','CSAT → NPS computed fact','Two-way comment mirror'] },
+  { id:'sku-agents',     type:'Endpoint', name:'HubSpot (CRM)', tag:'INT', props:{'ID':'int_hs_prod','Host':'api-na1.hubapi.com','Auth':'OAuth2 · refresh','Last sync':'48s ago','Rows synced':'2.1M'}, automations:['Companies · Contacts · Deals','Lifecycle + stage sync back','Form submissions → lead events'] },
 ];
 
 // graph layout — columnar by type (contacts | accounts | deals | playbooks | agents | products)
@@ -1528,6 +1528,7 @@ const TYPE_COLORS = {
   Object.entries(COLS).forEach(([type, info]) => {
     const h = document.createElement('div');
     h.className = 'col-header';
+    h.dataset.type = type;
     h.style.left = (info.x / 800 * 100) + '%';
     h.innerHTML = info.label + '<span class="count">' + (typeCounts[type]||0) + '</span>';
     labels.appendChild(h);
@@ -1602,6 +1603,17 @@ function select(id, opts) {
   // connected set
   const conn = new Set([id]);
   EDGES.forEach(([a,b]) => { if (a===id) conn.add(b); else if (b===id) conn.add(a); });
+
+  // column counts: reflect the selected entity's neighborhood
+  const connCounts = {};
+  conn.forEach(cid => {
+    const ent = ENTITIES.find(x => x.id === cid);
+    if (ent) connCounts[ent.type] = (connCounts[ent.type] || 0) + 1;
+  });
+  document.querySelectorAll('#labels .col-header').forEach(h => {
+    const count = h.querySelector('.count');
+    if (count) count.textContent = connCounts[h.dataset.type] || 0;
+  });
 
   // labels: selected = active, directly connected = neighbor, rest hidden
   document.querySelectorAll('#labels .node-label').forEach(l => {
