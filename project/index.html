@@ -422,6 +422,16 @@ section:first-of-type { border-top: none; }
   padding: 4px 9px;
 }
 .graph .node-label.dim { opacity: 0 !important; }
+.graph-meta {
+  position: absolute;
+  bottom: 14px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+.graph-meta.l { left: 14px; color: var(--fg-mute); }
+.graph-meta.r { right: 14px; color: var(--accent); }
 
 /* right panel */
 .detail-head {
@@ -852,6 +862,28 @@ footer {
   .uc-tabs { grid-template-columns: 1fr; }
   .ticker-row { grid-template-columns: 1fr 1fr; gap: 16px; }
   .nav-links { display: none; }
+
+  /* ontology demo: keep labels inside the pane */
+  .graph .col-header { font-size: 8.5px; letter-spacing: 0.04em; }
+  .graph .col-header .count { font-size: 9px; }
+  .graph .node-label {
+    font-size: 9px;
+    max-width: 110px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 2px 5px;
+  }
+  .graph-meta { font-size: 9px; }
+  .graph-meta.l {
+    max-width: 56%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+@media (max-width: 520px) {
+  /* on phones, one meta line is plenty — keep the live one */
+  .graph-meta.l { display: none; }
+  .graph .col-header { font-size: 7.5px; }
 }
 </style>
 </head>
@@ -1152,8 +1184,8 @@ footer {
           <g id="nodes"></g>
         </svg>
         <div id="labels"></div>
-        <div style="position:absolute;bottom:14px;left:14px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--fg-mute);letter-spacing:0.06em;">FIG. 02 / GRAPH VIEW / TYPED COLUMNS</div>
-        <div style="position:absolute;bottom:14px;right:14px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:0.06em;">● SYNCED 04:22:18</div>
+        <div class="graph-meta l">FIG. 02 / GRAPH VIEW / TYPED COLUMNS</div>
+        <div class="graph-meta r">● SYNCED 04:22:18</div>
       </div>
 
       <!-- right: detail -->
@@ -1401,8 +1433,8 @@ const ENTITIES = [
   { id:'play-expansion', type:'Playbook', name:'Expansion signal', tag:'PLA', props:{'ID':'pb_exp_v1','Owner':'RevOps','Triggers':'Feat. adopt. > .6','SLA':'48h','Runs':'38 / mo'}, automations:['Scores 340 accounts','Routes to AEs','Drafts exec email'] },
   { id:'agent-csm',      type:'Agent',    name:'CSM copilot', tag:'AGT', props:{'ID':'ag_csm_prod','Model':'tend-reason-2','Scope':'All accounts','Guardrails':'Policy v7','Tickets / wk':'240'}, automations:['Reads account history','Drafts follow-ups','Opens Jira tickets'] },
   { id:'agent-ar',       type:'Agent',    name:'AR collections', tag:'AGT', props:{'ID':'ag_ar_v2','Model':'tend-ops-1','Scope':'Invoices > 30d','Guardrails':'Finance v2','DSO Δ':'-6.2 days'}, automations:['Dunning cadence','Payment plan proposer','Writes to NetSuite'] },
-  { id:'sku-pro',        type:'Product',  name:'tend Pro (seat)', tag:'PRD', props:{'ID':'sku_pro_2026','Price':'$54/mo','Billing':'Annual','Active seats':'8,142'}, automations:['Seat true-up','Usage→invoice join'] },
-  { id:'sku-agents',     type:'Product',  name:'Agent pack', tag:'PRD', props:{'ID':'sku_agt_pk','Price':'$2,400/mo','Billing':'Monthly','Active tenants':'64'}, automations:['Agent-usage metering','Policy-breach alerts'] },
+  { id:'sku-pro',        type:'Endpoint', name:'Salesforce (CRM)', tag:'INT', props:{'ID':'int_sfdc_prod','Host':'acme.my.salesforce.com','Auth':'OAuth2 · refresh','Last sync':'2m ago','Rows synced':'8.4M'}, automations:['Accounts · Contacts · Opportunities','Writes notes + tasks back','Delta sync every 5m'] },
+  { id:'sku-agents',     type:'Endpoint', name:'Zendesk (Support)', tag:'INT', props:{'ID':'int_zd_prod','Host':'acme.zendesk.com','Auth':'API token','Last sync':'48s ago','Tickets synced':'312k'}, automations:['Ticket + comment ingest','CSAT → NPS computed fact','Two-way comment mirror'] },
 ];
 
 // graph layout — columnar by type (contacts | accounts | deals | playbooks | agents | products)
@@ -1413,7 +1445,7 @@ const COLS = {
   'Deal':     { x: 360, label: 'Deals'     },
   'Playbook': { x: 490, label: 'Playbooks' },
   'Agent':    { x: 620, label: 'Agents'    },
-  'Product':  { x: 730, label: 'Products'  },
+  'Endpoint': { x: 730, label: 'Endpoints' },
 };
 const GRAPH_POS = {
   'contact-ec':     {x: COLS.Contact.x,  y: 220},
@@ -1431,8 +1463,8 @@ const GRAPH_POS = {
   'agent-csm':      {x: COLS.Agent.x,    y: 235},
   'agent-ar':       {x: COLS.Agent.x,    y: 355},
 
-  'sku-pro':        {x: COLS.Product.x,  y: 265},
-  'sku-agents':     {x: COLS.Product.x,  y: 385},
+  'sku-pro':        {x: COLS.Endpoint.x, y: 265},
+  'sku-agents':     {x: COLS.Endpoint.x, y: 385},
 };
 const EDGES = [
   ['acc-northwind','contact-ec'],
@@ -1459,7 +1491,7 @@ const TYPE_COLORS = {
   'Contact':'#ECE7DE',
   'Playbook':'#ECE7DE',
   'Agent':'var(--accent)',
-  'Product':'#ECE7DE',
+  'Endpoint':'#ECE7DE',
 };
 
 (function initDemo(){
