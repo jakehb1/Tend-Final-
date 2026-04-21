@@ -15,7 +15,7 @@
           <a href="index.html" class="active">Docs</a>
           <a href="../about.html">About</a>
         </div>
-        <a href="../index.html#contact" class="nav-cta">Book a demo <span>→</span></a>
+        <a href="https://cal.com/clawdbotdfw/15min" target="_blank" rel="noopener" class="nav-cta">Book a demo <span>→</span></a>
       </div>
     </nav>
   `);
