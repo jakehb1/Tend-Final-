@@ -151,6 +151,15 @@ button.nav-cta { font-family: 'IBM Plex Mono', monospace; font-size: 13px; }
   opacity: 1;
   pointer-events: none;
 }
+.hero-video::-webkit-media-controls,
+.hero-video::-webkit-media-controls-panel,
+.hero-video::-webkit-media-controls-start-playback-button,
+.hero-video::-webkit-media-controls-overlay-play-button {
+  display: none !important;
+  -webkit-appearance: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
 .hero::after {
   content: "";
   position: absolute;
@@ -1755,15 +1764,23 @@ const FAQ = [
     var v = document.querySelector('.hero-video');
     if (!v) return;
     v.muted = true;
+    v.defaultMuted = true;
     v.setAttribute('muted', '');
+    v.setAttribute('playsinline', '');
+    v.removeAttribute('controls');
     var kick = function () {
+      if (!v.paused) return;
+      try { v.muted = true; } catch (e) {}
       var p = v.play();
       if (p && typeof p.catch === 'function') p.catch(function () {});
     };
     kick();
+    v.addEventListener('loadedmetadata', kick);
+    v.addEventListener('canplay', kick);
+    v.addEventListener('pause', function () { setTimeout(kick, 50); });
     document.addEventListener('visibilitychange', function () { if (!document.hidden) kick(); });
-    ['touchstart', 'click', 'scroll'].forEach(function (ev) {
-      window.addEventListener(ev, kick, { once: true, passive: true });
+    ['touchstart', 'touchend', 'click', 'scroll', 'pointerdown'].forEach(function (ev) {
+      window.addEventListener(ev, kick, { passive: true });
     });
   })();
 </script>
