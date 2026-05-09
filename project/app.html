@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="shared.css?v=3">
+<link rel="stylesheet" href="shared.css?v=4">
 <style>
 html, body { height: 100%; }
 body {
@@ -293,11 +293,48 @@ body {
 }
 .hint:hover { color: var(--fg); border-color: var(--line-2); }
 
+.app-toggle {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--line-2);
+  color: var(--fg);
+  padding: 7px 10px;
+  margin-right: 8px;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  align-items: center;
+  justify-content: center;
+}
+.app-toggle svg { display: block; }
+.app-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(10,11,13,0.65);
+  backdrop-filter: blur(2px);
+  z-index: 40;
+}
+
 @media (max-width: 880px) {
   .app-shell { grid-template-columns: 1fr; }
-  .sidebar { display: none; }
   .chat-body, .composer, .chat-head { padding-left: 18px; padding-right: 18px; }
   .app-bar .ws-tag { display: none; }
+  .app-bar .user { display: none; }
+  .app-bar .left { gap: 6px; }
+  .app-toggle { display: inline-flex; }
+  .sidebar {
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    width: min(86vw, 320px);
+    z-index: 50;
+    transform: translateX(-100%);
+    transition: transform 0.22s ease;
+    border-right: 1px solid var(--line);
+    box-shadow: 12px 0 40px rgba(0,0,0,0.45);
+  }
+  body.drawer-open .sidebar { transform: translateX(0); }
+  body.drawer-open .app-backdrop { display: block; }
 }
 </style>
 </head>
@@ -305,6 +342,9 @@ body {
 
 <header class="app-bar">
   <div class="left">
+    <button type="button" class="app-toggle" id="app-toggle" aria-controls="sidebar" aria-expanded="false" aria-label="Open sidebar">
+      <svg width="18" height="14" viewBox="0 0 18 14" aria-hidden="true"><g stroke="currentColor" stroke-width="1.5" stroke-linecap="square"><line x1="0" y1="2" x2="18" y2="2"/><line x1="0" y1="7" x2="18" y2="7"/><line x1="0" y1="12" x2="18" y2="12"/></g></svg>
+    </button>
     <a class="brand" href="index.html"><img src="images/tend-logo.png" alt="tend" /></a>
     <div class="ws-tag">WORKSPACE · <strong>kyros</strong></div>
   </div>
@@ -316,7 +356,8 @@ body {
 
 <div class="app-shell">
 
-  <aside class="sidebar">
+  <div class="app-backdrop" id="app-backdrop" aria-hidden="true"></div>
+  <aside class="sidebar" id="sidebar">
     <div class="sb-section">
       <div class="h"><span>Connected systems</span><span class="count">7 live</span></div>
       <div class="sys-list">
@@ -449,6 +490,24 @@ body {
       window.location.href = 'index.html';
     });
   }
+
+  var appToggle = document.getElementById('app-toggle');
+  var backdrop = document.getElementById('app-backdrop');
+  function setDrawer(open) {
+    document.body.classList.toggle('drawer-open', open);
+    if (appToggle) appToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  if (appToggle) {
+    appToggle.addEventListener('click', function () {
+      setDrawer(!document.body.classList.contains('drawer-open'));
+    });
+  }
+  if (backdrop) {
+    backdrop.addEventListener('click', function () { setDrawer(false); });
+  }
+  document.querySelectorAll('#sidebar .thread, #sidebar .sys').forEach(function (n) {
+    n.addEventListener('click', function () { setDrawer(false); });
+  });
 
   var body = document.getElementById('chat-body');
   var form = document.getElementById('composer');

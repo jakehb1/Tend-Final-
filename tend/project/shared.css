@@ -252,10 +252,57 @@ footer {
   letter-spacing: 0.05em;
 }
 
+/* ---------- mobile nav toggle ---------- */
+.nav-toggle {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--line-2);
+  color: var(--fg);
+  padding: 8px 10px;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  align-items: center;
+  justify-content: center;
+}
+.nav-toggle svg { display: block; }
+.nav-drawer { display: none; }
+.nav.open .nav-toggle { background: var(--bg-3); }
+
 /* ---------- small screens ---------- */
 @media (max-width: 980px) {
   .wrap, .wrap-narrow { padding: 0 24px; }
   .nav-links { display: none; }
+  .nav-right .nav-cta, .nav-right .nav-login { display: none; }
+  .nav-toggle { display: inline-flex; }
+  .nav.open .nav-drawer {
+    display: flex;
+    flex-direction: column;
+    background: rgba(10,11,13,0.96);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-top: 1px solid var(--line);
+    padding: 4px 24px 20px;
+  }
+  .nav-drawer a:not(.nav-login) {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 15px;
+    color: var(--fg);
+    text-decoration: none;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--line);
+    letter-spacing: 0.02em;
+  }
+  .nav-drawer a.active { color: var(--accent); }
+  .nav-drawer .drawer-cta-row {
+    display: flex;
+    gap: 10px;
+    padding-top: 16px;
+  }
+  .nav-drawer .drawer-cta-row > * {
+    flex: 1;
+    justify-content: center;
+  }
   .foot-row { grid-template-columns: 1fr 1fr; }
   .page-head { padding: 120px 0 56px; }
 }
