@@ -124,15 +124,22 @@ h1, h2, h3, h4, h5, h6 {
 button.nav-cta, button.btn { font: inherit; }
 button.nav-cta { font-family: 'IBM Plex Mono', monospace; font-size: 13px; }
 .nav-cta:hover { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
-.nav-right { display: inline-flex; align-items: center; gap: 22px; }
+.nav-right { display: inline-flex; align-items: center; gap: 10px; }
 .nav-login {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 13px;
-  color: var(--fg-dim);
+  color: var(--fg);
+  background: var(--bg-3);
+  padding: 9px 16px;
   text-decoration: none;
+  display: inline-flex; align-items: center; gap: 8px;
+  border: 1px solid var(--line-2);
   letter-spacing: 0.02em;
+  line-height: normal;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  cursor: pointer;
 }
-.nav-login:hover { color: var(--fg); }
+.nav-login:hover { background: var(--bg-2); border-color: var(--fg-dim); color: var(--fg); }
 
 /* ---------- buttons ---------- */
 .btn {
