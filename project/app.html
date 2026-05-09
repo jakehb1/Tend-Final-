@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>tend — Workspace</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="shared.css?v=2">
+<style>
+html, body { height: 100%; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* App top bar */
+.app-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(10,11,13,0.9);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  flex-shrink: 0;
+}
+.app-bar .left, .app-bar .right { display: flex; align-items: center; gap: 18px; }
+.app-bar .brand img { height: 20px; width: auto; display: block; }
+.app-bar .ws-tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--fg-mute);
+  letter-spacing: 0.06em;
+  border-left: 1px solid var(--line);
+  padding-left: 18px;
+}
+.app-bar .ws-tag strong { color: var(--accent); font-weight: 500; }
+.app-bar .user {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--fg-dim);
+  letter-spacing: 0.02em;
+}
+.app-bar .logout {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--fg-mute);
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  transition: color 0.15s, border-color 0.15s;
+}
+.app-bar .logout:hover { color: var(--fg); border-color: var(--line-2); }
+
+/* Layout */
+.app-shell {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  min-height: 0;
+}
+
+/* Sidebar */
+.sidebar {
+  border-right: 1px solid var(--line);
+  background: var(--bg-2);
+  overflow-y: auto;
+  padding: 24px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.sb-section { padding: 0 20px; }
+.sb-section .h {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+  margin-bottom: 12px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.sb-section .h .count { color: var(--accent); }
+.sys-list { display: flex; flex-direction: column; gap: 4px; }
+.sys {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  font-size: 13.5px;
+  color: var(--fg);
+  letter-spacing: -0.005em;
+}
+.sys:hover { border-color: var(--line); }
+.sys .dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+  box-shadow: 0 0 8px rgba(220,210,180,0.45);
+}
+.sys.idle .dot { background: var(--fg-mute); box-shadow: none; }
+.sys.warn .dot { background: #C29A4D; box-shadow: 0 0 8px rgba(194,154,77,0.5); }
+.sys .name { flex: 1; }
+.sys .meta { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--fg-mute); letter-spacing: 0.04em; }
+
+.thread-list { display: flex; flex-direction: column; }
+.thread {
+  padding: 12px 12px;
+  border-left: 2px solid transparent;
+  font-size: 13px;
+  color: var(--fg-dim);
+  cursor: pointer;
+  line-height: 1.4;
+}
+.thread:hover { color: var(--fg); }
+.thread.active {
+  background: var(--bg-3);
+  border-left-color: var(--accent);
+  color: var(--fg);
+}
+.thread .when {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: var(--fg-mute);
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+/* Chat */
+.chat {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  position: relative;
+}
+.chat-head {
+  padding: 16px 28px;
+  border-bottom: 1px solid var(--line);
+  display: flex; justify-content: space-between; align-items: center;
+  flex-shrink: 0;
+}
+.chat-head h1 {
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+.chat-head .meta {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--fg-mute);
+  letter-spacing: 0.05em;
+}
+.chat-head .meta .live { color: var(--accent); }
+
+.chat-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 32px 28px 24px;
+  display: flex; flex-direction: column; gap: 24px;
+}
+.msg { display: flex; gap: 14px; max-width: 760px; }
+.msg.user { align-self: flex-end; max-width: 540px; }
+.msg .who {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+  margin-bottom: 6px;
+}
+.msg.user .who { color: var(--accent); }
+.msg .bubble {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--fg);
+}
+.msg.user .bubble {
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  padding: 12px 16px;
+}
+.msg .bubble p { margin: 0 0 10px; }
+.msg .bubble p:last-child { margin-bottom: 0; }
+.msg .bubble strong { color: var(--accent); font-weight: 500; }
+
+.sources {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin-top: 12px;
+}
+.src {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--fg-dim);
+  border: 1px solid var(--line);
+  padding: 4px 8px;
+}
+.src::before { content: "● "; color: var(--accent); }
+
+.thinking {
+  display: inline-flex; gap: 4px; align-items: center;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--fg-mute);
+  letter-spacing: 0.04em;
+}
+.thinking .d {
+  width: 4px; height: 4px; border-radius: 50%; background: var(--fg-mute);
+  animation: pulse 1.2s infinite;
+}
+.thinking .d:nth-child(2) { animation-delay: 0.15s; }
+.thinking .d:nth-child(3) { animation-delay: 0.3s; }
+@keyframes pulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+/* Composer */
+.composer {
+  border-top: 1px solid var(--line);
+  padding: 16px 28px 20px;
+  flex-shrink: 0;
+  background: var(--bg);
+}
+.composer-inner {
+  border: 1px solid var(--line-2);
+  background: var(--bg-2);
+  padding: 12px 14px;
+  display: flex; gap: 12px; align-items: flex-end;
+}
+.composer textarea {
+  flex: 1;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  resize: none;
+  color: var(--fg);
+  font-family: 'FH Premier', 'IBM Plex Sans', system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  min-height: 24px;
+  max-height: 160px;
+}
+.composer textarea::placeholder { color: var(--fg-mute); }
+.composer .send {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  background: var(--accent);
+  color: var(--accent-ink);
+  border: 1px solid var(--accent);
+  padding: 7px 14px;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  flex-shrink: 0;
+}
+.composer .send:hover { filter: brightness(1.08); }
+.composer .hints {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: var(--fg-mute);
+  letter-spacing: 0.05em;
+  margin-top: 8px;
+  display: flex; flex-wrap: wrap; gap: 8px;
+}
+.hint {
+  border: 1px solid var(--line);
+  padding: 5px 9px;
+  cursor: pointer;
+  color: var(--fg-dim);
+  background: transparent;
+  font: inherit;
+  letter-spacing: inherit;
+}
+.hint:hover { color: var(--fg); border-color: var(--line-2); }
+
+@media (max-width: 880px) {
+  .app-shell { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  .chat-body, .composer, .chat-head { padding-left: 18px; padding-right: 18px; }
+  .app-bar .ws-tag { display: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="app-bar">
+  <div class="left">
+    <a class="brand" href="index.html"><img src="images/tend-logo.png" alt="tend" /></a>
+    <div class="ws-tag">WORKSPACE · <strong>kyros</strong></div>
+  </div>
+  <div class="right">
+    <span class="user">you@company.com</span>
+    <a href="index.html" class="logout">Log out</a>
+  </div>
+</header>
+
+<div class="app-shell">
+
+  <aside class="sidebar">
+    <div class="sb-section">
+      <div class="h"><span>Connected systems</span><span class="count">7 live</span></div>
+      <div class="sys-list">
+        <div class="sys"><span class="dot"></span><span class="name">Salesforce</span><span class="meta">CRM</span></div>
+        <div class="sys"><span class="dot"></span><span class="name">HubSpot</span><span class="meta">MKT</span></div>
+        <div class="sys"><span class="dot"></span><span class="name">Zendesk</span><span class="meta">SUP</span></div>
+        <div class="sys"><span class="dot"></span><span class="name">NetSuite</span><span class="meta">FIN</span></div>
+        <div class="sys"><span class="dot"></span><span class="name">Stripe</span><span class="meta">BIL</span></div>
+        <div class="sys"><span class="dot"></span><span class="name">Snowflake</span><span class="meta">DW</span></div>
+        <div class="sys"><span class="dot"></span><span class="name">Slack</span><span class="meta">MSG</span></div>
+        <div class="sys warn"><span class="dot"></span><span class="name">Gong</span><span class="meta">SYNC</span></div>
+        <div class="sys idle"><span class="dot"></span><span class="name">Notion</span><span class="meta">OFF</span></div>
+      </div>
+    </div>
+
+    <div class="sb-section">
+      <div class="h"><span>Recent threads</span></div>
+      <div class="thread-list">
+        <div class="thread active">
+          <div class="when">TODAY · 09:41</div>
+          What's going on with Acme Corp?
+        </div>
+        <div class="thread">
+          <div class="when">TODAY · 08:12</div>
+          Renewals at risk this quarter
+        </div>
+        <div class="thread">
+          <div class="when">YESTERDAY</div>
+          Why is Q3 ARR off by $84K?
+        </div>
+        <div class="thread">
+          <div class="when">FRI</div>
+          Top 5 support escalations this week
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="chat">
+    <div class="chat-head">
+      <h1>What's going on with Acme Corp?</h1>
+      <div class="meta">● <span class="live">LIVE</span> · grounded across 7 systems</div>
+    </div>
+
+    <div class="chat-body" id="chat-body">
+      <div class="msg user">
+        <div>
+          <div class="who">you</div>
+          <div class="bubble">What's going on with Acme Corp this week?</div>
+        </div>
+      </div>
+
+      <div class="msg">
+        <div>
+          <div class="who">tend</div>
+          <div class="bubble">
+            <p><strong>Acme Corp</strong> is a Series B fintech, 240 employees, account owner <strong>Maya Chen</strong>. Tier: <strong>Enterprise</strong>. Health: <strong>Yellow</strong>.</p>
+            <p>Three things worth your attention this week:</p>
+            <p>1. <strong>Renewal stalled.</strong> Acme's $420K renewal has been at <em>Negotiation</em> for 14 days. Legal hasn't returned the redline since Apr 28. Last touch from Maya was Tuesday.</p>
+            <p>2. <strong>Open P1 ticket.</strong> A SAML SSO failure was filed 18 hours ago by their CTO. Still unassigned in Zendesk.</p>
+            <p>3. <strong>Invoice paid late.</strong> Last Stripe invoice (INV-4421, $34,800) cleared 4 days past terms — first time in 11 months.</p>
+            <div class="sources">
+              <div class="src">Salesforce · 1 opportunity</div>
+              <div class="src">Zendesk · 2 tickets</div>
+              <div class="src">Stripe · 11 invoices</div>
+              <div class="src">Gong · 6 calls</div>
+              <div class="src">Slack · #acme-corp</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="msg user">
+        <div>
+          <div class="who">you</div>
+          <div class="bubble">What should I do about the renewal?</div>
+        </div>
+      </div>
+
+      <div class="msg">
+        <div>
+          <div class="who">tend</div>
+          <div class="bubble">
+            <p>Suggested next step: <strong>nudge their legal team and offer to pre-draft the alternative redline</strong>. The original redline asked for a data-residency clause and a 30-day termination-for-convenience — both of which we've accepted on three other deals this quarter, so I can pull that exact language.</p>
+            <p>If you want, I can:</p>
+            <p>— Draft the email to their legal lead (Priya Iyer) with the redline attached<br/>
+            — Loop Maya in via Slack with the full timeline<br/>
+            — Open a follow-up task on the opportunity in Salesforce, due Friday</p>
+            <div class="sources">
+              <div class="src">Policy · revops/renewals.v3</div>
+              <div class="src">3 precedent deals</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="composer">
+      <form class="composer-inner" id="composer">
+        <textarea id="msg-input" rows="1" placeholder="Ask anything across your connected systems…" autocomplete="off"></textarea>
+        <button type="submit" class="send">Send →</button>
+      </form>
+      <div class="hints" id="hints">
+        <button class="hint" type="button">Show me deals slipping this week</button>
+        <button class="hint" type="button">Which customers expanded last month?</button>
+        <button class="hint" type="button">Open tickets from enterprise accounts</button>
+      </div>
+    </div>
+  </main>
+
+</div>
+
+<script>
+(function () {
+  var body = document.getElementById('chat-body');
+  var form = document.getElementById('composer');
+  var input = document.getElementById('msg-input');
+  var hints = document.getElementById('hints');
+
+  function scroll() { body.scrollTop = body.scrollHeight; }
+
+  function el(tag, className, html) {
+    var n = document.createElement(tag);
+    if (className) n.className = className;
+    if (html != null) n.innerHTML = html;
+    return n;
+  }
+
+  function addUser(text) {
+    var wrap = el('div', 'msg user');
+    wrap.innerHTML = '<div><div class="who">you</div><div class="bubble"></div></div>';
+    wrap.querySelector('.bubble').textContent = text;
+    body.appendChild(wrap);
+    scroll();
+  }
+
+  function addThinking() {
+    var wrap = el('div', 'msg');
+    wrap.innerHTML = '<div><div class="who">tend</div><div class="bubble"><span class="thinking">reading across connected systems<span class="d"></span><span class="d"></span><span class="d"></span></span></div></div>';
+    body.appendChild(wrap);
+    scroll();
+    return wrap;
+  }
+
+  function addReply(html, sources) {
+    var wrap = el('div', 'msg');
+    var srcHTML = (sources || []).map(function (s) { return '<div class="src">' + s + '</div>'; }).join('');
+    wrap.innerHTML = '<div><div class="who">tend</div><div class="bubble">' + html + (srcHTML ? '<div class="sources">' + srcHTML + '</div>' : '') + '</div></div>';
+    body.appendChild(wrap);
+    scroll();
+  }
+
+  var canned = [
+    {
+      match: /slip|stall|risk|behind/i,
+      html: '<p>Five deals are slipping this week (>7 days without movement on a stage they normally clear in 3):</p><p>— <strong>Acme Corp</strong> · $420K · Negotiation, day 14<br/>— <strong>Northwind</strong> · $180K · Legal review, day 9<br/>— <strong>Vela Health</strong> · $96K · Procurement, day 11<br/>— <strong>Orbit Labs</strong> · $310K · Security review, day 8<br/>— <strong>Hartwell</strong> · $58K · Awaiting signature, day 12</p><p>Want me to draft a nudge for each owner?</p>',
+      sources: ['Salesforce · 5 opps', 'Policy · revops/slip-detector']
+    },
+    {
+      match: /expand|upsell|grew|grow/i,
+      html: '<p>Last month, <strong>11 customers</strong> expanded — net new ARR of <strong>$684K</strong>.</p><p>Top three by absolute add: <strong>Helix</strong> (+$140K, added Pro tier), <strong>Quinn &amp; Co</strong> (+$96K, seats), <strong>Brightline</strong> (+$72K, usage tier upgrade). Two were agent-driven (auto-quoted via the renewal flow); the rest were AE-led.</p>',
+      sources: ['Salesforce · opportunities', 'Stripe · subscriptions', 'NetSuite · invoices']
+    },
+    {
+      match: /ticket|support|escalat|p1/i,
+      html: '<p>Currently <strong>14 open tickets</strong> from enterprise accounts. Three are P1 and over SLA:</p><p>— <strong>Acme Corp</strong> · SAML SSO failure · 18h, unassigned<br/>— <strong>Northwind</strong> · API rate-limit regression · 22h, with eng<br/>— <strong>Helix</strong> · Webhook delivery failures · 14h, with support lead</p>',
+      sources: ['Zendesk · 14 tickets', 'PagerDuty · 1 incident']
+    },
+    {
+      match: /arr|revenue|invoice|book/i,
+      html: '<p>Q3 ARR is <strong>$84K below plan</strong>. Two drivers: a <em>$58K downgrade</em> at Glasshouse (moved from Ent to Pro after a renewal in Apr) and <em>$26K of late starts</em> on three deals that closed in Apr but begin billing in May. Underlying new-logo ARR is on plan.</p>',
+      sources: ['Stripe · MRR', 'Salesforce · close dates', 'NetSuite · revenue recognition']
+    },
+    {
+      match: /.*/,
+      html: '<p>Working on it. In the real workspace, I would pull this across your connected systems — Salesforce, HubSpot, Zendesk, NetSuite, Stripe, Snowflake, Slack — and answer with grounded, lineage-tracked context.</p><p>For the demo, try one of the prompts below to see a worked example.</p>',
+      sources: ['Demo mode']
+    }
+  ];
+
+  function reply(text) {
+    var t = addThinking();
+    setTimeout(function () {
+      t.remove();
+      var hit = canned.find(function (c) { return c.match.test(text); });
+      addReply(hit.html, hit.sources);
+    }, 900);
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var text = (input.value || '').trim();
+    if (!text) return;
+    addUser(text);
+    input.value = '';
+    input.style.height = 'auto';
+    reply(text);
+  });
+
+  input.addEventListener('input', function () {
+    input.style.height = 'auto';
+    input.style.height = Math.min(input.scrollHeight, 160) + 'px';
+  });
+
+  input.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      form.requestSubmit();
+    }
+  });
+
+  hints.addEventListener('click', function (e) {
+    var b = e.target.closest('.hint');
+    if (!b) return;
+    input.value = b.textContent;
+    input.focus();
+    form.requestSubmit();
+  });
+
+  scroll();
+})();
+</script>
+
+</body>
+</html>

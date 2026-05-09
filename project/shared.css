@@ -124,6 +124,15 @@ h1, h2, h3, h4, h5, h6 {
 button.nav-cta, button.btn { font: inherit; }
 button.nav-cta { font-family: 'IBM Plex Mono', monospace; font-size: 13px; }
 .nav-cta:hover { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.nav-right { display: inline-flex; align-items: center; gap: 22px; }
+.nav-login {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  color: var(--fg-dim);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+}
+.nav-login:hover { color: var(--fg); }
 
 /* ---------- buttons ---------- */
 .btn {

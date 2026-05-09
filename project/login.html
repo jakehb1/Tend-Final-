@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Log in · tend</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="shared.css?v=2">
+<style>
+.login-wrap {
+  min-height: calc(100vh - 60px);
+  display: grid;
+  place-items: center;
+  padding: 120px 24px 80px;
+}
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+  padding: 40px 36px 32px;
+  position: relative;
+}
+.login-kicker {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 18px;
+}
+.login-card h1 {
+  font-size: 28px;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin: 0 0 8px;
+}
+.login-card h1 .serif { font-weight: 400; }
+.login-card .sub {
+  font-size: 14px;
+  color: var(--fg-dim);
+  line-height: 1.55;
+  margin: 0 0 28px;
+}
+.login-form { display: flex; flex-direction: column; gap: 16px; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+}
+.field input {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--fg);
+  font-family: 'FH Premier', 'IBM Plex Sans', system-ui, sans-serif;
+  font-size: 15px;
+  padding: 11px 14px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.field input:focus { border-color: var(--fg-dim); }
+.login-form button {
+  margin-top: 8px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  padding: 13px 20px;
+  text-decoration: none;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+  cursor: pointer;
+  transition: filter 0.15s, transform 0.15s;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.login-form button:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.demo-note {
+  margin-top: 20px;
+  border: 1px dashed var(--line-2);
+  padding: 12px 14px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--fg-mute);
+  letter-spacing: 0.04em;
+  line-height: 1.55;
+}
+.demo-note strong { color: var(--accent); font-weight: 500; }
+.login-foot {
+  margin-top: 22px;
+  font-size: 13px;
+  color: var(--fg-dim);
+  text-align: center;
+}
+.login-foot a { color: var(--fg); text-decoration: underline; text-decoration-color: var(--line-2); text-underline-offset: 3px; }
+.login-foot a:hover { text-decoration-color: var(--fg-dim); }
+.login-corner {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--fg-mute);
+  text-transform: uppercase;
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html">
+      <img src="images/tend-logo.png" alt="tend" />
+    </a>
+    <div class="nav-links"></div>
+    <div class="nav-right">
+      <a href="index.html" class="nav-login">← Back to site</a>
+    </div>
+  </div>
+</nav>
+
+<div class="login-wrap">
+  <form class="login-card" method="get" action="app.html" autocomplete="on">
+    <span class="login-corner">FIG. 01 / AUTH</span>
+    <div class="login-kicker">Sign in</div>
+    <h1>Welcome back to <span class="serif">tend</span>.</h1>
+    <p class="sub">Pick up where your team left off — one shared map across every connected system.</p>
+
+    <div class="login-form">
+      <div class="field">
+        <label for="email">Work email</label>
+        <input id="email" name="email" type="email" placeholder="you@company.com" required />
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" placeholder="••••••••" required />
+      </div>
+      <button type="submit">Sign in <span style="margin-left:6px;">→</span></button>
+    </div>
+
+    <div class="demo-note">
+      <strong>● Demo</strong> &nbsp;Any email and password will get you into the preview workspace.
+    </div>
+
+    <div class="login-foot">
+      New to tend? <a href="index.html#contact">Book a demo →</a>
+    </div>
+  </form>
+</div>
+
+</body>
+</html>
