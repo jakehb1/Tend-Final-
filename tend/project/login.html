@@ -127,7 +127,7 @@
 </nav>
 
 <div class="login-wrap">
-  <form class="login-card" method="get" action="app.html" autocomplete="on">
+  <form class="login-card" id="login-form" method="get" action="app.html" autocomplete="on">
     <span class="login-corner">FIG. 01 / AUTH</span>
     <div class="login-kicker">Sign in</div>
     <h1>Welcome back to <span class="serif">tend</span>.</h1>
@@ -154,6 +154,24 @@
     </div>
   </form>
 </div>
+
+<script>
+  (function () {
+    var form = document.getElementById('login-form');
+    if (!form) return;
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var email = (form.elements.email.value || '').trim();
+      try {
+        sessionStorage.setItem('tend.session', JSON.stringify({
+          email: email || 'you@company.com',
+          at: Date.now()
+        }));
+      } catch (_) {}
+      window.location.href = 'app.html';
+    });
+  })();
+</script>
 
 </body>
 </html>

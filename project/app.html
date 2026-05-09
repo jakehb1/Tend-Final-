@@ -4,6 +4,15 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>tend — Workspace</title>
+<script>
+  (function () {
+    var raw;
+    try { raw = sessionStorage.getItem('tend.session'); } catch (_) { raw = null; }
+    if (!raw) {
+      window.location.replace('login.html');
+    }
+  })();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
@@ -300,8 +309,8 @@ body {
     <div class="ws-tag">WORKSPACE · <strong>kyros</strong></div>
   </div>
   <div class="right">
-    <span class="user">you@company.com</span>
-    <a href="index.html" class="logout">Log out</a>
+    <span class="user" id="user-email">you@company.com</span>
+    <a href="#" id="logout" class="logout">Log out</a>
   </div>
 </header>
 
@@ -422,6 +431,25 @@ body {
 
 <script>
 (function () {
+  try {
+    var raw = sessionStorage.getItem('tend.session');
+    if (raw) {
+      var sess = JSON.parse(raw);
+      if (sess && sess.email) {
+        document.getElementById('user-email').textContent = sess.email;
+      }
+    }
+  } catch (_) {}
+
+  var logout = document.getElementById('logout');
+  if (logout) {
+    logout.addEventListener('click', function (e) {
+      e.preventDefault();
+      try { sessionStorage.removeItem('tend.session'); } catch (_) {}
+      window.location.href = 'index.html';
+    });
+  }
+
   var body = document.getElementById('chat-body');
   var form = document.getElementById('composer');
   var input = document.getElementById('msg-input');
