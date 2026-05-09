@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>tend — Workspace</title>
+<title>tend Workspace</title>
 <script>
   (function () {
     var raw;
@@ -418,7 +418,7 @@ body {
             <p>Three things worth your attention this week:</p>
             <p>1. <strong>Renewal stalled.</strong> Acme's $420K renewal has been at <em>Negotiation</em> for 14 days. Legal hasn't returned the redline since Apr 28. Last touch from Maya was Tuesday.</p>
             <p>2. <strong>Open P1 ticket.</strong> A SAML SSO failure was filed 18 hours ago by their CTO. Still unassigned in Zendesk.</p>
-            <p>3. <strong>Invoice paid late.</strong> Last Stripe invoice (INV-4421, $34,800) cleared 4 days past terms — first time in 11 months.</p>
+            <p>3. <strong>Invoice paid late.</strong> Last Stripe invoice (INV-4421, $34,800) cleared 4 days past terms. First time in 11 months.</p>
             <div class="sources">
               <div class="src">Salesforce · 1 opportunity</div>
               <div class="src">Zendesk · 2 tickets</div>
@@ -441,11 +441,11 @@ body {
         <div>
           <div class="who">tend</div>
           <div class="bubble">
-            <p>Suggested next step: <strong>nudge their legal team and offer to pre-draft the alternative redline</strong>. The original redline asked for a data-residency clause and a 30-day termination-for-convenience — both of which we've accepted on three other deals this quarter, so I can pull that exact language.</p>
+            <p>Suggested next step: <strong>nudge their legal team and offer to pre-draft the alternative redline</strong>. The original redline asked for a data-residency clause and a 30-day termination-for-convenience. We've accepted both on three other deals this quarter, so I can pull that exact language.</p>
             <p>If you want, I can:</p>
-            <p>— Draft the email to their legal lead (Priya Iyer) with the redline attached<br/>
-            — Loop Maya in via Slack with the full timeline<br/>
-            — Open a follow-up task on the opportunity in Salesforce, due Friday</p>
+            <p>· Draft the email to their legal lead (Priya Iyer) with the redline attached<br/>
+            · Loop Maya in via Slack with the full timeline<br/>
+            · Open a follow-up task on the opportunity in Salesforce, due Friday</p>
             <div class="sources">
               <div class="src">Policy · revops/renewals.v3</div>
               <div class="src">3 precedent deals</div>
@@ -550,17 +550,17 @@ body {
   var canned = [
     {
       match: /slip|stall|risk|behind/i,
-      html: '<p>Five deals are slipping this week (>7 days without movement on a stage they normally clear in 3):</p><p>— <strong>Acme Corp</strong> · $420K · Negotiation, day 14<br/>— <strong>Northwind</strong> · $180K · Legal review, day 9<br/>— <strong>Vela Health</strong> · $96K · Procurement, day 11<br/>— <strong>Orbit Labs</strong> · $310K · Security review, day 8<br/>— <strong>Hartwell</strong> · $58K · Awaiting signature, day 12</p><p>Want me to draft a nudge for each owner?</p>',
+      html: '<p>Five deals are slipping this week (>7 days without movement on a stage they normally clear in 3):</p><p><strong>Acme Corp</strong> · $420K · Negotiation, day 14<br/><strong>Northwind</strong> · $180K · Legal review, day 9<br/><strong>Vela Health</strong> · $96K · Procurement, day 11<br/><strong>Orbit Labs</strong> · $310K · Security review, day 8<br/><strong>Hartwell</strong> · $58K · Awaiting signature, day 12</p><p>Want me to draft a nudge for each owner?</p>',
       sources: ['Salesforce · 5 opps', 'Policy · revops/slip-detector']
     },
     {
       match: /expand|upsell|grew|grow/i,
-      html: '<p>Last month, <strong>11 customers</strong> expanded — net new ARR of <strong>$684K</strong>.</p><p>Top three by absolute add: <strong>Helix</strong> (+$140K, added Pro tier), <strong>Quinn &amp; Co</strong> (+$96K, seats), <strong>Brightline</strong> (+$72K, usage tier upgrade). Two were agent-driven (auto-quoted via the renewal flow); the rest were AE-led.</p>',
+      html: '<p>Last month, <strong>11 customers</strong> expanded. Net new ARR of <strong>$684K</strong>.</p><p>Top three by absolute add: <strong>Helix</strong> (+$140K, added Pro tier), <strong>Quinn &amp; Co</strong> (+$96K, seats), <strong>Brightline</strong> (+$72K, usage tier upgrade). Two were agent-driven (auto-quoted via the renewal flow); the rest were AE-led.</p>',
       sources: ['Salesforce · opportunities', 'Stripe · subscriptions', 'NetSuite · invoices']
     },
     {
       match: /ticket|support|escalat|p1/i,
-      html: '<p>Currently <strong>14 open tickets</strong> from enterprise accounts. Three are P1 and over SLA:</p><p>— <strong>Acme Corp</strong> · SAML SSO failure · 18h, unassigned<br/>— <strong>Northwind</strong> · API rate-limit regression · 22h, with eng<br/>— <strong>Helix</strong> · Webhook delivery failures · 14h, with support lead</p>',
+      html: '<p>Currently <strong>14 open tickets</strong> from enterprise accounts. Three are P1 and over SLA:</p><p><strong>Acme Corp</strong> · SAML SSO failure · 18h, unassigned<br/><strong>Northwind</strong> · API rate-limit regression · 22h, with eng<br/><strong>Helix</strong> · Webhook delivery failures · 14h, with support lead</p>',
       sources: ['Zendesk · 14 tickets', 'PagerDuty · 1 incident']
     },
     {
@@ -570,7 +570,7 @@ body {
     },
     {
       match: /.*/,
-      html: '<p>Working on it. In the real workspace, I would pull this across your connected systems — Salesforce, HubSpot, Zendesk, NetSuite, Stripe, Snowflake, Slack — and answer with grounded, lineage-tracked context.</p><p>For the demo, try one of the prompts below to see a worked example.</p>',
+      html: '<p>Working on it. In the real workspace, I would pull this across your connected systems (Salesforce, HubSpot, Zendesk, NetSuite, Stripe, Snowflake, Slack) and answer with grounded, lineage-tracked context.</p><p>For the demo, try one of the prompts below to see a worked example.</p>',
       sources: ['Demo mode']
     }
   ];

@@ -209,9 +209,9 @@ pre.code .nm { color: var(--fg); }
 <!-- PAGE HEAD -->
 <section class="page-head">
   <div class="wrap">
-    <h1>One graph. <span class="serif">Every layer</span> of the stack.</h1>
+    <h1>Build the <span class="serif">layer</span>. Deploy the <span class="serif">agents</span>.</h1>
     <p class="lede">
-      tend is a four-layer platform: a governed ontology at the core, a connector fabric that feeds it, a policy engine that controls it, and an agent runtime that acts on it. Built to replace the fragile glue between your tools, not another one of them.
+      tend is two halves of one platform. A standardized data layer your agents can actually read, plus an agent runtime that ships them on top to do the work nobody on your team wants to do. Replaces the fragile glue between your tools, not another one of them.
     </p>
   </div>
 </section>
@@ -221,18 +221,18 @@ pre.code .nm { color: var(--fg); }
   <div class="wrap">
     <div class="layers">
       <aside class="layer-nav" id="layer-nav">
-        <a href="#ontology" class="active"><span>Ontology</span><span class="idx">01</span></a>
+        <a href="#ontology" class="active"><span>Data layer</span><span class="idx">01</span></a>
         <a href="#ingest"><span>Ingest &amp; resolve</span><span class="idx">02</span></a>
         <a href="#govern"><span>Govern &amp; policy</span><span class="idx">03</span></a>
-        <a href="#agents"><span>Agents &amp; workflows</span><span class="idx">04</span></a>
+        <a href="#agents"><span>Agents</span><span class="idx">04</span></a>
       </aside>
 
       <div class="layer-body">
 
         <div class="layer" id="ontology">
           <div class="layer-kicker">LAYER 01 / CORE</div>
-          <h3>The <span class="serif">ontology</span>. Your business as a typed graph.</h3>
-          <p>Define the entities, relationships, and lifecycle states your team actually operates on. Version them. Diff them. Migrate without downtime. Every other layer reads from here.</p>
+          <h3>The <span class="serif">data layer</span>. Your business in one live, governed model.</h3>
+          <p>Define the customers, deals, and processes your team actually operates on. Version them. Diff them. Migrate without downtime. Every agent reads from here.</p>
           <div class="spec">
             <div class="cell"><div class="k">Types</div><div class="v">Entities, relations, states, derived facts</div></div>
             <div class="cell"><div class="k">Schema</div><div class="v">Versioned, diffable, migratable</div></div>
@@ -319,11 +319,11 @@ pre.code .nm { color: var(--fg); }
 
         <div class="layer" id="agents">
           <div class="layer-kicker">LAYER 04 / ACT</div>
-          <h3>Agents and workflows that share one <span class="serif">source of meaning.</span></h3>
-          <p>LLM-native agents consume the ontology as typed context, propose actions, and respect the same policies as humans. Event-driven workflows trigger on graph changes and write back to source systems.</p>
+          <h3>Agents that do the <span class="serif">work nobody wants to.</span></h3>
+          <p>Ship agents on top of the data layer to chase renewals, route tickets, reconcile invoices, and other busywork. They read your model as real context, propose actions, and respect the same rules as humans. Triggers fire on data changes; writes go back to your tools.</p>
           <div class="spec">
             <div class="cell"><div class="k">Agents</div><div class="v">Typed context, tool-call bounded</div></div>
-            <div class="cell"><div class="k">Triggers</div><div class="v">On entity change, schedule, or API</div></div>
+            <div class="cell"><div class="k">Triggers</div><div class="v">On data change, schedule, or API</div></div>
             <div class="cell"><div class="k">Write-back</div><div class="v">160+ destinations, retry + SLA</div></div>
           </div>
         </div>
