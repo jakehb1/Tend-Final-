@@ -1081,80 +1081,6 @@ footer {
   .ba-col.before { border-right: none; border-bottom: 1px solid var(--line); }
 }
 
-/* ---------- AI WITHOUT CONTEXT (compare) ---------- */
-.context { padding: 96px 0; border-top: 1px solid var(--line); }
-.context-head {
-  display: grid;
-  grid-template-columns: minmax(0, 600px) 1fr;
-  gap: 60px;
-  align-items: end;
-  margin-bottom: 48px;
-}
-.context-head h2 {
-  font-size: clamp(36px, 3.6vw, 56px);
-  font-weight: 300;
-  letter-spacing: -0.025em;
-  line-height: 1.05;
-  margin: 0;
-}
-.context-head h2 .serif { font-weight: 400; color: var(--accent); }
-.context-head p {
-  font-size: 16px;
-  color: var(--fg-dim);
-  line-height: 1.55;
-  margin: 0;
-  max-width: 460px;
-}
-.compare-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0;
-  border: 1px solid var(--line);
-}
-.compare-col {
-  padding: 28px 26px 32px;
-  display: flex; flex-direction: column; gap: 16px;
-  min-height: 360px;
-}
-.compare-col.generic { border-right: 1px solid var(--line); background: var(--bg); }
-.compare-col.tend { background: var(--bg-2); }
-.compare-label {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--fg-mute);
-  display: flex; justify-content: space-between; align-items: center;
-}
-.compare-col.tend .compare-label { color: var(--accent); }
-.compare-bubble.user {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
-  color: var(--fg-dim);
-  letter-spacing: 0.04em;
-  padding: 10px 14px;
-  border: 1px solid var(--line);
-  align-self: flex-end;
-  max-width: 86%;
-}
-.compare-col.tend .compare-bubble.user { color: var(--fg); border-color: var(--line-2); }
-.compare-bubble.ai {
-  font-size: 14.5px;
-  line-height: 1.55;
-  color: var(--fg-dim);
-}
-.compare-bubble.ai p { margin: 0 0 8px; }
-.compare-bubble.ai p:last-child { margin-bottom: 0; }
-.compare-col.tend .compare-bubble.ai { color: var(--fg); }
-.compare-bubble.ai strong { color: var(--accent); font-weight: 500; }
-.compare-col.generic .compare-bubble.ai strong { color: var(--fg-mute); }
-
-@media (max-width: 720px) {
-  .context-head { grid-template-columns: 1fr; gap: 16px; align-items: start; }
-  .compare-grid { grid-template-columns: 1fr; }
-  .compare-col.generic { border-right: none; border-bottom: 1px solid var(--line); }
-  .compare-col { min-height: 0; }
-}
 </style>
 </head>
 <body>
@@ -1247,44 +1173,13 @@ footer {
   </div>
 </section>
 
-<!-- AI WITHOUT CONTEXT -->
-<section id="context" class="context">
-  <div class="wrap">
-    <div class="context-head">
-      <h2>AI without context is just <span class="serif">another chat bot.</span></h2>
-      <p>ChatGPT can write you an email. It can't tell you which customer to send it to, what they bought, when they last complained, or whether their renewal is at risk.</p>
-    </div>
-    <div class="compare-grid">
-      <div class="compare-col generic">
-        <div class="compare-label"><span>Generic AI</span><span>NO CONTEXT</span></div>
-        <div class="compare-bubble user">"What's going on with Acme Corp this week?"</div>
-        <div class="compare-bubble ai">
-          <p>I don't have access to information about a specific company called Acme Corp. I can help you research them publicly, draft a generic check-in email, or look at industry patterns from public data.</p>
-          <p>If you'd like, share what you know and I can help structure a response.</p>
-        </div>
-      </div>
-      <div class="compare-col tend">
-        <div class="compare-label"><span>tend</span><span>● LIVE CONTEXT</span></div>
-        <div class="compare-bubble user">"What's going on with Acme Corp this week?"</div>
-        <div class="compare-bubble ai">
-          <p><strong>Acme Corp</strong> · Series B fintech · owner Maya Chen. Three things this week:</p>
-          <p><strong>$420K renewal</strong> stalled in Negotiation, day 14. Legal hasn't returned the redline since Apr 28.</p>
-          <p><strong>P1 SAML SSO ticket</strong> open 18h, unassigned in Zendesk.</p>
-          <p><strong>Last invoice paid 4 days late</strong> in Stripe, first time in 11 months.</p>
-          <p>Want me to draft the nudge to Acme's legal lead?</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- SCHEMATIC: what it looks like -->
 <section id="ontology" class="ontology-showcase">
   <div class="wrap">
     <div class="showcase-head">
-      <h2>Every tool feeds in. <span class="serif">Your AI works from there.</span></h2>
-      <p class="showcase-sub">Salesforce, HubSpot, Zendesk, NetSuite, Stripe, your warehouse, your inboxes. All feeding into one live model of how your business actually works: what an account is, what a renewal looks like, who owns what, how a contact connects to a deal.</p>
-      <p class="showcase-sub" style="margin-top:14px;">Engineers call this an <strong style="color:var(--fg);font-weight:500;">ontology</strong>. It's the difference between AI that hallucinates and AI that gets the job done.</p>
+      <h2>AI without context is just <span class="serif">another chat bot.</span></h2>
+      <p class="showcase-sub">ChatGPT can write you an email. It can't tell you which customer to send it to, what they bought, or whether their renewal is at risk. That's the difference between AI that's clever and AI that gets the job done.</p>
+      <p class="showcase-sub" style="margin-top:14px;">Tend feeds yours from every tool you already use, Salesforce, HubSpot, Zendesk, NetSuite, Stripe, your warehouse, your inboxes, into one live model of how your business actually works. Engineers call this an <strong style="color:var(--fg);font-weight:500;">ontology</strong>. We call it the reason your AI is useful instead of just plausible.</p>
     </div>
       <div class="hero-schem" aria-hidden="true">
         <span class="schem-label tl">FIG. 01 / TEND / SYSTEM MAP</span>
