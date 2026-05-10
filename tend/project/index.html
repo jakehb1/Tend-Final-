@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>tend. Agents that do the work nobody wants to.</title>
+<title>tend. Practical AI for the work your team shouldn't have to do.</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
@@ -1010,6 +1010,76 @@ footer {
   .graph-meta.l { display: none; }
   .graph .col-header { font-size: 7.5px; }
 }
+
+/* ---------- BEFORE / AFTER ---------- */
+.change { padding: 96px 0; border-top: 1px solid var(--line); }
+.change .change-head {
+  display: grid;
+  grid-template-columns: minmax(0, 520px) 1fr;
+  gap: 60px;
+  align-items: end;
+  margin-bottom: 48px;
+}
+.change .change-head h2 {
+  font-size: clamp(36px, 3.6vw, 56px);
+  font-weight: 300;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  margin: 0;
+}
+.change .change-head h2 .serif { font-weight: 400; color: var(--accent); }
+.change .change-head p {
+  font-size: 16px;
+  color: var(--fg-dim);
+  line-height: 1.55;
+  margin: 0;
+  max-width: 460px;
+}
+.ba-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid var(--line); }
+.ba-col { padding: 32px 28px 36px; }
+.ba-col.before { border-right: 1px solid var(--line); background: var(--bg); }
+.ba-col.after { background: var(--bg-2); }
+.ba-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+  margin-bottom: 24px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.ba-col.after .ba-label { color: var(--accent); }
+.ba-label .tag {
+  font-size: 10px;
+  color: var(--fg-mute);
+  letter-spacing: 0.06em;
+}
+.ba-col.after .ba-label .tag { color: var(--accent); }
+.ba-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+.ba-list li {
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--fg-dim);
+  padding-left: 22px;
+  position: relative;
+}
+.ba-col.after .ba-list li { color: var(--fg); }
+.ba-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 11px;
+  width: 12px;
+  height: 1px;
+  background: var(--fg-mute);
+}
+.ba-col.after .ba-list li::before { background: var(--accent); height: 1.5px; top: 10px; }
+
+@media (max-width: 720px) {
+  .change .change-head { grid-template-columns: 1fr; gap: 16px; align-items: start; }
+  .ba-grid { grid-template-columns: 1fr; }
+  .ba-col.before { border-right: none; border-bottom: 1px solid var(--line); }
+}
 </style>
 </head>
 <body>
@@ -1054,26 +1124,60 @@ footer {
     <div class="hero-grid">
       <div>
         <h1>
-          Autonomous agents<br/>
-          for the <span class="serif">repetitive work</span>.
+          <span class="serif">Practical AI</span> for the work<br/>
+          your team shouldn't have to do.
         </h1>
         <p class="hero-sub">
-          Tend builds a data layer your agents can actually read. Then it ships them on top to chase renewals, route tickets, and reconcile invoices, so your team can focus on what actually needs them.
+          Most businesses run on disconnected tools, wasting hours chasing follow-ups, reorganizing data, and handling repetitive admin. Tend installs practical AI that helps you respond faster, operate cleaner, and grow revenue without adding headcount.
         </p>
         <div class="hero-ctas">
-          <a href="#ontology" class="btn">See how it works <span class="arr">↓</span></a>
+          <a href="#change" class="btn">See what changes <span class="arr">↓</span></a>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ONTOLOGY SHOWCASE (moved from hero) -->
+<!-- BEFORE / AFTER -->
+<section id="change" class="change">
+  <div class="wrap">
+    <div class="change-head">
+      <h2>What changes after <span class="serif">tend</span>.</h2>
+      <p>Same team. Same tools. New defaults. The first 30 days, this is what your operators feel.</p>
+    </div>
+    <div class="ba-grid">
+      <div class="ba-col before">
+        <div class="ba-label"><span>Before tend</span><span class="tag">/ STATUS QUO</span></div>
+        <ul class="ba-list">
+          <li>Leads sit unanswered for hours, sometimes days.</li>
+          <li>The same customer lives in five different tools.</li>
+          <li>Follow-ups happen "when someone has time."</li>
+          <li>Reports come from manually stitched spreadsheets.</li>
+          <li>Renewals and churn risks surprise you at quarter-end.</li>
+          <li>Hiring is the answer every time volume goes up.</li>
+        </ul>
+      </div>
+      <div class="ba-col after">
+        <div class="ba-label"><span>After tend</span><span class="tag">/ NEW DEFAULT</span></div>
+        <ul class="ba-list">
+          <li>Every lead gets a personalized reply within minutes.</li>
+          <li>Every team works from the same up-to-date picture.</li>
+          <li>Follow-ups go out automatically, on a schedule you set.</li>
+          <li>Your dashboards write themselves and stay current.</li>
+          <li>You see renewal risk weeks before it matters.</li>
+          <li>Volume goes up, headcount doesn't.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCHEMATIC: what it looks like -->
 <section id="ontology" class="ontology-showcase">
   <div class="wrap">
     <div class="showcase-head">
-      <h2>Step one: a <span class="serif">standardized data layer</span>.</h2>
-      <p class="showcase-sub">Tend pulls every customer, deal, and process out of your tools and into one live, governed model. Permissions and history wrap the whole thing. Now your agents have something they can actually read.</p>
+      <h2>Every tool feeds in. <span class="serif">Your AI works from there.</span></h2>
+      <p class="showcase-sub">Salesforce, HubSpot, Zendesk, NetSuite, Stripe, your warehouse, your inboxes. Tend pulls every customer, deal, and process into one live picture. Then the AI works on top of it. No more spreadsheet stitching, no more "which tool is the source of truth?"</p>
     </div>
       <div class="hero-schem" aria-hidden="true">
         <span class="schem-label tl">FIG. 01 / TEND / SYSTEM MAP</span>
@@ -1236,17 +1340,20 @@ footer {
     <div class="what-grid">
       <div>
         <p class="what-lead">
-          Layer first.<br/>
-          <span class="accent">Then agents.</span>
+          Three things change.<br/>
+          <span class="accent">All measurable.</span>
         </p>
       </div>
       <div class="what-side">
-        <div class="kicker">→ HOW IT WORKS</div>
+        <div class="kicker">→ THE BUSINESS CASE</div>
         <p>
-          First, tend builds your <strong style="color:var(--fg);font-weight:500;">standardized data layer</strong>. Every customer, deal, and process from your tools, in one live, governed model your agents can actually read.
+          <strong style="color:var(--fg);font-weight:500;">Respond faster.</strong> Leads, tickets, and renewals get acted on in minutes, not days. Conversion goes up. Churn drops.
         </p>
         <p>
-          Then we deploy agents on top. They chase renewals, route tickets, reconcile invoices, and do whatever else nobody on your team wants to do.
+          <strong style="color:var(--fg);font-weight:500;">Operate cleaner.</strong> One source of truth across every tool. No more "which dashboard is right?" or "who owns this?"
+        </p>
+        <p>
+          <strong style="color:var(--fg);font-weight:500;">Grow without adding headcount.</strong> AI handles the volume. Your team focuses on the work that actually needs them.
         </p>
       </div>
     </div>
@@ -1259,32 +1366,32 @@ footer {
     <div class="how-steps">
       <div class="step">
         <div class="n">STEP 01 / AUDIT</div>
-        <h3>Audit your tools.</h3>
-        <p>We map your Salesforce, HubSpot, Zendesk, NetSuite, and Zapier footprint. Every integration, every workflow, every blind spot. You see exactly what overlaps, what's missing, and what's worth automating.</p>
+        <h3>We map what you have.</h3>
+        <p>We look at every tool you use and find where time is leaking. You see exactly which work is repetitive, which follow-ups are getting dropped, and which work AI can take off your team's plate.</p>
         <div class="diag" aria-hidden="true">
           <svg width="80" height="60" viewBox="0 0 80 60"><g stroke="currentColor" fill="none" stroke-width="1"><rect x="2" y="6" width="14" height="10"/><rect x="2" y="25" width="14" height="10"/><rect x="2" y="44" width="14" height="10"/><path d="M16,11 L64,30 M16,30 L64,30 M16,49 L64,30"/><rect x="64" y="24" width="14" height="12" fill="currentColor"/></g></svg>
         </div>
       </div>
       <div class="step">
-        <div class="n">STEP 02 / BUILD</div>
-        <h3>Build the data layer.</h3>
-        <p>We pull every customer, deal, and process out of your tools, merge duplicates, and connect records across systems. One clean model that every agent can read.</p>
+        <div class="n">STEP 02 / CONNECT</div>
+        <h3>We connect your tools.</h3>
+        <p>We pull every customer, deal, and process into one clean picture. Duplicates merged, records joined across systems. No more spreadsheet stitching, no more "wait, which system has the right number?"</p>
         <div class="diag" aria-hidden="true">
           <svg width="80" height="60" viewBox="0 0 80 60"><g stroke="currentColor" fill="none" stroke-width="1"><circle cx="14" cy="14" r="5"/><circle cx="66" cy="14" r="5"/><circle cx="40" cy="38" r="6" fill="currentColor"/><circle cx="14" cy="52" r="4"/><circle cx="66" cy="52" r="4"/><path d="M14,19 L40,34 M66,19 L40,34 M40,44 L14,50 M40,44 L66,50"/></g></svg>
         </div>
       </div>
       <div class="step">
-        <div class="n">STEP 03 / VISUALIZE</div>
-        <h3>See it on one page.</h3>
-        <p>Every customer, deal, and process in one view. Pan, filter, and click anything to see what's going on. The whole picture, finally legible.</p>
+        <div class="n">STEP 03 / DEPLOY</div>
+        <h3>We deploy the AI.</h3>
+        <p>Practical AI agents that follow your team's playbook, not a generic one. They chase the follow-ups, route the tickets, and reconcile the books. Every action goes back into your tools so the team sees what happened.</p>
         <div class="diag" aria-hidden="true">
           <svg width="80" height="60" viewBox="0 0 80 60"><g stroke="currentColor" fill="none" stroke-width="1"><rect x="10" y="8" width="60" height="10"/><rect x="10" y="24" width="60" height="10"/><rect x="10" y="40" width="60" height="10"/><circle cx="18" cy="13" r="2" fill="currentColor"/><circle cx="18" cy="29" r="2" fill="currentColor"/><circle cx="18" cy="45" r="2" fill="currentColor"/></g></svg>
         </div>
       </div>
       <div class="step">
-        <div class="n">STEP 04 / DEPLOY</div>
-        <h3>Deploy the agents.</h3>
-        <p>Ship agents that read from the data layer and act in your tools. They handle the chasing, routing, and reconciling so your team doesn't have to.</p>
+        <div class="n">STEP 04 / MEASURE</div>
+        <h3>You see the results.</h3>
+        <p>Faster follow-ups, fewer dropped leads, less admin time, more revenue per employee. We track the numbers so you can show your board exactly what changed.</p>
         <div class="diag" aria-hidden="true">
           <svg width="80" height="60" viewBox="0 0 80 60"><g stroke="currentColor" fill="none" stroke-width="1"><circle cx="14" cy="30" r="6"/><path d="M20,30 L40,30 M46,30 L62,30" /><rect x="36" y="24" width="12" height="12"/><polygon points="62,30 72,24 72,36" fill="currentColor"/><path d="M14,30 L14,12 M14,30 L14,48" stroke-dasharray="2 2"/></g></svg>
         </div>
@@ -1303,7 +1410,7 @@ footer {
         </h2>
       </div>
       <div style="color:var(--fg-dim);font-size:15px;line-height:1.55;">
-        Every account, deal, contact, and playbook lives in your data layer. Click any item to see its details and the agents working on it.
+        Every account, deal, contact, and playbook in one place. Click any item to see its history and the AI working on it. This is what your team logs into every morning.
       </div>
     </div>
 
@@ -1345,50 +1452,50 @@ footer {
     <div class="sec-head">
       <div>
         <h2 style="font-size:clamp(36px,3.8vw,56px);font-weight:300;letter-spacing:-0.025em;line-height:1.04;margin:0;">
-          One platform. <span class="serif" style="color:var(--accent)">Every layer</span> of the stack.
+          What's in the box. <span class="serif" style="color:var(--accent)">Plain English.</span>
         </h2>
       </div>
       <div style="color:var(--fg-dim);font-size:15px;line-height:1.55;">
-        From the data layer underneath to the agents acting on it, tend covers both halves. No more gluing five vendors together.
+        Everything you need to get from "we have five tools and a Zapier graveyard" to "the AI runs the busywork." No bolt-on vendors, no integration projects.
       </div>
     </div>
 
     <div class="caps-grid">
       <div class="cap">
-        <div class="num">01 / CORE</div>
-        <h4>Data modeler</h4>
-        <p>Map your customers, deals, and processes into a shared schema your whole team agrees on. Versioned, with zero-downtime updates.</p>
-        <svg class="glyph" viewBox="0 0 40 40"><g stroke="currentColor" stroke-width="1" fill="none"><rect x="2" y="2" width="14" height="14"/><rect x="24" y="2" width="14" height="14"/><rect x="2" y="24" width="14" height="14"/><rect x="24" y="24" width="14" height="14"/><path d="M16,9 L24,9 M9,16 L9,24 M31,16 L31,24 M16,31 L24,31"/></g></svg>
-      </div>
-      <div class="cap">
-        <div class="num">02 / INGEST</div>
-        <h4>Connectors</h4>
-        <p>180+ ready-made connectors, plus an SDK for anything custom. Stream from your warehouse or write straight into tend.</p>
+        <div class="num">01 / CONNECT</div>
+        <h4>Plug into your tools</h4>
+        <p>180+ ready-made connectors for Salesforce, HubSpot, Zendesk, NetSuite, Stripe, your warehouse, and more. Live, two-way. We do the heavy lifting in week one.</p>
         <svg class="glyph" viewBox="0 0 40 40"><g stroke="currentColor" stroke-width="1" fill="none"><circle cx="20" cy="20" r="4" fill="currentColor"/><path d="M20,16 L20,4 M20,24 L20,36 M16,20 L4,20 M24,20 L36,20 M16,16 L7,7 M24,16 L33,7 M16,24 L7,33 M24,24 L33,33"/></g></svg>
       </div>
       <div class="cap">
-        <div class="num">03 / RESOLVE</div>
-        <h4>Identity &amp; matching</h4>
-        <p>Find and merge duplicate records across your tools. Keep the history of where each value came from, and roll back when you're wrong.</p>
+        <div class="num">02 / CLEAN</div>
+        <h4>One source of truth</h4>
+        <p>We merge duplicate records across your tools and keep them in sync. Every customer, deal, and contact has one canonical version your whole team can point at.</p>
         <svg class="glyph" viewBox="0 0 40 40"><g stroke="currentColor" stroke-width="1" fill="none"><circle cx="13" cy="20" r="9"/><circle cx="27" cy="20" r="9"/></g></svg>
       </div>
       <div class="cap">
-        <div class="num">04 / POLICY</div>
-        <h4>Governance &amp; access</h4>
-        <p>Attribute-level permissions, row-level policy, full audit trail. Ship agents that can't read what they shouldn't.</p>
-        <svg class="glyph" viewBox="0 0 40 40"><g stroke="currentColor" stroke-width="1" fill="none"><path d="M20,4 L34,10 L34,22 C34,30 28,34 20,36 C12,34 6,30 6,22 L6,10 Z"/><path d="M14,20 L18,24 L26,16"/></g></svg>
-      </div>
-      <div class="cap">
-        <div class="num">05 / REASON</div>
-        <h4>Agents &amp; copilots</h4>
-        <p>AI agents that read your data layer as real context, propose actions, and respect your team's rules and boundaries.</p>
+        <div class="num">03 / AI AGENTS</div>
+        <h4>Practical AI on top</h4>
+        <p>Agents that follow your team's playbook. They draft the email, route the ticket, chase the renewal, and put the next step in front of the right person.</p>
         <svg class="glyph" viewBox="0 0 40 40"><g stroke="currentColor" stroke-width="1" fill="none"><rect x="8" y="10" width="24" height="20" rx="2"/><circle cx="16" cy="20" r="2" fill="currentColor"/><circle cx="24" cy="20" r="2" fill="currentColor"/><path d="M20,4 L20,10 M14,32 L14,36 M26,32 L26,36"/></g></svg>
       </div>
       <div class="cap">
-        <div class="num">06 / ACT</div>
-        <h4>Workflow engine</h4>
-        <p>Event-driven flows with retries, SLAs, and writebacks to your tools. Something changes in tend; the world reacts.</p>
-        <svg class="glyph" viewBox="0 0 40 40"><g stroke="currentColor" stroke-width="1" fill="none"><circle cx="8" cy="20" r="4"/><circle cx="32" cy="20" r="4"/><path d="M12,20 L28,20"/><polygon points="28,20 22,16 22,24" fill="currentColor"/></g></svg>
+        <div class="num">04 / WORKFLOWS</div>
+        <h4>Automation that sticks</h4>
+        <p>"When a deal stalls, do this." "When a ticket sits 4 hours, do that." Triggers fire on real events, with retries, SLAs, and writebacks to your tools.</p>
+        <svg class="glyph" viewBox="0 0 40 40"><g stroke="currentColor" stroke-width="1" fill="none"><circle cx="14" cy="30" r="6"/><path d="M20,30 L40,30 M46,30 L62,30" /><rect x="36" y="24" width="12" height="12"/><polygon points="62,30 72,24 72,36" fill="currentColor"/><path d="M14,30 L14,12 M14,30 L14,48" stroke-dasharray="2 2"/></g></svg>
+      </div>
+      <div class="cap">
+        <div class="num">05 / GUARDRAILS</div>
+        <h4>Safe by default</h4>
+        <p>Every AI action is logged, bounded, and reversible. Ship agents that can't see what they shouldn't or do what they aren't allowed to. SOC 2 II, HIPAA, GDPR ready.</p>
+        <svg class="glyph" viewBox="0 0 40 40"><g stroke="currentColor" stroke-width="1" fill="none"><path d="M20,4 L34,10 L34,22 C34,30 28,34 20,36 C12,34 6,30 6,22 L6,10 Z"/><path d="M14,20 L18,24 L26,16"/></g></svg>
+      </div>
+      <div class="cap">
+        <div class="num">06 / DASHBOARDS</div>
+        <h4>You see what changed</h4>
+        <p>Faster follow-ups, fewer dropped leads, less admin time, more revenue per employee. Every metric tied back to a real action by the AI or a real person.</p>
+        <svg class="glyph" viewBox="0 0 40 40"><g stroke="currentColor" stroke-width="1" fill="none"><rect x="4" y="6" width="32" height="22"/><path d="M8,24 L14,18 L20,22 L28,12 L34,16"/><circle cx="20" cy="22" r="1.5" fill="currentColor"/><circle cx="28" cy="12" r="1.5" fill="currentColor"/></g></svg>
       </div>
     </div>
   </div>
@@ -1397,7 +1504,7 @@ footer {
 <!-- USE CASES -->
 <section id="uc" class="uc">
   <div class="wrap">
-    <h2>Where <span class="serif">ops</span> become autonomous.</h2>
+    <h2>What it looks like in <span class="serif">your business.</span></h2>
 
     <div class="uc-tabs">
       <div class="uc-list" id="uc-list">
@@ -1416,21 +1523,21 @@ footer {
     <div class="metrics-grid">
       <div class="metric quote">
         <blockquote>
-          <span class="serif">"</span>We replaced a Zapier graveyard and two contractors. tend is now the thing our revops team <em>argues about</em>. Which is exactly what a source of truth should feel like.<span class="serif">"</span>
+          <span class="serif">"</span>We replaced a Zapier graveyard and two contractors. The team gets two hours a day back, and we caught $400K of renewal risk we would have missed last quarter.<span class="serif">"</span>
         </blockquote>
         <div class="attr">HEAD OF REVOPS &nbsp;/&nbsp; SERIES C FINTECH</div>
       </div>
       <div class="metric">
-        <div class="v">78<span class="unit">%</span></div>
-        <div class="k">Reduction in manual ops touches</div>
+        <div class="v">3.2<span class="unit">×</span></div>
+        <div class="k">Faster lead follow-up</div>
       </div>
       <div class="metric">
-        <div class="v">4.1<span class="unit">×</span></div>
-        <div class="k">Faster to onboard a new tool into the stack</div>
+        <div class="v">−61<span class="unit">%</span></div>
+        <div class="k">Less time spent on admin</div>
       </div>
       <div class="metric">
         <div class="v">$2.8<span class="unit">M</span></div>
-        <div class="k">Median annualized ops cost saved</div>
+        <div class="k">Median annual ops cost saved</div>
       </div>
     </div>
   </div>
@@ -1453,11 +1560,11 @@ footer {
 <section id="contact" class="final">
   <div class="wrap">
     <h2 style="margin-top:24px;">
-      Build the <span class="serif">layer</span>. Deploy the <span class="serif">agents</span>.
+      Less chaos. <span class="serif">More revenue.</span> Same team.
     </h2>
     <div class="cta-row">
-      <button type="button" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}' class="btn primary">Book a demo <span class="arr">→</span></button>
-      <a href="#" class="btn">Read the architecture brief</a>
+      <button type="button" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}' class="btn primary">Book a 30-min demo <span class="arr">→</span></button>
+      <a href="use-cases.html" class="btn">See use cases</a>
     </div>
   </div>
 </section>
@@ -1762,11 +1869,11 @@ function select(id, opts) {
 
 /* ---------------- USE CASES ---------------- */
 const USE_CASES = [
-  { k:'REVENUE OPS', title:'From lead to renewal, one ontology.', copy:'Every account, contact, deal and playbook lives in one graph. CSMs, AEs, and agents all act on the same definitions. No more Zapier graveyards and contradictory Salesforce fields.', stats:[['−78','%','Manual touches'], ['4.1','×','Faster tool rollout'], ['99.7','%','Field accuracy']] },
-  { k:'FINANCE OPS', title:'Close the books without the 3am Slack.', copy:'Join invoices, contracts, payments, and product usage into a single auditable ledger. Agents reconcile, flag variances, and file the exceptions before your controller wakes up.', stats:[['−6.2','d','DSO reduction'], ['92','%','Auto-reconciled'], ['$2.8','M','Median saved']] },
-  { k:'SUPPORT OPS', title:'Tickets that know what a customer <em>is</em>.', copy:'Route by tier, risk, and history, not a flat priority field. Agents draft responses grounded in the ontology, escalate when policy demands, and close the loop back to product.', stats:[['−41','%','First-touch time'], ['+22','pt','CSAT'], ['64','%','Auto-resolved']] },
-  { k:'SUPPLY CHAIN', title:'Inventory that reasons about itself.', copy:'SKUs, lots, shipments, and vendor contracts as first-class entities. Flows react to graph events. A late container becomes a rerouting decision, not a spreadsheet emergency.', stats:[['−19','%','Stockouts'], ['1.7','×','Turn velocity'], ['18','hr','Avg response']] },
-  { k:'PEOPLE OPS', title:'Org state, not org chart.', copy:'Roles, skills, access, and workflow ownership live in the graph. Access provisioning, onboarding, and role changes become automations, not tickets filed in three tools.', stats:[['−86','%','Onboarding delays'], ['100','%','Access audited'], ['3.4','d','→ productive']] },
+  { k:'REVENUE OPS', title:'Stop losing leads. Stop missing renewals.', copy:'Every account, contact, and deal in one place. AI drafts the follow-up, chases the renewal, and puts the next step in front of the right rep before the deal stalls. Your AEs spend their day selling, not chasing fields in Salesforce.', stats:[['3.2','×','Faster follow-up'], ['+18','%','Win rate'], ['$400K','','Renewals saved / qtr']] },
+  { k:'FINANCE OPS', title:'Close the books without the 3am Slack.', copy:'Invoices, contracts, payments, and usage reconciled into one ledger. AI flags the variances and files the exceptions before your controller wakes up. Month-end closes from 10 days to 4.', stats:[['−6.2','d','Faster close'], ['92','%','Auto-reconciled'], ['$2.8','M','Median saved']] },
+  { k:'SUPPORT OPS', title:'Tickets that route themselves.', copy:'Every ticket sees the customer\'s tier, deal size, history, and risk. AI drafts the response, escalates when it should, and gets the right human involved. Your support team handles 3x the volume with the same headcount.', stats:[['−41','%','First-touch time'], ['+22','pt','CSAT'], ['64','%','Auto-resolved']] },
+  { k:'SUPPLY CHAIN', title:'See trouble before it ships.', copy:'SKUs, shipments, vendors, and contracts in one picture. A late container becomes a rerouting decision the AI surfaces in your morning briefing, not a spreadsheet emergency at 11pm.', stats:[['−19','%','Stockouts'], ['1.7','×','Turn velocity'], ['18','hr','Avg response']] },
+  { k:'PEOPLE OPS', title:'Onboard faster. Offboard cleaner.', copy:'Roles, access, and tooling all live in one place. Provisioning, onboarding, and role changes become automations instead of tickets filed in three different systems. New hires productive in days, not weeks.', stats:[['−86','%','Onboarding delays'], ['100','%','Access audited'], ['3.4','d','To productive']] },
 ];
 (function initUseCases(){
   const list = document.getElementById('uc-list');
@@ -1796,12 +1903,12 @@ const USE_CASES = [
 
 /* ---------------- FAQ ---------------- */
 const FAQ = [
-  ['Isn\'t this just a reverse-ETL tool with better branding?', 'No. Reverse-ETL moves rows between systems. tend gives those rows <em>meaning</em>. A typed, governed ontology that workflows and agents reason over. Moving data is table stakes; agreeing on what it means is the hard part.'],
-  ['Do we have to rip out our existing stack?', 'Never. tend connects to Salesforce, HubSpot, Zendesk, NetSuite, Snowflake, BigQuery, and 170+ other sources. Your systems stay where they are. The ontology sits above them and writes back where it needs to.'],
-  ['How long until we see value?', 'Most customers are in production on their first 2 to 3 use cases within 4 weeks. Full platform adoption takes 8 to 12 weeks, depending on how many sources you connect and how opinionated your existing policies are.'],
-  ['What about security and compliance?', 'SOC 2 Type II, HIPAA, GDPR. Attribute-level permissions, row-level policy, full audit trail, region-pinned deployments, and BYO-cloud for regulated customers.'],
-  ['Where do the agents actually run?', 'Inside tend, with read/write scoped by the same governance model that covers humans. Agents receive typed ontology context, not raw rows, so you can reason about what they can and can\'t touch.'],
-  ['How is this priced?', 'Pricing is based on the number of integrations in your stack. We start with an audit of your most complicated workflows, design a system around them, and quote from there. No per-seat billing.'],
+  ['How is this different from Zapier?', 'Zapier moves data between apps. We make the data agree, then put AI on top of it. Zapier replaces a script. We replace the busywork your team is doing today (chasing follow-ups, reconciling reports, drafting the same emails).'],
+  ['Do we have to rip out our existing tools?', 'Never. Tend plugs into Salesforce, HubSpot, Zendesk, NetSuite, Stripe, your warehouse, and 170+ other sources. Your tools stay where they are. We sit on top and write back where you want us to.'],
+  ['How long until we see value?', 'Most customers see the first AI agent live within 4 weeks. Full rollout in 8 to 12 weeks. We start narrow with one use case where the ROI is obvious, then expand once your team trusts it.'],
+  ['What about security and compliance?', 'SOC 2 Type II, HIPAA, and GDPR. Permissions at the row and field level. Every AI action is logged, bounded, and reversible. Region-pinned deployments and bring-your-own-cloud available for regulated industries.'],
+  ['Where does the AI actually run? Can it go off the rails?', 'Inside tend, scoped to the same permissions your humans have. Every action is logged and reversible. You can pause any agent at any time, and dangerous actions (sending an external email, charging a card) require explicit human approval until you say otherwise.'],
+  ['How is this priced?', 'Based on the number of tools we plug into and the volume of work the AI handles, not per-seat. We start with a free audit of your most painful workflows and quote from there. Most customers see payback in the first quarter.'],
 ];
 (function initFaq(){
   const list = document.getElementById('qa-list');
