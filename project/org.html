@@ -139,35 +139,44 @@ body {
 /* What's included list */
 .min-list {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 0;
   border: 1px solid var(--line);
 }
 .min-list .item {
-  padding: 24px 28px;
+  padding: 28px 28px 32px;
   border-right: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
 }
-.min-list .item:nth-child(2n) { border-right: none; }
-.min-list .item:nth-last-child(-n+2) { border-bottom: none; }
+.min-list .item:last-child { border-right: none; }
 .min-list .item .num {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 11px;
   letter-spacing: 0.06em;
-  color: var(--fg-mute);
-  margin-bottom: 12px;
+  color: var(--accent);
+  margin-bottom: 18px;
 }
 .min-list .item h4 {
-  font-size: 17px;
+  font-size: 19px;
   font-weight: 400;
   letter-spacing: -0.01em;
-  margin: 0 0 6px;
+  margin: 0 0 10px;
+  line-height: 1.2;
 }
 .min-list .item p {
-  font-size: 13.5px;
+  font-size: 14px;
   color: var(--fg-dim);
   line-height: 1.55;
   margin: 0;
+}
+.min-note {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--fg-mute);
+  line-height: 1.55;
+  margin: 18px 0 0;
+  padding: 14px 16px;
+  border: 1px dashed var(--line-2);
 }
 
 /* Rollout timeline */
@@ -255,8 +264,7 @@ body {
   .min-hero { padding: 110px 0 40px; }
   .min-sec-head { grid-template-columns: 1fr; gap: 14px; align-items: start; margin-bottom: 28px; }
   .min-list { grid-template-columns: 1fr; }
-  .min-list .item { border-right: none; }
-  .min-list .item:nth-last-child(-n+2) { border-bottom: 1px solid var(--line); }
+  .min-list .item { border-right: none; border-bottom: 1px solid var(--line); }
   .min-list .item:last-child { border-bottom: none; }
   .min-roll .week { grid-template-columns: 1fr; gap: 6px; }
   .min-sec { padding: 56px 0; }
@@ -286,7 +294,7 @@ body {
       your team shouldn't have to do.
     </h1>
     <p class="sub">
-      Same data layer, same agents, smaller commitment. Pick the workflow that's costing your team the most. We'll automate it end-to-end and ship it in 30 days. No enterprise sales cycle, no rip-and-replace.
+      We wire your tools into one company brain, give you a live dashboard, and a private chatbot trained on your business that only your team can talk to. Standard integrations included. Live in 30 days.
     </p>
     <div class="min-cta-row">
       <button type="button" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}' class="btn primary">Book a 30-min demo <span class="arr">→</span></button>
@@ -295,19 +303,19 @@ body {
 
     <div class="min-pillars">
       <div class="min-pillar">
-        <div class="num">01 / RESPOND FASTER</div>
-        <h3>Minutes, not days.</h3>
-        <p>Leads, tickets, and renewals get acted on while they're still warm. Conversion goes up. Churn drops.</p>
+        <div class="num">01 / ONE PLACE</div>
+        <h3>Every tool, one view.</h3>
+        <p>Stop tab-switching across Shopify, QuickBooks, Mailchimp, and Meta Ads to assemble a picture. It's all on one dashboard, live.</p>
       </div>
       <div class="min-pillar">
-        <div class="num">02 / OPERATE CLEANER</div>
-        <h3>One source of truth.</h3>
-        <p>Every team works from the same up-to-date picture. No more "which dashboard is right?" or "who owns this?"</p>
+        <div class="num">02 / ASK ANYTHING</div>
+        <h3>Your own private chatbot.</h3>
+        <p>Trained on your business, locked to your team. Ask plain English questions, get answers grounded in your real data.</p>
       </div>
       <div class="min-pillar">
-        <div class="num">03 / GROW LEAN</div>
-        <h3>No new headcount.</h3>
-        <p>AI handles the volume. Your team focuses on the work that actually needs them.</p>
+        <div class="num">03 / DECIDE FASTER</div>
+        <h3>Numbers, on demand.</h3>
+        <p>Stop waiting on someone to pull a report. Today's revenue, today's orders, today's ad spend, whenever you want them.</p>
       </div>
     </div>
   </div>
@@ -321,36 +329,22 @@ body {
     </div>
     <div class="min-list">
       <div class="item">
-        <div class="num">01 / CONNECT</div>
-        <h4>Up to three tools, plugged in</h4>
-        <p>Salesforce, HubSpot, Zendesk, NetSuite, Stripe, Slack, your warehouse. We do the connecting in week one.</p>
+        <div class="num">01 / CONNECTED DATA</div>
+        <h4>One company brain.</h4>
+        <p>We wire your existing tools (Shopify, Mailchimp, QuickBooks, Meta Ads, Stripe, Google Analytics, and the rest) into a single live data layer. Standard connectors included. Custom integrations quoted separately if you need them.</p>
       </div>
       <div class="item">
-        <div class="num">02 / AGENT</div>
-        <h4>One AI agent, trained on your playbook</h4>
-        <p>Not a generic chatbot. The agent learns how your team actually runs the workflow, then runs it the same way.</p>
+        <div class="num">02 / OPERATING DASHBOARD</div>
+        <h4>Your whole business, on one screen.</h4>
+        <p>Real-time view of revenue, orders, ad spend, cash, customer signals, all in one place. Built for the operator, not the data team. No SQL, no warehouse projects.</p>
       </div>
       <div class="item">
-        <div class="num">03 / DASHBOARDS</div>
-        <h4>See exactly what changed</h4>
-        <p>Every AI action logged. Time saved, follow-ups sent, deals advanced, all tied back to numbers your board cares about.</p>
-      </div>
-      <div class="item">
-        <div class="num">04 / GUARDRAILS</div>
-        <h4>Safe by default</h4>
-        <p>Bounded permissions. Every action reversible. Sensitive actions (external emails, charges) require explicit human approval.</p>
-      </div>
-      <div class="item">
-        <div class="num">05 / SUPPORT</div>
-        <h4>Founder office hours, weekly</h4>
-        <p>30 minutes a week with the team that built it. Tune the agent, add use cases, fix what's not landing.</p>
-      </div>
-      <div class="item">
-        <div class="num">06 / COMMITMENT</div>
-        <h4>Flat monthly, month-to-month</h4>
-        <p>No annual contract, no setup fee, no per-seat pricing. Cancel anytime if the AI isn't earning its keep.</p>
+        <div class="num">03 / CUSTOM CHATBOT</div>
+        <h4>Trained on your business. Locked to your team.</h4>
+        <p>Ask it anything in plain English: "what's my best-selling SKU this week?", "how much did Meta spend vs. ROAS?", "which customers haven't reordered in 60 days?" It answers from your live data. Private, never trained on or shared with anyone else.</p>
       </div>
     </div>
+    <p class="min-note">Note: this tier is built for visibility and answers. Agents that take actions on your behalf are on the roadmap and will be available as a separate tier when they ship.</p>
   </div>
 </section>
 
@@ -364,29 +358,29 @@ body {
       <div class="week">
         <div class="when">WEEK 01 · SCOPE</div>
         <div class="what">
-          <h4>We pick the workflow that's costing you the most.</h4>
-          <p>One 60-min working session with your team. We look at what's eating hours, what's slipping, and what AI can take off the plate today.</p>
+          <h4>Pick the tools and the questions.</h4>
+          <p>One 60-min working session. We map the tools you live in, the numbers you check every day, and the questions you wish you could ask your business in plain English.</p>
         </div>
       </div>
       <div class="week">
         <div class="when">WEEK 02 · CONNECT</div>
         <div class="what">
           <h4>Your tools, plugged in.</h4>
-          <p>Up to three systems live and syncing. Duplicates merged, records joined. The data is clean before the agent ever sees it.</p>
+          <p>Shopify, Mailchimp, QuickBooks, Meta Ads, Stripe, GA, and any of the standard 170+ sources. Live and syncing by end of week. We handle the connectors.</p>
         </div>
       </div>
       <div class="week">
-        <div class="when">WEEK 03 · TRAIN</div>
+        <div class="when">WEEK 03 · BUILD</div>
         <div class="what">
-          <h4>The agent learns your playbook.</h4>
-          <p>We sit with the operator who runs the workflow today, capture how they do it, and teach the agent the same way. Test against real cases.</p>
+          <h4>Dashboard and chatbot configured.</h4>
+          <p>We design the operating dashboard around what you check daily, and train the chatbot on your business context (product, customers, vocabulary). You review and we tune.</p>
         </div>
       </div>
       <div class="week">
-        <div class="when">WEEK 04 · SHIP</div>
+        <div class="when">WEEK 04 · LIVE</div>
         <div class="what">
-          <h4>Live in production. We watch it together.</h4>
-          <p>Agent goes live with human approval gates. We sit on the early actions with you, tune the prompts, and graduate the gates as trust builds.</p>
+          <h4>Your team is using it daily.</h4>
+          <p>We onboard your team, fix what's rough, and stay close. By the end of week four, you check the dashboard with your morning coffee and ask the chatbot the things you used to wait on the data team for.</p>
         </div>
       </div>
     </div>
