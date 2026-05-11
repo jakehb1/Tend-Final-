@@ -107,8 +107,15 @@ body {
   font-size: 13.5px;
   color: var(--fg);
   letter-spacing: -0.005em;
+  background: transparent;
+  text-align: left;
+  font-family: inherit;
+  cursor: pointer;
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
 }
-.sys:hover { border-color: var(--line); }
+.sys:hover { border-color: var(--line); background: var(--bg-3); }
 .sys .dot {
   width: 7px; height: 7px; border-radius: 50%;
   background: var(--accent);
@@ -138,9 +145,18 @@ body {
   align-items: baseline;
   gap: 10px;
   padding: 6px 10px;
+  border: 0;
   border-left: 2px solid var(--accent);
   background: var(--bg-3);
+  text-align: left;
+  font-family: inherit;
+  width: 100%;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: background 0.12s;
 }
+.activity:hover { background: #1c2026; }
 .activity.flag { border-left-color: #C29A4D; }
 .activity .num {
   font-family: 'IBM Plex Mono', monospace;
@@ -156,13 +172,20 @@ body {
 .thread-list { display: flex; flex-direction: column; }
 .thread {
   padding: 12px 12px;
+  border: 0;
   border-left: 2px solid transparent;
   font-size: 13px;
   color: var(--fg-dim);
   cursor: pointer;
   line-height: 1.4;
+  background: transparent;
+  text-align: left;
+  font-family: inherit;
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
 }
-.thread:hover { color: var(--fg); }
+.thread:hover { color: var(--fg); background: var(--bg-3); }
 .thread.active {
   background: var(--bg-3);
   border-left-color: var(--accent);
@@ -394,122 +417,71 @@ body {
     <div class="sb-section">
       <div class="h"><span>Today's activity</span><span class="count">● LIVE</span></div>
       <div class="activity-list">
-        <div class="activity"><span class="num">6</span><span class="label">follow-ups drafted</span></div>
-        <div class="activity"><span class="num">3</span><span class="label">renewals flagged at risk</span></div>
-        <div class="activity"><span class="num">11</span><span class="label">tickets auto-routed</span></div>
-        <div class="activity"><span class="num">14</span><span class="label">invoices reconciled</span></div>
-        <div class="activity flag"><span class="num">$94K</span><span class="label">duplicate billing caught</span></div>
+        <button type="button" class="activity" data-query="Show me the 6 follow-ups you drafted today"><span class="num">6</span><span class="label">follow-ups drafted</span></button>
+        <button type="button" class="activity" data-query="Which renewals are at risk?"><span class="num">3</span><span class="label">renewals flagged at risk</span></button>
+        <button type="button" class="activity" data-query="Which tickets did you route this morning?"><span class="num">11</span><span class="label">tickets auto-routed</span></button>
+        <button type="button" class="activity" data-query="Show me today's invoice reconciliation"><span class="num">14</span><span class="label">invoices reconciled</span></button>
+        <button type="button" class="activity flag" data-query="Tell me about the $94K duplicate billing you caught"><span class="num">$94K</span><span class="label">duplicate billing caught</span></button>
       </div>
     </div>
 
     <div class="sb-section">
       <div class="h"><span>Connected systems</span><span class="count">7 live</span></div>
       <div class="sys-list">
-        <div class="sys"><span class="dot"></span><div class="sys-text"><div class="name">Salesforce</div><div class="sub">12,840 records · synced 2m ago</div></div></div>
-        <div class="sys"><span class="dot"></span><div class="sys-text"><div class="name">HubSpot</div><div class="sub">7,210 contacts · synced 4m ago</div></div></div>
-        <div class="sys"><span class="dot"></span><div class="sys-text"><div class="name">Zendesk</div><div class="sub">1,440 tickets · synced 1m ago</div></div></div>
-        <div class="sys"><span class="dot"></span><div class="sys-text"><div class="name">NetSuite</div><div class="sub">8,920 records · synced 6m ago</div></div></div>
-        <div class="sys"><span class="dot"></span><div class="sys-text"><div class="name">Stripe</div><div class="sub">24,180 invoices · synced 2m ago</div></div></div>
-        <div class="sys"><span class="dot"></span><div class="sys-text"><div class="name">Snowflake</div><div class="sub">118M rows · syncing now</div></div></div>
-        <div class="sys"><span class="dot"></span><div class="sys-text"><div class="name">Slack</div><div class="sub">18 channels · synced 30s ago</div></div></div>
-        <div class="sys warn"><span class="dot"></span><div class="sys-text"><div class="name">Gong</div><div class="sub">sync lagging 18m</div></div></div>
-        <div class="sys idle"><span class="dot"></span><div class="sys-text"><div class="name">Notion</div><div class="sub">paused</div></div></div>
+        <button type="button" class="sys" data-system="Salesforce"><span class="dot"></span><div class="sys-text"><div class="name">Salesforce</div><div class="sub">12,840 records · synced 2m ago</div></div></button>
+        <button type="button" class="sys" data-system="HubSpot"><span class="dot"></span><div class="sys-text"><div class="name">HubSpot</div><div class="sub">7,210 contacts · synced 4m ago</div></div></button>
+        <button type="button" class="sys" data-system="Zendesk"><span class="dot"></span><div class="sys-text"><div class="name">Zendesk</div><div class="sub">1,440 tickets · synced 1m ago</div></div></button>
+        <button type="button" class="sys" data-system="NetSuite"><span class="dot"></span><div class="sys-text"><div class="name">NetSuite</div><div class="sub">8,920 records · synced 6m ago</div></div></button>
+        <button type="button" class="sys" data-system="Stripe"><span class="dot"></span><div class="sys-text"><div class="name">Stripe</div><div class="sub">24,180 invoices · synced 2m ago</div></div></button>
+        <button type="button" class="sys" data-system="Snowflake"><span class="dot"></span><div class="sys-text"><div class="name">Snowflake</div><div class="sub">118M rows · syncing now</div></div></button>
+        <button type="button" class="sys" data-system="Slack"><span class="dot"></span><div class="sys-text"><div class="name">Slack</div><div class="sub">18 channels · synced 30s ago</div></div></button>
+        <button type="button" class="sys warn" data-system="Gong"><span class="dot"></span><div class="sys-text"><div class="name">Gong</div><div class="sub">sync lagging 18m</div></div></button>
+        <button type="button" class="sys idle" data-system="Notion"><span class="dot"></span><div class="sys-text"><div class="name">Notion</div><div class="sub">paused</div></div></button>
       </div>
     </div>
 
     <div class="sb-section">
       <div class="h"><span>Recent threads</span></div>
-      <div class="thread-list">
-        <div class="thread active">
+      <div class="thread-list" id="thread-list">
+        <button type="button" class="thread active" data-thread="acme">
           <div class="when">TODAY · 09:41</div>
           What's going on with Acme Corp?
-        </div>
-        <div class="thread">
+        </button>
+        <button type="button" class="thread" data-thread="briefing">
           <div class="when">TODAY · 09:02</div>
           Morning briefing
-        </div>
-        <div class="thread">
+        </button>
+        <button type="button" class="thread" data-thread="renewals">
           <div class="when">TODAY · 08:12</div>
           Renewals at risk this quarter
-        </div>
-        <div class="thread">
+        </button>
+        <button type="button" class="thread" data-thread="arr">
           <div class="when">YESTERDAY</div>
           Why is Q3 ARR off by $84K?
-        </div>
-        <div class="thread">
+        </button>
+        <button type="button" class="thread" data-thread="northwind">
           <div class="when">YESTERDAY</div>
           Northwind redline status
-        </div>
-        <div class="thread">
+        </button>
+        <button type="button" class="thread" data-thread="tickets">
           <div class="when">FRI</div>
           Top 5 support escalations this week
-        </div>
-        <div class="thread">
+        </button>
+        <button type="button" class="thread" data-thread="helix">
           <div class="when">THU</div>
           What changed about Helix after the upgrade?
-        </div>
+        </button>
       </div>
     </div>
   </aside>
 
   <main class="chat">
     <div class="chat-head">
-      <h1>What's going on with Acme Corp?</h1>
+      <h1 id="chat-title">What's going on with Acme Corp?</h1>
       <div class="meta">● <span class="live">LIVE</span> · grounded across 7 systems</div>
     </div>
 
-    <div class="chat-body" id="chat-body">
-      <div class="msg user">
-        <div>
-          <div class="who">you</div>
-          <div class="bubble">What's going on with Acme Corp this week?</div>
-        </div>
-      </div>
-
-      <div class="msg">
-        <div>
-          <div class="who">tend</div>
-          <div class="bubble">
-            <p><strong>Acme Corp</strong> is a Series B fintech, 240 employees, account owner <strong>Maya Chen</strong>. Tier: <strong>Enterprise</strong>. Health: <strong>Yellow</strong>.</p>
-            <p>Three things worth your attention this week:</p>
-            <p>1. <strong>Renewal stalled.</strong> Acme's $420K renewal has been at <em>Negotiation</em> for 14 days. Legal hasn't returned the redline since Apr 28. Last touch from Maya was Tuesday.</p>
-            <p>2. <strong>Open P1 ticket.</strong> A SAML SSO failure was filed 18 hours ago by their CTO. Still unassigned in Zendesk.</p>
-            <p>3. <strong>Invoice paid late.</strong> Last Stripe invoice (INV-4421, $34,800) cleared 4 days past terms. First time in 11 months.</p>
-            <div class="sources">
-              <div class="src">Salesforce · 1 opportunity</div>
-              <div class="src">Zendesk · 2 tickets</div>
-              <div class="src">Stripe · 11 invoices</div>
-              <div class="src">Gong · 6 calls</div>
-              <div class="src">Slack · #acme-corp</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="msg user">
-        <div>
-          <div class="who">you</div>
-          <div class="bubble">What should I do about the renewal?</div>
-        </div>
-      </div>
-
-      <div class="msg">
-        <div>
-          <div class="who">tend</div>
-          <div class="bubble">
-            <p>Suggested next step: <strong>nudge their legal team and offer to pre-draft the alternative redline</strong>. The original redline asked for a data-residency clause and a 30-day termination-for-convenience. We've accepted both on three other deals this quarter, so I can pull that exact language.</p>
-            <p>If you want, I can:</p>
-            <p>· Draft the email to their legal lead (Priya Iyer) with the redline attached<br/>
-            · Loop Maya in via Slack with the full timeline<br/>
-            · Open a follow-up task on the opportunity in Salesforce, due Friday</p>
-            <div class="sources">
-              <div class="src">Policy · revops/renewals.v3</div>
-              <div class="src">3 precedent deals</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <div class="chat-body" id="chat-body"></div>
 
     <div class="composer">
       <form class="composer-inner" id="composer">
@@ -642,6 +614,71 @@ body {
       sources: ['Salesforce · Helix', 'Stripe · subscription change', 'Snowflake · usage', 'Slack · #helix-feedback', 'Gong · 4 calls']
     },
     {
+      match: /follow.?up.*draft|drafted.*follow.?up|6 follow/i,
+      html: "<p>Here are the 6 follow-ups drafted this morning, all awaiting your review:</p><p>1. <strong>Acme Corp</strong> · nudge to Priya Iyer (legal) re: redline · drafted 09:14<br/>2. <strong>Northwind</strong> · intro from Diego to Anjali Mehta (new stakeholder) · drafted 09:14<br/>3. <strong>Vela Health</strong> · check-in on Procurement timeline · drafted 09:14<br/>4. <strong>Orbit Labs</strong> · share security review responses · drafted 09:15<br/>5. <strong>Hartwell</strong> · signature reminder to Anjali Mehta · drafted 09:15<br/>6. <strong>Helix</strong> · response to webhook ticket escalation · drafted 09:16</p><p>They'll auto-send at 2 PM unless you edit or hold them.</p>",
+      sources: ['Salesforce · 6 opps', 'Zendesk · 1 ticket', 'Policy · revops/follow-up-cadence.v2']
+    },
+    {
+      match: /duplicate billing|\$94k|94k/i,
+      html: "<p>Found the $94K duplicate billing on Apr 24. Stripe charged Brightline twice on the same invoice (INV-7821) due to a webhook retry that wasn't deduplicated. NetSuite recorded one entry; Stripe shows two.</p><p>I've already:</p><p>· Created a refund draft in Stripe for the duplicate ($94,000)<br/>· Opened a memo in NetSuite tagged 'pending approval'<br/>· Notified Brightline's billing contact (Sarah Park) that we caught it before it shipped on their statement</p><p>The refund is queued for your approval. One click and it goes out.</p>",
+      sources: ['Stripe · INV-7821', 'NetSuite · GL match', 'Policy · finance/dedupe.v1']
+    },
+    {
+      match: /tickets.*route|route.*ticket|11 tickets/i,
+      html: "<p>Routed 11 tickets this morning:</p><p>· 6 to support team (standard playbook)<br/>· 2 to engineering (API issues from Northwind and Helix)<br/>· 2 auto-resolved (password reset, account info update)<br/>· 1 escalated to you (Acme P1 SAML, still open)</p>",
+      sources: ['Zendesk · 11 routed', 'Policy · support/routing.v3']
+    },
+    {
+      match: /invoice.*reconcil|reconcil.*invoice|14 invoice/i,
+      html: "<p>14 invoices auto-reconciled against NetSuite this morning. All matched. One required a small lookup: Quinn &amp; Co's May invoice has a renegotiated rate that wasn't in NetSuite yet, so I cross-referenced their signed amendment and applied it.</p>",
+      sources: ['Stripe · 14 invoices', 'NetSuite · matched', 'Salesforce · Quinn amendment']
+    },
+    {
+      match: /happening in salesforce|in salesforce|salesforce/i,
+      html: "<p>Pipeline state right now: <strong>$4.8M</strong> across 47 open opportunities. 5 deals slipping (>7 days idle). 3 closed this week ($430K total). Next earliest close: Helix Renewal, Tue.</p><p>Health: mostly green. One issue I'm tracking: the new field 'preferred_contact_method' isn't getting populated on inbound leads from the website form. I'll alert the admin if it continues.</p>",
+      sources: ['Salesforce · 47 opps', 'Salesforce · validation rules']
+    },
+    {
+      match: /in hubspot|hubspot/i,
+      html: "<p>HubSpot is the inbound marketing layer. This week: <strong>342 new leads</strong>, <strong>18 MQLs</strong>, <strong>4 SQLs</strong> handed off to AEs. The G2 campaign that started Tuesday is producing 11% of MQLs at 3x the cost-efficiency of LinkedIn.</p>",
+      sources: ['HubSpot · workflows', 'HubSpot · MQL/SQL pipeline']
+    },
+    {
+      match: /in zendesk|zendesk/i,
+      html: "<p>14 open tickets right now. Median first-response: <strong>4m</strong> (well within SLA). Agents auto-resolved 38 tickets today, drafted responses for 12, escalated 1 P1 (Acme SAML SSO).</p>",
+      sources: ['Zendesk · live state', 'Policy · support/auto-resolve']
+    },
+    {
+      match: /in netsuite|netsuite/i,
+      html: "<p>Closing the May books. <strong>$2.4M billed</strong>, <strong>$2.1M collected</strong>. DSO at 38 days (down from 44 last quarter). Caught a duplicate invoice on Apr 24 that would have credited Brightline twice ($94K); refund is queued for your approval.</p>",
+      sources: ['NetSuite · GL', 'Stripe · invoices', 'Policy · finance/reconciliation']
+    },
+    {
+      match: /in stripe|stripe/i,
+      html: "<p>MRR is at <strong>$612K</strong>. 24,180 invoices on file. 14 auto-reconciled against NetSuite this morning, no exceptions. 4 customers paid late this week (one is Acme, first time in 11 months).</p>",
+      sources: ['Stripe · MRR', 'Stripe · invoices', 'NetSuite · matched']
+    },
+    {
+      match: /in snowflake|snowflake/i,
+      html: "<p>Snowflake is the source of truth for usage data. 118M rows currently. The telemetry that drives our risk model lives here. Re-sync started 2m ago after a column change in the events table.</p>",
+      sources: ['Snowflake · tend_events', 'Policy · risk-model.v4']
+    },
+    {
+      match: /in slack|slack/i,
+      html: "<p>18 channels connected. I read message context (not search), so I know which deals are being discussed where. This week's most-active customer channels: #acme-corp (47 msgs), #northwind (29), #helix-feedback (22).</p>",
+      sources: ['Slack · 18 channels']
+    },
+    {
+      match: /in gong|gong/i,
+      html: "<p>Gong sync is currently <strong>lagging by 18 minutes</strong>. Their API has been intermittent since 7:42 AM. I'm queueing new call recordings for ingestion and will replay them once sync resumes. No immediate action needed.</p><p>While sync is lagging, sentiment scores for new calls may be stale by up to 30 minutes.</p>",
+      sources: ['Gong · sync status', 'Tend · ingestion queue']
+    },
+    {
+      match: /in notion|notion/i,
+      html: "<p>Notion connector is currently <strong>paused</strong>. You paused it on Apr 17 after the workspace reorganization. Once your team finalizes the new page structure, let me know and I'll re-enable the sync.</p>",
+      sources: ['Notion · paused state']
+    },
+    {
       match: /.*/,
       html: '<p>Working on it. In the real workspace, I would pull this across your connected systems (Salesforce, HubSpot, Zendesk, NetSuite, Stripe, Snowflake, Slack) and answer with grounded, lineage-tracked context.</p><p>For the demo, try one of the prompts below to see a worked example.</p>',
       sources: ['Demo mode']
@@ -687,7 +724,139 @@ body {
     form.requestSubmit();
   });
 
-  scroll();
+  // ---------- Threads: pre-built conversations ----------
+  var BRIEFING_HTML = canned[0].html;
+  var BRIEFING_SRC = canned[0].sources;
+
+  var THREADS = {
+    acme: {
+      title: "What's going on with Acme Corp?",
+      messages: [
+        { who: 'user', text: "What's going on with Acme Corp this week?" },
+        { who: 'tend',
+          html: "<p><strong>Acme Corp</strong> is a Series B fintech, 240 employees, account owner <strong>Maya Chen</strong>. Tier: <strong>Enterprise</strong>. Health: <strong>Yellow</strong>.</p><p>Three things worth your attention this week:</p><p>1. <strong>Renewal stalled.</strong> Acme's $420K renewal has been at <em>Negotiation</em> for 14 days. Legal hasn't returned the redline since Apr 28. Last touch from Maya was Tuesday.</p><p>2. <strong>Open P1 ticket.</strong> A SAML SSO failure was filed 18 hours ago by their CTO. Still unassigned in Zendesk.</p><p>3. <strong>Invoice paid late.</strong> Last Stripe invoice (INV-4421, $34,800) cleared 4 days past terms. First time in 11 months.</p>",
+          sources: ['Salesforce · 1 opportunity', 'Zendesk · 2 tickets', 'Stripe · 11 invoices', 'Gong · 6 calls', 'Slack · #acme-corp'] },
+        { who: 'user', text: 'What should I do about the renewal?' },
+        { who: 'tend',
+          html: "<p>Suggested next step: <strong>nudge their legal team and offer to pre-draft the alternative redline</strong>. The original redline asked for a data-residency clause and a 30-day termination-for-convenience. We've accepted both on three other deals this quarter, so I can pull that exact language.</p><p>If you want, I can:</p><p>· Draft the email to their legal lead (Priya Iyer) with the redline attached<br/>· Loop Maya in via Slack with the full timeline<br/>· Open a follow-up task on the opportunity in Salesforce, due Friday</p>",
+          sources: ['Policy · revops/renewals.v3', '3 precedent deals'] }
+      ]
+    },
+    briefing: {
+      title: 'Morning briefing',
+      messages: [
+        { who: 'user', text: 'Morning briefing' },
+        { who: 'tend', html: BRIEFING_HTML, sources: BRIEFING_SRC }
+      ]
+    },
+    renewals: {
+      title: 'Renewals at risk this quarter',
+      messages: [
+        { who: 'user', text: 'Which renewals are at risk this quarter?' },
+        { who: 'tend',
+          html: "<p>Three accounts flagged for renewal risk in the next 90 days. Combined ARR: <strong>$782K</strong>.</p><p><strong>Acme Corp</strong> · $420K · renewal in 47 days · risk 0.78<br/>Stalled in Negotiation 14 days. Open P1 ticket. Last invoice paid late. Sentiment trending down on last 3 Gong calls.</p><p><strong>Northwind</strong> · $180K · renewal in 62 days · risk 0.61<br/>Champion (Tomás Rivera) left for a competitor 3 weeks ago. New stakeholder hasn't responded to outreach.</p><p><strong>Glasshouse</strong> · $182K · renewal in 88 days · risk 0.54<br/>Usage down 31% over the last 60 days. CSM hasn't logged a touch since Apr 3.</p>",
+          sources: ['Salesforce · 3 accounts', 'Gong · sentiment model', 'Stripe · usage telemetry', 'Policy · risk-model.v4'] }
+      ]
+    },
+    arr: {
+      title: 'Why is Q3 ARR off by $84K?',
+      messages: [
+        { who: 'user', text: 'Why is Q3 ARR off by $84K?' },
+        { who: 'tend',
+          html: "<p>Q3 ARR is <strong>$84K below plan</strong>. Two drivers:</p><p>· <strong>$58K downgrade</strong> at Glasshouse (Ent to Pro after Apr renewal).<br/>· <strong>$26K of late starts</strong> on three deals that closed in Apr but begin billing in May.</p><p>Underlying new-logo ARR is on plan ($412K vs $400K target). Expansion is ahead ($684K vs $580K). The gap is purely contraction. Want me to model what a 50% Glasshouse save-back would do to the Q3 number?</p>",
+          sources: ['Stripe · MRR', 'Salesforce · close dates', 'NetSuite · revenue recognition'] }
+      ]
+    },
+    northwind: {
+      title: 'Northwind redline status',
+      messages: [
+        { who: 'user', text: 'Where are we with Northwind?' },
+        { who: 'tend',
+          html: "<p><strong>Northwind</strong> ($180K renewal, owner Diego Vargas) is in Legal review, day 9. Their original redline (filed Apr 28) asked for three changes: data-residency clause (EU), 30-day termination-for-convenience, and an audit rider. We've accepted all three on Acme and two other deals this quarter; the language is ready to go.</p><p>Big risk: their champion <strong>Tomás Rivera</strong> left for a competitor on May 2. New stakeholder Anjali Mehta hasn't responded to our last two outreach attempts.</p><p>Suggested next step: I drafted a 4-line note from Diego to Anjali that pre-empts the redline concerns and offers a 30-min walkthrough. Ready to send when you approve.</p>",
+          sources: ['Salesforce · Northwind', 'Slack · DMs', '3 precedent deals', 'Policy · revops/renewals.v3'] },
+        { who: 'user', text: 'Send it' },
+        { who: 'tend',
+          html: "<p>Sent at 09:18. CC'd Maya for visibility. I'll watch for a reply and let you know in this thread.</p><p>I've also opened a follow-up task on the opportunity (due Wed) and added a checklist item to the next QBR deck.</p>",
+          sources: ['Salesforce · task created', 'Slack · DM sent'] }
+      ]
+    },
+    tickets: {
+      title: 'Top 5 support escalations this week',
+      messages: [
+        { who: 'user', text: 'Top 5 support escalations this week' },
+        { who: 'tend',
+          html: "<p>Currently <strong>14 open tickets</strong> from enterprise accounts. Three are P1 and over SLA:</p><p><strong>Acme Corp</strong> · SAML SSO failure · 18h · unassigned<br/><strong>Northwind</strong> · API rate-limit regression · 22h · with eng (Marcus W.)<br/><strong>Helix</strong> · Webhook delivery failures · 14h · with support lead</p><p>The agents auto-routed 11 lower-priority tickets this morning and drafted responses for 4 of them. Two are waiting on your approval to send.</p>",
+          sources: ['Zendesk · 14 tickets', 'PagerDuty · 1 incident', 'Policy · support/p1-routing'] }
+      ]
+    },
+    helix: {
+      title: 'What changed about Helix after the upgrade?',
+      messages: [
+        { who: 'user', text: 'What changed about Helix after the upgrade?' },
+        { who: 'tend',
+          html: "<p><strong>Helix</strong> upgraded to Pro on Apr 12 ($140K ARR add). Diego Vargas closed it. Three things changed since:</p><p>· Daily active users up 34% (from 84 to 113 over 28 days).<br/>· Two new integrations enabled: Slack and Snowflake.<br/>· One support escalation: webhook delivery failures (currently open, 14h, with support lead).</p><p>Net sentiment in their #helix-feedback Slack channel: positive. Champion Lana Park gave us a public reference quote on May 3.</p>",
+          sources: ['Salesforce · Helix', 'Stripe · subscription change', 'Snowflake · usage', 'Slack · #helix-feedback', 'Gong · 4 calls'] }
+      ]
+    }
+  };
+
+  function renderThread(id) {
+    var t = THREADS[id];
+    if (!t) return;
+    document.getElementById('chat-title').textContent = t.title;
+    body.innerHTML = '';
+    t.messages.forEach(function (m) {
+      if (m.who === 'user') {
+        addUser(m.text);
+      } else {
+        addReply(m.html, m.sources);
+      }
+    });
+    document.querySelectorAll('#thread-list .thread').forEach(function (n) {
+      n.classList.toggle('active', n.getAttribute('data-thread') === id);
+    });
+    body.scrollTop = 0;
+  }
+
+  // Thread switching
+  var threadList = document.getElementById('thread-list');
+  if (threadList) {
+    threadList.addEventListener('click', function (e) {
+      var t = e.target.closest('.thread');
+      if (!t) return;
+      var id = t.getAttribute('data-thread');
+      if (id) renderThread(id);
+    });
+  }
+
+  // Connected systems -> ask about that system
+  var sysList = document.querySelector('.sys-list');
+  if (sysList) {
+    sysList.addEventListener('click', function (e) {
+      var s = e.target.closest('.sys');
+      if (!s) return;
+      var sys = s.getAttribute('data-system');
+      if (!sys) return;
+      input.value = "What's happening in " + sys + "?";
+      form.requestSubmit();
+    });
+  }
+
+  // Today's activity -> ask a follow-up about that item
+  var activityList = document.querySelector('.activity-list');
+  if (activityList) {
+    activityList.addEventListener('click', function (e) {
+      var a = e.target.closest('.activity');
+      if (!a) return;
+      var q = a.getAttribute('data-query');
+      if (!q) return;
+      input.value = q;
+      form.requestSubmit();
+    });
+  }
+
+  // Initial render
+  renderThread('acme');
 })();
 </script>
 
