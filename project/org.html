@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>tend</title>
+<meta name="robots" content="noindex,nofollow" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="shared.css?v=4">
+<style>
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Keep the Book a demo pill visible on every breakpoint (no hamburger here) */
+@media (max-width: 980px) {
+  .nav-right .nav-cta { display: inline-flex !important; }
+}
+
+.min-hero {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  padding: 140px 0 80px;
+}
+.min-hero .wrap { width: 100%; }
+.min-hero h1 {
+  font-size: clamp(44px, 5.6vw, 80px);
+  font-weight: 300;
+  letter-spacing: -0.035em;
+  line-height: 0.98;
+  margin: 0 0 28px;
+  max-width: 18ch;
+  text-wrap: balance;
+}
+.min-hero h1 .serif { font-weight: 400; color: var(--accent); }
+.min-hero .sub {
+  font-size: clamp(18px, 1.6vw, 22px);
+  line-height: 1.4;
+  color: var(--fg-dim);
+  max-width: 560px;
+  margin: 0 0 40px;
+  text-wrap: pretty;
+}
+
+.min-pillars {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border: 1px solid var(--line);
+  margin: 56px 0 0;
+}
+.min-pillar {
+  padding: 28px 24px;
+  border-right: 1px solid var(--line);
+  min-height: 160px;
+}
+.min-pillar:last-child { border-right: none; }
+.min-pillar .num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  margin-bottom: 18px;
+}
+.min-pillar h3 {
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  margin: 0 0 8px;
+  line-height: 1.2;
+}
+.min-pillar p {
+  font-size: 14px;
+  color: var(--fg-dim);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.min-cta-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.min-cta-row .meta {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--fg-mute);
+}
+
+.min-foot {
+  padding: 32px 0;
+  border-top: 1px solid var(--line);
+}
+.min-foot .wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--fg-mute);
+  letter-spacing: 0.04em;
+}
+.min-foot a { color: var(--fg-dim); text-decoration: none; }
+.min-foot a:hover { color: var(--fg); }
+
+@media (max-width: 720px) {
+  .min-pillars { grid-template-columns: 1fr; }
+  .min-pillar { border-right: none; border-bottom: 1px solid var(--line); }
+  .min-pillar:last-child { border-bottom: none; }
+  .min-hero { padding: 110px 0 60px; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="org.html"><img src="images/tend-logo.png" alt="tend" /></a>
+    <div class="nav-right">
+      <button type="button" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}' class="nav-cta">Book a demo <span>→</span></button>
+    </div>
+  </div>
+</nav>
+
+<section class="min-hero">
+  <div class="wrap">
+    <h1>
+      <span class="serif">Agentic systems</span> for the work<br/>
+      your team shouldn't have to do.
+    </h1>
+    <p class="sub">
+      Agents can only operate when the data is clean. Tend cleans yours, so they actually do the work.
+    </p>
+    <div class="min-cta-row">
+      <button type="button" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}' class="btn primary">Book a 30-min demo <span class="arr">→</span></button>
+      <span class="meta">No prep needed. We'll sketch it against your stack.</span>
+    </div>
+
+    <div class="min-pillars">
+      <div class="min-pillar">
+        <div class="num">01 / RESPOND FASTER</div>
+        <h3>Minutes, not days.</h3>
+        <p>Leads, tickets, and renewals get acted on while they're still warm. Conversion goes up. Churn drops.</p>
+      </div>
+      <div class="min-pillar">
+        <div class="num">02 / OPERATE CLEANER</div>
+        <h3>One source of truth.</h3>
+        <p>Every team works from the same up-to-date picture. No more "which dashboard is right?" or "who owns this?"</p>
+      </div>
+      <div class="min-pillar">
+        <div class="num">03 / GROW LEAN</div>
+        <h3>No new headcount.</h3>
+        <p>AI handles the volume. Your team focuses on the work that actually needs them.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="min-foot">
+  <div class="wrap">
+    <span>© 2026 tend, inc.</span>
+    <a href="mailto:hello@withtend.ai">hello@withtend.ai</a>
+  </div>
+</footer>
+
+<!-- Cal overlay init -->
+<script type="text/javascript">
+  (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if(typeof namespace === "string"){cal.ns[namespace] = cal.ns[namespace] || api;p(cal.ns[namespace], ar);p(cal, ["initNamespace", namespace]);} else p(cal, ar); return;} p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
+  Cal("init", "30min", {origin:"https://app.cal.com"});
+  Cal.ns["30min"]("ui", {"hideEventTypeDetails":false,"layout":"month_view"});
+</script>
+</body>
+</html>
