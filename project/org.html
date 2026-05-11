@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>tend</title>
+<title>tend · org</title>
 <meta name="robots" content="noindex,nofollow" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,18 +22,32 @@ body {
 }
 
 .min-hero {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  padding: 140px 0 80px;
+  padding: 140px 0 60px;
 }
 .min-hero .wrap { width: 100%; }
+.min-kicker {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 22px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.min-kicker .tag {
+  border: 1px solid var(--line-2);
+  padding: 4px 10px;
+  color: var(--fg);
+}
+.min-kicker .desc { color: var(--fg-mute); }
 .min-hero h1 {
   font-size: clamp(44px, 5.6vw, 80px);
   font-weight: 300;
   letter-spacing: -0.035em;
   line-height: 0.98;
-  margin: 0 0 28px;
+  margin: 0 0 24px;
   max-width: 18ch;
   text-wrap: balance;
 }
@@ -42,8 +56,8 @@ body {
   font-size: clamp(18px, 1.6vw, 22px);
   line-height: 1.4;
   color: var(--fg-dim);
-  max-width: 560px;
-  margin: 0 0 40px;
+  max-width: 600px;
+  margin: 0 0 36px;
   text-wrap: pretty;
 }
 
@@ -52,7 +66,7 @@ body {
   grid-template-columns: repeat(3, 1fr);
   gap: 0;
   border: 1px solid var(--line);
-  margin: 56px 0 0;
+  margin: 52px 0 0;
 }
 .min-pillar {
   padding: 28px 24px;
@@ -94,6 +108,128 @@ body {
   color: var(--fg-mute);
 }
 
+/* Sections shared layout */
+.min-sec {
+  padding: 80px 0;
+  border-top: 1px solid var(--line);
+}
+.min-sec-head {
+  display: grid;
+  grid-template-columns: minmax(0, 360px) 1fr;
+  gap: 60px;
+  align-items: end;
+  margin-bottom: 36px;
+}
+.min-sec-head h2 {
+  font-size: clamp(32px, 3.2vw, 48px);
+  font-weight: 300;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  margin: 0;
+}
+.min-sec-head h2 .serif { font-weight: 400; color: var(--accent); }
+.min-sec-head p {
+  font-size: 15px;
+  color: var(--fg-dim);
+  line-height: 1.55;
+  margin: 0;
+  max-width: 460px;
+}
+
+/* What's included list */
+.min-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0;
+  border: 1px solid var(--line);
+}
+.min-list .item {
+  padding: 24px 28px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.min-list .item:nth-child(2n) { border-right: none; }
+.min-list .item:nth-last-child(-n+2) { border-bottom: none; }
+.min-list .item .num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--fg-mute);
+  margin-bottom: 12px;
+}
+.min-list .item h4 {
+  font-size: 17px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  margin: 0 0 6px;
+}
+.min-list .item p {
+  font-size: 13.5px;
+  color: var(--fg-dim);
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* Rollout timeline */
+.min-roll {
+  border: 1px solid var(--line);
+}
+.min-roll .week {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  padding: 22px 28px;
+  border-bottom: 1px solid var(--line);
+  align-items: baseline;
+}
+.min-roll .week:last-child { border-bottom: none; }
+.min-roll .when {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+}
+.min-roll .what h4 {
+  font-size: 17px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  margin: 0 0 4px;
+}
+.min-roll .what p {
+  font-size: 13.5px;
+  color: var(--fg-dim);
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* Final CTA section */
+.min-final {
+  padding: 80px 0 100px;
+  border-top: 1px solid var(--line);
+  text-align: center;
+}
+.min-final h2 {
+  font-size: clamp(32px, 3.2vw, 48px);
+  font-weight: 300;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  margin: 0 auto 24px;
+  max-width: 22ch;
+}
+.min-final h2 .serif { font-weight: 400; color: var(--accent); }
+.min-final .row {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.min-final .meta {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--fg-mute);
+}
+
 .min-foot {
   padding: 32px 0;
   border-top: 1px solid var(--line);
@@ -116,7 +252,15 @@ body {
   .min-pillars { grid-template-columns: 1fr; }
   .min-pillar { border-right: none; border-bottom: 1px solid var(--line); }
   .min-pillar:last-child { border-bottom: none; }
-  .min-hero { padding: 110px 0 60px; }
+  .min-hero { padding: 110px 0 40px; }
+  .min-sec-head { grid-template-columns: 1fr; gap: 14px; align-items: start; margin-bottom: 28px; }
+  .min-list { grid-template-columns: 1fr; }
+  .min-list .item { border-right: none; }
+  .min-list .item:nth-last-child(-n+2) { border-bottom: 1px solid var(--line); }
+  .min-list .item:last-child { border-bottom: none; }
+  .min-roll .week { grid-template-columns: 1fr; gap: 6px; }
+  .min-sec { padding: 56px 0; }
+  .min-final { padding: 56px 0 72px; }
 }
 </style>
 </head>
@@ -133,12 +277,16 @@ body {
 
 <section class="min-hero">
   <div class="wrap">
+    <div class="min-kicker">
+      <span class="tag">TEND · ORG</span>
+      <span class="desc">A lighter stack for smaller teams</span>
+    </div>
     <h1>
       <span class="serif">Agentic systems</span> for the work<br/>
       your team shouldn't have to do.
     </h1>
     <p class="sub">
-      Agents can only operate when the data is clean. Tend cleans yours, so they actually do the work.
+      Same data layer, same agents, smaller commitment. Pick the workflow that's costing your team the most. We'll automate it end-to-end and ship it in 30 days. No enterprise sales cycle, no rip-and-replace.
     </p>
     <div class="min-cta-row">
       <button type="button" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}' class="btn primary">Book a 30-min demo <span class="arr">→</span></button>
@@ -161,6 +309,96 @@ body {
         <h3>No new headcount.</h3>
         <p>AI handles the volume. Your team focuses on the work that actually needs them.</p>
       </div>
+    </div>
+  </div>
+</section>
+
+<section class="min-sec">
+  <div class="wrap">
+    <div class="min-sec-head">
+      <h2>What's <span class="serif">included.</span></h2>
+      <p>Everything you need to get one workflow running on AI in 30 days. No bolt-on vendors, no integration project, no per-seat math.</p>
+    </div>
+    <div class="min-list">
+      <div class="item">
+        <div class="num">01 / CONNECT</div>
+        <h4>Up to three tools, plugged in</h4>
+        <p>Salesforce, HubSpot, Zendesk, NetSuite, Stripe, Slack, your warehouse. We do the connecting in week one.</p>
+      </div>
+      <div class="item">
+        <div class="num">02 / AGENT</div>
+        <h4>One AI agent, trained on your playbook</h4>
+        <p>Not a generic chatbot. The agent learns how your team actually runs the workflow, then runs it the same way.</p>
+      </div>
+      <div class="item">
+        <div class="num">03 / DASHBOARDS</div>
+        <h4>See exactly what changed</h4>
+        <p>Every AI action logged. Time saved, follow-ups sent, deals advanced, all tied back to numbers your board cares about.</p>
+      </div>
+      <div class="item">
+        <div class="num">04 / GUARDRAILS</div>
+        <h4>Safe by default</h4>
+        <p>Bounded permissions. Every action reversible. Sensitive actions (external emails, charges) require explicit human approval.</p>
+      </div>
+      <div class="item">
+        <div class="num">05 / SUPPORT</div>
+        <h4>Founder office hours, weekly</h4>
+        <p>30 minutes a week with the team that built it. Tune the agent, add use cases, fix what's not landing.</p>
+      </div>
+      <div class="item">
+        <div class="num">06 / COMMITMENT</div>
+        <h4>Flat monthly, month-to-month</h4>
+        <p>No annual contract, no setup fee, no per-seat pricing. Cancel anytime if the AI isn't earning its keep.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="min-sec">
+  <div class="wrap">
+    <div class="min-sec-head">
+      <h2>The <span class="serif">30-day</span> rollout.</h2>
+      <p>Four weeks from first call to AI in production. Most customers see ROI by week three.</p>
+    </div>
+    <div class="min-roll">
+      <div class="week">
+        <div class="when">WEEK 01 · SCOPE</div>
+        <div class="what">
+          <h4>We pick the workflow that's costing you the most.</h4>
+          <p>One 60-min working session with your team. We look at what's eating hours, what's slipping, and what AI can take off the plate today.</p>
+        </div>
+      </div>
+      <div class="week">
+        <div class="when">WEEK 02 · CONNECT</div>
+        <div class="what">
+          <h4>Your tools, plugged in.</h4>
+          <p>Up to three systems live and syncing. Duplicates merged, records joined. The data is clean before the agent ever sees it.</p>
+        </div>
+      </div>
+      <div class="week">
+        <div class="when">WEEK 03 · TRAIN</div>
+        <div class="what">
+          <h4>The agent learns your playbook.</h4>
+          <p>We sit with the operator who runs the workflow today, capture how they do it, and teach the agent the same way. Test against real cases.</p>
+        </div>
+      </div>
+      <div class="week">
+        <div class="when">WEEK 04 · SHIP</div>
+        <div class="what">
+          <h4>Live in production. We watch it together.</h4>
+          <p>Agent goes live with human approval gates. We sit on the early actions with you, tune the prompts, and graduate the gates as trust builds.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="min-final">
+  <div class="wrap">
+    <h2>Less chaos. <span class="serif">More revenue.</span> Same team.</h2>
+    <div class="row">
+      <button type="button" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}' class="btn primary">Book a 30-min demo <span class="arr">→</span></button>
+      <span class="meta">Talk to a founder this week.</span>
     </div>
   </div>
 </section>
