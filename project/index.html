@@ -1045,6 +1045,104 @@ footer {
   }
 }
 
+/* ---------- step-diagram animations ---------- */
+.step .diag-svg .d-rect-in,
+.step .diag-svg .d-node,
+.step .diag-svg .d-row,
+.step .diag-svg .d-dot,
+.step .diag-svg .d-grid { opacity: 0; }
+
+.step .diag-svg .d-rect-out,
+.step .diag-svg .d-hub,
+.step .diag-svg .d-pulse {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(0.3);
+}
+
+.step .diag-svg .d-line { stroke-dasharray: 60; stroke-dashoffset: 60; }
+.step .diag-svg .d-edge { stroke-dasharray: 36; stroke-dashoffset: 36; }
+.step .diag-svg .d-axis { stroke-dasharray: 60; stroke-dashoffset: 60; }
+.step .diag-svg .d-spark { stroke-dasharray: 130; stroke-dashoffset: 130; }
+.step .diag-svg .d-fill {
+  transform-box: fill-box;
+  transform-origin: left center;
+  transform: scaleX(0);
+}
+
+.step.playing .diag-svg .d-rect-in,
+.step.playing .diag-svg .d-row {
+  animation: d-fade 0.4s ease forwards;
+  animation-delay: calc(var(--i, 0) * 0.1s);
+}
+.step.playing .diag-svg .d-node {
+  animation: d-fade 0.4s ease forwards;
+  animation-delay: calc(var(--i, 0) * 0.08s);
+}
+.step.playing .diag-svg .d-line {
+  animation: d-draw 0.5s ease forwards;
+  animation-delay: calc(0.4s + var(--i, 0) * 0.08s);
+}
+.step.playing .diag-svg .d-edge {
+  animation: d-draw 0.4s ease forwards;
+  animation-delay: calc(0.4s + var(--i, 0) * 0.1s);
+}
+.step.playing .diag-svg .d-rect-out,
+.step.playing .diag-svg .d-hub {
+  animation: d-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation-delay: 0.9s;
+}
+.step.playing .diag-svg .d-dot {
+  animation: d-fade 0.3s ease forwards;
+  animation-delay: calc(0.3s + var(--i, 0) * 0.25s);
+}
+.step.playing .diag-svg .d-fill {
+  animation: d-fill 0.8s ease forwards;
+  animation-delay: calc(0.5s + var(--i, 0) * 0.25s);
+}
+.step.playing .diag-svg .d-axis {
+  animation: d-draw 0.4s ease forwards;
+}
+.step.playing .diag-svg .d-grid {
+  animation: d-fade 0.4s ease forwards;
+  animation-delay: calc(0.3s + var(--i, 0) * 0.1s);
+}
+.step.playing .diag-svg .d-spark {
+  animation: d-draw 1.2s ease forwards;
+  animation-delay: 0.6s;
+}
+.step.playing .diag-svg .d-pulse {
+  animation: d-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation-delay: 1.7s;
+}
+
+@keyframes d-fade { to { opacity: 1; } }
+@keyframes d-draw { to { stroke-dashoffset: 0; } }
+@keyframes d-pop  { to { opacity: 1; transform: scale(1); } }
+@keyframes d-fill { to { transform: scaleX(1); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .step .diag-svg .d-rect-in,
+  .step .diag-svg .d-node,
+  .step .diag-svg .d-row,
+  .step .diag-svg .d-dot,
+  .step .diag-svg .d-grid,
+  .step .diag-svg .d-rect-out,
+  .step .diag-svg .d-hub,
+  .step .diag-svg .d-pulse,
+  .step .diag-svg .d-line,
+  .step .diag-svg .d-edge,
+  .step .diag-svg .d-axis,
+  .step .diag-svg .d-spark,
+  .step .diag-svg .d-fill {
+    opacity: 1;
+    transform: none;
+    stroke-dashoffset: 0;
+    animation: none;
+  }
+}
+
 /* small screens */
 @media (max-width: 980px) {
   .wrap { padding: 0 24px; }
@@ -1501,7 +1599,17 @@ footer {
         <h3>We map what you have.</h3>
         <p>We look at every tool you use and find where time is leaking. You see exactly which work is repetitive, which follow-ups are getting dropped, and which work AI can take off your team's plate.</p>
         <div class="diag" aria-hidden="true">
-          <svg width="80" height="60" viewBox="0 0 80 60"><g stroke="currentColor" fill="none" stroke-width="1"><rect x="2" y="6" width="14" height="10"/><rect x="2" y="25" width="14" height="10"/><rect x="2" y="44" width="14" height="10"/><path d="M16,11 L64,30 M16,30 L64,30 M16,49 L64,30"/><rect x="64" y="24" width="14" height="12" fill="currentColor"/></g></svg>
+          <svg width="80" height="60" viewBox="0 0 80 60" class="diag-svg diag-01">
+            <g stroke="currentColor" fill="none" stroke-width="1">
+              <rect class="d-rect-in" x="2" y="6"  width="14" height="10" style="--i:0"/>
+              <rect class="d-rect-in" x="2" y="25" width="14" height="10" style="--i:1"/>
+              <rect class="d-rect-in" x="2" y="44" width="14" height="10" style="--i:2"/>
+              <path class="d-line" d="M16,11 L64,30" style="--i:0"/>
+              <path class="d-line" d="M16,30 L64,30" style="--i:1"/>
+              <path class="d-line" d="M16,49 L64,30" style="--i:2"/>
+              <rect class="d-rect-out" x="64" y="24" width="14" height="12" fill="currentColor"/>
+            </g>
+          </svg>
         </div>
       </div>
       <div class="step">
@@ -1509,7 +1617,19 @@ footer {
         <h3>We connect your tools.</h3>
         <p>We pull every customer, deal, and process into one clean picture. Duplicates merged, records joined across systems. No more spreadsheet stitching, no more "wait, which system has the right number?"</p>
         <div class="diag" aria-hidden="true">
-          <svg width="80" height="60" viewBox="0 0 80 60"><g stroke="currentColor" fill="none" stroke-width="1"><circle cx="14" cy="14" r="5"/><circle cx="66" cy="14" r="5"/><circle cx="40" cy="38" r="6" fill="currentColor"/><circle cx="14" cy="52" r="4"/><circle cx="66" cy="52" r="4"/><path d="M14,19 L40,34 M66,19 L40,34 M40,44 L14,50 M40,44 L66,50"/></g></svg>
+          <svg width="80" height="60" viewBox="0 0 80 60" class="diag-svg diag-02">
+            <g stroke="currentColor" fill="none" stroke-width="1">
+              <line class="d-edge" x1="14" y1="19" x2="40" y2="34" style="--i:0"/>
+              <line class="d-edge" x1="66" y1="19" x2="40" y2="34" style="--i:1"/>
+              <line class="d-edge" x1="40" y1="44" x2="14" y2="50" style="--i:2"/>
+              <line class="d-edge" x1="40" y1="44" x2="66" y2="50" style="--i:3"/>
+              <circle class="d-node" cx="14" cy="14" r="5" style="--i:0"/>
+              <circle class="d-node" cx="66" cy="14" r="5" style="--i:1"/>
+              <circle class="d-node" cx="14" cy="52" r="4" style="--i:2"/>
+              <circle class="d-node" cx="66" cy="52" r="4" style="--i:3"/>
+              <circle class="d-hub" cx="40" cy="38" r="6" fill="currentColor"/>
+            </g>
+          </svg>
         </div>
       </div>
       <div class="step">
@@ -1517,7 +1637,17 @@ footer {
         <h3>We deploy the AI.</h3>
         <p>Practical AI agents that follow your team's playbook, not a generic one. They chase the follow-ups, route the tickets, and reconcile the books. Every action goes back into your tools so the team sees what happened.</p>
         <div class="diag" aria-hidden="true">
-          <svg width="80" height="60" viewBox="0 0 80 60"><g stroke="currentColor" fill="none" stroke-width="1"><rect x="10" y="8" width="60" height="10"/><rect x="10" y="24" width="60" height="10"/><rect x="10" y="40" width="60" height="10"/><circle cx="18" cy="13" r="2" fill="currentColor"/><circle cx="18" cy="29" r="2" fill="currentColor"/><circle cx="18" cy="45" r="2" fill="currentColor"/></g></svg>
+          <svg width="80" height="60" viewBox="0 0 80 60" class="diag-svg diag-03">
+            <rect class="d-row"  x="10" y="8"  width="60" height="10" stroke="currentColor" fill="none" stroke-width="1" style="--i:0"/>
+            <rect class="d-row"  x="10" y="24" width="60" height="10" stroke="currentColor" fill="none" stroke-width="1" style="--i:1"/>
+            <rect class="d-row"  x="10" y="40" width="60" height="10" stroke="currentColor" fill="none" stroke-width="1" style="--i:2"/>
+            <rect class="d-fill" x="11" y="9"  width="58" height="8" fill="currentColor" opacity="0.20" style="--i:0"/>
+            <rect class="d-fill" x="11" y="25" width="58" height="8" fill="currentColor" opacity="0.20" style="--i:1"/>
+            <rect class="d-fill" x="11" y="41" width="58" height="8" fill="currentColor" opacity="0.20" style="--i:2"/>
+            <circle class="d-dot" cx="18" cy="13" r="2" fill="currentColor" style="--i:0"/>
+            <circle class="d-dot" cx="18" cy="29" r="2" fill="currentColor" style="--i:1"/>
+            <circle class="d-dot" cx="18" cy="45" r="2" fill="currentColor" style="--i:2"/>
+          </svg>
         </div>
       </div>
       <div class="step">
@@ -1525,7 +1655,16 @@ footer {
         <h3>You see the results.</h3>
         <p>Faster follow-ups, fewer dropped leads, less admin time, more revenue per employee. We track the numbers so you can show your board exactly what changed.</p>
         <div class="diag" aria-hidden="true">
-          <svg width="80" height="60" viewBox="0 0 80 60"><g stroke="currentColor" fill="none" stroke-width="1"><circle cx="14" cy="30" r="6"/><path d="M20,30 L40,30 M46,30 L62,30" /><rect x="36" y="24" width="12" height="12"/><polygon points="62,30 72,24 72,36" fill="currentColor"/><path d="M14,30 L14,12 M14,30 L14,48" stroke-dasharray="2 2"/></g></svg>
+          <svg width="80" height="60" viewBox="0 0 80 60" class="diag-svg diag-04">
+            <g stroke="currentColor" fill="none" stroke-width="1">
+              <line class="d-axis" x1="10" y1="6"  x2="10" y2="50"/>
+              <line class="d-axis" x1="10" y1="50" x2="74" y2="50"/>
+              <line class="d-grid" x1="10" y1="22" x2="74" y2="22" stroke-opacity="0.25" stroke-dasharray="2 2" style="--i:0"/>
+              <line class="d-grid" x1="10" y1="36" x2="74" y2="36" stroke-opacity="0.25" stroke-dasharray="2 2" style="--i:1"/>
+              <path class="d-spark" d="M12,44 L24,40 L34,32 L44,30 L54,22 L62,16 L72,10" stroke-width="1.4"/>
+              <circle class="d-pulse" cx="72" cy="10" r="2.4" fill="currentColor"/>
+            </g>
+          </svg>
         </div>
       </div>
     </div>
@@ -2006,21 +2145,25 @@ const FAQ = [
 <!-- Schematic intro animation: play once when scrolled into view -->
 <script>
   (function () {
+    var targets = [];
     var schem = document.querySelector('#ontology .hero-schem');
-    if (!schem) return;
+    if (schem) targets.push(schem);
+    document.querySelectorAll('.how-steps .step').forEach(function (s) { targets.push(s); });
+    if (!targets.length) return;
+
     if (!('IntersectionObserver' in window)) {
-      schem.classList.add('playing');
+      targets.forEach(function (t) { t.classList.add('playing'); });
       return;
     }
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
         if (e.isIntersecting) {
-          schem.classList.add('playing');
+          e.target.classList.add('playing');
           io.unobserve(e.target);
         }
       });
-    }, { threshold: 0.25 });
-    io.observe(schem);
+    }, { threshold: 0.3 });
+    targets.forEach(function (t) { io.observe(t); });
   })();
 </script>
 <!-- Hero video mobile autoplay kick -->
