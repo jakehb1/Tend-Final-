@@ -117,8 +117,41 @@ body {
 }
 .sys.idle .dot { background: var(--fg-mute); box-shadow: none; }
 .sys.warn .dot { background: #C29A4D; box-shadow: 0 0 8px rgba(194,154,77,0.5); }
-.sys .name { flex: 1; }
+.sys .name { font-size: 13.5px; color: var(--fg); letter-spacing: -0.005em; }
 .sys .meta { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--fg-mute); letter-spacing: 0.04em; }
+.sys .sys-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.sys .sys-text .sub {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: var(--fg-mute);
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sys.warn .sys-text .sub { color: #C29A4D; }
+
+/* Today's activity panel */
+.activity-list { display: flex; flex-direction: column; gap: 8px; }
+.activity {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 6px 10px;
+  border-left: 2px solid var(--accent);
+  background: var(--bg-3);
+}
+.activity.flag { border-left-color: #C29A4D; }
+.activity .num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  color: var(--accent);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  min-width: 30px;
+}
+.activity.flag .num { color: #C29A4D; }
+.activity .label { font-size: 12px; color: var(--fg-dim); line-height: 1.35; }
 
 .thread-list { display: flex; flex-direction: column; }
 .thread {
@@ -359,17 +392,28 @@ body {
   <div class="app-backdrop" id="app-backdrop" aria-hidden="true"></div>
   <aside class="sidebar" id="sidebar">
     <div class="sb-section">
+      <div class="h"><span>Today's activity</span><span class="count">● LIVE</span></div>
+      <div class="activity-list">
+        <div class="activity"><span class="num">6</span><span class="label">follow-ups drafted</span></div>
+        <div class="activity"><span class="num">3</span><span class="label">renewals flagged at risk</span></div>
+        <div class="activity"><span class="num">11</span><span class="label">tickets auto-routed</span></div>
+        <div class="activity"><span class="num">14</span><span class="label">invoices reconciled</span></div>
+        <div class="activity flag"><span class="num">$94K</span><span class="label">duplicate billing caught</span></div>
+      </div>
+    </div>
+
+    <div class="sb-section">
       <div class="h"><span>Connected systems</span><span class="count">7 live</span></div>
       <div class="sys-list">
-        <div class="sys"><span class="dot"></span><span class="name">Salesforce</span><span class="meta">CRM</span></div>
-        <div class="sys"><span class="dot"></span><span class="name">HubSpot</span><span class="meta">MKT</span></div>
-        <div class="sys"><span class="dot"></span><span class="name">Zendesk</span><span class="meta">SUP</span></div>
-        <div class="sys"><span class="dot"></span><span class="name">NetSuite</span><span class="meta">FIN</span></div>
-        <div class="sys"><span class="dot"></span><span class="name">Stripe</span><span class="meta">BIL</span></div>
-        <div class="sys"><span class="dot"></span><span class="name">Snowflake</span><span class="meta">DW</span></div>
-        <div class="sys"><span class="dot"></span><span class="name">Slack</span><span class="meta">MSG</span></div>
-        <div class="sys warn"><span class="dot"></span><span class="name">Gong</span><span class="meta">SYNC</span></div>
-        <div class="sys idle"><span class="dot"></span><span class="name">Notion</span><span class="meta">OFF</span></div>
+        <div class="sys"><span class="dot"></span><div class="sys-text"><div class="name">Salesforce</div><div class="sub">12,840 records · synced 2m ago</div></div></div>
+        <div class="sys"><span class="dot"></span><div class="sys-text"><div class="name">HubSpot</div><div class="sub">7,210 contacts · synced 4m ago</div></div></div>
+        <div class="sys"><span class="dot"></span><div class="sys-text"><div class="name">Zendesk</div><div class="sub">1,440 tickets · synced 1m ago</div></div></div>
+        <div class="sys"><span class="dot"></span><div class="sys-text"><div class="name">NetSuite</div><div class="sub">8,920 records · synced 6m ago</div></div></div>
+        <div class="sys"><span class="dot"></span><div class="sys-text"><div class="name">Stripe</div><div class="sub">24,180 invoices · synced 2m ago</div></div></div>
+        <div class="sys"><span class="dot"></span><div class="sys-text"><div class="name">Snowflake</div><div class="sub">118M rows · syncing now</div></div></div>
+        <div class="sys"><span class="dot"></span><div class="sys-text"><div class="name">Slack</div><div class="sub">18 channels · synced 30s ago</div></div></div>
+        <div class="sys warn"><span class="dot"></span><div class="sys-text"><div class="name">Gong</div><div class="sub">sync lagging 18m</div></div></div>
+        <div class="sys idle"><span class="dot"></span><div class="sys-text"><div class="name">Notion</div><div class="sub">paused</div></div></div>
       </div>
     </div>
 
@@ -381,6 +425,10 @@ body {
           What's going on with Acme Corp?
         </div>
         <div class="thread">
+          <div class="when">TODAY · 09:02</div>
+          Morning briefing
+        </div>
+        <div class="thread">
           <div class="when">TODAY · 08:12</div>
           Renewals at risk this quarter
         </div>
@@ -389,8 +437,16 @@ body {
           Why is Q3 ARR off by $84K?
         </div>
         <div class="thread">
+          <div class="when">YESTERDAY</div>
+          Northwind redline status
+        </div>
+        <div class="thread">
           <div class="when">FRI</div>
           Top 5 support escalations this week
+        </div>
+        <div class="thread">
+          <div class="when">THU</div>
+          What changed about Helix after the upgrade?
         </div>
       </div>
     </div>
@@ -461,9 +517,11 @@ body {
         <button type="submit" class="send">Send →</button>
       </form>
       <div class="hints" id="hints">
-        <button class="hint" type="button">Show me deals slipping this week</button>
-        <button class="hint" type="button">Which customers expanded last month?</button>
-        <button class="hint" type="button">Open tickets from enterprise accounts</button>
+        <button class="hint" type="button">Morning briefing</button>
+        <button class="hint" type="button">Which renewals are at risk?</button>
+        <button class="hint" type="button">Deals slipping this week</button>
+        <button class="hint" type="button">What changed about Helix after the upgrade?</button>
+        <button class="hint" type="button">Why is Q3 ARR off?</button>
       </div>
     </div>
   </main>
@@ -549,24 +607,39 @@ body {
 
   var canned = [
     {
-      match: /slip|stall|risk|behind/i,
-      html: '<p>Five deals are slipping this week (>7 days without movement on a stage they normally clear in 3):</p><p><strong>Acme Corp</strong> · $420K · Negotiation, day 14<br/><strong>Northwind</strong> · $180K · Legal review, day 9<br/><strong>Vela Health</strong> · $96K · Procurement, day 11<br/><strong>Orbit Labs</strong> · $310K · Security review, day 8<br/><strong>Hartwell</strong> · $58K · Awaiting signature, day 12</p><p>Want me to draft a nudge for each owner?</p>',
-      sources: ['Salesforce · 5 opps', 'Policy · revops/slip-detector']
+      match: /morning|brief|today|standup|what.*happen|what.*change/i,
+      html: '<p>Good morning. Here\'s what changed since you logged off yesterday at 6:42 PM:</p><p><strong>Revenue.</strong> Two deals advanced overnight: <em>Helix</em> moved to Closed-Won ($140K, Diego signed at 11:48 PM), <em>Orbit Labs</em> moved to Procurement. One slipped: <em>Vela Health</em> pushed their decision out two weeks. Three new inbound leads from G2, all routed to AEs.</p><p><strong>Support.</strong> 11 tickets came in overnight. The agents auto-resolved 6, drafted responses for 4 (awaiting human review), and escalated 1 P1 (Acme Corp SAML SSO, now 18h open).</p><p><strong>Finance.</strong> 14 invoices auto-reconciled against NetSuite. Caught a <strong>$94K duplicate billing</strong> error where Stripe charged Brightline twice on Apr 24. Refund queued, pending your approval.</p><p><strong>Risk.</strong> Renewal risk model flagged 3 accounts (Acme, Northwind, Glasshouse). Acme is the most acute, details in our 9:41 thread.</p>',
+      sources: ['Salesforce · overnight', 'Zendesk · 11 tickets', 'Stripe · 14 invoices', 'Slack · #revenue', 'Policy · risk-model.v4']
+    },
+    {
+      match: /slip|stall|behind/i,
+      html: '<p>Five deals are slipping this week (>7 days without movement on a stage they normally clear in 3):</p><p><strong>Acme Corp</strong> · $420K · Negotiation, day 14 · Maya Chen<br/><strong>Northwind</strong> · $180K · Legal review, day 9 · Diego Vargas<br/><strong>Vela Health</strong> · $96K · Procurement, day 11 · Sarah Park<br/><strong>Orbit Labs</strong> · $310K · Security review, day 8 · James O\'Connell<br/><strong>Hartwell</strong> · $58K · Awaiting signature, day 12 · Anjali Mehta</p><p>I\'ve already drafted nudges for all five owners. Want to review them before they send at 2 PM?</p>',
+      sources: ['Salesforce · 5 opps', 'Gong · 12 calls', 'Policy · revops/slip-detector.v3']
+    },
+    {
+      match: /renewal.*risk|risk.*renewal|churn|at risk/i,
+      html: '<p>Three accounts flagged for renewal risk in the next 90 days. Combined ARR: <strong>$782K</strong>.</p><p><strong>Acme Corp</strong> · $420K · renewal in 47 days · risk 0.78<br/>Stalled in Negotiation 14 days. Open P1 ticket. Last invoice paid late. Sentiment trending down on last 3 Gong calls.</p><p><strong>Northwind</strong> · $180K · renewal in 62 days · risk 0.61<br/>Champion (Tomás Rivera) left for a competitor 3 weeks ago. New stakeholder hasn\'t responded to outreach.</p><p><strong>Glasshouse</strong> · $182K · renewal in 88 days · risk 0.54<br/>Usage down 31% over the last 60 days. CSM hasn\'t logged a touch since Apr 3.</p>',
+      sources: ['Salesforce · 3 accounts', 'Gong · sentiment model', 'Stripe · usage telemetry', 'Policy · risk-model.v4']
     },
     {
       match: /expand|upsell|grew|grow/i,
-      html: '<p>Last month, <strong>11 customers</strong> expanded. Net new ARR of <strong>$684K</strong>.</p><p>Top three by absolute add: <strong>Helix</strong> (+$140K, added Pro tier), <strong>Quinn &amp; Co</strong> (+$96K, seats), <strong>Brightline</strong> (+$72K, usage tier upgrade). Two were agent-driven (auto-quoted via the renewal flow); the rest were AE-led.</p>',
+      html: '<p>Last month, <strong>11 customers</strong> expanded. Net new ARR of <strong>$684K</strong>.</p><p>Top three by absolute add: <strong>Helix</strong> (+$140K, added Pro tier), <strong>Quinn &amp; Co</strong> (+$96K, seats), <strong>Brightline</strong> (+$72K, usage tier upgrade). Two were agent-driven (auto-quoted via the renewal flow); the rest were AE-led.</p><p>The pipeline for next month looks similar: 14 accounts crossed usage thresholds, agents will auto-quote 6 of them tonight.</p>',
       sources: ['Salesforce · opportunities', 'Stripe · subscriptions', 'NetSuite · invoices']
     },
     {
       match: /ticket|support|escalat|p1/i,
-      html: '<p>Currently <strong>14 open tickets</strong> from enterprise accounts. Three are P1 and over SLA:</p><p><strong>Acme Corp</strong> · SAML SSO failure · 18h, unassigned<br/><strong>Northwind</strong> · API rate-limit regression · 22h, with eng<br/><strong>Helix</strong> · Webhook delivery failures · 14h, with support lead</p>',
-      sources: ['Zendesk · 14 tickets', 'PagerDuty · 1 incident']
+      html: '<p>Currently <strong>14 open tickets</strong> from enterprise accounts. Three are P1 and over SLA:</p><p><strong>Acme Corp</strong> · SAML SSO failure · 18h · unassigned<br/><strong>Northwind</strong> · API rate-limit regression · 22h · with eng (Marcus W.)<br/><strong>Helix</strong> · Webhook delivery failures · 14h · with support lead</p><p>The agents auto-routed 11 lower-priority tickets this morning and drafted responses for 4 of them. Two are waiting on your approval to send.</p>',
+      sources: ['Zendesk · 14 tickets', 'PagerDuty · 1 incident', 'Policy · support/p1-routing']
     },
     {
       match: /arr|revenue|invoice|book/i,
-      html: '<p>Q3 ARR is <strong>$84K below plan</strong>. Two drivers: a <em>$58K downgrade</em> at Glasshouse (moved from Ent to Pro after a renewal in Apr) and <em>$26K of late starts</em> on three deals that closed in Apr but begin billing in May. Underlying new-logo ARR is on plan.</p>',
+      html: '<p>Q3 ARR is <strong>$84K below plan</strong>. Two drivers:</p><p>· <strong>$58K downgrade</strong> at Glasshouse (Ent to Pro after Apr renewal).<br/>· <strong>$26K of late starts</strong> on three deals that closed in Apr but begin billing in May.</p><p>Underlying new-logo ARR is on plan ($412K vs $400K target). Expansion is ahead ($684K vs $580K). The gap is purely contraction. Want me to model what a 50% Glasshouse save-back would do to the Q3 number?</p>',
       sources: ['Stripe · MRR', 'Salesforce · close dates', 'NetSuite · revenue recognition']
+    },
+    {
+      match: /helix|upgrade|after/i,
+      html: '<p><strong>Helix</strong> upgraded to Pro on Apr 12 ($140K ARR add). Diego Vargas closed it. Three things changed since:</p><p>· Daily active users up 34% (from 84 to 113 over 28 days).<br/>· Two new integrations enabled: Slack and Snowflake.<br/>· One support escalation: webhook delivery failures (currently open, 14h, with support lead).</p><p>Net sentiment in their #helix-feedback Slack channel: positive. Champion Lana Park gave us a public reference quote on May 3.</p>',
+      sources: ['Salesforce · Helix', 'Stripe · subscription change', 'Snowflake · usage', 'Slack · #helix-feedback', 'Gong · 4 calls']
     },
     {
       match: /.*/,
