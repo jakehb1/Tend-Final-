@@ -1,23 +1,28 @@
 /**
  * tend bridge — small Node service that sits between the tend frontend
- * (withtend.ai/connect) and Nango (OAuth + scheduled sync provider).
+ * (withtend.ai/connect, withtend.ai/app) and:
+ *   - Nango      (OAuth + scheduled provider syncs)
+ *   - OpenClaw   (per-tenant AI agent runtime)
  *
  * Runs on a VPS alongside Nango + Caddy. Pure Node built-ins, no deps.
  *
  * Env vars:
- *   PORT             — http port to listen on (default 8000)
- *   NANGO_HOST       — internal URL of the nango-server container
- *                      (default http://nango-server:3003)
- *   NANGO_SECRET_KEY — secret key minted by Nango on first boot
- *   STATE_FILE       — path to JSON state file (default ./data/state.json)
- *   ALLOW_ORIGIN     — CORS allow-origin (default *)
+ *   PORT                    — http port (default 8000)
+ *   NANGO_HOST              — internal URL of nango-server (default http://nango-server:3003)
+ *   NANGO_SECRET_KEY        — secret key minted by Nango on first boot
+ *   OPENCLAW_GATEWAY        — URL of the OpenClaw Gateway (default http://localhost:18789)
+ *   OPENCLAW_AGENT_DEFAULT  — fallback agent name if a user has no provisioned agent
+ *   STATE_FILE              — path to JSON state file (default ./data/state.json)
+ *   ALLOW_ORIGIN            — CORS allow-origin (default *)
  *
  * Endpoints:
  *   GET  /healthz
- *   GET  /api/connectors/state?user=email             — list connectors for a user
- *   POST /api/connectors/:id/connect    {user}        — start OAuth, returns Nango session token
+ *   GET  /api/connectors/state?user=email             — list connectors
+ *   POST /api/connectors/:id/connect    {user}        — start Nango OAuth
  *   POST /api/connectors/:id/disconnect {user}        — revoke + delete
- *   POST /api/webhooks/nango                          — Nango webhook (auth + sync events)
+ *   POST /api/webhooks/nango                          — Nango auth + sync events
+ *   POST /api/chat/:user        {message}             — proxy to OpenClaw agent (SSE response)
+ *   GET  /api/data/:user/:dataset?since=&limit=       — records from synced data
  */
 
 import http from 'node:http';
@@ -27,6 +32,8 @@ import path from 'node:path';
 const PORT = Number(process.env.PORT || 8000);
 const NANGO_HOST = process.env.NANGO_HOST || 'http://nango-server:3003';
 const NANGO_SECRET_KEY = process.env.NANGO_SECRET_KEY || '';
+const OPENCLAW_GATEWAY = process.env.OPENCLAW_GATEWAY || 'http://localhost:18789';
+const OPENCLAW_AGENT_DEFAULT = process.env.OPENCLAW_AGENT_DEFAULT || 'main';
 const STATE_FILE = process.env.STATE_FILE || './data/state.json';
 const ALLOW_ORIGIN = process.env.ALLOW_ORIGIN || '*';
 
@@ -69,10 +76,10 @@ const PROVIDERS = {
 
 // ---------- state (single JSON file, swap for Postgres later) ----------
 
-let state = { users: {} };
+let state = { users: {}, data: {} };
 try {
   if (fs.existsSync(STATE_FILE)) {
-    state = JSON.parse(fs.readFileSync(STATE_FILE, 'utf8'));
+    state = Object.assign({ users: {}, data: {} }, JSON.parse(fs.readFileSync(STATE_FILE, 'utf8')));
   }
 } catch (e) {
   console.warn('Could not load state file, starting empty:', e.message);
@@ -88,8 +95,21 @@ function getUser(email) {
   return state.users[email];
 }
 
+function getUserData(email) {
+  if (!state.data[email]) state.data[email] = {};
+  return state.data[email];
+}
+
 function connectorIdFromProviderKey(providerKey) {
   return Object.keys(PROVIDERS).find((k) => PROVIDERS[k] === providerKey);
+}
+
+// Map a user email to an OpenClaw agent name. The real implementation would
+// look up a tenant -> agent mapping in the DB. For now we slugify the email
+// local part so it's deterministic.
+function agentNameForUser(email) {
+  const local = (email || '').split('@')[0] || OPENCLAW_AGENT_DEFAULT;
+  return local.toLowerCase().replace(/[^a-z0-9-]/g, '-') || OPENCLAW_AGENT_DEFAULT;
 }
 
 // ---------- Nango ----------
@@ -135,6 +155,51 @@ async function revokeNangoConnection(providerKey, connectionId) {
   } catch (e) {
     console.warn('nango revoke failed:', e.message);
   }
+}
+
+// ---------- OpenClaw ----------
+//
+// One function. The exact RPC shape is documented at
+// https://docs.openclaw.ai/reference/rpc. When you wire the real Gateway,
+// edit this function and nothing else.
+//
+// Contract: calls the agent with `message`, invokes onChunk(text) zero or
+// more times as chunks stream in, resolves when the response ends.
+
+async function openClawChat(agent, message, onChunk) {
+  const url = OPENCLAW_GATEWAY.replace(/\/$/, '') + '/api/agent/run';
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ agent, message, stream: true })
+  });
+  if (!res.ok) throw new Error(`openclaw ${res.status}: ${await res.text().catch(() => '')}`);
+  if (!res.body) throw new Error('openclaw returned no body');
+
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let buf = '';
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buf += decoder.decode(value, { stream: true });
+    const lines = buf.split('\n');
+    buf = lines.pop() || '';
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed) continue;
+      const payload = trimmed.startsWith('data:') ? trimmed.slice(5).trim() : trimmed;
+      if (payload === '[DONE]') return;
+      try {
+        const obj = JSON.parse(payload);
+        const chunk = obj.text || obj.delta || obj.content || obj.message;
+        if (chunk) onChunk(String(chunk));
+      } catch (_) {
+        if (payload) onChunk(payload);
+      }
+    }
+  }
+  if (buf.trim()) onChunk(buf.trim());
 }
 
 // ---------- helpers ----------
@@ -233,15 +298,97 @@ const server = http.createServer(async (req, res) => {
         if (event.type === 'sync' && (event.success ?? true)) {
           if (u.connectors[connectorId]) {
             u.connectors[connectorId].syncedAt = now;
-            save();
           }
-          // TODO: pipe synced records into the user's OpenClaw workspace.
-          // For now we just record that a sync happened.
-          console.log(`[bridge] sync ok: ${email} -> ${connectorId} (${event.modelName || ''})`);
+          // Upsert records into the data store keyed by user + dataset.
+          // Dataset is Nango's model name (e.g. "orders", "products").
+          const records = Array.isArray(event.records) ? event.records : [];
+          if (records.length) {
+            const dataset = event.modelName || event.model || connectorId;
+            const data = getUserData(email);
+            if (!data[dataset]) data[dataset] = [];
+            const index = new Map(data[dataset].map((r, i) => [r.id ?? r._id ?? i, i]));
+            for (const r of records) {
+              const id = r.id ?? r._id;
+              if (id !== undefined && index.has(id)) {
+                data[dataset][index.get(id)] = r;
+              } else {
+                data[dataset].push(r);
+              }
+            }
+            // Cap at 50k records per dataset per user (rough safety bound)
+            if (data[dataset].length > 50000) {
+              data[dataset] = data[dataset].slice(-50000);
+            }
+          }
+          save();
+          console.log(`[bridge] sync ok: ${email} -> ${connectorId} ${event.modelName || ''} (${records.length} records)`);
         }
       }
 
       return send(res, 200, { ok: true });
+    }
+
+    // POST /api/chat/:user  {message}
+    // Streams the agent's response back as SSE.
+    const chatMatch = p.match(/^\/api\/chat\/([^/]+)$/);
+    if (req.method === 'POST' && chatMatch) {
+      const user = decodeURIComponent(chatMatch[1]);
+      const body = await readJson(req);
+      const message = String(body.message || '').slice(0, 8000);
+      if (!message) return send(res, 400, { error: 'message required' });
+
+      res.writeHead(200, {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive',
+        'Access-Control-Allow-Origin': ALLOW_ORIGIN,
+        'X-Accel-Buffering': 'no'
+      });
+
+      const agent = body.agent || agentNameForUser(user);
+      try {
+        await openClawChat(agent, message, (chunk) => {
+          res.write(`data: ${JSON.stringify({ delta: chunk })}\n\n`);
+        });
+        res.write('data: [DONE]\n\n');
+      } catch (e) {
+        console.error('[bridge] chat error:', e);
+        res.write(`data: ${JSON.stringify({ error: e.message })}\n\n`);
+      }
+      res.end();
+      return;
+    }
+
+    // GET /api/data/:user/:dataset?since=ISO&limit=N
+    // Returns records from the user's synced data. Pull pattern: agent skills
+    // call this when they need fresh numbers.
+    const dataMatch = p.match(/^\/api\/data\/([^/]+)\/([^/]+)$/);
+    if (req.method === 'GET' && dataMatch) {
+      const user = decodeURIComponent(dataMatch[1]);
+      const dataset = decodeURIComponent(dataMatch[2]);
+      const records = state.data?.[user]?.[dataset] || [];
+
+      let filtered = records;
+      const sinceParam = url.searchParams.get('since');
+      if (sinceParam) {
+        const sinceTs = Number(sinceParam) || Date.parse(sinceParam);
+        if (sinceTs) {
+          filtered = records.filter((r) => {
+            const ts = Date.parse(r.created_at || r.createdAt || r.updated_at || r.updatedAt || '');
+            return ts && ts >= sinceTs;
+          });
+        }
+      }
+      const limit = Math.min(Number(url.searchParams.get('limit')) || 200, 5000);
+      filtered = filtered.slice(0, limit);
+
+      return send(res, 200, {
+        user,
+        dataset,
+        count: filtered.length,
+        total: records.length,
+        records: filtered
+      });
     }
 
     return send(res, 404, { error: 'not found' });

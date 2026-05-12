@@ -513,8 +513,18 @@ body {
 
 </div>
 
+<!--
+  Flip apiBase to your bridge URL (e.g. 'https://api.withtend.ai') to route
+  the chat composer through OpenClaw via the bridge. Until then we keep
+  the existing canned replies so the demo works on the static site.
+-->
+<script>
+  window.__TEND_CONFIG__ = window.__TEND_CONFIG__ || { apiBase: null };
+</script>
 <script>
 (function () {
+  var CFG = window.__TEND_CONFIG__ || {};
+  var API = CFG.apiBase || null;
   try {
     var raw = sessionStorage.getItem('tend.session');
     if (raw) {
@@ -699,12 +709,94 @@ body {
   ];
 
   function reply(text) {
+    if (API) return replyLive(text);
+    return replyCanned(text);
+  }
+
+  function replyCanned(text) {
     var t = addThinking();
     setTimeout(function () {
       t.remove();
       var hit = canned.find(function (c) { return c.match.test(text); });
       addReply(hit.html, hit.sources);
     }, 900);
+  }
+
+  // Stream from the bridge /api/chat/:user SSE endpoint.
+  // Each chunk arrives as {delta: "..."} and we append it to the bubble.
+  function replyLive(text) {
+    var userEmail = 'demo@withtend.ai';
+    try {
+      var sraw = sessionStorage.getItem('tend.session');
+      if (sraw) {
+        var s = JSON.parse(sraw);
+        if (s && s.email) userEmail = s.email;
+      }
+    } catch (_) {}
+
+    var thinking = addThinking();
+    var bubble = null;
+
+    function ensureBubble() {
+      if (bubble) return bubble;
+      thinking.remove();
+      var wrap = document.createElement('div');
+      wrap.className = 'msg';
+      wrap.innerHTML = '<div><div class="who">tend</div><div class="bubble"></div></div>';
+      var b = wrap.querySelector('.bubble');
+      body.appendChild(wrap);
+      bubble = b;
+      return b;
+    }
+
+    function fail(msg) {
+      thinking.remove();
+      addReply('<p>Bridge unreachable. Falling back to demo mode.</p><p style="color:var(--fg-mute);font-size:12px;">' + msg + '</p>');
+      replyCanned(text);
+    }
+
+    fetch(API + '/api/chat/' + encodeURIComponent(userEmail), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: text })
+    })
+    .then(function (r) {
+      if (!r.ok || !r.body) throw new Error('http ' + r.status);
+      var reader = r.body.getReader();
+      var decoder = new TextDecoder();
+      var buf = '';
+      function pump() {
+        return reader.read().then(function (res) {
+          if (res.done) return;
+          buf += decoder.decode(res.value, { stream: true });
+          var lines = buf.split('\n');
+          buf = lines.pop() || '';
+          for (var i = 0; i < lines.length; i++) {
+            var line = lines[i].trim();
+            if (!line || !line.startsWith('data:')) continue;
+            var payload = line.slice(5).trim();
+            if (payload === '[DONE]') return;
+            try {
+              var obj = JSON.parse(payload);
+              if (obj.error) throw new Error(obj.error);
+              if (obj.delta) {
+                ensureBubble();
+                bubble.textContent += obj.delta;
+                scroll();
+              }
+            } catch (e) {
+              throw e;
+            }
+          }
+          return pump();
+        });
+      }
+      return pump();
+    })
+    .catch(function (e) {
+      console.warn('replyLive error:', e);
+      fail(e.message || 'network error');
+    });
   }
 
   form.addEventListener('submit', function (e) {

@@ -1,0 +1,49 @@
+# Skill: query_orders
+#
+# When the agent decides it needs order data, it calls this skill. The skill
+# hits the bridge's /api/data/:user/orders endpoint, which returns records
+# Nango synced from Shopify on a schedule.
+#
+# Adapt the wire format to OpenClaw's skill schema. See
+# https://docs.openclaw.ai/tools/skills
+
+name: query_orders
+description: |
+  Fetch the customer's orders from Shopify within a date range.
+
+  Use this when the user asks about: orders, sales, revenue, units sold,
+  best-selling products by raw volume, abandoned-cart recovery rates, or
+  anything that requires looking at the order log.
+
+inputs:
+  since:
+    type: string
+    description: |
+      ISO date (e.g. "2026-04-01") or relative shorthand:
+      "today", "yesterday", "this-week", "last-7-days", "last-30-days".
+    required: false
+    default: "last-30-days"
+  limit:
+    type: integer
+    description: "Maximum orders to return."
+    default: 200
+    maximum: 5000
+
+call:
+  http:
+    method: GET
+    url: "${BRIDGE_URL}/api/data/${TENANT_USER}/orders"
+    params:
+      since: "{{since}}"
+      limit: "{{limit}}"
+    headers:
+      X-Tenant: "${TENANT_USER}"
+  response:
+    select: records
+    format: json
+
+example:
+  user: "What did we sell yesterday?"
+  call:
+    since: "yesterday"
+    limit: 500

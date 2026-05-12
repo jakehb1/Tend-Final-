@@ -1,0 +1,35 @@
+name: meta_ads_summary
+description: |
+  Spend, impressions, ROAS, and conversion stats from Meta Ads. Call when
+  the user asks about Facebook/Instagram ads, ad performance, ROAS,
+  CAC, or which campaign drove which sales.
+
+inputs:
+  window:
+    type: string
+    description: |
+      "today", "yesterday", "this-week" (default), "last-7-days",
+      "last-30-days", "month-to-date".
+    default: "this-week"
+  group_by:
+    type: string
+    description: |
+      "campaign" (default), "ad_set", "creative".
+    default: "campaign"
+
+call:
+  http:
+    method: GET
+    url: "${BRIDGE_URL}/api/data/${TENANT_USER}/meta-ads/summary"
+    params:
+      window: "{{window}}"
+      group_by: "{{group_by}}"
+  response:
+    select: records
+    format: json
+
+example:
+  user: "How did Meta Ads do this week vs. ROAS?"
+  call:
+    window: "this-week"
+    group_by: "campaign"
