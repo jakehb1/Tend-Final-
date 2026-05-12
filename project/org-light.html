@@ -306,6 +306,65 @@ body {
 .min-foot a { color: var(--fg-dim); text-decoration: none; }
 .min-foot a:hover { color: var(--fg); }
 
+/* AI partner panel */
+.ai-card {
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+  padding: 36px 36px 32px;
+}
+.ai-card-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+  margin-bottom: 28px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--line);
+}
+.ai-card-head .dot {
+  width: 7px; height: 7px;
+  background: var(--accent);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.ai-card-head .meta { margin-left: auto; color: var(--fg-mute); }
+.ai-questions { display: flex; flex-direction: column; gap: 14px; }
+.ai-q {
+  font-size: 17px;
+  color: var(--fg);
+  line-height: 1.4;
+  padding-left: 24px;
+  position: relative;
+}
+.ai-q::before {
+  content: "›";
+  color: var(--accent);
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 18px;
+  line-height: 1.4;
+}
+.ai-foot {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: var(--fg-mute);
+  margin: 28px 0 0;
+  text-align: center;
+}
+@media (max-width: 720px) {
+  .ai-card { padding: 24px 22px 24px; }
+  .ai-card-head { flex-wrap: wrap; }
+  .ai-card-head .meta { width: 100%; margin-left: 0; }
+  .ai-q { font-size: 15.5px; }
+}
+
 /* ---------- vertical picker ---------- */
 .vert-picker {
   position: relative;
@@ -453,137 +512,59 @@ body[data-vertical="dental"]    .vert-only.inline.for-dental { display: inline; 
       <button type="button" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}' class="btn primary">Book a 30-min demo <span class="arr">→</span></button>
     </div>
 
-    <div class="min-pillars vert-only for-ecomm">
-      <div class="min-pillar">
-        <div class="num">01 / ONE PLACE</div>
-        <h3>Every tool, one view.</h3>
-        <p>Stop tab-switching across Shopify, QuickBooks, Mailchimp, and Meta Ads to assemble a picture. It's all on one dashboard, live.</p>
-      </div>
-      <div class="min-pillar">
-        <div class="num">02 / ASK ANYTHING</div>
-        <h3>Your own private chatbot.</h3>
-        <p>Trained on your store. Ask plain English questions, get answers grounded in your real orders, ads, and customers.</p>
-      </div>
-      <div class="min-pillar">
-        <div class="num">03 / DECIDE FASTER</div>
-        <h3>Numbers, on demand.</h3>
-        <p>Stop waiting on someone to pull a report. Today's revenue, today's orders, today's ad spend, whenever you want them.</p>
-      </div>
-    </div>
-
-    <div class="min-pillars vert-only for-nonprofit">
-      <div class="min-pillar">
-        <div class="num">01 / ONE PLACE</div>
-        <h3>Donors, programs, books.</h3>
-        <p>Stop stitching reports from your donor CRM, Mailchimp, QuickBooks, and your grants spreadsheet. One live view of the whole org.</p>
-      </div>
-      <div class="min-pillar">
-        <div class="num">02 / ASK ANYTHING</div>
-        <h3>Your own private chatbot.</h3>
-        <p>Trained on your donors and programs. Ask "which lapsed donors gave $1K+ last year?" and get a real answer in seconds.</p>
-      </div>
-      <div class="min-pillar">
-        <div class="num">03 / DECIDE FASTER</div>
-        <h3>Mission numbers, on demand.</h3>
-        <p>Today's donations, this month's retention, this campaign's ROI. Board-ready, without the board prep marathon.</p>
-      </div>
-    </div>
-
-    <div class="min-pillars vert-only for-dental">
-      <div class="min-pillar">
-        <div class="num">01 / ONE PLACE</div>
-        <h3>The practice, on one screen.</h3>
-        <p>Production, schedule, recall, billing, and patient comms in one live view. No more clicking across Dentrix, Solutionreach, and QuickBooks.</p>
-      </div>
-      <div class="min-pillar">
-        <div class="num">02 / ASK ANYTHING</div>
-        <h3>Your own private chatbot.</h3>
-        <p>Trained on your practice. Ask "who's overdue for recall and has insurance benefits left?" or "what's our no-show rate this month?"</p>
-      </div>
-      <div class="min-pillar">
-        <div class="num">03 / DECIDE FASTER</div>
-        <h3>Production, on demand.</h3>
-        <p>Today's production, this week's open chair time, this month's pending claims. The numbers you used to wait on, ready every morning.</p>
-      </div>
-    </div>
   </div>
 </section>
 
 <section class="min-sec">
   <div class="wrap">
     <div class="min-sec-head">
-      <h2>What's <span class="serif">included.</span></h2>
-      <p>Everything you need to see your whole business in one place and ask it any question. Live in 30 days. No integration project. No per-seat math.</p>
+      <h2>Your <span class="serif">AI partner</span>.</h2>
+      <p>Trained on your business. Plugged into your tools. Locked to your team. Ask anything you'd ask your best operator.</p>
     </div>
-    <div class="min-list vert-only for-ecomm">
-      <div class="item">
-        <div class="num">01 / CONNECTED DATA</div>
-        <h4>One company brain.</h4>
-        <p>We wire your existing tools (Shopify, Mailchimp, QuickBooks, Meta Ads, Stripe, Google Analytics, and the rest) into a single live data layer. Standard connectors included. Custom integrations quoted separately.</p>
+
+    <div class="ai-card">
+      <div class="ai-card-head">
+        <span class="dot"></span>
+        <span>Ask your AI</span>
+        <span class="meta">Private · grounded in your live data</span>
       </div>
-      <div class="item">
-        <div class="num">02 / OPERATING DASHBOARD</div>
-        <h4>Your whole store, on one screen.</h4>
-        <p>Real-time view of revenue, orders, ad spend, cash, repeat-rate, top SKUs, all in one place. Built for the operator, not the data team. No SQL, no warehouse projects.</p>
-      </div>
-      <div class="item">
-        <div class="num">03 / CUSTOM CHATBOT</div>
-        <h4>Trained on your store. Locked to your team.</h4>
-        <p>Ask plain English questions: "what's my best-selling SKU this week?", "how much did Meta spend vs. ROAS?", "which customers haven't reordered in 60 days?" Answers come from your live data. Private, never trained on or shared with anyone else.</p>
+      <div class="ai-questions">
+        <div class="ai-q vert-only for-ecomm">What's my best-selling SKU this week?</div>
+        <div class="ai-q vert-only for-ecomm">How did Meta Ads perform vs. ROAS this month?</div>
+        <div class="ai-q vert-only for-ecomm">Which customers haven't reordered in 60 days?</div>
+        <div class="ai-q vert-only for-ecomm">What's our average order value by channel?</div>
+        <div class="ai-q vert-only for-ecomm">How much inventory ships this week, and what's low?</div>
+
+        <div class="ai-q vert-only for-nonprofit">Which lapsed donors gave $1K+ last year?</div>
+        <div class="ai-q vert-only for-nonprofit">What's our donor retention by acquisition channel?</div>
+        <div class="ai-q vert-only for-nonprofit">How much of the grant cycle is at risk this quarter?</div>
+        <div class="ai-q vert-only for-nonprofit">Which campaigns had the highest ROI this quarter?</div>
+        <div class="ai-q vert-only for-nonprofit">Is our spring appeal pacing ahead of last year?</div>
+
+        <div class="ai-q vert-only for-dental">Who's overdue for recall and has benefits left?</div>
+        <div class="ai-q vert-only for-dental">What's our no-show rate this month?</div>
+        <div class="ai-q vert-only for-dental">Which insurance claims are pending past 30 days?</div>
+        <div class="ai-q vert-only for-dental">Where are the holes in next week's schedule?</div>
+        <div class="ai-q vert-only for-dental">What's production per chair this month?</div>
       </div>
     </div>
 
-    <div class="min-list vert-only for-nonprofit">
-      <div class="item">
-        <div class="num">01 / CONNECTED DATA</div>
-        <h4>Donors and dollars, in one layer.</h4>
-        <p>We wire your existing tools (Bloomerang, Salsa, or Donorbox · Mailchimp or Constant Contact · QuickBooks · Stripe · Salesforce Nonprofit Cloud · your grants spreadsheet) into a single live data layer. Standard connectors included. Custom integrations quoted separately.</p>
-      </div>
-      <div class="item">
-        <div class="num">02 / OPERATING DASHBOARD</div>
-        <h4>The whole org, on one screen.</h4>
-        <p>Real-time view of donations, donor retention, grant pipeline, campaign ROI, program spend. Board-ready by default. No SQL, no warehouse projects.</p>
-      </div>
-      <div class="item">
-        <div class="num">03 / CUSTOM CHATBOT</div>
-        <h4>Trained on your mission. Locked to your team.</h4>
-        <p>Ask plain English questions: "which lapsed donors gave $1K+ last year?", "what's our retention by acquisition channel?", "how much of the grant cycle is at risk?" Answers from your live data. Private, never shared.</p>
-      </div>
-    </div>
-
-    <div class="min-list vert-only for-dental">
-      <div class="item">
-        <div class="num">01 / CONNECTED DATA</div>
-        <h4>The practice, in one layer.</h4>
-        <p>We wire your existing tools (Dentrix, Open Dental, or Eaglesoft · Solutionreach or RevenueWell · QuickBooks · your insurance billing platform · Stripe) into a single live data layer. Standard connectors included. Custom integrations quoted separately.</p>
-      </div>
-      <div class="item">
-        <div class="num">02 / OPERATING DASHBOARD</div>
-        <h4>Your whole practice, on one screen.</h4>
-        <p>Real-time view of production, the schedule, recall list, A/R aging, no-shows, insurance claims. Built for the practice manager, not the data team.</p>
-      </div>
-      <div class="item">
-        <div class="num">03 / CUSTOM CHATBOT</div>
-        <h4>Trained on your practice. Locked to your team.</h4>
-        <p>Ask plain English questions: "who's overdue for recall and still has insurance benefits left?", "what's our no-show rate this month?", "which claims are pending past 30 days?" Answers from your live data. Private, never shared. HIPAA-aware boundaries on PHI.</p>
-      </div>
-    </div>
-    <p class="min-note">Note: this tier is built for visibility and answers. Agents that take actions on your behalf are on the roadmap and will be available as a separate tier when they ship.</p>
+    <p class="ai-foot">Connected to your existing tools. Locked to your team. Never trained on or shared with anyone else.</p>
   </div>
 </section>
 
 <section class="min-sec">
   <div class="wrap">
     <div class="min-sec-head">
-      <h2>The <span class="serif">30-day</span> rollout.</h2>
-      <p>Four weeks from first call to AI in production. Most customers see ROI by week three.</p>
+      <h2>Live in <span class="serif">30 days</span>.</h2>
+      <p>One working session, then we handle the rest. Your AI partner is asking-and-answering by week four.</p>
     </div>
     <div class="min-roll">
       <div class="week">
         <div class="when">WEEK 01 · SCOPE</div>
         <div class="what">
-          <h4>Pick the tools and the questions.</h4>
-          <p>One 60-min working session. We map the tools you live in, the numbers you check every day, and the questions you wish you could ask your business in plain English.</p>
+          <h4>One working session.</h4>
+          <p>We map the tools you live in and the questions you wish you could ask your business in plain English. 60 minutes, no prep needed.</p>
         </div>
       </div>
       <div class="week">
@@ -599,17 +580,17 @@ body[data-vertical="dental"]    .vert-only.inline.for-dental { display: inline; 
         </div>
       </div>
       <div class="week">
-        <div class="when">WEEK 03 · BUILD</div>
+        <div class="when">WEEK 03 · TRAIN</div>
         <div class="what">
-          <h4>Dashboard and chatbot configured.</h4>
-          <p>We design the operating dashboard around what you check daily, and train the chatbot on your business context (product, customers, vocabulary). You review and we tune.</p>
+          <h4>Your AI partner learns the business.</h4>
+          <p>We teach it your product, your customers, your vocabulary. You review the early answers and we tune until it sounds like your best operator.</p>
         </div>
       </div>
       <div class="week">
         <div class="when">WEEK 04 · LIVE</div>
         <div class="what">
-          <h4>Your team is using it daily.</h4>
-          <p>We onboard your team, fix what's rough, and stay close. By the end of week four, you check the dashboard with your morning coffee and ask the chatbot the things you used to wait on the data team for.</p>
+          <h4>You're using it daily.</h4>
+          <p>By the end of week four, your AI partner is answering the questions you used to wait on the data team for. Morning coffee, ask anything.</p>
         </div>
       </div>
     </div>
