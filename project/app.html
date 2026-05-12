@@ -169,6 +169,18 @@ body {
 .activity.flag .num { color: #C29A4D; }
 .activity .label { font-size: 12px; color: var(--fg-dim); line-height: 1.35; }
 
+.sb-manage {
+  display: block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  text-decoration: none;
+  padding: 12px 10px 4px;
+  margin-top: 4px;
+}
+.sb-manage:hover { color: var(--fg); }
+
 .thread-list { display: flex; flex-direction: column; }
 .thread {
   padding: 12px 12px;
@@ -438,6 +450,7 @@ body {
         <button type="button" class="sys warn" data-system="Gong"><span class="dot"></span><div class="sys-text"><div class="name">Gong</div><div class="sub">sync lagging 18m</div></div></button>
         <button type="button" class="sys idle" data-system="Notion"><span class="dot"></span><div class="sys-text"><div class="name">Notion</div><div class="sub">paused</div></div></button>
       </div>
+      <a href="connect.html" class="sb-manage">+ Connect more tools →</a>
     </div>
 
     <div class="sb-section">

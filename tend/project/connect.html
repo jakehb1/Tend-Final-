@@ -1,0 +1,741 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Connect your tools · tend</title>
+<script>
+  (function () {
+    var raw;
+    try { raw = sessionStorage.getItem('tend.session'); } catch (_) { raw = null; }
+    if (!raw) { window.location.replace('login.html'); }
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="shared.css?v=5">
+<style>
+html, body { height: 100%; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  display: flex;
+  flex-direction: column;
+}
+
+.app-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(10,11,13,0.9);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.app-bar .left, .app-bar .right { display: flex; align-items: center; gap: 18px; }
+.app-bar .brand img { height: 20px; width: auto; display: block; }
+.app-bar .back {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--fg-dim);
+  text-decoration: none;
+  letter-spacing: 0.06em;
+  border-left: 1px solid var(--line);
+  padding-left: 18px;
+}
+.app-bar .back:hover { color: var(--fg); }
+.app-bar .user {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--fg-dim);
+}
+.app-bar .logout {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--fg-mute);
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+}
+.app-bar .logout:hover { color: var(--fg); border-color: var(--line-2); }
+
+.conn-wrap {
+  flex: 1;
+  padding: 56px 32px 96px;
+}
+.conn-inner {
+  max-width: 880px;
+  margin: 0 auto;
+}
+.conn-head h1 {
+  font-size: clamp(32px, 4vw, 56px);
+  font-weight: 300;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  margin: 0 0 14px;
+}
+.conn-head h1 .serif { font-weight: 400; color: var(--accent); }
+.conn-head .sub {
+  font-size: 16px;
+  color: var(--fg-dim);
+  line-height: 1.5;
+  margin: 0 0 28px;
+  max-width: 600px;
+}
+.conn-status {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--fg-mute);
+  margin-bottom: 48px;
+  display: flex;
+  gap: 22px;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 16px 0;
+}
+.conn-status .num { color: var(--accent); font-weight: 500; }
+.conn-status .live::before { content: "● "; color: var(--accent); }
+
+.conn-cat { margin-bottom: 48px; }
+.conn-cat-head {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+}
+.conn-cat-head .label { flex: 1; color: var(--fg-dim); }
+.conn-cat-head .count { color: var(--accent); }
+
+.conn-rows { display: flex; flex-direction: column; }
+
+.conn-row {
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
+  gap: 18px;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+}
+.conn-row:last-child { border-bottom: 0; }
+
+.conn-row .mono-badge {
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--line-2);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--fg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.02em;
+  background: var(--bg-2);
+  transition: border-color 0.15s, color 0.15s;
+}
+.conn-row.is-connected .mono-badge {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--bg-3);
+}
+
+.conn-row .info { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.conn-row .info .name {
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+}
+.conn-row .info .desc {
+  font-size: 13px;
+  color: var(--fg-mute);
+  line-height: 1.45;
+}
+
+.conn-row .action {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.conn-row .status {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--fg-mute);
+  white-space: nowrap;
+}
+.conn-row.is-connected .status { color: var(--accent); }
+.conn-row.is-connected .status::before { content: "● "; }
+
+.conn-row button {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: transparent;
+  border: 1px solid var(--line-2);
+  color: var(--fg);
+  padding: 8px 14px;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+  white-space: nowrap;
+}
+.conn-row button:hover { border-color: var(--accent); color: var(--accent); }
+.conn-row button:disabled { opacity: 0.6; cursor: default; }
+.conn-row button.muted {
+  border: none;
+  color: var(--fg-mute);
+  padding: 8px 0;
+  background: transparent;
+}
+.conn-row button.muted:hover { color: var(--fg); background: transparent; }
+
+.conn-onprem-note {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--fg-mute);
+  line-height: 1.6;
+  padding: 14px 16px;
+  border: 1px dashed var(--line-2);
+  margin-bottom: 16px;
+}
+.conn-onprem-note strong { color: var(--accent); font-weight: 500; }
+.conn-onprem-note a { color: var(--accent); text-decoration: none; }
+.conn-onprem-note a:hover { text-decoration: underline; }
+
+.conn-foot {
+  margin-top: 64px;
+  padding-top: 32px;
+  border-top: 1px solid var(--line);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--fg-mute);
+  line-height: 1.6;
+}
+.conn-foot a { color: var(--accent); text-decoration: none; }
+
+@media (max-width: 720px) {
+  .app-bar { padding: 12px 16px; }
+  .app-bar .user { display: none; }
+  .conn-wrap { padding: 36px 18px 60px; }
+  .conn-head h1 { font-size: 32px; }
+  .conn-status { gap: 14px; padding: 14px 0; }
+  .conn-row { grid-template-columns: 36px 1fr; gap: 12px; padding: 14px 0; }
+  .conn-row .mono-badge { width: 30px; height: 30px; font-size: 11px; }
+  .conn-row .info .name { font-size: 14.5px; }
+  .conn-row .info .desc { font-size: 12.5px; }
+  .conn-row .action {
+    grid-column: 1 / -1;
+    padding-left: 48px;
+    justify-content: space-between;
+    margin-top: 6px;
+  }
+  .conn-row .status { font-size: 10.5px; }
+  .conn-row button { font-size: 10.5px; padding: 7px 12px; }
+}
+</style>
+</head>
+<body>
+
+<header class="app-bar">
+  <div class="left">
+    <a class="brand" href="index.html"><img src="images/tend-logo.png" alt="tend" /></a>
+    <a class="back" href="app.html">← Back to workspace</a>
+  </div>
+  <div class="right">
+    <span class="user" id="user-email">you@company.com</span>
+    <a href="#" id="logout" class="logout">Log out</a>
+  </div>
+</header>
+
+<main class="conn-wrap">
+  <div class="conn-inner">
+    <div class="conn-head">
+      <h1>Connect your <span class="serif">tools</span>.</h1>
+      <p class="sub">Plug into your existing stack so your AI partner answers from real data, not guesses. Click Connect, approve in the popup, you're done. Most syncs run every 5 minutes.</p>
+    </div>
+
+    <div class="conn-status">
+      <span><span class="num" id="ct-connected">0</span> connected</span>
+      <span><span class="num" id="ct-available">0</span> available</span>
+      <span class="live" id="ct-sync">Last sync just now</span>
+    </div>
+
+    <section class="conn-cat">
+      <div class="conn-cat-head"><span class="label">Revenue &amp; orders</span><span class="count">3 connectors</span></div>
+      <div class="conn-rows">
+        <div class="conn-row" data-conn="shopify">
+          <span class="mono-badge">SH</span>
+          <div class="info">
+            <div class="name">Shopify</div>
+            <div class="desc">Orders, products, customers, inventory, fulfillment</div>
+          </div>
+          <div class="action">
+            <span class="status">Not connected</span>
+            <button type="button" class="connect">Connect →</button>
+          </div>
+        </div>
+        <div class="conn-row" data-conn="stripe">
+          <span class="mono-badge">ST</span>
+          <div class="info">
+            <div class="name">Stripe</div>
+            <div class="desc">Payments, subscriptions, invoices, payouts</div>
+          </div>
+          <div class="action">
+            <span class="status">Not connected</span>
+            <button type="button" class="connect">Connect →</button>
+          </div>
+        </div>
+        <div class="conn-row" data-conn="square">
+          <span class="mono-badge">SQ</span>
+          <div class="info">
+            <div class="name">Square</div>
+            <div class="desc">POS sales, items, customers</div>
+          </div>
+          <div class="action">
+            <span class="status">Not connected</span>
+            <button type="button" class="connect">Connect →</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="conn-cat">
+      <div class="conn-cat-head"><span class="label">Marketing &amp; ads</span><span class="count">4 connectors</span></div>
+      <div class="conn-rows">
+        <div class="conn-row" data-conn="meta-ads">
+          <span class="mono-badge">MA</span>
+          <div class="info">
+            <div class="name">Meta Ads</div>
+            <div class="desc">Facebook + Instagram campaigns, spend, ROAS, audiences</div>
+          </div>
+          <div class="action">
+            <span class="status">Not connected</span>
+            <button type="button" class="connect">Connect →</button>
+          </div>
+        </div>
+        <div class="conn-row" data-conn="google-ads">
+          <span class="mono-badge">GA</span>
+          <div class="info">
+            <div class="name">Google Ads</div>
+            <div class="desc">Search and display campaigns, keywords, spend</div>
+          </div>
+          <div class="action">
+            <span class="status">Not connected</span>
+            <button type="button" class="connect">Connect →</button>
+          </div>
+        </div>
+        <div class="conn-row" data-conn="mailchimp">
+          <span class="mono-badge">MC</span>
+          <div class="info">
+            <div class="name">Mailchimp</div>
+            <div class="desc">Lists, campaigns, audience performance</div>
+          </div>
+          <div class="action">
+            <span class="status">Not connected</span>
+            <button type="button" class="connect">Connect →</button>
+          </div>
+        </div>
+        <div class="conn-row" data-conn="klaviyo">
+          <span class="mono-badge">KL</span>
+          <div class="info">
+            <div class="name">Klaviyo</div>
+            <div class="desc">E-commerce email + SMS flows, segments</div>
+          </div>
+          <div class="action">
+            <span class="status">Not connected</span>
+            <button type="button" class="connect">Connect →</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="conn-cat">
+      <div class="conn-cat-head"><span class="label">Finance &amp; books</span><span class="count">3 connectors</span></div>
+      <div class="conn-rows">
+        <div class="conn-row" data-conn="quickbooks">
+          <span class="mono-badge">QB</span>
+          <div class="info">
+            <div class="name">QuickBooks Online</div>
+            <div class="desc">Invoices, expenses, GL, A/R aging</div>
+          </div>
+          <div class="action">
+            <span class="status">Not connected</span>
+            <button type="button" class="connect">Connect →</button>
+          </div>
+        </div>
+        <div class="conn-row" data-conn="xero">
+          <span class="mono-badge">XE</span>
+          <div class="info">
+            <div class="name">Xero</div>
+            <div class="desc">Bookkeeping, bank feeds, reports</div>
+          </div>
+          <div class="action">
+            <span class="status">Not connected</span>
+            <button type="button" class="connect">Connect →</button>
+          </div>
+        </div>
+        <div class="conn-row" data-conn="netsuite">
+          <span class="mono-badge">NS</span>
+          <div class="info">
+            <div class="name">NetSuite</div>
+            <div class="desc">ERP, GL, multi-entity finance</div>
+          </div>
+          <div class="action">
+            <span class="status">Not connected</span>
+            <button type="button" class="connect">Connect →</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="conn-cat">
+      <div class="conn-cat-head"><span class="label">Analytics</span><span class="count">2 connectors</span></div>
+      <div class="conn-rows">
+        <div class="conn-row" data-conn="ga4">
+          <span class="mono-badge">G4</span>
+          <div class="info">
+            <div class="name">Google Analytics (GA4)</div>
+            <div class="desc">Site traffic, conversions, channel attribution</div>
+          </div>
+          <div class="action">
+            <span class="status">Not connected</span>
+            <button type="button" class="connect">Connect →</button>
+          </div>
+        </div>
+        <div class="conn-row" data-conn="amplitude">
+          <span class="mono-badge">AM</span>
+          <div class="info">
+            <div class="name">Amplitude</div>
+            <div class="desc">Product analytics, funnels, retention</div>
+          </div>
+          <div class="action">
+            <span class="status">Not connected</span>
+            <button type="button" class="connect">Connect →</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="conn-cat">
+      <div class="conn-cat-head"><span class="label">CRM &amp; support</span><span class="count">3 connectors</span></div>
+      <div class="conn-rows">
+        <div class="conn-row" data-conn="salesforce">
+          <span class="mono-badge">SF</span>
+          <div class="info">
+            <div class="name">Salesforce</div>
+            <div class="desc">Accounts, deals, contacts, activities</div>
+          </div>
+          <div class="action">
+            <span class="status">Not connected</span>
+            <button type="button" class="connect">Connect →</button>
+          </div>
+        </div>
+        <div class="conn-row" data-conn="hubspot">
+          <span class="mono-badge">HS</span>
+          <div class="info">
+            <div class="name">HubSpot</div>
+            <div class="desc">Marketing, sales, and CRM in one</div>
+          </div>
+          <div class="action">
+            <span class="status">Not connected</span>
+            <button type="button" class="connect">Connect →</button>
+          </div>
+        </div>
+        <div class="conn-row" data-conn="zendesk">
+          <span class="mono-badge">ZD</span>
+          <div class="info">
+            <div class="name">Zendesk</div>
+            <div class="desc">Support tickets, SLAs, customer history</div>
+          </div>
+          <div class="action">
+            <span class="status">Not connected</span>
+            <button type="button" class="connect">Connect →</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="conn-cat">
+      <div class="conn-cat-head"><span class="label">Non-profit</span><span class="count">3 connectors</span></div>
+      <div class="conn-rows">
+        <div class="conn-row" data-conn="bloomerang">
+          <span class="mono-badge">BL</span>
+          <div class="info">
+            <div class="name">Bloomerang</div>
+            <div class="desc">Donor management and retention</div>
+          </div>
+          <div class="action">
+            <span class="status">Not connected</span>
+            <button type="button" class="connect">Connect →</button>
+          </div>
+        </div>
+        <div class="conn-row" data-conn="donorbox">
+          <span class="mono-badge">DB</span>
+          <div class="info">
+            <div class="name">Donorbox</div>
+            <div class="desc">Donations, recurring giving, campaigns</div>
+          </div>
+          <div class="action">
+            <span class="status">Not connected</span>
+            <button type="button" class="connect">Connect →</button>
+          </div>
+        </div>
+        <div class="conn-row" data-conn="salsa">
+          <span class="mono-badge">SA</span>
+          <div class="info">
+            <div class="name">Salsa Engage</div>
+            <div class="desc">CRM, advocacy, fundraising</div>
+          </div>
+          <div class="action">
+            <span class="status">Not connected</span>
+            <button type="button" class="connect">Connect →</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="conn-cat">
+      <div class="conn-cat-head"><span class="label">Workspace &amp; comms</span><span class="count">3 connectors</span></div>
+      <div class="conn-rows">
+        <div class="conn-row" data-conn="slack">
+          <span class="mono-badge">SL</span>
+          <div class="info">
+            <div class="name">Slack</div>
+            <div class="desc">Channels, messages, context, alerts</div>
+          </div>
+          <div class="action">
+            <span class="status">Not connected</span>
+            <button type="button" class="connect">Connect →</button>
+          </div>
+        </div>
+        <div class="conn-row" data-conn="gmail">
+          <span class="mono-badge">GM</span>
+          <div class="info">
+            <div class="name">Gmail</div>
+            <div class="desc">Customer emails, threads, attachments</div>
+          </div>
+          <div class="action">
+            <span class="status">Not connected</span>
+            <button type="button" class="connect">Connect →</button>
+          </div>
+        </div>
+        <div class="conn-row" data-conn="gdrive">
+          <span class="mono-badge">GD</span>
+          <div class="info">
+            <div class="name">Google Drive</div>
+            <div class="desc">Docs, sheets, contracts, brand assets</div>
+          </div>
+          <div class="action">
+            <span class="status">Not connected</span>
+            <button type="button" class="connect">Connect →</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="conn-cat">
+      <div class="conn-cat-head"><span class="label">Dental practice management</span><span class="count">on-premises</span></div>
+      <div class="conn-onprem-note">
+        <strong>● Practice systems need a small on-premises agent.</strong> Most dental software runs on your practice server, not the cloud. We install a Windows service that connects securely outbound to tend, no inbound ports. Click <em>Request setup</em> and our team takes it from there.
+      </div>
+      <div class="conn-rows">
+        <div class="conn-row" data-conn="open-dental">
+          <span class="mono-badge">OD</span>
+          <div class="info">
+            <div class="name">Open Dental</div>
+            <div class="desc">Schedule, recall, production, claims</div>
+          </div>
+          <div class="action">
+            <span class="status">Not connected</span>
+            <button type="button" class="connect">Connect →</button>
+          </div>
+        </div>
+        <div class="conn-row" data-conn="dentrix">
+          <span class="mono-badge">DX</span>
+          <div class="info">
+            <div class="name">Dentrix</div>
+            <div class="desc">Schedule, recall, production, claims</div>
+          </div>
+          <div class="action">
+            <span class="status">Setup required</span>
+            <button type="button" class="connect onprem">Request setup →</button>
+          </div>
+        </div>
+        <div class="conn-row" data-conn="eaglesoft">
+          <span class="mono-badge">ES</span>
+          <div class="info">
+            <div class="name">Eaglesoft</div>
+            <div class="desc">Schedule, recall, production, claims</div>
+          </div>
+          <div class="action">
+            <span class="status">Setup required</span>
+            <button type="button" class="connect onprem">Request setup →</button>
+          </div>
+        </div>
+        <div class="conn-row" data-conn="solutionreach">
+          <span class="mono-badge">SR</span>
+          <div class="info">
+            <div class="name">Solutionreach</div>
+            <div class="desc">Patient comms, recall reminders, reviews</div>
+          </div>
+          <div class="action">
+            <span class="status">Not connected</span>
+            <button type="button" class="connect">Connect →</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="conn-foot">
+      Don't see your tool? We support 170+ connectors out of the box.
+      <a href="mailto:hello@withtend.ai?subject=Tend%20connector%20request">Tell us what you use →</a>
+    </div>
+  </div>
+</main>
+
+<script>
+(function () {
+  try {
+    var raw = sessionStorage.getItem('tend.session');
+    if (raw) {
+      var sess = JSON.parse(raw);
+      if (sess && sess.email) {
+        document.getElementById('user-email').textContent = sess.email;
+      }
+    }
+  } catch (_) {}
+
+  document.getElementById('logout').addEventListener('click', function (e) {
+    e.preventDefault();
+    try { sessionStorage.removeItem('tend.session'); } catch (_) {}
+    window.location.href = 'index.html';
+  });
+
+  var STATE_KEY = 'tend.connectors';
+  var state = {};
+  try {
+    var stored = localStorage.getItem(STATE_KEY);
+    if (stored) state = JSON.parse(stored);
+  } catch (_) {}
+
+  if (!Object.keys(state).length) {
+    state = {
+      'shopify':    { connected: true, syncedAt: Date.now() - 2  * 60 * 1000 },
+      'meta-ads':   { connected: true, syncedAt: Date.now() - 8  * 60 * 1000 },
+      'mailchimp':  { connected: true, syncedAt: Date.now() - 4  * 60 * 1000 },
+      'quickbooks': { connected: true, syncedAt: Date.now() - 6  * 60 * 1000 }
+    };
+  }
+
+  function save() {
+    try { localStorage.setItem(STATE_KEY, JSON.stringify(state)); } catch (_) {}
+  }
+
+  function timeAgo(ts) {
+    var s = Math.max(1, Math.round((Date.now() - ts) / 1000));
+    if (s < 60) return s + 's ago';
+    var m = Math.round(s / 60);
+    if (m < 60) return m + 'm ago';
+    var h = Math.round(m / 60);
+    if (h < 24) return h + 'h ago';
+    return Math.round(h / 24) + 'd ago';
+  }
+
+  function render() {
+    var rows = document.querySelectorAll('.conn-row');
+    var connectedCount = 0;
+    var totalCloud = 0;
+    rows.forEach(function (row) {
+      var id = row.getAttribute('data-conn');
+      var s = state[id] || { connected: false };
+      var statusEl = row.querySelector('.status');
+      var btn = row.querySelector('button.connect');
+      var onprem = btn.classList.contains('onprem');
+
+      if (onprem) {
+        statusEl.textContent = 'Setup required';
+        btn.textContent = 'Request setup →';
+        return;
+      }
+      totalCloud++;
+
+      if (s.connected) {
+        row.classList.add('is-connected');
+        btn.classList.add('muted');
+        statusEl.textContent = 'Connected · synced ' + timeAgo(s.syncedAt);
+        btn.textContent = 'Disconnect';
+        connectedCount++;
+      } else {
+        row.classList.remove('is-connected');
+        btn.classList.remove('muted');
+        statusEl.textContent = 'Not connected';
+        btn.textContent = 'Connect →';
+      }
+    });
+    document.getElementById('ct-connected').textContent = connectedCount;
+    document.getElementById('ct-available').textContent = totalCloud - connectedCount;
+
+    var latestSync = 0;
+    Object.values(state).forEach(function (s) {
+      if (s.connected && s.syncedAt > latestSync) latestSync = s.syncedAt;
+    });
+    document.getElementById('ct-sync').textContent =
+      latestSync ? ('Last sync ' + timeAgo(latestSync)) : 'No syncs yet';
+  }
+
+  document.querySelector('.conn-wrap').addEventListener('click', function (e) {
+    var b = e.target.closest('.conn-row button.connect');
+    if (!b) return;
+    var row = b.closest('.conn-row');
+    var id = row.getAttribute('data-conn');
+
+    if (b.classList.contains('onprem')) {
+      window.location.href = 'mailto:hello@withtend.ai?subject=Dental%20practice%20connector%20setup&body=Hi%20team%2C%20we%27d%20like%20to%20get%20our%20practice%20system%20connected%20to%20tend.%20Connector%3A%20' + encodeURIComponent(id);
+      return;
+    }
+
+    var s = state[id] || { connected: false };
+    if (s.connected) {
+      delete state[id];
+      save();
+      render();
+      return;
+    }
+
+    b.disabled = true;
+    b.textContent = 'Connecting…';
+    setTimeout(function () {
+      state[id] = { connected: true, syncedAt: Date.now() };
+      save();
+      b.disabled = false;
+      render();
+    }, 1100);
+  });
+
+  setInterval(render, 30000);
+  render();
+})();
+</script>
+
+</body>
+</html>
