@@ -22,17 +22,33 @@
   --line-2: rgba(26, 26, 24, 0.20);
   --paper:  #F4F2EC;
   --paper-ink: #1A1A18;
-  --accent: oklch(0.42 0.06 70);     /* warm dark olive for contrast on light */
-  --accent-ink: #F4F2EC;             /* light text on accent */
-  --accent-soft: oklch(0.42 0.06 70 / 0.14);
+  --accent: #2D2B26;                  /* near-black warm grey, not brown */
+  --accent-ink: #F4F2EC;
+  --accent-soft: rgba(45, 43, 38, 0.14);
 }
 
 html { background: var(--bg); }
 body { background: var(--bg); color: var(--fg); }
 
 /* Translucent dark nav bar wouldn't make sense over a light page; flip it */
-.nav {
-  background: rgba(236, 234, 229, 0.85) !important;
+.nav { background: rgba(236, 234, 229, 0.85) !important; }
+
+/* Logo asset is white-on-transparent; force it to render dark on light page */
+.brand img { filter: brightness(0); }
+
+/* Make every primary button look the same as the nav CTA — same dark fill,
+   same light text. Avoids the lone brown pill in the hero / final CTA. */
+.btn.primary {
+  background: var(--fg);
+  color: var(--bg);
+  border-color: var(--fg);
+}
+.btn.primary:hover {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: var(--accent);
+  filter: none;
+  transform: translateY(-1px);
 }
 
 /* ----- Original /org styles (unchanged below) ----- */
