@@ -603,27 +603,27 @@ body {
   var canned = [
     {
       match: /morning|brief|today|standup|what.*happen|what.*change/i,
-      html: "<p>Good morning. Here's what happened since you logged off at 7:14 PM yesterday:</p><p><strong>Revenue.</strong> <strong>47 orders</strong> overnight for <strong>$4,820</strong> (AOV $103). Biggest order: a bundle of two Performance Polos + a Heritage Hat ($248) from a returning customer in Austin. Repeat-rate on overnight orders: 38%.</p><p><strong>Ads.</strong> Meta spent $580 last night at <strong>4.2× ROAS</strong>. The Sage Drop campaign continues to outperform (5.1× ROAS). Glove retargeting is dragging at 2.1× — I'd consider pausing it.</p><p><strong>Email.</strong> Friday's newsletter drove <strong>$1,840</strong> attributed revenue. 32% open rate, 4.1% CTR. The Heritage Hat re-stock callout pulled 22% of the clicks.</p><p><strong>Inventory.</strong> 3 SKUs hit low-stock: Players Glove (M) at 8 units, Heritage Hat (Olive) at 12, Performance Polo (Sage XL) at 6. PO drafted for Glove, waiting on your call for the others.</p><p><strong>Service.</strong> One return request flagged: a customer wants to swap a Performance Polo (Stone) for Cream because the color was different than expected on their monitor. Draft reply ready.</p>",
+      html: "<p>Good morning. Here's what happened since you logged off at 7:14 PM yesterday:</p><p><strong>Revenue.</strong> <strong>47 orders</strong> overnight for <strong>$4,820</strong> (AOV $103). Biggest order: a bundle of two Performance Polos + a Heritage Hat ($248) from a returning customer in Austin. Repeat-rate on overnight orders: 38%.</p><p><strong>Ads.</strong> Meta spent $580 last night at <strong>4.2× ROAS</strong>. The Sage Drop campaign continues to outperform (5.1× ROAS). Glove retargeting is dragging at 2.1×. I'd consider pausing it.</p><p><strong>Email.</strong> Friday's newsletter drove <strong>$1,840</strong> attributed revenue. 32% open rate, 4.1% CTR. The Heritage Hat re-stock callout pulled 22% of the clicks.</p><p><strong>Inventory.</strong> 3 SKUs hit low-stock: Players Glove (M) at 8 units, Heritage Hat (Olive) at 12, Performance Polo (Sage XL) at 6. PO drafted for Glove, waiting on your call for the others.</p><p><strong>Service.</strong> One return request flagged: a customer wants to swap a Performance Polo (Stone) for Cream because the color was different than expected on their monitor. Draft reply ready.</p>",
       sources: ['Shopify · overnight orders', 'Meta Ads · spend report', 'Klaviyo · Friday newsletter', 'Shopify · inventory', 'ShipStation · 1 return']
     },
     {
       match: /best.?sell|what.?s.?selling|top.?sku|hot.?sell|move/i,
-      html: "<p>Top sellers by revenue, last 7 days:</p><p>1. <strong>Performance Polo · Sage</strong> — 84 units, $7,560 (+18% vs prior week)<br/>2. <strong>Heritage Hat · Navy</strong> — 62 units, $2,170 (steady)<br/>3. <strong>Tour Towel</strong> — 51 units, $1,275<br/>4. <strong>Players Glove · M</strong> — 47 units, $1,175 (low stock, 8 left)<br/>5. <strong>Cart Bag · Stone</strong> — 9 units, $2,160 (high AOV, slow sell-through)</p><p>The Sage Polo's jump tracks with the Sage Drop ad creative going live Tuesday. Sage XL is going to run out before end-of-week at current pace — I'd push a reorder today.</p>",
+      html: "<p>Top sellers by revenue, last 7 days:</p><p>1. <strong>Performance Polo · Sage</strong>. 84 units, $7,560 (+18% vs prior week)<br/>2. <strong>Heritage Hat · Navy</strong>. 62 units, $2,170 (steady)<br/>3. <strong>Tour Towel</strong>. 51 units, $1,275<br/>4. <strong>Players Glove · M</strong>. 47 units, $1,175 (low stock, 8 left)<br/>5. <strong>Cart Bag · Stone</strong>. 9 units, $2,160 (high AOV, slow sell-through)</p><p>The Sage Polo's jump tracks with the Sage Drop ad creative going live Tuesday. Sage XL is going to run out before end-of-week at current pace. I'd push a reorder today.</p>",
       sources: ['Shopify · last 7 days', 'Meta Ads · Sage Drop', 'Shopify · inventory']
     },
     {
       match: /meta|facebook|instagram|fb ads|ad spend|roas|paid social/i,
-      html: "<p>Meta Ads this week (Mon–today): <strong>$4,120 spent</strong>, <strong>4.8× blended ROAS</strong>, <strong>$19,776</strong> attributed revenue.</p><p>By campaign:</p><p>· <strong>Sage Drop</strong> · $1,840 spent · 5.1× ROAS · $9,384 rev<br/>· <strong>Heritage Hat — Acquisition</strong> · $980 spent · 5.4× ROAS · $5,292 rev<br/>· <strong>Catch-all retargeting (DPA)</strong> · $660 spent · 4.6× ROAS · $3,036 rev<br/>· <strong>Glove retargeting</strong> · $640 spent · 2.1× ROAS · $1,344 rev ← underperforming</p><p>Recommendation: pause Glove retargeting, reallocate the $640/wk to Sage Drop (currently capped at 70% impression share). Should add $2.4K weekly revenue at current ROAS.</p>",
+      html: "<p>Meta Ads this week (Mon to today): <strong>$4,120 spent</strong>, <strong>4.8× blended ROAS</strong>, <strong>$19,776</strong> attributed revenue.</p><p>By campaign:</p><p>· <strong>Sage Drop</strong> · $1,840 spent · 5.1× ROAS · $9,384 rev<br/>· <strong>Heritage Hat. Acquisition</strong> · $980 spent · 5.4× ROAS · $5,292 rev<br/>· <strong>Catch-all retargeting (DPA)</strong> · $660 spent · 4.6× ROAS · $3,036 rev<br/>· <strong>Glove retargeting</strong> · $640 spent · 2.1× ROAS · $1,344 rev ← underperforming</p><p>Recommendation: pause Glove retargeting, reallocate the $640/wk to Sage Drop (currently capped at 70% impression share). Should add $2.4K weekly revenue at current ROAS.</p>",
       sources: ['Meta Ads · 4 active campaigns', 'Shopify · attribution', 'Klaviyo · email overlap']
     },
     {
       match: /abandoned|cart recover|recover.*cart/i,
-      html: "<p>Abandoned cart recovery, last 7 days:</p><p>· <strong>1,840 carts</strong> abandoned (above $35 threshold)<br/>· <strong>312 recovery emails</strong> sent via Klaviyo (first nudge at 2h, second at 24h)<br/>· <strong>34 carts recovered</strong> (10.9% recovery rate, $3,212 rev)</p><p>The 2-hour first nudge is doing most of the work (28 of 34 recoveries). The 24-hour follow-up is at 1.9% — could be worth A/B testing a discount on the second touch. Want me to set that up?</p>",
+      html: "<p>Abandoned cart recovery, last 7 days:</p><p>· <strong>1,840 carts</strong> abandoned (above $35 threshold)<br/>· <strong>312 recovery emails</strong> sent via Klaviyo (first nudge at 2h, second at 24h)<br/>· <strong>34 carts recovered</strong> (10.9% recovery rate, $3,212 rev)</p><p>The 2-hour first nudge is doing most of the work (28 of 34 recoveries). The 24-hour follow-up is at 1.9%. could be worth A/B testing a discount on the second touch. Want me to set that up?</p>",
       sources: ['Klaviyo · cart recovery flow', 'Shopify · abandoned checkouts']
     },
     {
       match: /low.?stock|inventory|running low|run out|stock alert/i,
-      html: "<p>Three SKUs flagged for low stock at current sell-through rate:</p><p>· <strong>Players Glove (M)</strong> — 8 units left, sells ~7/day → ~1 day of cover. PO drafted to Acushnet for 144 units, awaiting your approval.<br/>· <strong>Heritage Hat (Olive)</strong> — 12 units, sells 2/day → 6 days of cover. Lead time 21 days, so reorder now or risk a 2-week stockout.<br/>· <strong>Performance Polo (Sage XL)</strong> — 6 units, sells 4/day → 1.5 days. Production lead time 35 days. The Sage Drop ad campaign is driving most of this; consider pausing the campaign for XL or pushing a backorder option.</p><p>Should I auto-pause the Sage Drop ad set for size XL until restock?</p>",
+      html: "<p>Three SKUs flagged for low stock at current sell-through rate:</p><p>· <strong>Players Glove (M)</strong>. 8 units left, sells ~7/day → ~1 day of cover. PO drafted to Acushnet for 144 units, awaiting your approval.<br/>· <strong>Heritage Hat (Olive)</strong>. 12 units, sells 2/day → 6 days of cover. Lead time 21 days, so reorder now or risk a 2-week stockout.<br/>· <strong>Performance Polo (Sage XL)</strong>. 6 units, sells 4/day → 1.5 days. Production lead time 35 days. The Sage Drop ad campaign is driving most of this; consider pausing the campaign for XL or pushing a backorder option.</p><p>Should I auto-pause the Sage Drop ad set for size XL until restock?</p>",
       sources: ['Shopify · inventory', 'Shopify · sell-through rate', 'Vendor lead times sheet']
     },
     {
@@ -633,17 +633,17 @@ body {
     },
     {
       match: /return|refund|exchange/i,
-      html: "<p>Returns this month (May, MTD):</p><p>· <strong>38 returns</strong> against 1,240 orders<br/>· <strong>3.1% return rate</strong> (within your 2–4% normal range)<br/>· Top return reason: <strong>color expectation mismatch</strong> on Performance Polo (Stone) — 11 of the 38<br/>· Average refund: $84<br/>· Median time-to-refund: 2.3 days</p><p>The Stone-color complaints cluster on returns from mobile-traffic customers, suggesting the product photography reads differently on mobile. Worth getting the photographer to reshoot Stone with stronger contrast, or adding a color-comparison reference image.</p>",
+      html: "<p>Returns this month (May, MTD):</p><p>· <strong>38 returns</strong> against 1,240 orders<br/>· <strong>3.1% return rate</strong> (within your 2-4% normal range)<br/>· Top return reason: <strong>color expectation mismatch</strong> on Performance Polo (Stone). 11 of the 38<br/>· Average refund: $84<br/>· Median time-to-refund: 2.3 days</p><p>The Stone-color complaints cluster on returns from mobile-traffic customers, suggesting the product photography reads differently on mobile. Worth getting the photographer to reshoot Stone with stronger contrast, or adding a color-comparison reference image.</p>",
       sources: ['Shopify · returns', 'ShipStation · return labels', 'Yotpo · review tags']
     },
     {
       match: /overnight order|47 order|orders came in|came overnight/i,
-      html: "<p>The 47 overnight orders broke down like this:</p><p>· <strong>18 hat orders</strong> ($1,260 — Heritage Hat, mostly Navy and Olive)<br/>· <strong>14 polo orders</strong> ($1,344 — Performance Polo, Sage dominant)<br/>· <strong>9 mixed bundles</strong> ($2,016 — polo + hat or hat + towel combos)<br/>· <strong>4 cart bags</strong> ($960 — high-AOV first-time buyers)<br/>· <strong>2 glove orders</strong> ($240)</p><p>Geo split: 62% US, 22% UK (the EU launch is paying off), 11% Canada, 5% other. The biggest order was $312 from a returning customer in Charlotte who's now ordered 8 times in 14 months.</p>",
+      html: "<p>The 47 overnight orders broke down like this:</p><p>· <strong>18 hat orders</strong> ($1,260. Heritage Hat, mostly Navy and Olive)<br/>· <strong>14 polo orders</strong> ($1,344. Performance Polo, Sage dominant)<br/>· <strong>9 mixed bundles</strong> ($2,016. polo + hat or hat + towel combos)<br/>· <strong>4 cart bags</strong> ($960. high-AOV first-time buyers)<br/>· <strong>2 glove orders</strong> ($240)</p><p>Geo split: 62% US, 22% UK (the EU launch is paying off), 11% Canada, 5% other. The biggest order was $312 from a returning customer in Charlotte who's now ordered 8 times in 14 months.</p>",
       sources: ['Shopify · 47 orders', 'Shopify · customer history', 'Stripe · payment regions']
     },
     {
       match: /happening in shopify|in shopify|shopify/i,
-      html: "<p>Shopify state, right now: <strong>2,840 orders</strong> in the last 30 days, AOV $98, repeat-rate 31%. Cart-to-checkout conversion: 14.8% (up from 12.1% a month ago — the new size-guide popup is helping).</p><p>Open issues: 1 pending fraud review on a $640 order to a freight-forwarder in Portland, OR. I'd hold this one for manual review.</p>",
+      html: "<p>Shopify state, right now: <strong>2,840 orders</strong> in the last 30 days, AOV $98, repeat-rate 31%. Cart-to-checkout conversion: 14.8% (up from 12.1% a month ago. the new size-guide popup is helping).</p><p>Open issues: 1 pending fraud review on a $640 order to a freight-forwarder in Portland, OR. I'd hold this one for manual review.</p>",
       sources: ['Shopify · live', 'Shopify · fraud rules']
     },
     {
@@ -663,7 +663,7 @@ body {
     },
     {
       match: /in stripe|stripe/i,
-      html: "<p>Stripe: payments flowing cleanly. 0.18% dispute rate (well below the 1% threshold). Next payout: $18,420 on Wednesday. One declined-card retry from this morning succeeded on the second attempt — order is now processing.</p>",
+      html: "<p>Stripe: payments flowing cleanly. 0.18% dispute rate (well below the 1% threshold). Next payout: $18,420 on Wednesday. One declined-card retry from this morning succeeded on the second attempt. order is now processing.</p>",
       sources: ['Stripe · live', 'Stripe · payouts']
     },
     {
@@ -678,7 +678,7 @@ body {
     },
     {
       match: /in postscript|postscript|sms/i,
-      html: "<p>Postscript SMS sync is currently <strong>lagging 22 minutes</strong> — their API rate-limited us after a campaign send burst this morning. Catching up automatically; should be live again within the hour. No data loss, just stale numbers on the SMS dashboard until catch-up completes.</p>",
+      html: "<p>Postscript SMS sync is currently <strong>lagging 22 minutes</strong>. their API rate-limited us after a campaign send burst this morning. Catching up automatically; should be live again within the hour. No data loss, just stale numbers on the SMS dashboard until catch-up completes.</p>",
       sources: ['Postscript · sync status']
     },
     {
@@ -688,7 +688,7 @@ body {
     },
     {
       match: /return request|return.*flag|swap|color swap/i,
-      html: "<p>Return request flagged this morning:</p><p>Customer: <strong>Mike Patterson</strong> (returning customer, 3 prior orders, $410 LTV)<br/>Order: <strong>#QG-18420</strong>, Performance Polo (Stone), $94<br/>Reason: <strong>Color expectation mismatch</strong> — \"on the website Stone looked more sage; in person it's grey\"<br/>Request: swap for Cream</p><p>I've drafted a reply that approves the swap, attaches a prepaid return label, and ships the Cream immediately so he gets it before his weekend tee time. Free expedited shipping on the replacement (~$8 cost, worth keeping a 3-time repeat customer happy).</p><p>Approve and send?</p>",
+      html: "<p>Return request flagged this morning:</p><p>Customer: <strong>Mike Patterson</strong> (returning customer, 3 prior orders, $410 LTV)<br/>Order: <strong>#QG-18420</strong>, Performance Polo (Stone), $94<br/>Reason: <strong>Color expectation mismatch</strong>. \"on the website Stone looked more sage; in person it's grey\"<br/>Request: swap for Cream</p><p>I've drafted a reply that approves the swap, attaches a prepaid return label, and ships the Cream immediately so he gets it before his weekend tee time. Free expedited shipping on the replacement (~$8 cost, worth keeping a 3-time repeat customer happy).</p><p>Approve and send?</p>",
       sources: ['Shopify · order #QG-18420', 'Shopify · customer LTV', 'ShipStation · return labels']
     },
     {
@@ -698,7 +698,7 @@ body {
     },
     {
       match: /6 cart|cart recovery email|email.*sent/i,
-      html: "<p>6 cart-recovery emails sent overnight (between 11:48 PM and 6:30 AM):</p><p>· 4 first-touch (2h after abandonment)<br/>· 2 second-touch (24h after abandonment)</p><p>1 recovery so far ($94, Heritage Hat). The other 5 are within the 48h attribution window — I'll check back at end of day.</p>",
+      html: "<p>6 cart-recovery emails sent overnight (between 11:48 PM and 6:30 AM):</p><p>· 4 first-touch (2h after abandonment)<br/>· 2 second-touch (24h after abandonment)</p><p>1 recovery so far ($94, Heritage Hat). The other 5 are within the 48h attribution window. I'll check back at end of day.</p>",
       sources: ['Klaviyo · abandoned cart flow', 'Shopify · attribution']
     },
     {
@@ -846,7 +846,7 @@ body {
       messages: [
         { who: 'user', text: 'How is Meta Ads doing this week?' },
         { who: 'tend',
-          html: "<p>Meta Ads this week (Mon–today): <strong>$4,120 spent</strong>, <strong>4.8× blended ROAS</strong>, <strong>$19,776</strong> attributed revenue.</p><p>By campaign:</p><p>· <strong>Sage Drop</strong> · $1,840 spent · 5.1× ROAS · $9,384 rev<br/>· <strong>Heritage Hat — Acquisition</strong> · $980 spent · 5.4× ROAS · $5,292 rev<br/>· <strong>Catch-all retargeting (DPA)</strong> · $660 spent · 4.6× ROAS · $3,036 rev<br/>· <strong>Glove retargeting</strong> · $640 spent · 2.1× ROAS · $1,344 rev ← underperforming</p><p>Recommendation: pause Glove retargeting, reallocate the $640/wk to Sage Drop (currently capped at 70% impression share). Should add $2.4K weekly revenue at current ROAS.</p>",
+          html: "<p>Meta Ads this week (Mon to today): <strong>$4,120 spent</strong>, <strong>4.8× blended ROAS</strong>, <strong>$19,776</strong> attributed revenue.</p><p>By campaign:</p><p>· <strong>Sage Drop</strong> · $1,840 spent · 5.1× ROAS · $9,384 rev<br/>· <strong>Heritage Hat. Acquisition</strong> · $980 spent · 5.4× ROAS · $5,292 rev<br/>· <strong>Catch-all retargeting (DPA)</strong> · $660 spent · 4.6× ROAS · $3,036 rev<br/>· <strong>Glove retargeting</strong> · $640 spent · 2.1× ROAS · $1,344 rev ← underperforming</p><p>Recommendation: pause Glove retargeting, reallocate the $640/wk to Sage Drop (currently capped at 70% impression share). Should add $2.4K weekly revenue at current ROAS.</p>",
           sources: ['Meta Ads · 4 active campaigns', 'Shopify · attribution', 'Klaviyo · email overlap'] },
         { who: 'user', text: 'Pause the Glove retargeting and reallocate.' },
         { who: 'tend',
@@ -859,7 +859,7 @@ body {
       messages: [
         { who: 'user', text: "What's selling best this week?" },
         { who: 'tend',
-          html: "<p>Top sellers by revenue, last 7 days:</p><p>1. <strong>Performance Polo · Sage</strong> — 84 units, $7,560 (+18% vs prior week)<br/>2. <strong>Heritage Hat · Navy</strong> — 62 units, $2,170 (steady)<br/>3. <strong>Tour Towel</strong> — 51 units, $1,275<br/>4. <strong>Players Glove · M</strong> — 47 units, $1,175 (low stock, 8 left)<br/>5. <strong>Cart Bag · Stone</strong> — 9 units, $2,160 (high AOV, slow sell-through)</p><p>The Sage Polo's jump tracks with the Sage Drop ad creative going live Tuesday. Sage XL is going to run out before end-of-week at current pace — I'd push a reorder today.</p>",
+          html: "<p>Top sellers by revenue, last 7 days:</p><p>1. <strong>Performance Polo · Sage</strong>. 84 units, $7,560 (+18% vs prior week)<br/>2. <strong>Heritage Hat · Navy</strong>. 62 units, $2,170 (steady)<br/>3. <strong>Tour Towel</strong>. 51 units, $1,275<br/>4. <strong>Players Glove · M</strong>. 47 units, $1,175 (low stock, 8 left)<br/>5. <strong>Cart Bag · Stone</strong>. 9 units, $2,160 (high AOV, slow sell-through)</p><p>The Sage Polo's jump tracks with the Sage Drop ad creative going live Tuesday. Sage XL is going to run out before end-of-week at current pace. I'd push a reorder today.</p>",
           sources: ['Shopify · last 7 days', 'Meta Ads · Sage Drop', 'Shopify · inventory'] }
       ]
     },
@@ -868,7 +868,7 @@ body {
       messages: [
         { who: 'user', text: 'How is abandoned cart recovery doing?' },
         { who: 'tend',
-          html: "<p>Abandoned cart recovery, last 7 days:</p><p>· <strong>1,840 carts</strong> abandoned (above $35 threshold)<br/>· <strong>312 recovery emails</strong> sent via Klaviyo (first nudge at 2h, second at 24h)<br/>· <strong>34 carts recovered</strong> (10.9% recovery rate, $3,212 rev)</p><p>The 2-hour first nudge is doing most of the work (28 of 34 recoveries). The 24-hour follow-up is at 1.9% — could be worth A/B testing a discount on the second touch. Want me to set that up?</p>",
+          html: "<p>Abandoned cart recovery, last 7 days:</p><p>· <strong>1,840 carts</strong> abandoned (above $35 threshold)<br/>· <strong>312 recovery emails</strong> sent via Klaviyo (first nudge at 2h, second at 24h)<br/>· <strong>34 carts recovered</strong> (10.9% recovery rate, $3,212 rev)</p><p>The 2-hour first nudge is doing most of the work (28 of 34 recoveries). The 24-hour follow-up is at 1.9%. could be worth A/B testing a discount on the second touch. Want me to set that up?</p>",
           sources: ['Klaviyo · cart recovery flow', 'Shopify · abandoned checkouts'] }
       ]
     },
@@ -877,7 +877,7 @@ body {
       messages: [
         { who: 'user', text: 'Which SKUs are running low?' },
         { who: 'tend',
-          html: "<p>Three SKUs flagged for low stock at current sell-through rate:</p><p>· <strong>Players Glove (M)</strong> — 8 units left, sells ~7/day → ~1 day of cover. PO drafted to Acushnet for 144 units, awaiting your approval.<br/>· <strong>Heritage Hat (Olive)</strong> — 12 units, sells 2/day → 6 days of cover. Lead time 21 days, so reorder now or risk a 2-week stockout.<br/>· <strong>Performance Polo (Sage XL)</strong> — 6 units, sells 4/day → 1.5 days. Production lead time 35 days. The Sage Drop ad campaign is driving most of this; consider pausing the campaign for XL or pushing a backorder option.</p><p>Should I auto-pause the Sage Drop ad set for size XL until restock?</p>",
+          html: "<p>Three SKUs flagged for low stock at current sell-through rate:</p><p>· <strong>Players Glove (M)</strong>. 8 units left, sells ~7/day → ~1 day of cover. PO drafted to Acushnet for 144 units, awaiting your approval.<br/>· <strong>Heritage Hat (Olive)</strong>. 12 units, sells 2/day → 6 days of cover. Lead time 21 days, so reorder now or risk a 2-week stockout.<br/>· <strong>Performance Polo (Sage XL)</strong>. 6 units, sells 4/day → 1.5 days. Production lead time 35 days. The Sage Drop ad campaign is driving most of this; consider pausing the campaign for XL or pushing a backorder option.</p><p>Should I auto-pause the Sage Drop ad set for size XL until restock?</p>",
           sources: ['Shopify · inventory', 'Shopify · sell-through rate', 'Vendor lead times sheet'] },
         { who: 'user', text: 'Yes, pause Sage XL and approve the Glove PO.' },
         { who: 'tend',
@@ -899,7 +899,7 @@ body {
       messages: [
         { who: 'user', text: "What's our return rate this month?" },
         { who: 'tend',
-          html: "<p>Returns this month (May, MTD):</p><p>· <strong>38 returns</strong> against 1,240 orders<br/>· <strong>3.1% return rate</strong> (within your 2–4% normal range)<br/>· Top return reason: <strong>color expectation mismatch</strong> on Performance Polo (Stone) — 11 of the 38<br/>· Average refund: $84<br/>· Median time-to-refund: 2.3 days</p><p>The Stone-color complaints cluster on returns from mobile-traffic customers, suggesting the product photography reads differently on mobile. Worth getting the photographer to reshoot Stone with stronger contrast, or adding a color-comparison reference image.</p>",
+          html: "<p>Returns this month (May, MTD):</p><p>· <strong>38 returns</strong> against 1,240 orders<br/>· <strong>3.1% return rate</strong> (within your 2-4% normal range)<br/>· Top return reason: <strong>color expectation mismatch</strong> on Performance Polo (Stone). 11 of the 38<br/>· Average refund: $84<br/>· Median time-to-refund: 2.3 days</p><p>The Stone-color complaints cluster on returns from mobile-traffic customers, suggesting the product photography reads differently on mobile. Worth getting the photographer to reshoot Stone with stronger contrast, or adding a color-comparison reference image.</p>",
           sources: ['Shopify · returns', 'ShipStation · return labels', 'Yotpo · review tags'] }
       ]
     }
