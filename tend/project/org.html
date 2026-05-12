@@ -22,7 +22,7 @@ body {
 }
 
 .min-hero {
-  padding: 140px 0 60px;
+  padding: 160px 0 96px;
 }
 .min-hero .wrap { width: 100%; }
 .min-kicker {
@@ -31,7 +31,7 @@ body {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--accent);
-  margin-bottom: 22px;
+  margin-bottom: 32px;
   display: inline-flex;
   align-items: center;
   gap: 10px;
@@ -47,7 +47,7 @@ body {
   font-weight: 300;
   letter-spacing: -0.035em;
   line-height: 0.98;
-  margin: 0 0 24px;
+  margin: 0 0 32px;
   max-width: 18ch;
   text-wrap: balance;
 }
@@ -57,7 +57,7 @@ body {
   line-height: 1.4;
   color: var(--fg-dim);
   max-width: 600px;
-  margin: 0 0 36px;
+  margin: 0 0 52px;
   text-wrap: pretty;
 }
 
@@ -66,12 +66,12 @@ body {
   grid-template-columns: repeat(3, 1fr);
   gap: 0;
   border: 1px solid var(--line);
-  margin: 52px 0 0;
+  margin: 96px 0 0;
 }
 .min-pillar {
-  padding: 28px 24px;
+  padding: 40px 32px 44px;
   border-right: 1px solid var(--line);
-  min-height: 160px;
+  min-height: 180px;
 }
 .min-pillar:last-child { border-right: none; }
 .min-pillar .num {
@@ -79,13 +79,13 @@ body {
   font-size: 11px;
   letter-spacing: 0.06em;
   color: var(--accent);
-  margin-bottom: 18px;
+  margin-bottom: 28px;
 }
 .min-pillar h3 {
   font-size: 20px;
   font-weight: 400;
   letter-spacing: -0.01em;
-  margin: 0 0 8px;
+  margin: 0 0 12px;
   line-height: 1.2;
 }
 .min-pillar p {
@@ -110,7 +110,7 @@ body {
 
 /* Sections shared layout */
 .min-sec {
-  padding: 80px 0;
+  padding: 120px 0;
   border-top: 1px solid var(--line);
 }
 .min-sec-head {
@@ -118,7 +118,7 @@ body {
   grid-template-columns: minmax(0, 360px) 1fr;
   gap: 60px;
   align-items: end;
-  margin-bottom: 36px;
+  margin-bottom: 64px;
 }
 .min-sec-head h2 {
   font-size: clamp(32px, 3.2vw, 48px);
@@ -144,7 +144,7 @@ body {
   border: 1px solid var(--line);
 }
 .min-list .item {
-  padding: 28px 28px 32px;
+  padding: 40px 32px 44px;
   border-right: 1px solid var(--line);
 }
 .min-list .item:last-child { border-right: none; }
@@ -153,13 +153,13 @@ body {
   font-size: 11px;
   letter-spacing: 0.06em;
   color: var(--accent);
-  margin-bottom: 18px;
+  margin-bottom: 28px;
 }
 .min-list .item h4 {
   font-size: 19px;
   font-weight: 400;
   letter-spacing: -0.01em;
-  margin: 0 0 10px;
+  margin: 0 0 14px;
   line-height: 1.2;
 }
 .min-list .item p {
@@ -174,8 +174,8 @@ body {
   letter-spacing: 0.04em;
   color: var(--fg-mute);
   line-height: 1.55;
-  margin: 18px 0 0;
-  padding: 14px 16px;
+  margin: 32px 0 0;
+  padding: 18px 20px;
   border: 1px dashed var(--line-2);
 }
 
@@ -185,8 +185,8 @@ body {
 }
 .min-roll .week {
   display: grid;
-  grid-template-columns: 140px 1fr;
-  padding: 22px 28px;
+  grid-template-columns: 160px 1fr;
+  padding: 32px 36px;
   border-bottom: 1px solid var(--line);
   align-items: baseline;
 }
@@ -201,7 +201,7 @@ body {
   font-size: 17px;
   font-weight: 400;
   letter-spacing: -0.01em;
-  margin: 0 0 4px;
+  margin: 0 0 8px;
 }
 .min-roll .what p {
   font-size: 13.5px;
@@ -212,7 +212,7 @@ body {
 
 /* Final CTA section */
 .min-final {
-  padding: 80px 0 100px;
+  padding: 120px 0 140px;
   border-top: 1px solid var(--line);
   text-align: center;
 }
@@ -221,7 +221,7 @@ body {
   font-weight: 300;
   letter-spacing: -0.025em;
   line-height: 1.05;
-  margin: 0 auto 24px;
+  margin: 0 auto 36px;
   max-width: 22ch;
 }
 .min-final h2 .serif { font-weight: 400; color: var(--accent); }
@@ -258,17 +258,17 @@ body {
 .min-foot a:hover { color: var(--fg); }
 
 @media (max-width: 720px) {
-  .min-pillars { grid-template-columns: 1fr; }
-  .min-pillar { border-right: none; border-bottom: 1px solid var(--line); }
+  .min-pillars { grid-template-columns: 1fr; margin-top: 64px; }
+  .min-pillar { border-right: none; border-bottom: 1px solid var(--line); padding: 32px 24px; }
   .min-pillar:last-child { border-bottom: none; }
-  .min-hero { padding: 110px 0 40px; }
-  .min-sec-head { grid-template-columns: 1fr; gap: 14px; align-items: start; margin-bottom: 28px; }
+  .min-hero { padding: 120px 0 64px; }
+  .min-sec-head { grid-template-columns: 1fr; gap: 16px; align-items: start; margin-bottom: 40px; }
   .min-list { grid-template-columns: 1fr; }
-  .min-list .item { border-right: none; border-bottom: 1px solid var(--line); }
+  .min-list .item { border-right: none; border-bottom: 1px solid var(--line); padding: 32px 24px; }
   .min-list .item:last-child { border-bottom: none; }
-  .min-roll .week { grid-template-columns: 1fr; gap: 6px; }
-  .min-sec { padding: 56px 0; }
-  .min-final { padding: 56px 0 72px; }
+  .min-roll .week { grid-template-columns: 1fr; gap: 8px; padding: 24px 24px; }
+  .min-sec { padding: 80px 0; }
+  .min-final { padding: 80px 0 96px; }
 }
 </style>
 </head>
