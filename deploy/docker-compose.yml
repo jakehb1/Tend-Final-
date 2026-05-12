@@ -1,0 +1,76 @@
+name: tend
+
+services:
+  # Postgres for Nango (Nango requires Postgres for credential storage)
+  nango-db:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: ${NANGO_DB_PASSWORD}
+      POSTGRES_USER: nango
+      POSTGRES_DB: nango
+    volumes:
+      - nango_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nango -d nango"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Nango: OAuth + scheduled-sync engine
+  nango-server:
+    image: nangohq/nango-server:latest
+    restart: unless-stopped
+    depends_on:
+      nango-db:
+        condition: service_healthy
+    environment:
+      NANGO_DATABASE_URL: postgres://nango:${NANGO_DB_PASSWORD}@nango-db:5432/nango
+      NANGO_ENCRYPTION_KEY: ${NANGO_ENCRYPTION_KEY}
+      NANGO_SERVER_URL: ${NANGO_PUBLIC_URL}
+      NANGO_PUBLIC_URL: ${NANGO_PUBLIC_URL}
+      NANGO_DASHBOARD_USERNAME: ${NANGO_DASHBOARD_USERNAME}
+      NANGO_DASHBOARD_PASSWORD: ${NANGO_DASHBOARD_PASSWORD}
+      NANGO_WEBHOOK_URL: http://bridge:8000/api/webhooks/nango
+    expose:
+      - "3003"
+
+  # tend bridge — small Node service the frontend talks to
+  bridge:
+    build: ../bridge
+    restart: unless-stopped
+    depends_on:
+      - nango-server
+    environment:
+      NANGO_HOST: http://nango-server:3003
+      NANGO_SECRET_KEY: ${NANGO_SECRET_KEY}
+      ALLOW_ORIGIN: ${ALLOW_ORIGIN}
+      PORT: 8000
+    volumes:
+      - bridge_data:/data
+    expose:
+      - "8000"
+
+  # Caddy: HTTPS, reverse proxy. Automatic Let's Encrypt cert.
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - bridge
+      - nango-server
+    environment:
+      API_DOMAIN: ${API_DOMAIN}
+      NANGO_DOMAIN: ${NANGO_DOMAIN}
+
+volumes:
+  nango_db_data:
+  bridge_data:
+  caddy_data:
+  caddy_config:

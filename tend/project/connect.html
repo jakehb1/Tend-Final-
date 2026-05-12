@@ -11,6 +11,14 @@
     if (!raw) { window.location.replace('login.html'); }
   })();
 </script>
+<!--
+  Flip apiBase to your bridge URL (e.g. 'https://api.withtend.ai') once the
+  VPS is up. Until then we run in demo mode against localStorage so the
+  page works on the static site.
+-->
+<script>
+  window.__TEND_CONFIG__ = { apiBase: null };
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
@@ -613,13 +621,21 @@ body {
   </div>
 </main>
 
+<script src="https://cdn.jsdelivr.net/npm/@nangohq/frontend@latest/dist/index.umd.min.js" defer></script>
 <script>
 (function () {
+  var CFG = (window.__TEND_CONFIG__ || {});
+  var API = CFG.apiBase || null;     // null = demo mode, string = live bridge
+  var STATE_KEY = 'tend.connectors';
+
+  // Identify the user (just for the bridge to scope state).
+  var userEmail = 'demo@withtend.ai';
   try {
     var raw = sessionStorage.getItem('tend.session');
     if (raw) {
       var sess = JSON.parse(raw);
       if (sess && sess.email) {
+        userEmail = sess.email;
         document.getElementById('user-email').textContent = sess.email;
       }
     }
@@ -631,25 +647,54 @@ body {
     window.location.href = 'index.html';
   });
 
-  var STATE_KEY = 'tend.connectors';
+  // ---------- state store ----------
+  // Demo mode: localStorage. Live mode: bridge API.
+
   var state = {};
-  try {
-    var stored = localStorage.getItem(STATE_KEY);
-    if (stored) state = JSON.parse(stored);
-  } catch (_) {}
 
-  if (!Object.keys(state).length) {
-    state = {
-      'shopify':    { connected: true, syncedAt: Date.now() - 2  * 60 * 1000 },
-      'meta-ads':   { connected: true, syncedAt: Date.now() - 8  * 60 * 1000 },
-      'mailchimp':  { connected: true, syncedAt: Date.now() - 4  * 60 * 1000 },
-      'quickbooks': { connected: true, syncedAt: Date.now() - 6  * 60 * 1000 }
-    };
+  function loadDemo() {
+    try {
+      var stored = localStorage.getItem(STATE_KEY);
+      state = stored ? JSON.parse(stored) : {};
+    } catch (_) { state = {}; }
+    if (!Object.keys(state).length) {
+      state = {
+        'shopify':    { connected: true, syncedAt: Date.now() - 2 * 60 * 1000 },
+        'meta-ads':   { connected: true, syncedAt: Date.now() - 8 * 60 * 1000 },
+        'mailchimp':  { connected: true, syncedAt: Date.now() - 4 * 60 * 1000 },
+        'quickbooks': { connected: true, syncedAt: Date.now() - 6 * 60 * 1000 }
+      };
+      saveDemo();
+    }
   }
-
-  function save() {
+  function saveDemo() {
     try { localStorage.setItem(STATE_KEY, JSON.stringify(state)); } catch (_) {}
   }
+
+  function fetchJson(url, init) {
+    init = init || {};
+    init.headers = Object.assign({ 'Content-Type': 'application/json' }, init.headers || {});
+    return fetch(url, init).then(function (r) {
+      if (!r.ok) throw new Error(url + ' ' + r.status);
+      return r.json();
+    });
+  }
+
+  function refreshState() {
+    if (!API) {
+      loadDemo();
+      return Promise.resolve();
+    }
+    return fetchJson(API + '/api/connectors/state?user=' + encodeURIComponent(userEmail))
+      .then(function (data) { state = data || {}; })
+      .catch(function (e) {
+        console.warn('state fetch failed, falling back to demo:', e);
+        API = null;
+        loadDemo();
+      });
+  }
+
+  // ---------- rendering ----------
 
   function timeAgo(ts) {
     var s = Math.max(1, Math.round((Date.now() - ts) / 1000));
@@ -697,10 +742,86 @@ body {
 
     var latestSync = 0;
     Object.values(state).forEach(function (s) {
-      if (s.connected && s.syncedAt > latestSync) latestSync = s.syncedAt;
+      if (s && s.connected && s.syncedAt > latestSync) latestSync = s.syncedAt;
     });
     document.getElementById('ct-sync').textContent =
       latestSync ? ('Last sync ' + timeAgo(latestSync)) : 'No syncs yet';
+  }
+
+  // ---------- connect / disconnect ----------
+
+  function startConnectLive(id, btn) {
+    btn.disabled = true;
+    btn.textContent = 'Connecting…';
+
+    fetchJson(API + '/api/connectors/' + encodeURIComponent(id) + '/connect', {
+      method: 'POST',
+      body: JSON.stringify({ user: userEmail })
+    })
+    .then(function (data) {
+      if (!data.sessionToken) throw new Error('no session token');
+      if (typeof Nango === 'undefined' || !Nango.ConnectUI) {
+        throw new Error('Nango Connect UI not loaded');
+      }
+      return new Promise(function (resolve, reject) {
+        var ui = new Nango.ConnectUI({
+          sessionToken: data.sessionToken,
+          onEvent: function (event) {
+            if (event.type === 'connect') resolve(event);
+            if (event.type === 'close') reject(new Error('closed'));
+          }
+        });
+        ui.open();
+      });
+    })
+    .then(function () {
+      // Poll for state — Nango's webhook should have fired by now.
+      return waitForConnected(id, 8000);
+    })
+    .then(function () { btn.disabled = false; render(); })
+    .catch(function (e) {
+      console.warn('connect failed:', e);
+      btn.disabled = false;
+      render();
+    });
+  }
+
+  function waitForConnected(id, timeoutMs) {
+    var start = Date.now();
+    return new Promise(function (resolve) {
+      function tick() {
+        refreshState().then(function () {
+          if (state[id] && state[id].connected) return resolve();
+          if (Date.now() - start > timeoutMs) return resolve();
+          setTimeout(tick, 800);
+        });
+      }
+      tick();
+    });
+  }
+
+  function startConnectDemo(id, btn) {
+    btn.disabled = true;
+    btn.textContent = 'Connecting…';
+    setTimeout(function () {
+      state[id] = { connected: true, syncedAt: Date.now() };
+      saveDemo();
+      btn.disabled = false;
+      render();
+    }, 1100);
+  }
+
+  function disconnect(id) {
+    if (API) {
+      fetchJson(API + '/api/connectors/' + encodeURIComponent(id) + '/disconnect', {
+        method: 'POST',
+        body: JSON.stringify({ user: userEmail })
+      }).then(refreshState).then(render).catch(function (e) { console.warn(e); });
+    } else {
+      delete state[id];
+      saveDemo();
+      render();
+    }
   }
 
   document.querySelector('.conn-wrap').addEventListener('click', function (e) {
@@ -715,25 +836,17 @@ body {
     }
 
     var s = state[id] || { connected: false };
-    if (s.connected) {
-      delete state[id];
-      save();
-      render();
-      return;
-    }
+    if (s.connected) return disconnect(id);
 
-    b.disabled = true;
-    b.textContent = 'Connecting…';
-    setTimeout(function () {
-      state[id] = { connected: true, syncedAt: Date.now() };
-      save();
-      b.disabled = false;
-      render();
-    }, 1100);
+    if (API) startConnectLive(id, b);
+    else startConnectDemo(id, b);
   });
 
-  setInterval(render, 30000);
-  render();
+  // ---------- boot ----------
+
+  refreshState().then(render);
+  // Refresh state periodically (catches sync events from Nango webhooks)
+  setInterval(function () { refreshState().then(render); }, 30000);
 })();
 </script>
 
