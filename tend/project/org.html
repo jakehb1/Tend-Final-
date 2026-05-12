@@ -25,13 +25,20 @@ body {
   padding: 160px 0 96px;
 }
 .min-hero .wrap { width: 100%; }
+.hero-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 36px;
+}
 .min-kicker {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 11px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--accent);
-  margin-bottom: 32px;
   display: inline-flex;
   align-items: center;
   gap: 10px;
@@ -257,6 +264,100 @@ body {
 .min-foot a { color: var(--fg-dim); text-decoration: none; }
 .min-foot a:hover { color: var(--fg); }
 
+/* ---------- vertical picker ---------- */
+.vert-picker {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.vert-picker .label { color: var(--fg-mute); }
+.vert-picker .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 7px 14px 7px 12px;
+  border: 1px solid var(--line-2);
+  background: var(--bg-2);
+  color: var(--fg);
+  cursor: pointer;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: border-color 0.15s, background 0.15s;
+}
+.vert-picker .btn:hover { border-color: var(--accent); }
+.vert-picker.open .btn { border-color: var(--accent); background: var(--bg-3); }
+.vert-picker .btn .caret {
+  width: 7px; height: 7px;
+  border-right: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  transform: rotate(45deg);
+  margin-top: -3px;
+  transition: transform 0.15s;
+}
+.vert-picker.open .btn .caret { transform: rotate(-135deg); margin-top: 2px; }
+.vert-picker .menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 6px;
+  min-width: 220px;
+  background: var(--bg-2);
+  border: 1px solid var(--line-2);
+  z-index: 30;
+  display: none;
+}
+.vert-picker.open .menu { display: block; }
+.vert-picker .menu button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 14px;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--fg);
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  text-align: left;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.vert-picker .menu button:last-child { border-bottom: 0; }
+.vert-picker .menu button:hover { background: var(--bg-3); }
+.vert-picker .menu button.is-active { color: var(--accent); }
+.vert-picker .menu button.is-active::after {
+  content: "●";
+  color: var(--accent);
+  font-size: 8px;
+}
+
+/* Variant visibility */
+.vert-only { display: none; }
+body[data-vertical="ecomm"]     .vert-only.for-ecomm,
+body[data-vertical="nonprofit"] .vert-only.for-nonprofit,
+body[data-vertical="dental"]    .vert-only.for-dental { display: block; }
+body[data-vertical="ecomm"]     .min-pillars.vert-only.for-ecomm,
+body[data-vertical="nonprofit"] .min-pillars.vert-only.for-nonprofit,
+body[data-vertical="dental"]    .min-pillars.vert-only.for-dental,
+body[data-vertical="ecomm"]     .min-list.vert-only.for-ecomm,
+body[data-vertical="nonprofit"] .min-list.vert-only.for-nonprofit,
+body[data-vertical="dental"]    .min-list.vert-only.for-dental { display: grid; }
+body[data-vertical="ecomm"]     .vert-only.inline.for-ecomm,
+body[data-vertical="nonprofit"] .vert-only.inline.for-nonprofit,
+body[data-vertical="dental"]    .vert-only.inline.for-dental { display: inline; }
+
 @media (max-width: 720px) {
   .min-pillars { grid-template-columns: 1fr; margin-top: 64px; }
   .min-pillar { border-right: none; border-bottom: 1px solid var(--line); padding: 32px 24px; }
@@ -272,7 +373,7 @@ body {
 }
 </style>
 </head>
-<body>
+<body data-vertical="ecomm">
 
 <nav class="nav">
   <div class="nav-inner">
@@ -285,9 +386,23 @@ body {
 
 <section class="min-hero">
   <div class="wrap">
-    <div class="min-kicker">
-      <span class="tag">TEND · ORG</span>
-      <span class="desc">A lighter stack for smaller teams</span>
+    <div class="hero-top">
+      <div class="min-kicker">
+        <span class="tag">TEND · ORG</span>
+        <span class="desc">A lighter stack for smaller teams</span>
+      </div>
+      <div class="vert-picker" id="vert-picker">
+        <span class="label">FOR</span>
+        <button type="button" class="btn" id="vert-btn" aria-haspopup="menu" aria-expanded="false">
+          <span id="vert-current">E-COMMERCE</span>
+          <span class="caret" aria-hidden="true"></span>
+        </button>
+        <div class="menu" role="menu">
+          <button type="button" data-vertical="ecomm" class="is-active" role="menuitem">E-COMMERCE</button>
+          <button type="button" data-vertical="nonprofit" role="menuitem">NON-PROFIT</button>
+          <button type="button" data-vertical="dental" role="menuitem">DENTAL</button>
+        </div>
+      </div>
     </div>
     <h1>
       <span class="serif">Organized data</span> to enable AI<br/>
@@ -301,7 +416,7 @@ body {
       <span class="meta">No prep needed. We'll sketch it against your stack.</span>
     </div>
 
-    <div class="min-pillars">
+    <div class="min-pillars vert-only for-ecomm">
       <div class="min-pillar">
         <div class="num">01 / ONE PLACE</div>
         <h3>Every tool, one view.</h3>
@@ -310,12 +425,48 @@ body {
       <div class="min-pillar">
         <div class="num">02 / ASK ANYTHING</div>
         <h3>Your own private chatbot.</h3>
-        <p>Trained on your business, locked to your team. Ask plain English questions, get answers grounded in your real data.</p>
+        <p>Trained on your store. Ask plain English questions, get answers grounded in your real orders, ads, and customers.</p>
       </div>
       <div class="min-pillar">
         <div class="num">03 / DECIDE FASTER</div>
         <h3>Numbers, on demand.</h3>
         <p>Stop waiting on someone to pull a report. Today's revenue, today's orders, today's ad spend, whenever you want them.</p>
+      </div>
+    </div>
+
+    <div class="min-pillars vert-only for-nonprofit">
+      <div class="min-pillar">
+        <div class="num">01 / ONE PLACE</div>
+        <h3>Donors, programs, books.</h3>
+        <p>Stop stitching reports from your donor CRM, Mailchimp, QuickBooks, and your grants spreadsheet. One live view of the whole org.</p>
+      </div>
+      <div class="min-pillar">
+        <div class="num">02 / ASK ANYTHING</div>
+        <h3>Your own private chatbot.</h3>
+        <p>Trained on your donors and programs. Ask "which lapsed donors gave $1K+ last year?" and get a real answer in seconds.</p>
+      </div>
+      <div class="min-pillar">
+        <div class="num">03 / DECIDE FASTER</div>
+        <h3>Mission numbers, on demand.</h3>
+        <p>Today's donations, this month's retention, this campaign's ROI. Board-ready, without the board prep marathon.</p>
+      </div>
+    </div>
+
+    <div class="min-pillars vert-only for-dental">
+      <div class="min-pillar">
+        <div class="num">01 / ONE PLACE</div>
+        <h3>The practice, on one screen.</h3>
+        <p>Production, schedule, recall, billing, and patient comms in one live view. No more clicking across Dentrix, Solutionreach, and QuickBooks.</p>
+      </div>
+      <div class="min-pillar">
+        <div class="num">02 / ASK ANYTHING</div>
+        <h3>Your own private chatbot.</h3>
+        <p>Trained on your practice. Ask "who's overdue for recall and has insurance benefits left?" or "what's our no-show rate this month?"</p>
+      </div>
+      <div class="min-pillar">
+        <div class="num">03 / DECIDE FASTER</div>
+        <h3>Production, on demand.</h3>
+        <p>Today's production, this week's open chair time, this month's pending claims. The numbers you used to wait on, ready every morning.</p>
       </div>
     </div>
   </div>
@@ -327,21 +478,57 @@ body {
       <h2>What's <span class="serif">included.</span></h2>
       <p>Everything you need to see your whole business in one place and ask it any question. Live in 30 days. No integration project. No per-seat math.</p>
     </div>
-    <div class="min-list">
+    <div class="min-list vert-only for-ecomm">
       <div class="item">
         <div class="num">01 / CONNECTED DATA</div>
         <h4>One company brain.</h4>
-        <p>We wire your existing tools (Shopify, Mailchimp, QuickBooks, Meta Ads, Stripe, Google Analytics, and the rest) into a single live data layer. Standard connectors included. Custom integrations quoted separately if you need them.</p>
+        <p>We wire your existing tools (Shopify, Mailchimp, QuickBooks, Meta Ads, Stripe, Google Analytics, and the rest) into a single live data layer. Standard connectors included. Custom integrations quoted separately.</p>
       </div>
       <div class="item">
         <div class="num">02 / OPERATING DASHBOARD</div>
-        <h4>Your whole business, on one screen.</h4>
-        <p>Real-time view of revenue, orders, ad spend, cash, customer signals, all in one place. Built for the operator, not the data team. No SQL, no warehouse projects.</p>
+        <h4>Your whole store, on one screen.</h4>
+        <p>Real-time view of revenue, orders, ad spend, cash, repeat-rate, top SKUs, all in one place. Built for the operator, not the data team. No SQL, no warehouse projects.</p>
       </div>
       <div class="item">
         <div class="num">03 / CUSTOM CHATBOT</div>
-        <h4>Trained on your business. Locked to your team.</h4>
-        <p>Ask it anything in plain English: "what's my best-selling SKU this week?", "how much did Meta spend vs. ROAS?", "which customers haven't reordered in 60 days?" It answers from your live data. Private, never trained on or shared with anyone else.</p>
+        <h4>Trained on your store. Locked to your team.</h4>
+        <p>Ask plain English questions: "what's my best-selling SKU this week?", "how much did Meta spend vs. ROAS?", "which customers haven't reordered in 60 days?" Answers come from your live data. Private, never trained on or shared with anyone else.</p>
+      </div>
+    </div>
+
+    <div class="min-list vert-only for-nonprofit">
+      <div class="item">
+        <div class="num">01 / CONNECTED DATA</div>
+        <h4>Donors and dollars, in one layer.</h4>
+        <p>We wire your existing tools (Bloomerang, Salsa, or Donorbox · Mailchimp or Constant Contact · QuickBooks · Stripe · Salesforce Nonprofit Cloud · your grants spreadsheet) into a single live data layer. Standard connectors included. Custom integrations quoted separately.</p>
+      </div>
+      <div class="item">
+        <div class="num">02 / OPERATING DASHBOARD</div>
+        <h4>The whole org, on one screen.</h4>
+        <p>Real-time view of donations, donor retention, grant pipeline, campaign ROI, program spend. Board-ready by default. No SQL, no warehouse projects.</p>
+      </div>
+      <div class="item">
+        <div class="num">03 / CUSTOM CHATBOT</div>
+        <h4>Trained on your mission. Locked to your team.</h4>
+        <p>Ask plain English questions: "which lapsed donors gave $1K+ last year?", "what's our retention by acquisition channel?", "how much of the grant cycle is at risk?" Answers from your live data. Private, never shared.</p>
+      </div>
+    </div>
+
+    <div class="min-list vert-only for-dental">
+      <div class="item">
+        <div class="num">01 / CONNECTED DATA</div>
+        <h4>The practice, in one layer.</h4>
+        <p>We wire your existing tools (Dentrix, Open Dental, or Eaglesoft · Solutionreach or RevenueWell · QuickBooks · your insurance billing platform · Stripe) into a single live data layer. Standard connectors included. Custom integrations quoted separately.</p>
+      </div>
+      <div class="item">
+        <div class="num">02 / OPERATING DASHBOARD</div>
+        <h4>Your whole practice, on one screen.</h4>
+        <p>Real-time view of production, the schedule, recall list, A/R aging, no-shows, insurance claims. Built for the practice manager, not the data team.</p>
+      </div>
+      <div class="item">
+        <div class="num">03 / CUSTOM CHATBOT</div>
+        <h4>Trained on your practice. Locked to your team.</h4>
+        <p>Ask plain English questions: "who's overdue for recall and still has insurance benefits left?", "what's our no-show rate this month?", "which claims are pending past 30 days?" Answers from your live data. Private, never shared. HIPAA-aware boundaries on PHI.</p>
       </div>
     </div>
     <p class="min-note">Note: this tier is built for visibility and answers. Agents that take actions on your behalf are on the roadmap and will be available as a separate tier when they ship.</p>
@@ -366,7 +553,12 @@ body {
         <div class="when">WEEK 02 · CONNECT</div>
         <div class="what">
           <h4>Your tools, plugged in.</h4>
-          <p>Shopify, Mailchimp, QuickBooks, Meta Ads, Stripe, GA, and any of the standard 170+ sources. Live and syncing by end of week. We handle the connectors.</p>
+          <p>
+            <span class="vert-only inline for-ecomm">Shopify, Mailchimp, QuickBooks, Meta Ads, Stripe, GA, and any of the standard 170+ sources.</span>
+            <span class="vert-only inline for-nonprofit">Bloomerang / Salsa / Donorbox, Mailchimp, QuickBooks, Stripe, Salesforce Nonprofit Cloud, your grants spreadsheet, and any of the standard 170+ sources.</span>
+            <span class="vert-only inline for-dental">Dentrix / Open Dental / Eaglesoft, Solutionreach or RevenueWell, QuickBooks, your insurance billing platform, Stripe, and any of the standard 170+ sources.</span>
+            Live and syncing by end of week. We handle the connectors.
+          </p>
         </div>
       </div>
       <div class="week">
@@ -404,6 +596,53 @@ body {
   </div>
 </footer>
 
+<!-- Vertical picker -->
+<script>
+(function () {
+  var LABELS = { ecomm: 'E-COMMERCE', nonprofit: 'NON-PROFIT', dental: 'DENTAL' };
+  var picker = document.getElementById('vert-picker');
+  var btn = document.getElementById('vert-btn');
+  var current = document.getElementById('vert-current');
+  if (!picker || !btn || !current) return;
+  var menu = picker.querySelector('.menu');
+
+  function setVertical(v) {
+    if (!LABELS[v]) v = 'ecomm';
+    document.body.setAttribute('data-vertical', v);
+    current.textContent = LABELS[v];
+    menu.querySelectorAll('button[data-vertical]').forEach(function (b) {
+      b.classList.toggle('is-active', b.getAttribute('data-vertical') === v);
+    });
+    try { localStorage.setItem('tend.org.vertical', v); } catch (_) {}
+  }
+
+  function setOpen(o) {
+    picker.classList.toggle('open', o);
+    btn.setAttribute('aria-expanded', o ? 'true' : 'false');
+  }
+
+  btn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    setOpen(!picker.classList.contains('open'));
+  });
+  menu.addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-vertical]');
+    if (!b) return;
+    setVertical(b.getAttribute('data-vertical'));
+    setOpen(false);
+  });
+  document.addEventListener('click', function (e) {
+    if (!picker.contains(e.target)) setOpen(false);
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') setOpen(false);
+  });
+
+  var stored = null;
+  try { stored = localStorage.getItem('tend.org.vertical'); } catch (_) {}
+  setVertical(stored || 'ecomm');
+})();
+</script>
 <!-- Cal overlay init -->
 <script type="text/javascript">
   (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if(typeof namespace === "string"){cal.ns[namespace] = cal.ns[namespace] || api;p(cal.ns[namespace], ar);p(cal, ["initNamespace", namespace]);} else p(cal, ar); return;} p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
