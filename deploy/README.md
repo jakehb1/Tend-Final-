@@ -1,9 +1,11 @@
-# tend connectors — VPS deploy
+# tend connectors. VPS deploy
 
 Stack: **Nango** (OAuth + scheduled sync) + **bridge** (small Node API that the
-frontend talks to) + **Caddy** (HTTPS reverse proxy).
+frontend talks to) + **hermes-sidecar** (per-tenant AI agent runtime, Python
+FastAPI wrapper around https://github.com/NousResearch/hermes-agent) +
+**Caddy** (HTTPS reverse proxy).
 
-Runs on a $10–20/mo VPS. Handles dozens of small tenants on one box.
+Runs on a $10 to $20/mo VPS. Handles dozens of small tenants on one box.
 
 ## Prerequisites
 
@@ -118,13 +120,33 @@ browser ─► polls GET /api/connectors/state ─► sees connected, flips UI
 ## Where the data ends up
 
 For now, this stack handles **OAuth only**. Once a connection is live,
-the next step is per-provider **syncs** — small scripts that pull data
+the next step is per-provider **syncs**, small scripts that pull data
 from each provider on a schedule and push it into the customer's
-OpenClaw workspace.
+Hermes workspace.
 
 Syncs are authored as TypeScript functions and deployed via the Nango
 CLI; see https://docs.nango.dev for the pattern. The bridge's sync
-webhook (currently logs only) is where we'll add the OpenClaw push.
+webhook (currently logs only) is where we'll add the Hermes write path.
+
+## Wiring Hermes
+
+The `hermes-sidecar` service starts with a stub so the chat path works
+end to end before Hermes is installed. To go live:
+
+1. Install Hermes inside the sidecar image. Uncomment the
+   `hermes-agent` line in `bridge/hermes-sidecar/requirements.txt`,
+   then `docker compose build hermes-sidecar`.
+2. Replace `_stream_response()` in `bridge/hermes-sidecar/sidecar.py`
+   with a real call to the Hermes runtime (see the doc comment in that
+   file for the recommended pattern).
+3. Drop your per-tenant agent + skill YAMLs into `deploy/agent-templates/`.
+   They are mounted read-only at `/var/lib/hermes/templates` inside the
+   sidecar. The sidecar copies them into `HERMES_CONFIG_DIR` on first
+   boot for each tenant.
+4. `docker compose up -d hermes-sidecar bridge`. Health-check:
+   `curl https://api.withtend.ai/healthz` should still return ok, and
+   the bridge's `/api/chat/:user` SSE proxy should stream Hermes deltas
+   instead of the stub.
 
 ## Updating
 

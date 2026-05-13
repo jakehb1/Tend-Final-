@@ -1,28 +1,28 @@
 /**
- * tend bridge — small Node service that sits between the tend frontend
+ * tend bridge. Small Node service that sits between the tend frontend
  * (withtend.ai/connect, withtend.ai/app) and:
- *   - Nango      (OAuth + scheduled provider syncs)
- *   - OpenClaw   (per-tenant AI agent runtime)
+ *   - Nango           (OAuth + scheduled provider syncs)
+ *   - Hermes sidecar  (per-tenant AI agent runtime, Python)
  *
  * Runs on a VPS alongside Nango + Caddy. Pure Node built-ins, no deps.
  *
  * Env vars:
- *   PORT                    — http port (default 8000)
- *   NANGO_HOST              — internal URL of nango-server (default http://nango-server:3003)
- *   NANGO_SECRET_KEY        — secret key minted by Nango on first boot
- *   OPENCLAW_GATEWAY        — URL of the OpenClaw Gateway (default http://localhost:18789)
- *   OPENCLAW_AGENT_DEFAULT  — fallback agent name if a user has no provisioned agent
- *   STATE_FILE              — path to JSON state file (default ./data/state.json)
- *   ALLOW_ORIGIN            — CORS allow-origin (default *)
+ *   PORT                   http port (default 8000)
+ *   NANGO_HOST             internal URL of nango-server (default http://nango-server:3003)
+ *   NANGO_SECRET_KEY       secret key minted by Nango on first boot
+ *   HERMES_SIDECAR_URL     URL of the Hermes Python sidecar (default http://hermes-sidecar:8500)
+ *   HERMES_AGENT_DEFAULT   fallback agent name when a user has no provisioned agent
+ *   STATE_FILE             path to JSON state file (default ./data/state.json)
+ *   ALLOW_ORIGIN           CORS allow-origin (default *)
  *
  * Endpoints:
  *   GET  /healthz
- *   GET  /api/connectors/state?user=email             — list connectors
- *   POST /api/connectors/:id/connect    {user}        — start Nango OAuth
- *   POST /api/connectors/:id/disconnect {user}        — revoke + delete
- *   POST /api/webhooks/nango                          — Nango auth + sync events
- *   POST /api/chat/:user        {message}             — proxy to OpenClaw agent (SSE response)
- *   GET  /api/data/:user/:dataset?since=&limit=       — records from synced data
+ *   GET  /api/connectors/state?user=email             list connectors
+ *   POST /api/connectors/:id/connect    {user}        start Nango OAuth
+ *   POST /api/connectors/:id/disconnect {user}        revoke + delete
+ *   POST /api/webhooks/nango                          Nango auth + sync events
+ *   POST /api/chat/:user        {message}             proxy to Hermes agent (SSE response)
+ *   GET  /api/data/:user/:dataset?since=&limit=       records from synced data
  */
 
 import http from 'node:http';
@@ -32,8 +32,8 @@ import path from 'node:path';
 const PORT = Number(process.env.PORT || 8000);
 const NANGO_HOST = process.env.NANGO_HOST || 'http://nango-server:3003';
 const NANGO_SECRET_KEY = process.env.NANGO_SECRET_KEY || '';
-const OPENCLAW_GATEWAY = process.env.OPENCLAW_GATEWAY || 'http://localhost:18789';
-const OPENCLAW_AGENT_DEFAULT = process.env.OPENCLAW_AGENT_DEFAULT || 'main';
+const HERMES_SIDECAR_URL = process.env.HERMES_SIDECAR_URL || 'http://hermes-sidecar:8500';
+const HERMES_AGENT_DEFAULT = process.env.HERMES_AGENT_DEFAULT || 'main';
 const STATE_FILE = process.env.STATE_FILE || './data/state.json';
 const ALLOW_ORIGIN = process.env.ALLOW_ORIGIN || '*';
 
@@ -108,8 +108,8 @@ function connectorIdFromProviderKey(providerKey) {
 // look up a tenant -> agent mapping in the DB. For now we slugify the email
 // local part so it's deterministic.
 function agentNameForUser(email) {
-  const local = (email || '').split('@')[0] || OPENCLAW_AGENT_DEFAULT;
-  return local.toLowerCase().replace(/[^a-z0-9-]/g, '-') || OPENCLAW_AGENT_DEFAULT;
+  const local = (email || '').split('@')[0] || HERMES_AGENT_DEFAULT;
+  return local.toLowerCase().replace(/[^a-z0-9-]/g, '-') || HERMES_AGENT_DEFAULT;
 }
 
 // ---------- Nango ----------
@@ -157,24 +157,27 @@ async function revokeNangoConnection(providerKey, connectionId) {
   }
 }
 
-// ---------- OpenClaw ----------
+// ---------- Hermes ----------
 //
-// One function. The exact RPC shape is documented at
-// https://docs.openclaw.ai/reference/rpc. When you wire the real Gateway,
-// edit this function and nothing else.
+// Hermes is a Python agent runtime (https://github.com/NousResearch/hermes-agent).
+// We don't talk to it directly from Node. Instead we run a thin Python
+// sidecar that imports Hermes and exposes one HTTP endpoint:
 //
-// Contract: calls the agent with `message`, invokes onChunk(text) zero or
-// more times as chunks stream in, resolves when the response ends.
+//   POST /chat  {agent, message, stream: true}  ->  SSE stream
+//
+// The sidecar code lives in bridge/hermes-sidecar/. When you wire the
+// real Hermes Python API, edit sidecar.py and nothing in this file
+// should need to change.
 
-async function openClawChat(agent, message, onChunk) {
-  const url = OPENCLAW_GATEWAY.replace(/\/$/, '') + '/api/agent/run';
+async function hermesChat(agent, message, onChunk) {
+  const url = HERMES_SIDECAR_URL.replace(/\/$/, '') + '/chat';
   const res = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ agent, message, stream: true })
   });
-  if (!res.ok) throw new Error(`openclaw ${res.status}: ${await res.text().catch(() => '')}`);
-  if (!res.body) throw new Error('openclaw returned no body');
+  if (!res.ok) throw new Error(`hermes ${res.status}: ${await res.text().catch(() => '')}`);
+  if (!res.body) throw new Error('hermes returned no body');
 
   const reader = res.body.getReader();
   const decoder = new TextDecoder();
@@ -347,7 +350,7 @@ const server = http.createServer(async (req, res) => {
 
       const agent = body.agent || agentNameForUser(user);
       try {
-        await openClawChat(agent, message, (chunk) => {
+        await hermesChat(agent, message, (chunk) => {
           res.write(`data: ${JSON.stringify({ delta: chunk })}\n\n`);
         });
         res.write('data: [DONE]\n\n');

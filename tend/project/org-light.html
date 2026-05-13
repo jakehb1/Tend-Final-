@@ -374,10 +374,42 @@ body {
 .stage {
   position: relative;
   display: grid;
-  grid-template-columns: 72px 1fr;
+  grid-template-columns: 72px 1fr 220px;
   gap: 28px;
   padding: 0 0 64px;
+  align-items: start;
 }
+.stage-graphic {
+  margin-top: 14px;
+  color: var(--accent);
+  opacity: 0.95;
+}
+.stage-graphic svg { width: 100%; height: auto; display: block; }
+.stage-graphic .lbl {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 7px;
+  letter-spacing: 0.08em;
+  fill: currentColor;
+}
+.stage-graphic .lbl-mute { opacity: 0.6; }
+.stage-graphic .lbl-inv { fill: var(--bg); }
+@media (max-width: 1000px) {
+  .stage { grid-template-columns: 72px 1fr; }
+  .stage-graphic { grid-column: 2; max-width: 220px; margin-bottom: 4px; order: -1; margin-top: 4px; }
+}
+@media (max-width: 720px) {
+  .stage-graphic { max-width: 180px; }
+}
+
+/* Decorative section divider */
+.sec-divider {
+  display: flex;
+  justify-content: center;
+  padding: 8px 0 36px;
+  color: var(--accent);
+  opacity: 0.55;
+}
+.sec-divider svg { display: block; width: 88px; height: auto; }
 .stage:last-child { padding-bottom: 0; }
 .stage-marker {
   position: relative;
@@ -509,6 +541,7 @@ body {
   .stage-title h3 { font-size: 24px; }
   .stage-when { font-size: 10px; }
   .stage-body p { font-size: 15px; }
+  .stage-graphic { grid-column: 2; }
 }
 
 /* ---------- scroll reveal ---------- */
@@ -957,6 +990,14 @@ body[data-vertical="dental"]    .vert-only.inline.for-dental { display: inline; 
   </div>
 </section>
 
+<div class="sec-divider reveal" aria-hidden="true">
+  <svg viewBox="0 0 88 18" xmlns="http://www.w3.org/2000/svg">
+    <line x1="0" y1="9" x2="34" y2="9" stroke="currentColor" stroke-width="0.8"/>
+    <circle cx="44" cy="9" r="2.5" fill="currentColor"/>
+    <line x1="54" y1="9" x2="88" y2="9" stroke="currentColor" stroke-width="0.8"/>
+  </svg>
+</div>
+
 <section class="min-sec stages-sec">
   <div class="wrap">
     <div class="min-sec-head reveal">
@@ -972,12 +1013,50 @@ body[data-vertical="dental"]    .vert-only.inline.for-dental { display: inline; 
             <h3>Readiness</h3>
             <span class="stage-when">≈ 30 days</span>
           </div>
-          <p>We map the company twice. <strong>Systems</strong>: where information lives, where work bottlenecks, where AI actually changes the work. <strong>People</strong>: how leadership decides, who carries weight the org chart doesn't show.</p>
-          <p>You leave with two things. A readiness report scoped to your company, and the scaffolding of <strong>the data layer</strong> that everything we build next runs on.</p>
+          <p>We map the company twice. <strong>Systems</strong>: where information lives, where work bottlenecks, where AI changes the work. <strong>People</strong>: how leadership decides, who carries weight the org chart doesn't show.</p>
+          <p>You leave with a readiness report and the scaffolding of <strong>the data layer</strong> that everything we build next runs on.</p>
           <div class="stage-why">
             <span class="why-label">Why this first</span>
             <span>You can't transition a company you haven't seen. <strong>Most AI projects skip this. Most fail by week six.</strong></span>
           </div>
+        </div>
+        <div class="stage-graphic" aria-hidden="true">
+          <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <text x="44" y="20" text-anchor="middle" class="lbl lbl-mute">SYSTEMS</text>
+            <g stroke="currentColor" stroke-width="1" fill="none" opacity="0.75">
+              <rect x="20" y="30" width="16" height="16"/>
+              <rect x="38" y="30" width="16" height="16"/>
+              <rect x="56" y="30" width="16" height="16"/>
+              <rect x="20" y="48" width="16" height="16"/>
+              <rect x="38" y="48" width="16" height="16"/>
+              <rect x="56" y="48" width="16" height="16"/>
+              <rect x="20" y="66" width="16" height="16"/>
+              <rect x="38" y="66" width="16" height="16"/>
+              <rect x="56" y="66" width="16" height="16"/>
+            </g>
+            <text x="148" y="20" text-anchor="middle" class="lbl lbl-mute">PEOPLE</text>
+            <g fill="currentColor">
+              <circle cx="130" cy="42" r="4.5"/>
+              <circle cx="156" cy="36" r="3.5"/>
+              <circle cx="170" cy="54" r="3"/>
+              <circle cx="142" cy="62" r="3.5"/>
+              <circle cx="162" cy="74" r="3"/>
+              <circle cx="128" cy="80" r="3"/>
+            </g>
+            <g stroke="currentColor" stroke-width="0.6" opacity="0.55">
+              <line x1="130" y1="42" x2="156" y2="36"/>
+              <line x1="156" y1="36" x2="170" y2="54"/>
+              <line x1="130" y1="42" x2="142" y2="62"/>
+              <line x1="142" y1="62" x2="162" y2="74"/>
+              <line x1="142" y1="62" x2="128" y2="80"/>
+            </g>
+            <g stroke="currentColor" stroke-width="0.8" fill="none" opacity="0.55" stroke-dasharray="2.5 2.5">
+              <path d="M 44 100 Q 44 140, 100 158"/>
+              <path d="M 148 100 Q 148 140, 100 158"/>
+            </g>
+            <rect x="56" y="158" width="88" height="22" stroke="currentColor" stroke-width="1" fill="none"/>
+            <text x="100" y="172" text-anchor="middle" class="lbl">DATA LAYER</text>
+          </svg>
         </div>
       </div>
 
@@ -988,12 +1067,25 @@ body[data-vertical="dental"]    .vert-only.inline.for-dental { display: inline; 
             <h3>Thinking Partner</h3>
             <span class="stage-when">≈ 15 days, then ongoing</span>
           </div>
-          <p>An AI thinking partner for the principal. One for each leader if there's a team.</p>
-          <p>Tuned to the person. Fed the audit from Stage 1. Configured around how they actually decide. <strong>Existing systems untouched.</strong> The partner runs in parallel. Leadership starts thinking through it before anyone else feels the change.</p>
+          <p>An AI thinking partner for the principal. One for each leader if there's a team. Tuned to the person, fed the audit from Stage 1, configured around how they actually decide.</p>
+          <p><strong>Existing systems untouched.</strong> The partner runs in parallel. Leadership starts thinking through it before anyone else feels the change.</p>
           <div class="stage-why">
             <span class="why-label">Why this second</span>
             <span>A company can't move together if its leadership doesn't see together.</span>
           </div>
+        </div>
+        <div class="stage-graphic" aria-hidden="true">
+          <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="100" cy="100" r="78" stroke="currentColor" stroke-width="0.8" fill="none" opacity="0.4" stroke-dasharray="3 3"/>
+            <circle cx="100" cy="100" r="54" stroke="currentColor" stroke-width="0.8" fill="none" opacity="0.65"/>
+            <circle cx="100" cy="100" r="20" fill="currentColor"/>
+            <text x="100" y="104" text-anchor="middle" class="lbl lbl-inv">YOU</text>
+            <circle cx="154" cy="100" r="10" fill="currentColor" opacity="0.9"/>
+            <text x="154" y="126" text-anchor="middle" class="lbl lbl-mute">PARTNER</text>
+            <g stroke="currentColor" stroke-width="0.6" opacity="0.5" stroke-dasharray="2 2">
+              <line x1="120" y1="100" x2="144" y2="100"/>
+            </g>
+          </svg>
         </div>
       </div>
 
@@ -1015,12 +1107,36 @@ body[data-vertical="dental"]    .vert-only.inline.for-dental { display: inline; 
             </div>
           </div>
 
-          <p>A normal tool waits to be told. An agent runs without you. The workspace sits between. It <strong>anticipates</strong>, <strong>surfaces</strong>, <strong>proposes</strong>. The team stays in charge. The workspace is already thinking ahead of them.</p>
-          <p>Key workflows automate. Information stops living in inboxes. Everyone works on one surface, one shared memory.</p>
+          <p>A tool waits to be told. An agent runs without you. The workspace sits between. It <strong>anticipates</strong>, <strong>surfaces</strong>, <strong>proposes</strong>. The team stays in charge.</p>
           <div class="stage-why">
             <span class="why-label">Why this third</span>
             <span>Only a team that trusts the direction can absorb a shared surface without splitting.</span>
           </div>
+        </div>
+        <div class="stage-graphic" aria-hidden="true">
+          <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <g fill="currentColor">
+              <circle cx="30" cy="40" r="6"/>
+              <circle cx="100" cy="22" r="6"/>
+              <circle cx="170" cy="40" r="6"/>
+              <circle cx="30" cy="160" r="6"/>
+              <circle cx="100" cy="178" r="6"/>
+              <circle cx="170" cy="160" r="6"/>
+            </g>
+            <g stroke="currentColor" stroke-width="0.8" opacity="0.5">
+              <line x1="30" y1="40" x2="74" y2="80"/>
+              <line x1="100" y1="22" x2="100" y2="74"/>
+              <line x1="170" y1="40" x2="126" y2="80"/>
+              <line x1="30" y1="160" x2="74" y2="120"/>
+              <line x1="100" y1="178" x2="100" y2="126"/>
+              <line x1="170" y1="160" x2="126" y2="120"/>
+            </g>
+            <rect x="64" y="74" width="72" height="52" stroke="currentColor" stroke-width="1" fill="var(--bg)"/>
+            <line x1="72" y1="86" x2="128" y2="86" stroke="currentColor" stroke-width="0.6" opacity="0.4"/>
+            <line x1="72" y1="94" x2="120" y2="94" stroke="currentColor" stroke-width="0.6" opacity="0.4"/>
+            <line x1="72" y1="102" x2="124" y2="102" stroke="currentColor" stroke-width="0.6" opacity="0.4"/>
+            <text x="100" y="118" text-anchor="middle" class="lbl">WORKSPACE</text>
+          </svg>
         </div>
       </div>
 
@@ -1032,11 +1148,25 @@ body[data-vertical="dental"]    .vert-only.inline.for-dental { display: inline; 
             <span class="stage-when">≈ 60 to 120 days</span>
           </div>
           <p>The final layer. <strong>Custom software. Deep automation. Full integration</strong> with the systems you already run.</p>
-          <p>By here the team is fluent. The audit told us what to build. Leadership knows where the company is going. The workspace has connected everyone. <strong>We build the system around the work, not the other way round.</strong></p>
+          <p>By here the team is fluent. The audit told us what to build. <strong>We build the system around the work, not the other way round.</strong></p>
           <div class="stage-why">
             <span class="why-label">Why this fourth</span>
             <span>Built first, it overwhelms the company. Built fourth, it transforms it.</span>
           </div>
+        </div>
+        <div class="stage-graphic" aria-hidden="true">
+          <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <rect x="22" y="50" width="80" height="52" stroke="currentColor" stroke-width="1" fill="var(--bg)"/>
+            <text x="62" y="78" text-anchor="middle" class="lbl">SYNC</text>
+            <rect x="78" y="78" width="80" height="52" stroke="currentColor" stroke-width="1" fill="var(--bg-2)"/>
+            <text x="118" y="106" text-anchor="middle" class="lbl">AGENT</text>
+            <rect x="50" y="106" width="80" height="52" stroke="currentColor" stroke-width="1" fill="var(--bg)"/>
+            <text x="90" y="134" text-anchor="middle" class="lbl">UI</text>
+            <g stroke="currentColor" stroke-width="0.6" opacity="0.4" stroke-dasharray="2 2">
+              <line x1="100" y1="40" x2="100" y2="170"/>
+              <line x1="14" y1="104" x2="170" y2="104"/>
+            </g>
+          </svg>
         </div>
       </div>
     </div>

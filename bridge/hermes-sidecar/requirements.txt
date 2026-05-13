@@ -1,0 +1,7 @@
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+sse-starlette==2.1.3
+# Hermes agent runtime. Install per
+# https://github.com/NousResearch/hermes-agent
+# Pin once a release tag is published; for now track main.
+# hermes-agent @ git+https://github.com/NousResearch/hermes-agent@main

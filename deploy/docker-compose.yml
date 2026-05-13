@@ -41,15 +41,31 @@ services:
     restart: unless-stopped
     depends_on:
       - nango-server
+      - hermes-sidecar
     environment:
       NANGO_HOST: http://nango-server:3003
       NANGO_SECRET_KEY: ${NANGO_SECRET_KEY}
+      HERMES_SIDECAR_URL: http://hermes-sidecar:8500
+      HERMES_AGENT_DEFAULT: ${HERMES_AGENT_DEFAULT}
       ALLOW_ORIGIN: ${ALLOW_ORIGIN}
       PORT: 8000
     volumes:
       - bridge_data:/data
     expose:
       - "8000"
+
+  # Hermes agent runtime sidecar (Python, FastAPI + SSE)
+  hermes-sidecar:
+    build: ../bridge/hermes-sidecar
+    restart: unless-stopped
+    environment:
+      HERMES_CONFIG_DIR: /var/lib/hermes/agents
+      ALLOW_ORIGIN: ${ALLOW_ORIGIN}
+    volumes:
+      - hermes_data:/var/lib/hermes
+      - ./agent-templates:/var/lib/hermes/templates:ro
+    expose:
+      - "8500"
 
   # Caddy: HTTPS, reverse proxy. Automatic Let's Encrypt cert.
   caddy:
@@ -72,5 +88,6 @@ services:
 volumes:
   nango_db_data:
   bridge_data:
+  hermes_data:
   caddy_data:
   caddy_config:
