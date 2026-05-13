@@ -1,0 +1,8 @@
+# Railway only serves the static frontend via server.js.
+# Keep the backend/agent code out of the build context so Nixpacks
+# doesn't get confused by Python or Dockerfile signals.
+bridge/
+deploy/
+cli/
+*.md
+.git/
