@@ -365,6 +365,23 @@ body {
   .ai-q { font-size: 15.5px; }
 }
 
+/* ---------- scroll reveal ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.7s cubic-bezier(0.2, 0.7, 0.2, 1),
+              transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: var(--reveal-delay, 0s);
+  will-change: opacity, transform;
+}
+.reveal.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+}
+
 /* ---------- hero two-column ---------- */
 .hero-grid {
   display: grid;
@@ -770,12 +787,12 @@ body[data-vertical="dental"]    .vert-only.inline.for-dental { display: inline; 
 
 <section class="min-sec">
   <div class="wrap">
-    <div class="min-sec-head">
+    <div class="min-sec-head reveal">
       <h2>Your <span class="serif">AI partner</span>.</h2>
       <p>Trained on your business. Plugged into your tools. Locked to your team. Ask anything you'd ask your best operator.</p>
     </div>
 
-    <div class="ai-card">
+    <div class="ai-card reveal" style="--reveal-delay:0.08s">
       <div class="ai-card-head">
         <span class="dot"></span>
         <span>Ask your AI</span>
@@ -790,25 +807,25 @@ body[data-vertical="dental"]    .vert-only.inline.for-dental { display: inline; 
       </div>
     </div>
 
-    <p class="ai-foot">Connected to your existing tools. Locked to your team. Never trained on or shared with anyone else.</p>
+    <p class="ai-foot reveal" style="--reveal-delay:0.16s">Connected to your existing tools. Locked to your team. Never trained on or shared with anyone else.</p>
   </div>
 </section>
 
 <section class="min-sec">
   <div class="wrap">
-    <div class="min-sec-head">
+    <div class="min-sec-head reveal">
       <h2>Live in <span class="serif">30 days</span>.</h2>
       <p>One working session, then we handle the rest. Your AI partner is asking-and-answering by week four.</p>
     </div>
     <div class="min-roll">
-      <div class="week">
+      <div class="week reveal" style="--reveal-delay:0.0s">
         <div class="when">WEEK 01 · SCOPE</div>
         <div class="what">
           <h4>One working session.</h4>
           <p>We map the tools you live in and the questions you wish you could ask your business in plain English. 60 minutes, no prep needed.</p>
         </div>
       </div>
-      <div class="week">
+      <div class="week reveal" style="--reveal-delay:0.08s">
         <div class="when">WEEK 02 · CONNECT</div>
         <div class="what">
           <h4>Your tools, plugged in.</h4>
@@ -817,14 +834,14 @@ body[data-vertical="dental"]    .vert-only.inline.for-dental { display: inline; 
           </p>
         </div>
       </div>
-      <div class="week">
+      <div class="week reveal" style="--reveal-delay:0.16s">
         <div class="when">WEEK 03 · TRAIN</div>
         <div class="what">
           <h4>Your AI partner learns the business.</h4>
           <p>We teach it your product, your customers, your vocabulary. You review the early answers and we tune until it sounds like your best operator.</p>
         </div>
       </div>
-      <div class="week">
+      <div class="week reveal" style="--reveal-delay:0.24s">
         <div class="when">WEEK 04 · LIVE</div>
         <div class="what">
           <h4>You're using it daily.</h4>
@@ -838,7 +855,7 @@ body[data-vertical="dental"]    .vert-only.inline.for-dental { display: inline; 
 <section class="min-final">
   <div class="wrap">
     <h2>Less chaos. <span class="serif">More revenue.</span> Same team.</h2>
-    <div class="row">
+    <div class="row reveal" style="--reveal-delay:0.1s">
       <button type="button" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}' class="btn primary">Book a 30-min demo <span class="arr">→</span></button>
       <span class="meta">Talk to a founder this week.</span>
     </div>
@@ -873,6 +890,26 @@ body[data-vertical="dental"]    .vert-only.inline.for-dental { display: inline; 
   })();
 </script>
 
+<!-- Scroll-triggered reveal for text + roll items -->
+<script>
+  (function () {
+    var els = document.querySelectorAll('.reveal');
+    if (!els.length) return;
+    if (!('IntersectionObserver' in window)) {
+      els.forEach(function (el) { el.classList.add('in-view'); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          e.target.classList.add('in-view');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+    els.forEach(function (el) { io.observe(el); });
+  })();
+</script>
 <!-- Cal overlay init -->
 <script type="text/javascript">
   (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if(typeof namespace === "string"){cal.ns[namespace] = cal.ns[namespace] || api;p(cal.ns[namespace], ar);p(cal, ["initNamespace", namespace]);} else p(cal, ar); return;} p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
