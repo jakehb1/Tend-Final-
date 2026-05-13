@@ -368,7 +368,7 @@ body {
 /* ---------- hero two-column ---------- */
 .hero-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
   gap: 56px;
   align-items: center;
 }
@@ -376,16 +376,16 @@ body {
 .hero-visual { display: flex; justify-content: center; }
 
 @media (max-width: 880px) {
-  .hero-grid { grid-template-columns: 1fr; gap: 48px; }
-  .hero-visual .hero-schem { max-width: 460px; margin: 0 auto; }
+  .hero-grid { grid-template-columns: 1fr; gap: 40px; }
+  .hero-visual .hero-schem { max-width: 380px; margin: 0 auto; }
 }
 
 /* ---------- data-flow schematic ---------- */
 .hero-schem {
   position: relative;
   width: 100%;
-  max-width: 560px;
-  aspect-ratio: 1 / 1.05;
+  max-width: 420px;
+  aspect-ratio: 1 / 1;
   border: 1px solid var(--line);
   background: linear-gradient(180deg, var(--bg-2), var(--bg));
   padding: 20px;
@@ -730,31 +730,7 @@ body[data-vertical="dental"]    .vert-only.inline.for-dental { display: inline; 
             <circle cx="208" cy="232" r="3" fill="var(--accent)"/>
             <circle cx="232" cy="232" r="3" fill="var(--accent)"/>
           </g>
-          <text class="core-label" x="220" y="270" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="var(--fg)" letter-spacing="1.5">AI PARTNER</text>
-        </g>
-
-        <g class="flow-out-lines" stroke="var(--accent)" stroke-opacity="0.55" stroke-width="1" fill="none">
-          <line class="out-line" x1="220" y1="220" x2="220" y2="146" style="--i:0"/>
-          <line class="out-line" x1="220" y1="220" x2="284" y2="257" style="--i:1"/>
-          <line class="out-line" x1="220" y1="220" x2="156" y2="257" style="--i:2"/>
-        </g>
-
-        <g class="flow-agents">
-          <g class="agent" style="--i:0">
-            <circle class="ring" cx="220" cy="146" r="9" fill="var(--bg)" stroke="var(--accent)" stroke-width="1.2"/>
-            <circle class="dot" cx="220" cy="146" r="3.2" fill="var(--accent)"/>
-            <text class="label" x="220" y="128" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="var(--accent)" letter-spacing="0.6">ASK</text>
-          </g>
-          <g class="agent" style="--i:1">
-            <circle class="ring" cx="284" cy="257" r="9" fill="var(--bg)" stroke="var(--accent)" stroke-width="1.2"/>
-            <circle class="dot" cx="284" cy="257" r="3.2" fill="var(--accent)"/>
-            <text class="label" x="296" y="275" text-anchor="start" font-family="IBM Plex Mono" font-size="9" fill="var(--accent)" letter-spacing="0.6">DECIDE</text>
-          </g>
-          <g class="agent" style="--i:2">
-            <circle class="ring" cx="156" cy="257" r="9" fill="var(--bg)" stroke="var(--accent)" stroke-width="1.2"/>
-            <circle class="dot" cx="156" cy="257" r="3.2" fill="var(--accent)"/>
-            <text class="label" x="144" y="275" text-anchor="end" font-family="IBM Plex Mono" font-size="9" fill="var(--accent)" letter-spacing="0.6">ACT</text>
-          </g>
+          <text class="core-label" x="220" y="270" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="var(--fg)" letter-spacing="1.5">DATA LAYER</text>
         </g>
 
         <g class="flow-packets">
@@ -782,20 +758,6 @@ body[data-vertical="dental"]    .vert-only.inline.for-dental { display: inline; 
             <circle r="2.5" fill="var(--fg)">
               <animateMotion dur="3.2s" begin="1.7s" repeatCount="indefinite" path="M380,360 L220,220"/>
               <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.85;1" dur="3.2s" begin="1.7s" repeatCount="indefinite"/>
-            </circle>
-          </g>
-          <g class="packets-to-agents">
-            <circle r="2" fill="var(--accent)">
-              <animateMotion dur="1.6s" begin="0s" repeatCount="indefinite" path="M220,220 L220,146"/>
-              <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.85;1" dur="1.6s" begin="0s" repeatCount="indefinite"/>
-            </circle>
-            <circle r="2" fill="var(--accent)">
-              <animateMotion dur="1.8s" begin="0.5s" repeatCount="indefinite" path="M220,220 L284,257"/>
-              <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.85;1" dur="1.8s" begin="0.5s" repeatCount="indefinite"/>
-            </circle>
-            <circle r="2" fill="var(--accent)">
-              <animateMotion dur="1.7s" begin="1.0s" repeatCount="indefinite" path="M220,220 L156,257"/>
-              <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.85;1" dur="1.7s" begin="1.0s" repeatCount="indefinite"/>
             </circle>
           </g>
         </g>
