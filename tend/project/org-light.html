@@ -365,6 +365,152 @@ body {
   .ai-q { font-size: 15.5px; }
 }
 
+/* ---------- four stages ---------- */
+.stages-sec .stages-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.stage {
+  position: relative;
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 28px;
+  padding: 0 0 64px;
+}
+.stage:last-child { padding-bottom: 0; }
+.stage-marker {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--line-2);
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  z-index: 1;
+}
+.stage:not(:last-child) .stage-marker::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  width: 1px;
+  height: calc(100% + 64px);
+  background: var(--line-2);
+  transform: translateX(-50%);
+}
+.stage-body { display: flex; flex-direction: column; gap: 16px; max-width: 640px; }
+.stage-title {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+.stage-title h3 {
+  font-size: clamp(26px, 2.6vw, 36px);
+  font-weight: 500;
+  letter-spacing: -0.018em;
+  line-height: 1.1;
+  margin: 0;
+}
+.stage-when {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+}
+.stage-body p {
+  font-size: 15.5px;
+  color: var(--fg);
+  line-height: 1.6;
+  margin: 0;
+}
+.stage-body p strong { color: var(--fg); font-weight: 600; }
+.stage-why {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  background: var(--bg-2);
+  border-left: 2px solid var(--accent);
+  padding: 14px 18px;
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--fg);
+  margin-top: 6px;
+}
+.stage-why .why-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  align-self: center;
+  white-space: nowrap;
+}
+.stage-why strong { font-weight: 600; }
+
+.stage-spectrum {
+  margin: 6px 0;
+  padding: 18px 0 4px;
+}
+.stage-spectrum .mark {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  font-style: italic;
+  color: var(--accent);
+  text-align: center;
+  margin-bottom: 14px;
+}
+.stage-spectrum .endpoints {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--fg-mute);
+}
+.stage-spectrum .endpoints::before {
+  content: '';
+  position: absolute;
+  left: 4px; right: 4px;
+  top: 50%;
+  height: 1px;
+  background: var(--line-2);
+  z-index: 0;
+}
+.stage-spectrum .endpoints > span:not(.dot) {
+  background: var(--bg);
+  padding: 0 10px;
+  z-index: 1;
+}
+.stage-spectrum .endpoints .dot {
+  width: 9px;
+  height: 9px;
+  background: var(--accent);
+  border-radius: 50%;
+  z-index: 1;
+}
+
+@media (max-width: 720px) {
+  .stage { grid-template-columns: 36px 1fr; gap: 18px; padding-bottom: 56px; }
+  .stage-marker { width: 32px; height: 32px; font-size: 10px; }
+  .stage:not(:last-child) .stage-marker::after { height: calc(100% + 56px); }
+  .stage-title h3 { font-size: 24px; }
+  .stage-when { font-size: 10px; }
+  .stage-body p { font-size: 15px; }
+}
+
 /* ---------- scroll reveal ---------- */
 .reveal {
   opacity: 0;
@@ -811,41 +957,86 @@ body[data-vertical="dental"]    .vert-only.inline.for-dental { display: inline; 
   </div>
 </section>
 
-<section class="min-sec">
+<section class="min-sec stages-sec">
   <div class="wrap">
     <div class="min-sec-head reveal">
-      <h2>Live in <span class="serif">30 days</span>.</h2>
-      <p>One working session, then we handle the rest. Your AI partner is asking-and-answering by week four.</p>
+      <h2>Four <span class="serif">stages</span>.</h2>
+      <p>Each one earns the next. Skip ahead and the company stalls.</p>
     </div>
-    <div class="min-roll">
-      <div class="week reveal" style="--reveal-delay:0.0s">
-        <div class="when">WEEK 01 · SCOPE</div>
-        <div class="what">
-          <h4>One working session.</h4>
-          <p>We map the tools you live in and the questions you wish you could ask your business in plain English. 60 minutes, no prep needed.</p>
+
+    <div class="stages-list">
+      <div class="stage reveal">
+        <div class="stage-marker">01</div>
+        <div class="stage-body">
+          <div class="stage-title">
+            <h3>Readiness</h3>
+            <span class="stage-when">≈ 30 days</span>
+          </div>
+          <p>We map the company twice. <strong>Systems</strong>: where information lives, where work bottlenecks, where AI actually changes the work. <strong>People</strong>: how leadership decides, who carries weight the org chart doesn't show.</p>
+          <p>You leave with two things. A readiness report scoped to your company, and the scaffolding of <strong>the data layer</strong> that everything we build next runs on.</p>
+          <div class="stage-why">
+            <span class="why-label">Why this first</span>
+            <span>You can't transition a company you haven't seen. <strong>Most AI projects skip this. Most fail by week six.</strong></span>
+          </div>
         </div>
       </div>
-      <div class="week reveal" style="--reveal-delay:0.08s">
-        <div class="when">WEEK 02 · CONNECT</div>
-        <div class="what">
-          <h4>Your tools, plugged in.</h4>
-          <p>
-            Shopify, Stripe, QuickBooks, ShipStation, Stocky, Inventory Planner, Loop Returns, and any of the standard 170+ sources. Live and syncing by end of week. We handle the connectors.
-          </p>
+
+      <div class="stage reveal" style="--reveal-delay:0.06s">
+        <div class="stage-marker">02</div>
+        <div class="stage-body">
+          <div class="stage-title">
+            <h3>Thinking Partner</h3>
+            <span class="stage-when">≈ 15 days, then ongoing</span>
+          </div>
+          <p>An AI thinking partner for the principal. One for each leader if there's a team.</p>
+          <p>Tuned to the person. Fed the audit from Stage 1. Configured around how they actually decide. <strong>Existing systems untouched.</strong> The partner runs in parallel. Leadership starts thinking through it before anyone else feels the change.</p>
+          <div class="stage-why">
+            <span class="why-label">Why this second</span>
+            <span>A company can't move together if its leadership doesn't see together.</span>
+          </div>
         </div>
       </div>
-      <div class="week reveal" style="--reveal-delay:0.16s">
-        <div class="when">WEEK 03 · TRAIN</div>
-        <div class="what">
-          <h4>Your AI partner learns the business.</h4>
-          <p>We teach it your product, your customers, your vocabulary. You review the early answers and we tune until it sounds like your best operator.</p>
+
+      <div class="stage reveal" style="--reveal-delay:0.12s">
+        <div class="stage-marker">03</div>
+        <div class="stage-body">
+          <div class="stage-title">
+            <h3>Company Workspace</h3>
+            <span class="stage-when">≈ 45 days</span>
+          </div>
+          <p>The pattern extends to the whole team. <strong>One workspace. One memory.</strong> The company's brain, accessible to everyone.</p>
+
+          <div class="stage-spectrum">
+            <div class="mark">anticipatory workspace</div>
+            <div class="endpoints">
+              <span>passive tools</span>
+              <span class="dot"></span>
+              <span>autonomous agents</span>
+            </div>
+          </div>
+
+          <p>A normal tool waits to be told. An agent runs without you. The workspace sits between. It <strong>anticipates</strong>, <strong>surfaces</strong>, <strong>proposes</strong>. The team stays in charge. The workspace is already thinking ahead of them.</p>
+          <p>Key workflows automate. Information stops living in inboxes. Everyone works on one surface, one shared memory.</p>
+          <div class="stage-why">
+            <span class="why-label">Why this third</span>
+            <span>Only a team that trusts the direction can absorb a shared surface without splitting.</span>
+          </div>
         </div>
       </div>
-      <div class="week reveal" style="--reveal-delay:0.24s">
-        <div class="when">WEEK 04 · LIVE</div>
-        <div class="what">
-          <h4>You're using it daily.</h4>
-          <p>By the end of week four, your AI partner is answering the questions you used to wait on the data team for. Morning coffee, ask anything.</p>
+
+      <div class="stage reveal" style="--reveal-delay:0.18s">
+        <div class="stage-marker">04</div>
+        <div class="stage-body">
+          <div class="stage-title">
+            <h3>Custom System</h3>
+            <span class="stage-when">≈ 60 to 120 days</span>
+          </div>
+          <p>The final layer. <strong>Custom software. Deep automation. Full integration</strong> with the systems you already run.</p>
+          <p>By here the team is fluent. The audit told us what to build. Leadership knows where the company is going. The workspace has connected everyone. <strong>We build the system around the work, not the other way round.</strong></p>
+          <div class="stage-why">
+            <span class="why-label">Why this fourth</span>
+            <span>Built first, it overwhelms the company. Built fourth, it transforms it.</span>
+          </div>
         </div>
       </div>
     </div>
