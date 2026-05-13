@@ -365,11 +365,22 @@ body {
   .ai-q { font-size: 15.5px; }
 }
 
-/* ---------- data-flow schematic ---------- */
-.min-graphic-sec {
-  padding: 96px 0 24px;
+/* ---------- hero two-column ---------- */
+.hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: 56px;
+  align-items: center;
 }
-.min-graphic-sec .wrap { display: flex; justify-content: center; }
+.hero-text h1 { margin-top: 0; }
+.hero-visual { display: flex; justify-content: center; }
+
+@media (max-width: 880px) {
+  .hero-grid { grid-template-columns: 1fr; gap: 48px; }
+  .hero-visual .hero-schem { max-width: 460px; margin: 0 auto; }
+}
+
+/* ---------- data-flow schematic ---------- */
 .hero-schem {
   position: relative;
   width: 100%;
@@ -498,9 +509,6 @@ body {
   }
 }
 
-@media (max-width: 720px) {
-  .min-graphic-sec { padding: 64px 0 8px; }
-}
 
 /* ---------- vertical picker ---------- */
 .vert-picker {
@@ -611,7 +619,7 @@ body[data-vertical="dental"]    .vert-only.inline.for-dental { display: inline; 
 }
 </style>
 </head>
-<body data-vertical="ecomm">
+<body>
 
 <nav class="nav">
   <div class="nav-inner">
@@ -624,42 +632,21 @@ body[data-vertical="dental"]    .vert-only.inline.for-dental { display: inline; 
 
 <section class="min-hero">
   <div class="wrap">
-    <div class="hero-top">
-      <div class="vert-picker" id="vert-picker">
-        <span class="label">FOR</span>
-        <button type="button" class="btn" id="vert-btn" aria-haspopup="menu" aria-expanded="false">
-          <span id="vert-current">E-COMMERCE</span>
-          <span class="caret" aria-hidden="true"></span>
-        </button>
-        <div class="menu" role="menu">
-          <button type="button" data-vertical="ecomm" class="is-active" role="menuitem">E-COMMERCE</button>
-          <button type="button" data-vertical="nonprofit" role="menuitem">NON-PROFIT</button>
-          <button type="button" data-vertical="dental" role="menuitem">DENTAL</button>
+    <div class="hero-grid">
+      <div class="hero-text">
+        <h1>An AI partner<br/>for your <span class="serif">business</span>.</h1>
+        <p class="sub">Trained on your business. Plugged into your tools. Ask anything you'd ask your best operator.</p>
+        <div class="min-cta-row">
+          <button type="button" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}' class="btn primary">Book a 30-min demo <span class="arr">→</span></button>
         </div>
       </div>
-    </div>
-    <h1 class="vert-only for-ecomm">An AI partner for your <span class="serif">store</span>.</h1>
-    <h1 class="vert-only for-nonprofit">An AI partner for your <span class="serif">non-profit</span>.</h1>
-    <h1 class="vert-only for-dental">An AI partner for your <span class="serif">practice</span>.</h1>
-
-    <p class="sub vert-only for-ecomm">Trained on your products, customers, and ads. Plugged into Shopify, Meta, Stripe, and the rest. Ask it anything you'd ask your best operator.</p>
-    <p class="sub vert-only for-nonprofit">Trained on your donors, programs, and grants. Plugged into your CRM, your books, and your inbox. Ask it anything you'd ask your best operator.</p>
-    <p class="sub vert-only for-dental">Trained on your patients, production, and schedule. Plugged into Dentrix, Solutionreach, and QuickBooks. Ask it anything you'd ask your best operator.</p>
-    <div class="min-cta-row">
-      <button type="button" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}' class="btn primary">Book a 30-min demo <span class="arr">→</span></button>
-    </div>
-
-  </div>
-</section>
-
-<section class="min-graphic-sec">
-  <div class="wrap">
-    <div class="hero-schem" id="schem-frame" aria-hidden="true">
-      <span class="schem-label tl">FIG. 01 / TEND / DATA FLOW</span>
-      <span class="schem-label tr">● LIVE</span>
-      <span class="schem-label bl">t = continuous</span>
-      <span class="schem-label br">REV 04.2026</span>
-      <svg viewBox="0 0 440 440" preserveAspectRatio="xMidYMid meet" style="position:absolute;inset:0;width:100%;height:100%;">
+      <div class="hero-visual">
+        <div class="hero-schem" id="schem-frame" aria-hidden="true">
+          <span class="schem-label tl">FIG. 01 / TEND / DATA FLOW</span>
+          <span class="schem-label tr">● LIVE</span>
+          <span class="schem-label bl">t = continuous</span>
+          <span class="schem-label br">REV 04.2026</span>
+          <svg viewBox="0 0 440 440" preserveAspectRatio="xMidYMid meet" style="position:absolute;inset:0;width:100%;height:100%;">
         <defs>
           <radialGradient id="core-glow-light" cx="50%" cy="50%" r="50%">
             <stop offset="0%"  stop-color="var(--accent)" stop-opacity="0.20"/>
@@ -812,7 +799,9 @@ body[data-vertical="dental"]    .vert-only.inline.for-dental { display: inline; 
             </circle>
           </g>
         </g>
-      </svg>
+          </svg>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -831,23 +820,11 @@ body[data-vertical="dental"]    .vert-only.inline.for-dental { display: inline; 
         <span class="meta">Private · grounded in your live data</span>
       </div>
       <div class="ai-questions">
-        <div class="ai-q vert-only for-ecomm">What's my best-selling SKU this week?</div>
-        <div class="ai-q vert-only for-ecomm">How did Meta Ads perform vs. ROAS this month?</div>
-        <div class="ai-q vert-only for-ecomm">Which customers haven't reordered in 60 days?</div>
-        <div class="ai-q vert-only for-ecomm">What's our average order value by channel?</div>
-        <div class="ai-q vert-only for-ecomm">How much inventory ships this week, and what's low?</div>
-
-        <div class="ai-q vert-only for-nonprofit">Which lapsed donors gave $1K+ last year?</div>
-        <div class="ai-q vert-only for-nonprofit">What's our donor retention by acquisition channel?</div>
-        <div class="ai-q vert-only for-nonprofit">How much of the grant cycle is at risk this quarter?</div>
-        <div class="ai-q vert-only for-nonprofit">Which campaigns had the highest ROI this quarter?</div>
-        <div class="ai-q vert-only for-nonprofit">Is our spring appeal pacing ahead of last year?</div>
-
-        <div class="ai-q vert-only for-dental">Who's overdue for recall and has benefits left?</div>
-        <div class="ai-q vert-only for-dental">What's our no-show rate this month?</div>
-        <div class="ai-q vert-only for-dental">Which insurance claims are pending past 30 days?</div>
-        <div class="ai-q vert-only for-dental">Where are the holes in next week's schedule?</div>
-        <div class="ai-q vert-only for-dental">What's production per chair this month?</div>
+        <div class="ai-q">What's my best-selling SKU this week?</div>
+        <div class="ai-q">Which customers haven't reordered in 60 days?</div>
+        <div class="ai-q">How much inventory ships this week, and what's low?</div>
+        <div class="ai-q">When is the next Stripe payout, and what's in it?</div>
+        <div class="ai-q">What's our return rate this month?</div>
       </div>
     </div>
 
@@ -874,10 +851,7 @@ body[data-vertical="dental"]    .vert-only.inline.for-dental { display: inline; 
         <div class="what">
           <h4>Your tools, plugged in.</h4>
           <p>
-            <span class="vert-only inline for-ecomm">Shopify, Mailchimp, QuickBooks, Meta Ads, Stripe, GA, and any of the standard 170+ sources.</span>
-            <span class="vert-only inline for-nonprofit">Bloomerang / Salsa / Donorbox, Mailchimp, QuickBooks, Stripe, Salesforce Nonprofit Cloud, your grants spreadsheet, and any of the standard 170+ sources.</span>
-            <span class="vert-only inline for-dental">Dentrix / Open Dental / Eaglesoft, Solutionreach or RevenueWell, QuickBooks, your insurance billing platform, Stripe, and any of the standard 170+ sources.</span>
-            Live and syncing by end of week. We handle the connectors.
+            Shopify, Stripe, QuickBooks, ShipStation, Stocky, Inventory Planner, Loop Returns, and any of the standard 170+ sources. Live and syncing by end of week. We handle the connectors.
           </p>
         </div>
       </div>
@@ -937,53 +911,6 @@ body[data-vertical="dental"]    .vert-only.inline.for-dental { display: inline; 
   })();
 </script>
 
-<!-- Vertical picker -->
-<script>
-(function () {
-  var LABELS = { ecomm: 'E-COMMERCE', nonprofit: 'NON-PROFIT', dental: 'DENTAL' };
-  var picker = document.getElementById('vert-picker');
-  var btn = document.getElementById('vert-btn');
-  var current = document.getElementById('vert-current');
-  if (!picker || !btn || !current) return;
-  var menu = picker.querySelector('.menu');
-
-  function setVertical(v) {
-    if (!LABELS[v]) v = 'ecomm';
-    document.body.setAttribute('data-vertical', v);
-    current.textContent = LABELS[v];
-    menu.querySelectorAll('button[data-vertical]').forEach(function (b) {
-      b.classList.toggle('is-active', b.getAttribute('data-vertical') === v);
-    });
-    try { localStorage.setItem('tend.org.vertical', v); } catch (_) {}
-  }
-
-  function setOpen(o) {
-    picker.classList.toggle('open', o);
-    btn.setAttribute('aria-expanded', o ? 'true' : 'false');
-  }
-
-  btn.addEventListener('click', function (e) {
-    e.stopPropagation();
-    setOpen(!picker.classList.contains('open'));
-  });
-  menu.addEventListener('click', function (e) {
-    var b = e.target.closest('button[data-vertical]');
-    if (!b) return;
-    setVertical(b.getAttribute('data-vertical'));
-    setOpen(false);
-  });
-  document.addEventListener('click', function (e) {
-    if (!picker.contains(e.target)) setOpen(false);
-  });
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') setOpen(false);
-  });
-
-  var stored = null;
-  try { stored = localStorage.getItem('tend.org.vertical'); } catch (_) {}
-  setVertical(stored || 'ecomm');
-})();
-</script>
 <!-- Cal overlay init -->
 <script type="text/javascript">
   (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if(typeof namespace === "string"){cal.ns[namespace] = cal.ns[namespace] || api;p(cal.ns[namespace], ar);p(cal, ["initNamespace", namespace]);} else p(cal, ar); return;} p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
