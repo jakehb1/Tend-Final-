@@ -365,8 +365,12 @@ body {
 .sb-manage:hover { color: var(--fg); }
 
 .thread-list { display: flex; flex-direction: column; }
+.thread-row {
+  position: relative;
+  display: block;
+}
 .thread {
-  padding: 12px 12px;
+  padding: 12px 32px 12px 12px;
   border: 0;
   border-left: 2px solid transparent;
   font-size: 13px;
@@ -386,6 +390,31 @@ body {
   border-left-color: var(--accent);
   color: var(--fg);
 }
+.t-close {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 0;
+  color: var(--fg-mute);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s, color 0.15s, background 0.15s;
+  -webkit-appearance: none;
+  appearance: none;
+  border-radius: 3px;
+}
+.thread-row:hover .t-close,
+.thread-row .thread.active + .t-close { opacity: 0.7; }
+.t-close:hover { opacity: 1; color: var(--fg); background: var(--bg-2); }
 .thread .when {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 10px;
@@ -644,34 +673,55 @@ body {
       <div class="h"><span>Today's activity</span><span class="count">7 chats</span></div>
       <button type="button" class="sb-newchat" id="new-chat"><span class="plus">+</span> New chat</button>
       <div class="thread-list" id="thread-list">
-        <button type="button" class="thread active" data-thread="briefing">
-          <div class="when">TODAY · 09:02</div>
-          Morning briefing
-        </button>
-        <button type="button" class="thread" data-thread="bestsellers">
-          <div class="when">TODAY · 08:48</div>
-          What's selling best right now?
-        </button>
-        <button type="button" class="thread" data-thread="inventory">
-          <div class="when">TODAY · 08:14</div>
-          Which SKUs are running low?
-        </button>
-        <button type="button" class="thread" data-thread="shipping">
-          <div class="when">YESTERDAY</div>
-          Any shipping delays this week?
-        </button>
-        <button type="button" class="thread" data-thread="payouts">
-          <div class="when">YESTERDAY</div>
-          When is the next Stripe payout?
-        </button>
-        <button type="button" class="thread" data-thread="returns">
-          <div class="when">FRI</div>
-          What's our return rate this month?
-        </button>
-        <button type="button" class="thread" data-thread="books">
-          <div class="when">THU</div>
-          Where are we on May month-end?
-        </button>
+        <div class="thread-row">
+          <button type="button" class="thread active" data-thread="briefing">
+            <div class="when">TODAY · 09:02</div>
+            Morning briefing
+          </button>
+          <button type="button" class="t-close" data-thread="briefing" aria-label="Close chat">×</button>
+        </div>
+        <div class="thread-row">
+          <button type="button" class="thread" data-thread="bestsellers">
+            <div class="when">TODAY · 08:48</div>
+            What's selling best right now?
+          </button>
+          <button type="button" class="t-close" data-thread="bestsellers" aria-label="Close chat">×</button>
+        </div>
+        <div class="thread-row">
+          <button type="button" class="thread" data-thread="inventory">
+            <div class="when">TODAY · 08:14</div>
+            Which SKUs are running low?
+          </button>
+          <button type="button" class="t-close" data-thread="inventory" aria-label="Close chat">×</button>
+        </div>
+        <div class="thread-row">
+          <button type="button" class="thread" data-thread="shipping">
+            <div class="when">YESTERDAY</div>
+            Any shipping delays this week?
+          </button>
+          <button type="button" class="t-close" data-thread="shipping" aria-label="Close chat">×</button>
+        </div>
+        <div class="thread-row">
+          <button type="button" class="thread" data-thread="payouts">
+            <div class="when">YESTERDAY</div>
+            When is the next Stripe payout?
+          </button>
+          <button type="button" class="t-close" data-thread="payouts" aria-label="Close chat">×</button>
+        </div>
+        <div class="thread-row">
+          <button type="button" class="thread" data-thread="returns">
+            <div class="when">FRI</div>
+            What's our return rate this month?
+          </button>
+          <button type="button" class="t-close" data-thread="returns" aria-label="Close chat">×</button>
+        </div>
+        <div class="thread-row">
+          <button type="button" class="thread" data-thread="books">
+            <div class="when">THU</div>
+            Where are we on May month-end?
+          </button>
+          <button type="button" class="t-close" data-thread="books" aria-label="Close chat">×</button>
+        </div>
       </div>
     </div>
 
@@ -1129,10 +1179,33 @@ body {
     body.scrollTop = 0;
   }
 
-  // Thread switching
+  // Thread switching + per-row close
   var threadList = document.getElementById('thread-list');
   if (threadList) {
     threadList.addEventListener('click', function (e) {
+      var close = e.target.closest('.t-close');
+      if (close) {
+        e.stopPropagation();
+        var rid = close.getAttribute('data-thread');
+        var row = close.closest('.thread-row');
+        if (!row) return;
+        var wasActive = !!row.querySelector('.thread.active');
+        row.parentNode.removeChild(row);
+        if (rid && THREADS) { delete THREADS[rid]; }
+        if (wasActive) {
+          // Open the next remaining thread, or fall back to a blank chat.
+          var next = threadList.querySelector('.thread');
+          if (next) {
+            renderThread(next.getAttribute('data-thread'));
+          } else {
+            document.getElementById('chat-body').innerHTML = '';
+            document.getElementById('chat-title').textContent = 'New chat';
+            input.value = '';
+            setTimeout(function () { input.focus(); }, 50);
+          }
+        }
+        return;
+      }
       var t = e.target.closest('.thread');
       if (!t) return;
       var id = t.getAttribute('data-thread');
