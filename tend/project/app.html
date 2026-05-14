@@ -68,6 +68,80 @@ body {
 }
 .app-bar .logout:hover { color: var(--fg); border-color: var(--line-2); }
 
+/* Tune-view button + popover */
+.app-bar .tune {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--fg-mute);
+  letter-spacing: 0.04em;
+  background: transparent;
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.app-bar .tune:hover { color: var(--fg); border-color: var(--line-2); }
+.tune-pop {
+  position: absolute;
+  top: 56px;
+  right: 24px;
+  width: 320px;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  box-shadow: 0 14px 40px rgba(0,0,0,0.4);
+  padding: 18px;
+  z-index: 60;
+  display: none;
+  font-family: 'IBM Plex Sans', sans-serif;
+}
+.tune-pop.open { display: block; }
+.tune-pop h4 {
+  margin: 0 0 8px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+  font-weight: 500;
+}
+.tune-pop .tune-row { margin-bottom: 16px; }
+.tune-pop .tune-row:last-child { margin-bottom: 0; }
+.tune-pop .pills { display: flex; flex-wrap: wrap; gap: 6px; }
+.tune-pop .pill {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 12.5px;
+  color: var(--fg-dim);
+  background: transparent;
+  border: 1px solid var(--line);
+  padding: 6px 10px;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: color 0.12s, border-color 0.12s, background 0.12s;
+}
+.tune-pop .pill:hover { color: var(--fg); border-color: var(--line-2); }
+.tune-pop .pill.on {
+  color: var(--bg);
+  background: var(--fg);
+  border-color: var(--fg);
+}
+.chat-head .tuned {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+  margin-left: 10px;
+  padding: 2px 8px;
+  border-left: 1px solid var(--line);
+}
+.chat-head .tuned::before { content: "●"; color: var(--accent); font-size: 8px; }
+
 /* Layout */
 .app-shell {
   flex: 1;
@@ -417,10 +491,41 @@ body {
     <div class="ws-tag">WORKSPACE · <strong>quiet golf</strong></div>
   </div>
   <div class="right">
+    <button type="button" class="tune" id="tune-btn" aria-haspopup="true" aria-expanded="false">Tune view ▾</button>
     <span class="user" id="user-email">you@company.com</span>
     <a href="#" id="logout" class="logout">Log out</a>
   </div>
 </header>
+
+<div class="tune-pop" id="tune-pop" role="dialog" aria-label="Tune dashboard view">
+  <div class="tune-row">
+    <h4>How are you starting today?</h4>
+    <div class="pills" data-tune="lens">
+      <button type="button" class="pill" data-value="catch-up">Catch me up</button>
+      <button type="button" class="pill" data-value="help-decide">Help me decide</button>
+      <button type="button" class="pill" data-value="look-ahead">Look ahead</button>
+      <button type="button" class="pill" data-value="brief">Just the brief</button>
+    </div>
+  </div>
+  <div class="tune-row">
+    <h4>What matters most this week?</h4>
+    <div class="pills" data-tune="focus">
+      <button type="button" class="pill" data-value="revenue">Revenue</button>
+      <button type="button" class="pill" data-value="customers">Customers</button>
+      <button type="button" class="pill" data-value="ops">Operations</button>
+      <button type="button" class="pill" data-value="cash">Cash &amp; books</button>
+    </div>
+  </div>
+  <div class="tune-row">
+    <h4>Where do we begin?</h4>
+    <div class="pills" data-tune="start">
+      <button type="button" class="pill" data-value="brief">A morning brief</button>
+      <button type="button" class="pill" data-value="account">A specific account</button>
+      <button type="button" class="pill" data-value="dashboard">The dashboard</button>
+      <button type="button" class="pill" data-value="question">A blank prompt</button>
+    </div>
+  </div>
+</div>
 
 <div class="app-shell">
 
@@ -489,7 +594,7 @@ body {
   <main class="chat">
     <div class="chat-head">
       <h1 id="chat-title">Morning briefing</h1>
-      <div class="meta">● <span class="live">LIVE</span> · grounded across 7 systems</div>
+      <div class="meta">● <span class="live">LIVE</span> · grounded across 7 systems<span class="tuned" id="tuned-pill" hidden></span></div>
     </div>
 
     <div class="chat-body" id="chat-body"></div>
@@ -943,8 +1048,159 @@ body {
     });
   }
 
-  // Initial render
-  renderThread('briefing');
+  // ---------- Onboarding preferences ----------
+  // Read from localStorage (written by /onboarding) and use them to
+  // pick the default thread, reorder the sidebar, and surface a
+  // "tuned for" pill. Editable inline via the Tune view popover.
+  function loadPrefs() {
+    try {
+      var raw = localStorage.getItem('tend.onboarded');
+      if (!raw) return { lens: 'catch-up', focus: 'ops', start: 'brief' };
+      var p = JSON.parse(raw) || {};
+      return {
+        lens: p.lens || 'catch-up',
+        focus: p.focus || 'ops',
+        start: p.start || 'brief'
+      };
+    } catch (_) {
+      return { lens: 'catch-up', focus: 'ops', start: 'brief' };
+    }
+  }
+  function savePrefs(p) {
+    try {
+      var existing = JSON.parse(localStorage.getItem('tend.onboarded') || '{}');
+      existing.lens = p.lens; existing.focus = p.focus; existing.start = p.start;
+      existing.at = existing.at || Date.now();
+      localStorage.setItem('tend.onboarded', JSON.stringify(existing));
+    } catch (_) {}
+  }
+
+  var prefs = loadPrefs();
+
+  // start + lens together pick which thread opens first.
+  function threadForStart(p) {
+    if (p.start === 'account')   return 'bestsellers';
+    if (p.start === 'question')  return null;          // blank, focus input
+    if (p.start === 'dashboard') return 'briefing';    // numbers-shaped briefing
+    if (p.start === 'brief')     return 'briefing';
+    // Fall back to lens when start is unset
+    if (p.lens === 'help-decide') return 'inventory';
+    if (p.lens === 'look-ahead')  return 'bestsellers';
+    return 'briefing';
+  }
+
+  // Reorder the activity panel + connected-systems list by focus.
+  var FOCUS_ACTIVITY_ORDER = {
+    revenue:   ['orders', 'payout', 'pos', 'low-stock', 'return'],
+    customers: ['return', 'orders', 'low-stock', 'payout', 'pos'],
+    ops:       ['low-stock', 'pos', 'orders', 'payout', 'return'],
+    cash:      ['payout', 'pos', 'orders', 'low-stock', 'return']
+  };
+  var FOCUS_SYS_ORDER = {
+    revenue:   ['Shopify', 'Stripe', 'QuickBooks', 'Loop Returns', 'ShipStation', 'Stocky', 'Inventory Planner'],
+    customers: ['Loop Returns', 'Shopify', 'Stripe', 'ShipStation', 'QuickBooks', 'Stocky', 'Inventory Planner'],
+    ops:       ['Stocky', 'ShipStation', 'Inventory Planner', 'Shopify', 'Loop Returns', 'Stripe', 'QuickBooks'],
+    cash:      ['Stripe', 'QuickBooks', 'Shopify', 'ShipStation', 'Stocky', 'Inventory Planner', 'Loop Returns']
+  };
+  function activityKey(btn) {
+    var q = (btn.getAttribute('data-query') || '').toLowerCase();
+    if (q.indexOf('orders came in') >= 0) return 'orders';
+    if (q.indexOf('low') >= 0)            return 'low-stock';
+    if (q.indexOf('po') >= 0)             return 'pos';
+    if (q.indexOf('payout') >= 0)         return 'payout';
+    if (q.indexOf('return') >= 0)         return 'return';
+    return 'other';
+  }
+  function reorderList(container, getKey, order) {
+    if (!container || !order) return;
+    var items = Array.prototype.slice.call(container.children);
+    items.sort(function (a, b) {
+      var ai = order.indexOf(getKey(a)); var bi = order.indexOf(getKey(b));
+      if (ai === -1) ai = 999; if (bi === -1) bi = 999;
+      return ai - bi;
+    });
+    items.forEach(function (n) { container.appendChild(n); });
+  }
+  function applyPrefs(p) {
+    reorderList(
+      document.querySelector('.activity-list'),
+      activityKey,
+      FOCUS_ACTIVITY_ORDER[p.focus]
+    );
+    reorderList(
+      document.querySelector('.sys-list'),
+      function (el) { return el.getAttribute('data-system'); },
+      FOCUS_SYS_ORDER[p.focus]
+    );
+    // "Tuned for" pill near the title
+    var pill = document.getElementById('tuned-pill');
+    if (pill) {
+      var labelMap = {
+        'catch-up': 'catch up', 'help-decide': 'decide', 'look-ahead': 'look ahead', 'brief': 'brief',
+        'revenue': 'revenue', 'customers': 'customers', 'ops': 'operations', 'cash': 'cash',
+        'account': 'account', 'dashboard': 'numbers', 'question': 'blank'
+      };
+      pill.textContent = 'Tuned: ' + (labelMap[p.lens] || p.lens)
+        + ' · ' + (labelMap[p.focus] || p.focus)
+        + ' · ' + (labelMap[p.start] || p.start);
+      pill.hidden = false;
+    }
+    // Reflect current values in the popover pills
+    document.querySelectorAll('#tune-pop .pills').forEach(function (group) {
+      var key = group.getAttribute('data-tune');
+      group.querySelectorAll('.pill').forEach(function (b) {
+        b.classList.toggle('on', b.getAttribute('data-value') === p[key]);
+      });
+    });
+  }
+
+  // Wire the Tune view popover
+  var tuneBtn = document.getElementById('tune-btn');
+  var tunePop = document.getElementById('tune-pop');
+  if (tuneBtn && tunePop) {
+    tuneBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var open = tunePop.classList.toggle('open');
+      tuneBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    document.addEventListener('click', function (e) {
+      if (!tunePop.classList.contains('open')) return;
+      if (tunePop.contains(e.target) || tuneBtn.contains(e.target)) return;
+      tunePop.classList.remove('open');
+      tuneBtn.setAttribute('aria-expanded', 'false');
+    });
+    tunePop.addEventListener('click', function (e) {
+      var b = e.target.closest('.pill');
+      if (!b) return;
+      var group = b.closest('.pills');
+      var key = group && group.getAttribute('data-tune');
+      var val = b.getAttribute('data-value');
+      if (!key || !val) return;
+      prefs[key] = val;
+      savePrefs(prefs);
+      applyPrefs(prefs);
+      // If they changed where to begin, jump the chat there too.
+      if (key === 'start' || key === 'lens') {
+        var t = threadForStart(prefs);
+        if (t) renderThread(t);
+        else {
+          document.getElementById('chat-body').innerHTML = '';
+          document.getElementById('chat-title').textContent = 'Ask anything';
+          input.focus();
+        }
+      }
+    });
+  }
+
+  // Initial render: apply prefs, then open the right thread.
+  applyPrefs(prefs);
+  var startThread = threadForStart(prefs);
+  if (startThread) {
+    renderThread(startThread);
+  } else {
+    document.getElementById('chat-title').textContent = 'Ask anything';
+    setTimeout(function () { input.focus(); }, 50);
+  }
 })();
 </script>
 
