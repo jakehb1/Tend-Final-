@@ -460,6 +460,11 @@ body {
       document.querySelectorAll('.ob-option[data-step="' + s + '"]').forEach(function (sib) {
         sib.classList.toggle('active', sib === b);
       });
+      // Auto-advance after the selection registers visually.
+      setTimeout(function () {
+        if (step < TOTAL) { step++; render(); }
+        else { finish(); }
+      }, 240);
     });
   });
 
