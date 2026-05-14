@@ -975,6 +975,9 @@ body {
       t.remove();
       var hit = canned.find(function (c) { return c.match.test(text); });
       addReply(hit.html, hit.sources);
+      if (currentThreadId && THREADS[currentThreadId]) {
+        THREADS[currentThreadId].messages.push({ who: 'tend', html: hit.html, sources: hit.sources });
+      }
     }, 900);
   }
 
@@ -1055,11 +1058,63 @@ body {
     });
   }
 
+  // currentThreadId tracks which sidebar row is "live". It's null when
+  // we're in a blank New chat state. The next user message in that
+  // state mints a new thread (id + sidebar row + THREADS entry).
+  var currentThreadId = 'briefing';
+
+  function truncateTitle(text) {
+    text = text.replace(/\s+/g, ' ').trim();
+    if (text.length <= 52) return text;
+    return text.slice(0, 49) + '...';
+  }
+  function nowHHMM() {
+    var d = new Date();
+    var h = String(d.getHours()).padStart(2, '0');
+    var m = String(d.getMinutes()).padStart(2, '0');
+    return 'TODAY · ' + h + ':' + m;
+  }
+  function createThreadFromMessage(text) {
+    var id = 'chat-' + Date.now();
+    var title = truncateTitle(text);
+    THREADS[id] = { title: title, messages: [] };
+    var list = document.getElementById('thread-list');
+    list.querySelectorAll('.thread').forEach(function (n) { n.classList.remove('active'); });
+    var row = document.createElement('div');
+    row.className = 'thread-row';
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'thread active';
+    btn.setAttribute('data-thread', id);
+    var when = document.createElement('div');
+    when.className = 'when';
+    when.textContent = nowHHMM();
+    btn.appendChild(when);
+    btn.appendChild(document.createTextNode(title));
+    var close = document.createElement('button');
+    close.type = 'button';
+    close.className = 't-close';
+    close.setAttribute('data-thread', id);
+    close.setAttribute('aria-label', 'Close chat');
+    close.textContent = '×';
+    row.appendChild(btn);
+    row.appendChild(close);
+    list.insertBefore(row, list.firstChild);
+    document.getElementById('chat-title').textContent = title;
+    return id;
+  }
+
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     var text = (input.value || '').trim();
     if (!text) return;
+    if (!currentThreadId) {
+      currentThreadId = createThreadFromMessage(text);
+    }
     addUser(text);
+    if (THREADS[currentThreadId]) {
+      THREADS[currentThreadId].messages.push({ who: 'user', text: text });
+    }
     input.value = '';
     input.style.height = 'auto';
     reply(text);
@@ -1164,6 +1219,7 @@ body {
   function renderThread(id) {
     var t = THREADS[id];
     if (!t) return;
+    currentThreadId = id;
     document.getElementById('chat-title').textContent = t.title;
     body.innerHTML = '';
     t.messages.forEach(function (m) {
@@ -1198,6 +1254,7 @@ body {
           if (next) {
             renderThread(next.getAttribute('data-thread'));
           } else {
+            currentThreadId = null;
             document.getElementById('chat-body').innerHTML = '';
             document.getElementById('chat-title').textContent = 'New chat';
             input.value = '';
@@ -1263,6 +1320,7 @@ body {
   var newChat = document.getElementById('new-chat');
   if (newChat) {
     newChat.addEventListener('click', function () {
+      currentThreadId = null;
       document.querySelectorAll('#thread-list .thread').forEach(function (n) {
         n.classList.remove('active');
       });
@@ -1390,6 +1448,7 @@ body {
         var t = threadForStart(prefs);
         if (t) renderThread(t);
         else {
+          currentThreadId = null;
           document.getElementById('chat-body').innerHTML = '';
           document.getElementById('chat-title').textContent = 'Ask anything';
           input.focus();
@@ -1404,6 +1463,7 @@ body {
   if (startThread) {
     renderThread(startThread);
   } else {
+    currentThreadId = null;
     document.getElementById('chat-title').textContent = 'Ask anything';
     setTimeout(function () { input.focus(); }, 50);
   }
