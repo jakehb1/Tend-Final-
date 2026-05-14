@@ -36,21 +36,6 @@ body {
 .ob-top .left, .ob-top .right { display: flex; align-items: center; gap: 18px; }
 .ob-top .brand img { height: 20px; width: auto; display: block; }
 .ob-top .meta { color: var(--fg-mute); }
-.ob-stage {
-  border: 1px solid var(--line-2);
-  padding: 4px 10px;
-  color: var(--fg);
-  letter-spacing: 0.06em;
-}
-.ob-stage::before { content: "● "; color: var(--accent); }
-.ob-skip {
-  color: var(--fg-dim);
-  text-decoration: none;
-  letter-spacing: 0.06em;
-}
-.ob-skip:hover { color: var(--fg); }
-.ob-skip .short { display: none; }
-
 .ob-main {
   flex: 1;
   padding: 72px 40px 56px;
@@ -192,34 +177,36 @@ body {
   margin: 0;
 }
 
-.ob-bottom {
+.ob-stepnav {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 40px;
+  margin-top: 32px;
+  padding-top: 18px;
   border-top: 1px solid var(--line);
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
-  color: var(--fg-mute);
-  letter-spacing: 0.06em;
-}
-.ob-bottom .nav { display: flex; gap: 22px; }
-.ob-bottom .nav button {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 12px;
   letter-spacing: 0.06em;
-  color: var(--fg);
+}
+.ob-stepnav button {
+  font: inherit;
+  letter-spacing: inherit;
+  color: var(--fg-dim);
   background: transparent;
   border: 0;
-  padding: 4px 2px;
+  padding: 6px 0;
   cursor: pointer;
-  text-transform: uppercase;
+  text-transform: none;
   -webkit-appearance: none;
   appearance: none;
 }
-.ob-bottom .nav button:disabled { color: var(--fg-mute); cursor: default; }
-.ob-bottom .nav button:hover:not(:disabled) { color: var(--accent); }
-.ob-bottom .status::before { content: "● "; color: var(--accent); }
+.ob-stepnav button:disabled { color: var(--fg-mute); cursor: default; opacity: 0.45; }
+.ob-stepnav button:hover:not(:disabled) { color: var(--fg); }
+.ob-stepnav .ob-skip {
+  color: var(--fg-dim);
+  text-decoration: none;
+}
+.ob-stepnav .ob-skip:hover { color: var(--fg); }
 
 @media (max-width: 880px) {
   .ob-top { padding: 12px 18px; gap: 12px; }
@@ -237,15 +224,10 @@ body {
   .ob-option .letter { width: 30px; height: 30px; font-size: 15px; }
   .ob-option .title { font-size: 15px; }
   .ob-option p { font-size: 13px; }
-  .ob-bottom { padding: 12px 18px; flex-wrap: wrap; gap: 10px; }
-  .ob-bottom .nav button { font-size: 11px; }
-  .ob-bottom .status { font-size: 10px; width: 100%; text-align: left; }
+  .ob-stepnav { font-size: 11px; margin-top: 24px; padding-top: 14px; }
 }
 
 @media (max-width: 520px) {
-  .ob-top .ob-stage { display: none; }
-  .ob-skip .long { display: none; }
-  .ob-skip .short { display: inline; }
   .ob-greet { font-size: 38px; }
   .ob-step h2 { font-size: 26px; }
 }
@@ -257,13 +239,6 @@ body {
   <div class="left">
     <a class="brand" href="index.html"><img src="images/tend-logo.png" alt="tend" /></a>
     <span class="meta" id="ob-date">FRIDAY · MAY 9 · 7:02 AM</span>
-  </div>
-  <div class="right">
-    <span class="ob-stage">STAGE 2 · DAY 38</span>
-    <a href="#" id="ob-skip" class="ob-skip">
-      <span class="long">SKIP TO DASHBOARD →</span>
-      <span class="short">SKIP →</span>
-    </a>
   </div>
 </header>
 
@@ -385,15 +360,12 @@ body {
       </button>
     </div>
   </section>
-</main>
 
-<footer class="ob-bottom">
-  <div class="nav">
-    <button type="button" id="ob-back" disabled>← BACK</button>
-    <button type="button" id="ob-next">NEXT STEP →</button>
+  <div class="ob-stepnav">
+    <button type="button" id="ob-back" disabled>← Back</button>
+    <a href="#" id="ob-skip" class="ob-skip">Skip to dashboard →</a>
   </div>
-  <span class="status" id="ob-status">2 things need you · 1 anomaly waiting</span>
-</footer>
+</main>
 
 <script>
 (function () {
@@ -436,7 +408,6 @@ body {
   var dots = document.querySelectorAll('.ob-progress .dot');
   var sections = document.querySelectorAll('.ob-step');
   var backBtn = document.getElementById('ob-back');
-  var nextBtn = document.getElementById('ob-next');
 
   function render() {
     stepLabel.textContent = 'STEP ' + step + ' OF ' + TOTAL;
@@ -449,7 +420,6 @@ body {
       s.classList.toggle('active', Number(s.dataset.step) === step);
     });
     backBtn.disabled = (step === 1);
-    nextBtn.textContent = (step === TOTAL) ? 'GO TO DASHBOARD →' : 'NEXT STEP →';
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -480,10 +450,6 @@ body {
     window.location.href = 'app.html';
   }
 
-  nextBtn.addEventListener('click', function () {
-    if (step < TOTAL) { step++; render(); }
-    else { finish(); }
-  });
   backBtn.addEventListener('click', function () {
     if (step > 1) { step--; render(); }
   });
