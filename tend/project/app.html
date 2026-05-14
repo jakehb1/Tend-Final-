@@ -142,6 +142,146 @@ body {
 }
 .chat-head .tuned::before { content: "●"; color: var(--accent); font-size: 8px; }
 
+/* + New chat affordance at the top of the activity list */
+.sb-newchat {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 13px;
+  color: var(--fg);
+  background: transparent;
+  border: 1px dashed var(--line-2);
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  letter-spacing: -0.005em;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: color 0.12s, border-color 0.12s, background 0.12s;
+}
+.sb-newchat:hover { color: var(--fg); border-color: var(--fg-mute); background: var(--bg-3); }
+.sb-newchat .plus { font-family: 'IBM Plex Mono', monospace; color: var(--accent); }
+
+/* Ontology modal (opens when a connected system is clicked) */
+.ont-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  z-index: 80;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.ont-overlay.open { display: flex; }
+.ont-modal {
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  width: min(440px, 100%);
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  padding: 0;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+  font-family: 'IBM Plex Sans', sans-serif;
+}
+.ont-modal .ont-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 22px 24px 14px;
+  border-bottom: 1px solid var(--line);
+}
+.ont-modal .ont-head .t {
+  font-size: 20px;
+  color: var(--fg);
+  letter-spacing: -0.015em;
+  margin: 0;
+}
+.ont-modal .ont-head .kicker {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+.ont-modal .ont-close {
+  background: transparent;
+  border: 0;
+  color: var(--fg-mute);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 4px;
+}
+.ont-modal .ont-close:hover { color: var(--fg); }
+.ont-modal .ont-body { padding: 18px 24px 22px; }
+.ont-modal .ont-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--fg-dim);
+  margin-bottom: 14px;
+}
+.ont-modal .ont-status .dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px rgba(140,167,138,0.6);
+}
+.ont-modal .ont-desc {
+  color: var(--fg-dim);
+  line-height: 1.55;
+  font-size: 14px;
+  margin: 0 0 16px;
+}
+.ont-modal .ont-points {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 18px;
+  border: 1px solid var(--line);
+  background: var(--bg-3);
+}
+.ont-modal .ont-points li {
+  padding: 8px 14px;
+  font-size: 13px;
+  color: var(--fg);
+  border-bottom: 1px solid var(--line);
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.02em;
+}
+.ont-modal .ont-points li:last-child { border-bottom: 0; }
+.ont-modal .ont-points li::before { content: "· "; color: var(--accent); }
+.ont-modal .ont-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--fg);
+  color: var(--bg);
+  padding: 10px 16px;
+  font-size: 13px;
+  letter-spacing: -0.005em;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid var(--fg);
+  font-family: 'IBM Plex Sans', sans-serif;
+}
+.ont-modal .ont-cta:hover { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+.ont-modal .ont-foot {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+  margin-top: 14px;
+}
+
 /* Layout */
 .app-shell {
   flex: 1;
@@ -211,37 +351,6 @@ body {
   text-overflow: ellipsis;
 }
 .sys.warn .sys-text .sub { color: #C29A4D; }
-
-/* Today's activity panel */
-.activity-list { display: flex; flex-direction: column; gap: 8px; }
-.activity {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-  padding: 6px 10px;
-  border: 0;
-  border-left: 2px solid var(--accent);
-  background: var(--bg-3);
-  text-align: left;
-  font-family: inherit;
-  width: 100%;
-  cursor: pointer;
-  -webkit-appearance: none;
-  appearance: none;
-  transition: background 0.12s;
-}
-.activity:hover { background: #1c2026; }
-.activity.flag { border-left-color: #C29A4D; }
-.activity .num {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 13px;
-  color: var(--accent);
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  min-width: 30px;
-}
-.activity.flag .num { color: #C29A4D; }
-.activity .label { font-size: 12px; color: var(--fg-dim); line-height: 1.35; }
 
 .sb-manage {
   display: block;
@@ -532,32 +641,8 @@ body {
   <div class="app-backdrop" id="app-backdrop" aria-hidden="true"></div>
   <aside class="sidebar" id="sidebar">
     <div class="sb-section">
-      <div class="h"><span>Today's activity</span><span class="count">● LIVE</span></div>
-      <div class="activity-list">
-        <button type="button" class="activity" data-query="What orders came in overnight?"><span class="num">47</span><span class="label">orders overnight · $4,820</span></button>
-        <button type="button" class="activity" data-query="What SKUs are running low?"><span class="num">3</span><span class="label">low-stock alerts</span></button>
-        <button type="button" class="activity" data-query="What POs are awaiting approval?"><span class="num">4</span><span class="label">POs awaiting your approval</span></button>
-        <button type="button" class="activity" data-query="When is the next Stripe payout?"><span class="num">$18.4K</span><span class="label">Stripe payout · Wednesday</span></button>
-        <button type="button" class="activity flag" data-query="Tell me about the return request you flagged"><span class="num">1</span><span class="label">return request needs you</span></button>
-      </div>
-    </div>
-
-    <div class="sb-section">
-      <div class="h"><span>Connected systems</span><span class="count">7 live</span></div>
-      <div class="sys-list">
-        <button type="button" class="sys" data-system="Shopify"><span class="dot"></span><div class="sys-text"><div class="name">Shopify</div><div class="sub">2,840 orders · synced 2m ago</div></div></button>
-        <button type="button" class="sys" data-system="Stripe"><span class="dot"></span><div class="sys-text"><div class="name">Stripe</div><div class="sub">payouts · synced 2m ago</div></div></button>
-        <button type="button" class="sys" data-system="QuickBooks"><span class="dot"></span><div class="sys-text"><div class="name">QuickBooks</div><div class="sub">ledger · synced 8m ago</div></div></button>
-        <button type="button" class="sys" data-system="ShipStation"><span class="dot"></span><div class="sys-text"><div class="name">ShipStation</div><div class="sub">fulfillment · synced 1m ago</div></div></button>
-        <button type="button" class="sys" data-system="Stocky"><span class="dot"></span><div class="sys-text"><div class="name">Stocky</div><div class="sub">inventory · synced 12m ago</div></div></button>
-        <button type="button" class="sys" data-system="Inventory Planner"><span class="dot"></span><div class="sys-text"><div class="name">Inventory Planner</div><div class="sub">forecasting · synced 18m ago</div></div></button>
-        <button type="button" class="sys" data-system="Loop Returns"><span class="dot"></span><div class="sys-text"><div class="name">Loop Returns</div><div class="sub">38 returns · synced 6m ago</div></div></button>
-      </div>
-      <a href="connect.html" class="sb-manage">+ Connect more tools →</a>
-    </div>
-
-    <div class="sb-section">
-      <div class="h"><span>Recent threads</span></div>
+      <div class="h"><span>Today's activity</span><span class="count">7 chats</span></div>
+      <button type="button" class="sb-newchat" id="new-chat"><span class="plus">+</span> New chat</button>
       <div class="thread-list" id="thread-list">
         <button type="button" class="thread active" data-thread="briefing">
           <div class="when">TODAY · 09:02</div>
@@ -589,7 +674,40 @@ body {
         </button>
       </div>
     </div>
+
+    <div class="sb-section">
+      <div class="h"><span>Connected systems</span><span class="count">7 live</span></div>
+      <div class="sys-list">
+        <button type="button" class="sys" data-system="Shopify"><span class="dot"></span><div class="sys-text"><div class="name">Shopify</div><div class="sub">2,840 orders · synced 2m ago</div></div></button>
+        <button type="button" class="sys" data-system="Stripe"><span class="dot"></span><div class="sys-text"><div class="name">Stripe</div><div class="sub">payouts · synced 2m ago</div></div></button>
+        <button type="button" class="sys" data-system="QuickBooks"><span class="dot"></span><div class="sys-text"><div class="name">QuickBooks</div><div class="sub">ledger · synced 8m ago</div></div></button>
+        <button type="button" class="sys" data-system="ShipStation"><span class="dot"></span><div class="sys-text"><div class="name">ShipStation</div><div class="sub">fulfillment · synced 1m ago</div></div></button>
+        <button type="button" class="sys" data-system="Stocky"><span class="dot"></span><div class="sys-text"><div class="name">Stocky</div><div class="sub">inventory · synced 12m ago</div></div></button>
+        <button type="button" class="sys" data-system="Inventory Planner"><span class="dot"></span><div class="sys-text"><div class="name">Inventory Planner</div><div class="sub">forecasting · synced 18m ago</div></div></button>
+        <button type="button" class="sys" data-system="Loop Returns"><span class="dot"></span><div class="sys-text"><div class="name">Loop Returns</div><div class="sub">38 returns · synced 6m ago</div></div></button>
+      </div>
+      <a href="connect.html" class="sb-manage">+ Connect more tools →</a>
+    </div>
   </aside>
+
+  <div class="ont-overlay" id="ont-overlay" aria-hidden="true">
+    <div class="ont-modal" role="dialog" aria-labelledby="ont-title">
+      <div class="ont-head">
+        <div>
+          <div class="kicker">Tend Ontology</div>
+          <h2 class="t" id="ont-title">Shopify</h2>
+        </div>
+        <button type="button" class="ont-close" id="ont-close" aria-label="Close">×</button>
+      </div>
+      <div class="ont-body">
+        <div class="ont-status"><span class="dot"></span><span id="ont-sync">Connected · synced just now</span></div>
+        <p class="ont-desc" id="ont-desc">This system is mapped into your Tend Ontology, the structured graph that powers every answer in this workspace.</p>
+        <ul class="ont-points" id="ont-points"></ul>
+        <a class="ont-cta" id="ont-cta" href="mailto:hello@withtend.ai?subject=Add%20data%20points%20to%20my%20Tend%20workspace">Contact us to add more data points →</a>
+        <div class="ont-foot">We extend the ontology per workspace · usually a 1 day turnaround</div>
+      </div>
+    </div>
+  </div>
 
   <main class="chat">
     <div class="chat-head">
@@ -1022,29 +1140,64 @@ body {
     });
   }
 
-  // Connected systems -> ask about that system
+  // Connected systems -> open the Tend Ontology modal for that system.
+  // Each system surfaces its current data points; the CTA invites the
+  // user to email us to add more.
+  var ONTOLOGY = {
+    'Shopify':           { sync: 'Connected · synced 2m ago',  points: ['orders + line items', 'refunds + cancellations', 'product catalog + variants', 'customer lifecycle', 'inventory levels', 'transactional emails'] },
+    'Stripe':            { sync: 'Connected · synced 2m ago',  points: ['charges + payouts', 'subscriptions + invoices', 'disputes + refunds', 'balance + reserves', 'customer payment methods'] },
+    'QuickBooks':        { sync: 'Connected · synced 8m ago',  points: ['general ledger', 'invoices + bills', 'expense categories', 'account balances', 'month-end close state'] },
+    'ShipStation':       { sync: 'Connected · synced 1m ago',  points: ['labels created + voided', 'carriers + service levels', 'fulfillment SLAs', 'tracking + delivery events', 'pickup schedules'] },
+    'Stocky':            { sync: 'Connected · synced 12m ago', points: ['stock on hand by SKU', 'sell-through rate', 'open + draft POs', 'supplier lead times', 'reorder points'] },
+    'Inventory Planner': { sync: 'Connected · synced 18m ago', points: ['demand forecast by SKU', 'days of cover', 'replenishment plan', 'stockout risk scoring'] },
+    'Loop Returns':      { sync: 'Connected · synced 6m ago',  points: ['return + exchange cases', 'reason codes', 'restocking + refund state', 'fraud flags', 'lifetime return rate per customer'] }
+  };
+  var overlay = document.getElementById('ont-overlay');
   var sysList = document.querySelector('.sys-list');
-  if (sysList) {
+  if (sysList && overlay) {
     sysList.addEventListener('click', function (e) {
       var s = e.target.closest('.sys');
       if (!s) return;
       var sys = s.getAttribute('data-system');
       if (!sys) return;
-      input.value = "What's happening in " + sys + "?";
-      form.requestSubmit();
+      var entry = ONTOLOGY[sys] || { sync: 'Connected', points: [] };
+      document.getElementById('ont-title').textContent = sys;
+      document.getElementById('ont-sync').textContent = entry.sync;
+      var ul = document.getElementById('ont-points');
+      ul.innerHTML = '';
+      entry.points.forEach(function (p) {
+        var li = document.createElement('li'); li.textContent = p; ul.appendChild(li);
+      });
+      document.getElementById('ont-cta').href =
+        'mailto:hello@withtend.ai?subject=' + encodeURIComponent('Add data points to my Tend workspace · ' + sys);
+      overlay.classList.add('open');
+      overlay.setAttribute('aria-hidden', 'false');
+    });
+    function closeOnt() {
+      overlay.classList.remove('open');
+      overlay.setAttribute('aria-hidden', 'true');
+    }
+    document.getElementById('ont-close').addEventListener('click', closeOnt);
+    overlay.addEventListener('click', function (e) {
+      if (e.target === overlay) closeOnt();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && overlay.classList.contains('open')) closeOnt();
     });
   }
 
-  // Today's activity -> ask a follow-up about that item
-  var activityList = document.querySelector('.activity-list');
-  if (activityList) {
-    activityList.addEventListener('click', function (e) {
-      var a = e.target.closest('.activity');
-      if (!a) return;
-      var q = a.getAttribute('data-query');
-      if (!q) return;
-      input.value = q;
-      form.requestSubmit();
+  // + New chat: clear the thread, blank the chat, focus the composer.
+  var newChat = document.getElementById('new-chat');
+  if (newChat) {
+    newChat.addEventListener('click', function () {
+      document.querySelectorAll('#thread-list .thread').forEach(function (n) {
+        n.classList.remove('active');
+      });
+      document.getElementById('chat-body').innerHTML = '';
+      document.getElementById('chat-title').textContent = 'New chat';
+      input.value = '';
+      input.style.height = 'auto';
+      setTimeout(function () { input.focus(); }, 50);
     });
   }
 
@@ -1089,28 +1242,13 @@ body {
     return 'briefing';
   }
 
-  // Reorder the activity panel + connected-systems list by focus.
-  var FOCUS_ACTIVITY_ORDER = {
-    revenue:   ['orders', 'payout', 'pos', 'low-stock', 'return'],
-    customers: ['return', 'orders', 'low-stock', 'payout', 'pos'],
-    ops:       ['low-stock', 'pos', 'orders', 'payout', 'return'],
-    cash:      ['payout', 'pos', 'orders', 'low-stock', 'return']
-  };
+  // Reorder the connected-systems list by focus.
   var FOCUS_SYS_ORDER = {
     revenue:   ['Shopify', 'Stripe', 'QuickBooks', 'Loop Returns', 'ShipStation', 'Stocky', 'Inventory Planner'],
     customers: ['Loop Returns', 'Shopify', 'Stripe', 'ShipStation', 'QuickBooks', 'Stocky', 'Inventory Planner'],
     ops:       ['Stocky', 'ShipStation', 'Inventory Planner', 'Shopify', 'Loop Returns', 'Stripe', 'QuickBooks'],
     cash:      ['Stripe', 'QuickBooks', 'Shopify', 'ShipStation', 'Stocky', 'Inventory Planner', 'Loop Returns']
   };
-  function activityKey(btn) {
-    var q = (btn.getAttribute('data-query') || '').toLowerCase();
-    if (q.indexOf('orders came in') >= 0) return 'orders';
-    if (q.indexOf('low') >= 0)            return 'low-stock';
-    if (q.indexOf('po') >= 0)             return 'pos';
-    if (q.indexOf('payout') >= 0)         return 'payout';
-    if (q.indexOf('return') >= 0)         return 'return';
-    return 'other';
-  }
   function reorderList(container, getKey, order) {
     if (!container || !order) return;
     var items = Array.prototype.slice.call(container.children);
@@ -1122,11 +1260,6 @@ body {
     items.forEach(function (n) { container.appendChild(n); });
   }
   function applyPrefs(p) {
-    reorderList(
-      document.querySelector('.activity-list'),
-      activityKey,
-      FOCUS_ACTIVITY_ORDER[p.focus]
-    );
     reorderList(
       document.querySelector('.sys-list'),
       function (el) { return el.getAttribute('data-system'); },
