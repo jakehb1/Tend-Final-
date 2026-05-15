@@ -75,7 +75,8 @@ body {
   letter-spacing: 0.04em;
   background: transparent;
   border: 1px solid var(--line);
-  padding: 6px 12px;
+  border-radius: 999px;
+  padding: 7px 14px;
   cursor: pointer;
   transition: color 0.15s, border-color 0.15s;
   -webkit-appearance: none;
@@ -84,12 +85,13 @@ body {
 .app-bar .tune:hover { color: var(--fg); border-color: var(--line-2); }
 .tune-pop {
   position: absolute;
-  top: 56px;
+  top: 60px;
   right: 24px;
   width: 320px;
   background: var(--bg-2);
   border: 1px solid var(--line);
-  box-shadow: 0 14px 40px rgba(0,0,0,0.4);
+  border-radius: 20px;
+  box-shadow: 0 14px 40px rgba(0,0,0,0.08);
   padding: 18px;
   z-index: 60;
   display: none;
@@ -114,7 +116,8 @@ body {
   color: var(--fg-dim);
   background: transparent;
   border: 1px solid var(--line);
-  padding: 6px 10px;
+  border-radius: 999px;
+  padding: 6px 12px;
   cursor: pointer;
   -webkit-appearance: none;
   appearance: none;
@@ -150,7 +153,8 @@ body {
 .kpi-card {
   border: 1px solid var(--line);
   background: var(--bg-3);
-  padding: 10px 12px;
+  border-radius: 16px;
+  padding: 12px 14px;
   display: flex;
   flex-direction: column;
   gap: 3px;
@@ -210,6 +214,8 @@ body {
   width: 320px;
   background: var(--bg-2);
   border: 1px solid var(--line);
+  border-radius: 20px;
+  overflow: hidden;
   box-shadow: 0 18px 60px rgba(0,0,0,0.5);
   z-index: 70;
   display: none;
@@ -290,14 +296,20 @@ body {
   flex-shrink: 0;
 }
 .prof-cta {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-family: 'IBM Plex Mono', monospace;
   font-size: 11.5px;
   letter-spacing: 0.04em;
-  color: var(--accent);
+  color: var(--accent-ink);
+  background: var(--accent);
+  border-radius: 999px;
+  padding: 8px 16px;
   text-decoration: none;
+  transition: background 0.15s;
 }
-.prof-cta:hover { color: var(--fg); }
+.prof-cta:hover { background: var(--fg); }
 .prof-foot {
   padding: 12px 20px;
   border-top: 1px solid var(--line);
@@ -335,12 +347,13 @@ body {
 
 .cmd-menu {
   position: absolute;
-  bottom: 56px;
-  left: 28px;
+  bottom: 60px;
+  left: 32px;
   background: var(--bg-2);
   border: 1px solid var(--line);
-  box-shadow: 0 18px 50px rgba(0,0,0,0.5);
-  padding: 6px;
+  border-radius: 16px;
+  box-shadow: 0 18px 50px rgba(0,0,0,0.10);
+  padding: 8px;
   z-index: 65;
   display: none;
   min-width: 220px;
@@ -352,7 +365,8 @@ body {
   align-items: center;
   gap: 8px;
   width: 100%;
-  padding: 8px 10px;
+  padding: 9px 12px;
+  border-radius: 10px;
   font-family: 'IBM Plex Mono', monospace;
   font-size: 12px;
   letter-spacing: 0.04em;
@@ -450,7 +464,8 @@ body {
 .msg.user .bubble {
   background: var(--bg-2);
   border: 1px solid var(--line);
-  padding: 12px 16px;
+  border-radius: 20px;
+  padding: 12px 18px;
 }
 .msg .bubble p { margin: 0 0 10px; }
 .msg .bubble p:last-child { margin-bottom: 0; }
@@ -500,7 +515,8 @@ body {
 .composer-inner {
   border: 1px solid var(--line-2);
   background: var(--bg-2);
-  padding: 12px 14px;
+  border-radius: 24px;
+  padding: 12px 14px 12px 18px;
   display: flex; gap: 12px; align-items: flex-end;
 }
 .composer textarea {
@@ -524,7 +540,8 @@ body {
   background: var(--accent);
   color: var(--accent-ink);
   border: 1px solid var(--accent);
-  padding: 7px 14px;
+  border-radius: 999px;
+  padding: 8px 16px;
   cursor: pointer;
   -webkit-appearance: none;
   appearance: none;
@@ -541,7 +558,8 @@ body {
 }
 .hint {
   border: 1px solid var(--line);
-  padding: 5px 9px;
+  border-radius: 999px;
+  padding: 6px 12px;
   cursor: pointer;
   color: var(--fg-dim);
   background: transparent;
