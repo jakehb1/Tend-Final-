@@ -298,27 +298,59 @@ body {
 .prof-foot .logout:hover { color: var(--fg); }
 
 /* Command pills above the composer */
-.cmd-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  padding: 0 0 10px;
-}
-.cmd {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11.5px;
-  letter-spacing: 0.04em;
-  color: var(--fg-dim);
-  background: var(--bg-2);
-  border: 1px solid var(--line);
-  padding: 5px 10px;
+/* Paperclip-style command menu inside the composer */
+.composer .clip {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 0;
+  color: var(--fg-mute);
   cursor: pointer;
   -webkit-appearance: none;
   appearance: none;
-  transition: color 0.12s, border-color 0.12s, background 0.12s;
+  transition: color 0.12s;
 }
-.cmd:hover { color: var(--fg); border-color: var(--line-2); background: var(--bg-3); }
-.cmd .slash { color: var(--accent); margin-right: 4px; }
+.composer .clip:hover, .composer .clip[aria-expanded="true"] { color: var(--accent); }
+.composer .clip svg { display: block; }
+
+.cmd-menu {
+  position: absolute;
+  bottom: 56px;
+  left: 28px;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  box-shadow: 0 18px 50px rgba(0,0,0,0.5);
+  padding: 6px;
+  z-index: 65;
+  display: none;
+  min-width: 220px;
+  font-family: 'IBM Plex Sans', sans-serif;
+}
+.cmd-menu.open { display: block; }
+.cmd-menu .cmd {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 10px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--fg-dim);
+  background: transparent;
+  border: 0;
+  text-align: left;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: color 0.12s, background 0.12s;
+}
+.cmd-menu .cmd:hover { color: var(--fg); background: var(--bg-3); }
+.cmd-menu .cmd .slash { color: var(--accent); }
 
 /* Layout */
 .app-shell {
@@ -494,6 +526,7 @@ body {
 
 /* Composer */
 .composer {
+  position: relative;
   border-top: 1px solid var(--line);
   padding: 16px 28px 20px;
   flex-shrink: 0;
@@ -725,15 +758,20 @@ body {
     <div class="chat-body" id="chat-body"></div>
 
     <div class="composer">
-      <div class="cmd-row" id="cmd-row">
-        <button class="cmd" type="button" data-cmd="/build "><span class="slash">/</span>build</button>
-        <button class="cmd" type="button" data-cmd="/research "><span class="slash">/</span>research</button>
-        <button class="cmd" type="button" data-cmd="/market-research "><span class="slash">/</span>market research</button>
-        <button class="cmd" type="button" data-cmd="/inventory "><span class="slash">/</span>inventory</button>
-        <button class="cmd" type="button" data-cmd="/finance "><span class="slash">/</span>finance</button>
-        <button class="cmd" type="button" data-cmd="/team "><span class="slash">/</span>team</button>
+      <div class="cmd-menu" id="cmd-menu" role="menu" aria-label="Commands">
+        <button class="cmd" type="button" data-cmd="/build " role="menuitem"><span class="slash">/</span>build</button>
+        <button class="cmd" type="button" data-cmd="/research " role="menuitem"><span class="slash">/</span>research</button>
+        <button class="cmd" type="button" data-cmd="/market-research " role="menuitem"><span class="slash">/</span>market research</button>
+        <button class="cmd" type="button" data-cmd="/inventory " role="menuitem"><span class="slash">/</span>inventory</button>
+        <button class="cmd" type="button" data-cmd="/finance " role="menuitem"><span class="slash">/</span>finance</button>
+        <button class="cmd" type="button" data-cmd="/team " role="menuitem"><span class="slash">/</span>team</button>
       </div>
       <form class="composer-inner" id="composer">
+        <button type="button" class="clip" id="clip-btn" aria-haspopup="menu" aria-expanded="false" aria-label="Commands">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
+          </svg>
+        </button>
         <textarea id="msg-input" rows="1" placeholder="Ask anything across your connected systems…" autocomplete="off"></textarea>
         <button type="submit" class="send">Send →</button>
       </form>
@@ -1077,10 +1115,22 @@ body {
     form.requestSubmit();
   });
 
-  // Command pills: insert "/<cmd> " into the composer, focus, wait.
-  var cmdRow = document.getElementById('cmd-row');
-  if (cmdRow) {
-    cmdRow.addEventListener('click', function (e) {
+  // Paperclip command menu: toggle on click, picks insert "/<cmd> "
+  // into the composer and close the menu.
+  var clipBtn = document.getElementById('clip-btn');
+  var cmdMenu = document.getElementById('cmd-menu');
+  function closeCmdMenu() {
+    if (!cmdMenu) return;
+    cmdMenu.classList.remove('open');
+    if (clipBtn) clipBtn.setAttribute('aria-expanded', 'false');
+  }
+  if (clipBtn && cmdMenu) {
+    clipBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var open = cmdMenu.classList.toggle('open');
+      clipBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    cmdMenu.addEventListener('click', function (e) {
       var c = e.target.closest('.cmd');
       if (!c) return;
       var pre = c.getAttribute('data-cmd') || '';
@@ -1090,6 +1140,15 @@ body {
       try { input.setSelectionRange(pos, pos); } catch (_) {}
       input.style.height = 'auto';
       input.style.height = Math.min(input.scrollHeight, 160) + 'px';
+      closeCmdMenu();
+    });
+    document.addEventListener('click', function (e) {
+      if (!cmdMenu.classList.contains('open')) return;
+      if (cmdMenu.contains(e.target) || clipBtn.contains(e.target)) return;
+      closeCmdMenu();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && cmdMenu.classList.contains('open')) closeCmdMenu();
     });
   }
 
