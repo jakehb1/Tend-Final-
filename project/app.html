@@ -250,11 +250,11 @@ body {
 .prof-foot .logout:hover { color: var(--fg); }
 
 /* Command pills above the composer */
-/* Paperclip-style command menu inside the composer */
+/* Plus-icon command menu button inside the composer */
 .composer .clip {
   flex-shrink: 0;
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -264,14 +264,18 @@ body {
   cursor: pointer;
   -webkit-appearance: none;
   appearance: none;
-  transition: color 0.12s;
+  border-radius: 8px;
+  transition: color 0.12s, background 0.12s;
 }
-.composer .clip:hover, .composer .clip[aria-expanded="true"] { color: var(--accent); }
+.composer .clip:hover, .composer .clip[aria-expanded="true"] {
+  color: var(--fg);
+  background: var(--bg-3);
+}
 .composer .clip svg { display: block; }
 
 .cmd-menu {
   position: absolute;
-  bottom: 60px;
+  bottom: 110px;
   left: 32px;
   background: var(--bg-2);
   border: 1px solid var(--line);
@@ -441,8 +445,12 @@ body {
   border: 1px solid var(--line-2);
   background: var(--bg-2);
   border-radius: 24px;
-  padding: 12px 14px 12px 18px;
-  display: flex; gap: 12px; align-items: flex-end;
+  padding: 14px 18px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 92px;
+  transition: border-color 0.18s, box-shadow 0.18s;
 }
 .composer textarea {
   flex: 1;
@@ -454,10 +462,16 @@ body {
   font-family: 'FH Premier', 'IBM Plex Sans', system-ui, sans-serif;
   font-size: 15px;
   line-height: 1.5;
-  min-height: 24px;
-  max-height: 160px;
+  min-height: 40px;
+  max-height: 200px;
+  width: 100%;
 }
 .composer textarea::placeholder { color: var(--fg-mute); }
+.composer-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 .composer-inner:focus-within {
   border-color: rgba(45, 42, 36, 0.28);
   box-shadow: 0 0 0 4px rgba(45, 42, 36, 0.06);
@@ -691,7 +705,7 @@ body {
 
   <main class="chat">
     <div class="chat-head">
-      <h1 id="chat-title">Today</h1>
+      <h1 id="chat-title">New chat</h1>
     </div>
 
     <div class="chat-body" id="chat-body">
@@ -729,15 +743,18 @@ body {
         <button class="cmd" type="button" data-cmd="/team " role="menuitem"><span class="slash">/</span>team</button>
       </div>
       <form class="composer-inner" id="composer">
-        <button type="button" class="clip" id="clip-btn" aria-haspopup="menu" aria-expanded="false" aria-label="Commands">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
-          </svg>
-        </button>
-        <textarea id="msg-input" rows="1" placeholder="Ask anything across your connected systems…" autocomplete="off"></textarea>
-        <button type="submit" class="send" aria-label="Send">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
-        </button>
+        <textarea id="msg-input" rows="1" placeholder="Write a message" autocomplete="off"></textarea>
+        <div class="composer-actions">
+          <button type="button" class="clip" id="clip-btn" aria-haspopup="menu" aria-expanded="false" aria-label="Commands">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="12" y1="5" x2="12" y2="19"/>
+              <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+          </button>
+          <button type="submit" class="send" aria-label="Send">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+          </button>
+        </div>
       </form>
     </div>
   </main>
