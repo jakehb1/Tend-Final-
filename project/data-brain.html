@@ -122,11 +122,11 @@ body {
 }
 .db-hero h1 {
   font-family: 'FH Premier', 'IBM Plex Sans', serif;
-  font-size: clamp(54px, 8vw, 96px);
+  font-size: clamp(40px, 5vw, 56px);
   font-weight: 400;
-  letter-spacing: -0.035em;
-  line-height: 0.95;
-  margin: 0 0 28px;
+  letter-spacing: -0.025em;
+  line-height: 1.0;
+  margin: 0 0 20px;
   color: var(--fg);
 }
 .db-hero h1 .it {
@@ -149,11 +149,11 @@ body {
   gap: 18px;
 }
 .db-bignum {
-  font-family: 'FH Premier', 'IBM Plex Sans', serif;
-  font-size: clamp(110px, 14vw, 200px);
-  line-height: 0.9;
-  font-weight: 300;
-  letter-spacing: -0.04em;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: clamp(52px, 7vw, 72px);
+  line-height: 1.0;
+  font-weight: 400;
+  letter-spacing: -0.02em;
   color: var(--fg);
 }
 .db-bignum sup {
@@ -420,78 +420,35 @@ body {
 .db-row.broken .sys-act { color: var(--amber); }
 .db-row.broken .sys-act:hover { color: var(--fg); }
 
-/* ---- closing CTA ---- */
-.db-close {
-  margin: 80px 0 0;
-  padding: 64px 0 0;
-  border-top: 1px solid var(--line);
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 64px;
-  align-items: end;
-}
-.db-close h3 {
-  font-family: 'FH Premier', 'IBM Plex Sans', serif;
-  font-size: 38px;
-  font-weight: 400;
-  letter-spacing: -0.02em;
-  line-height: 1.05;
-  margin: 0 0 16px;
-}
-.db-close h3 .it { font-style: italic; color: var(--accent); }
-.db-close p {
-  color: var(--fg-dim);
-  font-size: 16px;
-  line-height: 1.55;
-  margin: 0;
-  max-width: 460px;
-}
-.db-close p em { font-style: italic; color: var(--fg); }
-.db-close .actions {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  align-items: flex-end;
-}
-.db-close .cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 12.5px;
-  letter-spacing: 0.06em;
-  background: var(--accent);
-  color: var(--accent-ink);
-  text-decoration: none;
-  padding: 14px 24px;
-  border-radius: 999px;
-  transition: background 0.15s, color 0.15s;
-}
-.db-close .cta:hover { background: var(--fg); }
-.db-close .sub-cta {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11.5px;
-  letter-spacing: 0.06em;
-  color: var(--fg-mute);
-  text-decoration: none;
-  border-bottom: 1px solid var(--line);
-  padding-bottom: 2px;
-}
-.db-close .sub-cta:hover { color: var(--fg); border-color: var(--fg); }
-
-.db-sign {
+/* ---- footer actions ---- */
+.db-footer-actions {
   margin-top: 64px;
   padding-top: 24px;
   border-top: 1px solid var(--line);
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10.5px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--fg-mute);
   display: flex;
+  align-items: center;
   justify-content: space-between;
 }
-.db-sign em { font-style: italic; text-transform: none; letter-spacing: 0.04em; color: var(--fg-dim); }
+.db-add-btn {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  background: var(--accent);
+  color: var(--accent-ink);
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 999px;
+  transition: background 0.15s;
+}
+.db-add-btn:hover { background: var(--fg); }
+.db-back {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px;
+  letter-spacing: 0.04em;
+  color: var(--fg-mute);
+  text-decoration: none;
+}
+.db-back:hover { color: var(--fg); }
 
 @media (max-width: 880px) {
   .db { padding: 44px 22px 80px; }
@@ -527,7 +484,7 @@ body {
       <div class="db-kicker">Tend Ontology · v. 1</div>
       <h1>Data <span class="it">Brain</span>.</h1>
       <p class="lede">
-        Every system you've connected, every field we've mapped, every relationship between them — drawn into <em>one structured graph</em> that grounds every answer in your workspace.
+        Every system you've connected, every field mapped, every relationship between them. All drawn into <em>one structured graph</em> that grounds every answer in your workspace.
       </p>
     </div>
     <div class="db-hero-right">
@@ -703,22 +660,11 @@ body {
     </div>
   </div>
 
-  <!-- CLOSE -->
-  <section class="db-close">
-    <div>
-      <h3>Want a <span class="it">deeper</span> ontology?</h3>
-      <p>We extend the graph per workspace. Custom relationships, derived fields, schema changes — usually about a <em>day</em> of turnaround. Tell us what's missing.</p>
-    </div>
-    <div class="actions">
-      <a class="cta" href="mailto:hello@withtend.ai?subject=Extend%20my%20Tend%20Ontology">Email us · extend my ontology →</a>
-      <a class="sub-cta" href="connect.html">+ Add a new connection</a>
-    </div>
-  </section>
-
-  <div class="db-sign">
-    <span>Tend Ontology · v 1.0 · built by hand for your workspace</span>
-    <em>Quiet Golf · last refresh 9:14 AM</em>
+  <div class="db-footer-actions">
+    <a class="db-add-btn" href="connect.html">+ Add a connection</a>
+    <a class="db-back" href="app.html">← Back to workspace</a>
   </div>
+
 </main>
 
 </body>
