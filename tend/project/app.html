@@ -125,50 +125,45 @@ body {
 }
 .chat-head .tuned::before { content: "●"; color: var(--accent); font-size: 8px; }
 
-/* KPI strip above the chat */
+/* KPI cards (stacked, in the left sidebar) */
 .kpi-strip {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  padding: 16px 24px 20px;
-  border-bottom: 1px solid var(--line);
-}
-.kpi-card {
-  border: 1px solid var(--line);
-  background: var(--bg-2);
-  padding: 14px 16px;
   display: flex;
   flex-direction: column;
   gap: 6px;
+}
+.kpi-card {
+  border: 1px solid var(--line);
+  background: var(--bg-3);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
   text-align: left;
   cursor: pointer;
   font-family: inherit;
+  width: 100%;
   -webkit-appearance: none;
   appearance: none;
   transition: border-color 0.12s, background 0.12s;
 }
-.kpi-card:hover { border-color: var(--line-2); background: var(--bg-3); }
+.kpi-card:hover { border-color: var(--accent); background: var(--bg-2); }
 .kpi-card .label {
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.1em;
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--fg-mute);
 }
-.kpi-card .label::before { content: "● "; color: var(--accent); font-size: 8px; }
 .kpi-card .value {
-  font-size: 22px;
+  font-size: 17px;
   color: var(--fg);
-  letter-spacing: -0.015em;
+  letter-spacing: -0.01em;
   font-weight: 500;
 }
 .kpi-card .sub {
-  font-size: 12px;
+  font-size: 11.5px;
   color: var(--fg-dim);
-  line-height: 1.35;
-}
-@media (max-width: 880px) {
-  .kpi-strip { grid-template-columns: 1fr; padding: 12px 16px; }
+  line-height: 1.3;
 }
 
 /* Profile avatar in the app bar */
@@ -685,6 +680,27 @@ body {
   <div class="app-backdrop" id="app-backdrop" aria-hidden="true"></div>
   <aside class="sidebar" id="sidebar">
     <div class="sb-section">
+      <div class="h"><span>Metrics</span><span class="count">● LIVE</span></div>
+      <div class="kpi-strip" id="kpi-strip">
+        <button type="button" class="kpi-card" data-cmd="/research how is revenue trending over the last 7 days?">
+          <span class="label">Revenue · 7d</span>
+          <span class="value">$48.2K</span>
+          <span class="sub">+12% vs prior · Shopify + Stripe</span>
+        </button>
+        <button type="button" class="kpi-card" data-cmd="/research summarize the unread items in my inbox">
+          <span class="label">Inbox</span>
+          <span class="value">3 unread</span>
+          <span class="sub">Acushnet PO · 2 customer replies</span>
+        </button>
+        <button type="button" class="kpi-card" data-cmd="/research what has the team updated this morning?">
+          <span class="label">Team · today</span>
+          <span class="value">2 updates</span>
+          <span class="sub">Sam · returns Q2 plan · 8m ago</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="sb-section">
       <div class="h"><span>Connected systems</span><span class="count">7 live</span></div>
       <div class="sys-list">
         <button type="button" class="sys" data-system="Shopify"><span class="dot"></span><div class="sys-text"><div class="name">Shopify</div><div class="sub">2,840 orders · synced 2m ago</div></div></button>
@@ -704,24 +720,6 @@ body {
     <div class="chat-head">
       <h1 id="chat-title">Today</h1>
       <div class="meta">● <span class="live">LIVE</span> · grounded across 7 systems<span class="tuned" id="tuned-pill" hidden></span></div>
-    </div>
-
-    <div class="kpi-strip" id="kpi-strip">
-      <button type="button" class="kpi-card" data-cmd="/research how is revenue trending over the last 7 days?">
-        <span class="label">Revenue · 7d</span>
-        <span class="value">$48.2K</span>
-        <span class="sub">+12% vs prior week · Shopify + Stripe</span>
-      </button>
-      <button type="button" class="kpi-card" data-cmd="/research summarize the unread items in my inbox">
-        <span class="label">Inbox</span>
-        <span class="value">3 unread</span>
-        <span class="sub">Acushnet PO confirmation · 2 customer replies</span>
-      </button>
-      <button type="button" class="kpi-card" data-cmd="/research what has the team updated this morning?">
-        <span class="label">Team · today</span>
-        <span class="value">2 updates</span>
-        <span class="sub">Sam · returns Q2 plan · 8m ago</span>
-      </button>
     </div>
 
     <div class="chat-body" id="chat-body"></div>
