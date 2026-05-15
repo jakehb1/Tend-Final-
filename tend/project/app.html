@@ -458,40 +458,115 @@ body {
   max-height: 160px;
 }
 .composer textarea::placeholder { color: var(--fg-mute); }
+.composer-inner:focus-within {
+  border-color: rgba(45, 42, 36, 0.28);
+  box-shadow: 0 0 0 4px rgba(45, 42, 36, 0.06);
+  transition: border-color 0.18s, box-shadow 0.18s;
+}
 .composer .send {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
-  letter-spacing: 0.04em;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: var(--accent);
   color: var(--accent-ink);
-  border: 1px solid var(--accent);
-  border-radius: 999px;
-  padding: 8px 16px;
+  border: none;
   cursor: pointer;
   -webkit-appearance: none;
   appearance: none;
   flex-shrink: 0;
+  transition: transform 0.15s, background 0.15s;
 }
-.composer .send:hover { filter: brightness(1.08); }
-.composer .hints {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px;
-  color: var(--fg-mute);
-  letter-spacing: 0.05em;
-  margin-top: 8px;
-  display: flex; flex-wrap: wrap; gap: 8px;
+.composer .send:hover { transform: scale(1.08); background: var(--fg); }
+.composer .send svg { display: block; pointer-events: none; }
+
+/* Empty state (centered greeting + suggestion cards) */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-.hint {
+@keyframes msgIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.msg { animation: msgIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+.chat-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: 0 32px 48px;
+  text-align: center;
+}
+.chat-empty.hidden { display: none; }
+.empty-logo {
+  height: 20px;
+  filter: brightness(0);
+  opacity: 0;
+  margin-bottom: 14px;
+  animation: fadeUp 0.5s 0.05s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.empty-greeting {
+  font-size: 24px;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  color: var(--fg);
+  margin: 0 0 28px;
+  opacity: 0;
+  animation: fadeUp 0.5s 0.15s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.empty-hints {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  max-width: 500px;
+  opacity: 0;
+  animation: fadeUp 0.5s 0.25s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.empty-hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  width: 100%;
+  padding: 14px 18px;
   border: 1px solid var(--line);
-  border-radius: 999px;
-  padding: 6px 12px;
-  cursor: pointer;
-  color: var(--fg-dim);
+  border-radius: 14px;
   background: transparent;
-  font: inherit;
-  letter-spacing: inherit;
+  color: var(--fg);
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: background 0.12s, border-color 0.12s, box-shadow 0.12s;
 }
-.hint:hover { color: var(--fg); border-color: var(--line-2); }
+.empty-hint:hover {
+  background: var(--bg-2);
+  border-color: var(--line-2);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+}
+.empty-hint .eh-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: var(--bg-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--fg-dim);
+}
+.empty-hint .eh-icon svg { display: block; }
+.empty-hint .eh-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.empty-hint .eh-title { font-size: 13px; font-weight: 500; color: var(--fg); }
+.empty-hint .eh-sub { font-size: 11.5px; color: var(--fg-mute); line-height: 1.4; }
 
 .app-toggle {
   display: none;
@@ -619,7 +694,30 @@ body {
       <h1 id="chat-title">Today</h1>
     </div>
 
-    <div class="chat-body" id="chat-body"></div>
+    <div class="chat-body" id="chat-body">
+      <div class="chat-empty" id="chat-empty">
+        <img src="images/tend-logo.png" class="empty-logo" alt="" />
+        <h2 class="empty-greeting" id="empty-greeting">How can I help?</h2>
+        <div class="empty-hints" id="hints">
+          <button class="empty-hint" type="button" data-text="Morning briefing">
+            <span class="eh-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></span>
+            <span class="eh-body"><span class="eh-title">Morning briefing</span><span class="eh-sub">Overnight orders, inventory alerts, and what needs attention today</span></span>
+          </button>
+          <button class="empty-hint" type="button" data-text="What's selling best right now?">
+            <span class="eh-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></span>
+            <span class="eh-body"><span class="eh-title">Top sellers</span><span class="eh-sub">Best performing SKUs by revenue and units this week</span></span>
+          </button>
+          <button class="empty-hint" type="button" data-text="Which SKUs are running low?">
+            <span class="eh-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+            <span class="eh-body"><span class="eh-title">Inventory alerts</span><span class="eh-sub">SKUs at low stock and purchase orders pending approval</span></span>
+          </button>
+          <button class="empty-hint" type="button" data-text="What is the team up to today?">
+            <span class="eh-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></span>
+            <span class="eh-body"><span class="eh-title">Team activity</span><span class="eh-sub">What Sam, Jordan, and Alex have been working on today</span></span>
+          </button>
+        </div>
+      </div>
+    </div>
 
     <div class="composer">
       <div class="cmd-menu" id="cmd-menu" role="menu" aria-label="Commands">
@@ -637,15 +735,10 @@ body {
           </svg>
         </button>
         <textarea id="msg-input" rows="1" placeholder="Ask anything across your connected systems…" autocomplete="off"></textarea>
-        <button type="submit" class="send">Send →</button>
+        <button type="submit" class="send" aria-label="Send">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+        </button>
       </form>
-      <div class="hints" id="hints">
-        <button class="hint" type="button">Morning briefing</button>
-        <button class="hint" type="button">What's selling best right now?</button>
-        <button class="hint" type="button">Which SKUs are running low?</button>
-        <button class="hint" type="button">Any shipping delays this week?</button>
-        <button class="hint" type="button">When is the next Stripe payout?</button>
-      </div>
     </div>
   </main>
 
@@ -678,6 +771,11 @@ body {
         var init = initialsFromEmail(sess.email);
         document.getElementById('avatar-initials').textContent = init;
         document.getElementById('prof-avatar-big').textContent = init;
+        // Personalize the empty state greeting with first name
+        var firstName = (sess.email.split('@')[0] || '').split(/[.\-_]/)[0];
+        firstName = firstName.charAt(0).toUpperCase() + firstName.slice(1);
+        var greetEl = document.getElementById('empty-greeting');
+        if (greetEl && firstName) greetEl.textContent = 'How can I help, ' + firstName + '?';
       }
     }
   } catch (_) {}
@@ -730,7 +828,6 @@ body {
   var body = document.getElementById('chat-body');
   var form = document.getElementById('composer');
   var input = document.getElementById('msg-input');
-  var hints = document.getElementById('hints');
   var chatHistory = [];
 
   function scroll() { body.scrollTop = body.scrollHeight; }
@@ -751,7 +848,13 @@ body {
       .replace(/^/, '<p>').replace(/$/, '</p>');
   }
 
+  var chatEmpty = document.getElementById('chat-empty');
+  function hideEmpty() {
+    if (chatEmpty && !chatEmpty.classList.contains('hidden')) chatEmpty.classList.add('hidden');
+  }
+
   function addUser(text) {
+    hideEmpty();
     var wrap = el('div', 'msg user');
     wrap.innerHTML = '<div><div class="who">you</div><div class="bubble"></div></div>';
     wrap.querySelector('.bubble').textContent = text;
@@ -997,13 +1100,16 @@ body {
     }
   });
 
-  hints.addEventListener('click', function (e) {
-    var b = e.target.closest('.hint');
-    if (!b) return;
-    input.value = b.textContent;
-    input.focus();
-    form.requestSubmit();
-  });
+  var hintsEl = document.getElementById('hints');
+  if (hintsEl) {
+    hintsEl.addEventListener('click', function (e) {
+      var b = e.target.closest('.empty-hint');
+      if (!b) return;
+      input.value = b.getAttribute('data-text') || '';
+      input.focus();
+      form.requestSubmit();
+    });
+  }
 
   // Paperclip command menu: toggle on click. Picking a command points
   // the agent at that task: the agent immediately asks a focused
@@ -1080,10 +1186,7 @@ body {
     });
   }
 
-  // Seed the chat with the morning briefing on load.
-  addReply(canned[0].html, canned[0].sources);
-  // Clear history from the seeded reply so it doesn't pollute live context.
-  chatHistory = [];
+  setTimeout(function () { input.focus(); }, 100);
 })();
 </script>
 
