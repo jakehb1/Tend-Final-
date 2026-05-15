@@ -18,6 +18,22 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="shared.css?v=5">
 <style>
+/* ----- Light theme override for /data-brain (Claude-style warm light) ----- */
+:root {
+  --bg:    #FAF9F5;
+  --bg-2:  #F4F1EA;
+  --bg-3:  #EBE7DC;
+  --fg:    #1F1E1B;
+  --fg-dim: rgba(31, 30, 27, 0.66);
+  --fg-mute: rgba(31, 30, 27, 0.42);
+  --line:   rgba(31, 30, 27, 0.08);
+  --line-2: rgba(31, 30, 27, 0.18);
+  --accent: #2D2A24;
+  --accent-ink: #FAF9F5;
+  --accent-soft: rgba(45, 42, 36, 0.10);
+}
+html { background: var(--bg); }
+
 html, body { height: 100%; }
 body {
   background: var(--bg);
@@ -33,13 +49,13 @@ body {
   justify-content: space-between;
   padding: 12px 24px;
   border-bottom: 1px solid var(--line);
-  background: rgba(10,11,13,0.9);
+  background: rgba(250, 249, 245, 0.92);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   flex-shrink: 0;
 }
 .app-bar .left, .app-bar .right { display: flex; align-items: center; gap: 18px; }
-.app-bar .brand img { height: 20px; width: auto; display: block; }
+.app-bar .brand img { height: 20px; width: auto; display: block; filter: brightness(0); }
 .app-bar .ws-tag {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 11px;
