@@ -50,23 +50,6 @@ body {
   padding-left: 18px;
 }
 .app-bar .ws-tag strong { color: var(--accent); font-weight: 500; }
-.app-bar .user {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
-  color: var(--fg-dim);
-  letter-spacing: 0.02em;
-}
-.app-bar .logout {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
-  color: var(--fg-mute);
-  letter-spacing: 0.04em;
-  text-decoration: none;
-  padding: 6px 12px;
-  border: 1px solid var(--line);
-  transition: color 0.15s, border-color 0.15s;
-}
-.app-bar .logout:hover { color: var(--fg); border-color: var(--line-2); }
 
 /* Tune-view button + popover */
 .app-bar .tune {
@@ -142,145 +125,205 @@ body {
 }
 .chat-head .tuned::before { content: "●"; color: var(--accent); font-size: 8px; }
 
-/* + New chat affordance at the top of the activity list */
-.sb-newchat {
+/* KPI strip above the chat */
+.kpi-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  padding: 16px 24px 20px;
+  border-bottom: 1px solid var(--line);
+}
+.kpi-card {
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: border-color 0.12s, background 0.12s;
+}
+.kpi-card:hover { border-color: var(--line-2); background: var(--bg-3); }
+.kpi-card .label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+}
+.kpi-card .label::before { content: "● "; color: var(--accent); font-size: 8px; }
+.kpi-card .value {
+  font-size: 22px;
+  color: var(--fg);
+  letter-spacing: -0.015em;
+  font-weight: 500;
+}
+.kpi-card .sub {
+  font-size: 12px;
+  color: var(--fg-dim);
+  line-height: 1.35;
+}
+@media (max-width: 880px) {
+  .kpi-strip { grid-template-columns: 1fr; padding: 12px 16px; }
+}
+
+/* Profile avatar in the app bar */
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--line-2);
+  background: var(--bg-3);
+  color: var(--fg);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: border-color 0.12s, background 0.12s;
+}
+.avatar:hover { border-color: var(--accent); background: var(--bg-2); }
+
+.prof-pop {
+  position: absolute;
+  top: 60px;
+  right: 24px;
+  width: 320px;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  box-shadow: 0 18px 60px rgba(0,0,0,0.5);
+  z-index: 70;
+  display: none;
+  font-family: 'IBM Plex Sans', sans-serif;
+}
+.prof-pop.open { display: block; }
+.prof-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--line);
+}
+.prof-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--bg);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.prof-id { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.prof-email {
+  font-size: 13px;
+  color: var(--fg);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.prof-tier {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+}
+.prof-section { padding: 14px 20px; }
+.prof-h {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+  margin-bottom: 10px;
+}
+.prof-h .prof-count { color: var(--accent); }
+.prof-conns {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+.prof-conns li {
   display: flex;
   align-items: center;
   gap: 8px;
-  width: 100%;
-  font-family: 'IBM Plex Sans', sans-serif;
+  padding: 6px 0;
   font-size: 13px;
   color: var(--fg);
-  background: transparent;
-  border: 1px dashed var(--line-2);
-  padding: 10px 12px;
-  margin-bottom: 8px;
+}
+.prof-conns li .d {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 6px rgba(140,167,138,0.5);
+  flex-shrink: 0;
+}
+.prof-cta {
+  display: inline-block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+  text-decoration: none;
+}
+.prof-cta:hover { color: var(--fg); }
+.prof-foot {
+  padding: 12px 20px;
+  border-top: 1px solid var(--line);
+}
+.prof-foot .logout {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px;
+  letter-spacing: 0.04em;
+  color: var(--fg-dim);
+  text-decoration: none;
+  border: 0;
+  padding: 0;
+}
+.prof-foot .logout:hover { color: var(--fg); }
+
+/* Command pills above the composer */
+.cmd-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 0 10px;
+}
+.cmd {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px;
+  letter-spacing: 0.04em;
+  color: var(--fg-dim);
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  padding: 5px 10px;
   cursor: pointer;
-  letter-spacing: -0.005em;
   -webkit-appearance: none;
   appearance: none;
   transition: color 0.12s, border-color 0.12s, background 0.12s;
 }
-.sb-newchat:hover { color: var(--fg); border-color: var(--fg-mute); background: var(--bg-3); }
-.sb-newchat .plus { font-family: 'IBM Plex Mono', monospace; color: var(--accent); }
-
-/* Ontology modal (opens when a connected system is clicked) */
-.ont-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.55);
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
-  z-index: 80;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-.ont-overlay.open { display: flex; }
-.ont-modal {
-  background: var(--bg-2);
-  border: 1px solid var(--line);
-  width: min(440px, 100%);
-  max-height: calc(100vh - 40px);
-  overflow-y: auto;
-  padding: 0;
-  box-shadow: 0 24px 80px rgba(0,0,0,0.6);
-  font-family: 'IBM Plex Sans', sans-serif;
-}
-.ont-modal .ont-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  padding: 22px 24px 14px;
-  border-bottom: 1px solid var(--line);
-}
-.ont-modal .ont-head .t {
-  font-size: 20px;
-  color: var(--fg);
-  letter-spacing: -0.015em;
-  margin: 0;
-}
-.ont-modal .ont-head .kicker {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10.5px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 4px;
-}
-.ont-modal .ont-close {
-  background: transparent;
-  border: 0;
-  color: var(--fg-mute);
-  font-size: 22px;
-  line-height: 1;
-  cursor: pointer;
-  padding: 0 4px;
-}
-.ont-modal .ont-close:hover { color: var(--fg); }
-.ont-modal .ont-body { padding: 18px 24px 22px; }
-.ont-modal .ont-status {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  color: var(--fg-dim);
-  margin-bottom: 14px;
-}
-.ont-modal .ont-status .dot {
-  width: 7px; height: 7px; border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 8px rgba(140,167,138,0.6);
-}
-.ont-modal .ont-desc {
-  color: var(--fg-dim);
-  line-height: 1.55;
-  font-size: 14px;
-  margin: 0 0 16px;
-}
-.ont-modal .ont-points {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 18px;
-  border: 1px solid var(--line);
-  background: var(--bg-3);
-}
-.ont-modal .ont-points li {
-  padding: 8px 14px;
-  font-size: 13px;
-  color: var(--fg);
-  border-bottom: 1px solid var(--line);
-  font-family: 'IBM Plex Mono', monospace;
-  letter-spacing: 0.02em;
-}
-.ont-modal .ont-points li:last-child { border-bottom: 0; }
-.ont-modal .ont-points li::before { content: "· "; color: var(--accent); }
-.ont-modal .ont-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--fg);
-  color: var(--bg);
-  padding: 10px 16px;
-  font-size: 13px;
-  letter-spacing: -0.005em;
-  text-decoration: none;
-  cursor: pointer;
-  border: 1px solid var(--fg);
-  font-family: 'IBM Plex Sans', sans-serif;
-}
-.ont-modal .ont-cta:hover { background: var(--accent); border-color: var(--accent); color: var(--bg); }
-.ont-modal .ont-foot {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10.5px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--fg-mute);
-  margin-top: 14px;
-}
+.cmd:hover { color: var(--fg); border-color: var(--line-2); background: var(--bg-3); }
+.cmd .slash { color: var(--accent); margin-right: 4px; }
 
 /* Layout */
 .app-shell {
@@ -363,65 +406,6 @@ body {
   margin-top: 4px;
 }
 .sb-manage:hover { color: var(--fg); }
-
-.thread-list { display: flex; flex-direction: column; }
-.thread-row {
-  position: relative;
-  display: block;
-}
-.thread {
-  padding: 12px 32px 12px 12px;
-  border: 0;
-  border-left: 2px solid transparent;
-  font-size: 13px;
-  color: var(--fg-dim);
-  cursor: pointer;
-  line-height: 1.4;
-  background: transparent;
-  text-align: left;
-  font-family: inherit;
-  width: 100%;
-  -webkit-appearance: none;
-  appearance: none;
-}
-.thread:hover { color: var(--fg); background: var(--bg-3); }
-.thread.active {
-  background: var(--bg-3);
-  border-left-color: var(--accent);
-  color: var(--fg);
-}
-.t-close {
-  position: absolute;
-  top: 50%;
-  right: 8px;
-  transform: translateY(-50%);
-  width: 22px;
-  height: 22px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  border: 0;
-  color: var(--fg-mute);
-  font-size: 16px;
-  line-height: 1;
-  cursor: pointer;
-  opacity: 0;
-  transition: opacity 0.15s, color 0.15s, background 0.15s;
-  -webkit-appearance: none;
-  appearance: none;
-  border-radius: 3px;
-}
-.thread-row:hover .t-close,
-.thread-row .thread.active + .t-close { opacity: 0.7; }
-.t-close:hover { opacity: 1; color: var(--fg); background: var(--bg-2); }
-.thread .when {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px;
-  color: var(--fg-mute);
-  letter-spacing: 0.05em;
-  margin-bottom: 4px;
-}
 
 /* Chat */
 .chat {
@@ -600,7 +584,6 @@ body {
   .app-shell { grid-template-columns: 1fr; }
   .chat-body, .composer, .chat-head { padding-left: 18px; padding-right: 18px; }
   .app-bar .ws-tag { display: none; }
-  .app-bar .user { display: none; }
   .app-bar .left { gap: 6px; }
   .app-toggle { display: inline-flex; }
   .sidebar {
@@ -630,10 +613,42 @@ body {
   </div>
   <div class="right">
     <button type="button" class="tune" id="tune-btn" aria-haspopup="true" aria-expanded="false">Tune view ▾</button>
-    <span class="user" id="user-email">you@company.com</span>
-    <a href="#" id="logout" class="logout">Log out</a>
+    <button type="button" class="avatar" id="avatar-btn" aria-haspopup="true" aria-expanded="false" aria-label="Profile and Tend Ontology">
+      <span id="avatar-initials">YT</span>
+    </button>
   </div>
 </header>
+
+<div class="prof-pop" id="prof-pop" role="dialog" aria-label="Profile and connections">
+  <div class="prof-head">
+    <div class="prof-avatar" id="prof-avatar-big">YT</div>
+    <div class="prof-id">
+      <div class="prof-email" id="prof-email">you@company.com</div>
+      <div class="prof-tier">Standard plan</div>
+    </div>
+  </div>
+
+  <div class="prof-section">
+    <div class="prof-h">
+      <span>Tend Ontology · current connections</span>
+      <span class="prof-count">7 live</span>
+    </div>
+    <ul class="prof-conns">
+      <li><span class="d"></span>Shopify</li>
+      <li><span class="d"></span>Stripe</li>
+      <li><span class="d"></span>QuickBooks</li>
+      <li><span class="d"></span>ShipStation</li>
+      <li><span class="d"></span>Stocky</li>
+      <li><span class="d"></span>Inventory Planner</li>
+      <li><span class="d"></span>Loop Returns</li>
+    </ul>
+    <a class="prof-cta" href="connect.html">+ Connect another system →</a>
+  </div>
+
+  <div class="prof-foot">
+    <a href="#" id="logout" class="logout">Log out</a>
+  </div>
+</div>
 
 <div class="tune-pop" id="tune-pop" role="dialog" aria-label="Tune dashboard view">
   <div class="tune-row">
@@ -670,62 +685,6 @@ body {
   <div class="app-backdrop" id="app-backdrop" aria-hidden="true"></div>
   <aside class="sidebar" id="sidebar">
     <div class="sb-section">
-      <div class="h"><span>Today's activity</span><span class="count">7 chats</span></div>
-      <button type="button" class="sb-newchat" id="new-chat"><span class="plus">+</span> New chat</button>
-      <div class="thread-list" id="thread-list">
-        <div class="thread-row">
-          <button type="button" class="thread active" data-thread="briefing">
-            <div class="when">TODAY · 09:02</div>
-            Morning briefing
-          </button>
-          <button type="button" class="t-close" data-thread="briefing" aria-label="Close chat">×</button>
-        </div>
-        <div class="thread-row">
-          <button type="button" class="thread" data-thread="bestsellers">
-            <div class="when">TODAY · 08:48</div>
-            What's selling best right now?
-          </button>
-          <button type="button" class="t-close" data-thread="bestsellers" aria-label="Close chat">×</button>
-        </div>
-        <div class="thread-row">
-          <button type="button" class="thread" data-thread="inventory">
-            <div class="when">TODAY · 08:14</div>
-            Which SKUs are running low?
-          </button>
-          <button type="button" class="t-close" data-thread="inventory" aria-label="Close chat">×</button>
-        </div>
-        <div class="thread-row">
-          <button type="button" class="thread" data-thread="shipping">
-            <div class="when">YESTERDAY</div>
-            Any shipping delays this week?
-          </button>
-          <button type="button" class="t-close" data-thread="shipping" aria-label="Close chat">×</button>
-        </div>
-        <div class="thread-row">
-          <button type="button" class="thread" data-thread="payouts">
-            <div class="when">YESTERDAY</div>
-            When is the next Stripe payout?
-          </button>
-          <button type="button" class="t-close" data-thread="payouts" aria-label="Close chat">×</button>
-        </div>
-        <div class="thread-row">
-          <button type="button" class="thread" data-thread="returns">
-            <div class="when">FRI</div>
-            What's our return rate this month?
-          </button>
-          <button type="button" class="t-close" data-thread="returns" aria-label="Close chat">×</button>
-        </div>
-        <div class="thread-row">
-          <button type="button" class="thread" data-thread="books">
-            <div class="when">THU</div>
-            Where are we on May month-end?
-          </button>
-          <button type="button" class="t-close" data-thread="books" aria-label="Close chat">×</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="sb-section">
       <div class="h"><span>Connected systems</span><span class="count">7 live</span></div>
       <div class="sys-list">
         <button type="button" class="sys" data-system="Shopify"><span class="dot"></span><div class="sys-text"><div class="name">Shopify</div><div class="sub">2,840 orders · synced 2m ago</div></div></button>
@@ -740,34 +699,42 @@ body {
     </div>
   </aside>
 
-  <div class="ont-overlay" id="ont-overlay" aria-hidden="true">
-    <div class="ont-modal" role="dialog" aria-labelledby="ont-title">
-      <div class="ont-head">
-        <div>
-          <div class="kicker">Tend Ontology</div>
-          <h2 class="t" id="ont-title">Shopify</h2>
-        </div>
-        <button type="button" class="ont-close" id="ont-close" aria-label="Close">×</button>
-      </div>
-      <div class="ont-body">
-        <div class="ont-status"><span class="dot"></span><span id="ont-sync">Connected · synced just now</span></div>
-        <p class="ont-desc" id="ont-desc">This system is mapped into your Tend Ontology, the structured graph that powers every answer in this workspace.</p>
-        <ul class="ont-points" id="ont-points"></ul>
-        <a class="ont-cta" id="ont-cta" href="mailto:hello@withtend.ai?subject=Add%20data%20points%20to%20my%20Tend%20workspace">Contact us to add more data points →</a>
-        <div class="ont-foot">We extend the ontology per workspace · usually a 1 day turnaround</div>
-      </div>
-    </div>
-  </div>
 
   <main class="chat">
     <div class="chat-head">
-      <h1 id="chat-title">Morning briefing</h1>
+      <h1 id="chat-title">Today</h1>
       <div class="meta">● <span class="live">LIVE</span> · grounded across 7 systems<span class="tuned" id="tuned-pill" hidden></span></div>
+    </div>
+
+    <div class="kpi-strip" id="kpi-strip">
+      <button type="button" class="kpi-card" data-cmd="/research how is revenue trending over the last 7 days?">
+        <span class="label">Revenue · 7d</span>
+        <span class="value">$48.2K</span>
+        <span class="sub">+12% vs prior week · Shopify + Stripe</span>
+      </button>
+      <button type="button" class="kpi-card" data-cmd="/research summarize the unread items in my inbox">
+        <span class="label">Inbox</span>
+        <span class="value">3 unread</span>
+        <span class="sub">Acushnet PO confirmation · 2 customer replies</span>
+      </button>
+      <button type="button" class="kpi-card" data-cmd="/research what has the team updated this morning?">
+        <span class="label">Team · today</span>
+        <span class="value">2 updates</span>
+        <span class="sub">Sam · returns Q2 plan · 8m ago</span>
+      </button>
     </div>
 
     <div class="chat-body" id="chat-body"></div>
 
     <div class="composer">
+      <div class="cmd-row" id="cmd-row">
+        <button class="cmd" type="button" data-cmd="/build "><span class="slash">/</span>build</button>
+        <button class="cmd" type="button" data-cmd="/research "><span class="slash">/</span>research</button>
+        <button class="cmd" type="button" data-cmd="/market-research "><span class="slash">/</span>market research</button>
+        <button class="cmd" type="button" data-cmd="/inventory "><span class="slash">/</span>inventory</button>
+        <button class="cmd" type="button" data-cmd="/finance "><span class="slash">/</span>finance</button>
+        <button class="cmd" type="button" data-cmd="/team "><span class="slash">/</span>team</button>
+      </div>
       <form class="composer-inner" id="composer">
         <textarea id="msg-input" rows="1" placeholder="Ask anything across your connected systems…" autocomplete="off"></textarea>
         <button type="submit" class="send">Send →</button>
@@ -796,15 +763,42 @@ body {
 (function () {
   var CFG = window.__TEND_CONFIG__ || {};
   var API = CFG.apiBase || null;
+  function initialsFromEmail(email) {
+    var local = (email || '').split('@')[0] || 'you';
+    var parts = local.split(/[.\-_]+/).filter(Boolean);
+    if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+    return (parts[0] || 'YT').slice(0, 2).toUpperCase();
+  }
   try {
     var raw = sessionStorage.getItem('tend.session');
     if (raw) {
       var sess = JSON.parse(raw);
       if (sess && sess.email) {
-        document.getElementById('user-email').textContent = sess.email;
+        document.getElementById('prof-email').textContent = sess.email;
+        var init = initialsFromEmail(sess.email);
+        document.getElementById('avatar-initials').textContent = init;
+        document.getElementById('prof-avatar-big').textContent = init;
       }
     }
   } catch (_) {}
+
+  // Profile avatar popover: shows email, current Ontology connections,
+  // "+ Connect another system" CTA (-> /connect), and Log out.
+  var avatarBtn = document.getElementById('avatar-btn');
+  var profPop = document.getElementById('prof-pop');
+  if (avatarBtn && profPop) {
+    avatarBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var open = profPop.classList.toggle('open');
+      avatarBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    document.addEventListener('click', function (e) {
+      if (!profPop.classList.contains('open')) return;
+      if (profPop.contains(e.target) || avatarBtn.contains(e.target)) return;
+      profPop.classList.remove('open');
+      avatarBtn.setAttribute('aria-expanded', 'false');
+    });
+  }
 
   var logout = document.getElementById('logout');
   if (logout) {
@@ -975,9 +969,6 @@ body {
       t.remove();
       var hit = canned.find(function (c) { return c.match.test(text); });
       addReply(hit.html, hit.sources);
-      if (currentThreadId && THREADS[currentThreadId]) {
-        THREADS[currentThreadId].messages.push({ who: 'tend', html: hit.html, sources: hit.sources });
-      }
     }, 900);
   }
 
@@ -1058,63 +1049,11 @@ body {
     });
   }
 
-  // currentThreadId tracks which sidebar row is "live". It's null when
-  // we're in a blank New chat state. The next user message in that
-  // state mints a new thread (id + sidebar row + THREADS entry).
-  var currentThreadId = 'briefing';
-
-  function truncateTitle(text) {
-    text = text.replace(/\s+/g, ' ').trim();
-    if (text.length <= 52) return text;
-    return text.slice(0, 49) + '...';
-  }
-  function nowHHMM() {
-    var d = new Date();
-    var h = String(d.getHours()).padStart(2, '0');
-    var m = String(d.getMinutes()).padStart(2, '0');
-    return 'TODAY · ' + h + ':' + m;
-  }
-  function createThreadFromMessage(text) {
-    var id = 'chat-' + Date.now();
-    var title = truncateTitle(text);
-    THREADS[id] = { title: title, messages: [] };
-    var list = document.getElementById('thread-list');
-    list.querySelectorAll('.thread').forEach(function (n) { n.classList.remove('active'); });
-    var row = document.createElement('div');
-    row.className = 'thread-row';
-    var btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'thread active';
-    btn.setAttribute('data-thread', id);
-    var when = document.createElement('div');
-    when.className = 'when';
-    when.textContent = nowHHMM();
-    btn.appendChild(when);
-    btn.appendChild(document.createTextNode(title));
-    var close = document.createElement('button');
-    close.type = 'button';
-    close.className = 't-close';
-    close.setAttribute('data-thread', id);
-    close.setAttribute('aria-label', 'Close chat');
-    close.textContent = '×';
-    row.appendChild(btn);
-    row.appendChild(close);
-    list.insertBefore(row, list.firstChild);
-    document.getElementById('chat-title').textContent = title;
-    return id;
-  }
-
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     var text = (input.value || '').trim();
     if (!text) return;
-    if (!currentThreadId) {
-      currentThreadId = createThreadFromMessage(text);
-    }
     addUser(text);
-    if (THREADS[currentThreadId]) {
-      THREADS[currentThreadId].messages.push({ who: 'user', text: text });
-    }
     input.value = '';
     input.style.height = 'auto';
     reply(text);
@@ -1140,195 +1079,58 @@ body {
     form.requestSubmit();
   });
 
-  // ---------- Threads: pre-built conversations (Quiet Golf demo) ----------
-  var BRIEFING_HTML = canned[0].html;
-  var BRIEFING_SRC = canned[0].sources;
-
-  var THREADS = {
-    briefing: {
-      title: 'Morning briefing',
-      messages: [
-        { who: 'user', text: 'Morning briefing' },
-        { who: 'tend', html: BRIEFING_HTML, sources: BRIEFING_SRC }
-      ]
-    },
-    bestsellers: {
-      title: "What's selling best right now?",
-      messages: [
-        { who: 'user', text: "What's selling best this week?" },
-        { who: 'tend',
-          html: "<p>Top sellers by revenue, last 7 days:</p><p>1. <strong>Performance Polo · Sage</strong>. 84 units, $7,560 (+18% vs prior week)<br/>2. <strong>Heritage Hat · Navy</strong>. 62 units, $2,170 (steady)<br/>3. <strong>Tour Towel</strong>. 51 units, $1,275<br/>4. <strong>Players Glove · M</strong>. 47 units, $1,175 (low stock, 8 left)<br/>5. <strong>Cart Bag · Stone</strong>. 9 units, $2,160 (high AOV, slow sell-through)</p><p>Sage XL is going to run out before end-of-week at current pace. Stocky's draft PO is ready when you are.</p>",
-          sources: ['Shopify · last 7 days', 'Stocky · inventory'] }
-      ]
-    },
-    inventory: {
-      title: 'Which SKUs are running low?',
-      messages: [
-        { who: 'user', text: 'Which SKUs are running low?' },
-        { who: 'tend',
-          html: "<p>Three SKUs flagged for low stock at current sell-through rate:</p><p>· <strong>Players Glove (M)</strong>. 8 units left, sells ~7/day → ~1 day of cover. PO drafted to Acushnet for 144 units, awaiting your approval.<br/>· <strong>Heritage Hat (Olive)</strong>. 12 units, sells 2/day → 6 days of cover. Lead time 21 days, so reorder now or risk a 2-week stockout.<br/>· <strong>Performance Polo (Sage XL)</strong>. 6 units, sells 4/day → 1.5 days. Production lead time 35 days. Consider pushing a backorder option on the PDP, or holding the size off the next rotation.</p><p>I can approve all three POs at once, or walk them one at a time.</p>",
-          sources: ['Shopify · inventory', 'Stocky · sell-through', 'Inventory Planner · forecast'] },
-        { who: 'user', text: 'Approve all three POs.' },
-        { who: 'tend',
-          html: "<p>Done.</p><p>· Acushnet PO #PO-4421 (Players Glove M, 144 units, $1,728) submitted. ETA Thu, May 22.<br/>· Heritage cap supplier #PO-4422 (Hat Olive, 200 units, $2,400) submitted. ETA Tue, Jun 4.<br/>· Performance Polo Sage XL production order #PO-4423 (80 units, $4,000) submitted. ETA Fri, Jun 21. I've also added a \"backorder, ships in ~5 weeks\" toggle to the Sage XL PDP.</p><p>I'll watch Heritage Hat Olive too. If it drops under 5 days of cover I'll draft the reorder and ping you.</p>",
-          sources: ['Stocky · POs submitted', 'Shopify · PDP updated', 'Vendor · Acushnet'] }
-      ]
-    },
-    shipping: {
-      title: 'Any shipping delays this week?',
-      messages: [
-        { who: 'user', text: 'Any shipping delays this week?' },
-        { who: 'tend',
-          html: "<p>Shipping state this week:</p><p>· <strong>1,840 shipments</strong> out the door (May MTD)<br/>· Median order-to-label: <strong>6.4 hours</strong> (within SLA)<br/>· Median order-to-delivered (US): <strong>3.1 days</strong><br/>· <strong>2 delays</strong> flagged:</p><p>· Toronto Cart Bag #QG-18387, 4 days in transit (normally 2). USPS scan shows it's at the border. Proactive update drafted to the customer.<br/>· Chicago Heritage Hat #QG-18401, label printed Friday but never scanned by the carrier. Investigating with ShipStation support.</p><p>Want me to send the Toronto update now and reissue the Chicago label?</p>",
-          sources: ['ShipStation · 1,840 shipments', 'USPS · tracking', 'Loop Returns · zero correlated'] },
-        { who: 'user', text: 'Yes, send Toronto and reissue Chicago.' },
-        { who: 'tend',
-          html: "<p>Done.</p><p>· Toronto: customer email sent at 09:18 with the latest tracking + an apology + a 10% off code on next order. Replied to the Loop case too in case they want to file.<br/>· Chicago: original label voided, new label generated, ShipStation pickup scheduled for this afternoon. New tracking sent to the customer.</p>",
-          sources: ['ShipStation · label reissued', 'Shopify · transactional email', 'Loop Returns · case linked'] }
-      ]
-    },
-    payouts: {
-      title: 'When is the next Stripe payout?',
-      messages: [
-        { who: 'user', text: 'When is the next Stripe payout?' },
-        { who: 'tend',
-          html: "<p>Next Stripe payout: <strong>$18,420</strong>, scheduled for <strong>Wednesday</strong> (bank transfer, 1-2 business day arrival to your operating account).</p><p>Breakdown:</p><p>· $19,640 in gross sales<br/>· $580 in Stripe fees (blended 2.95%)<br/>· $640 in refunds (Mon-Tue)</p><p>No disputes opened this week. Two prior payouts averaged $17K/wk; this one is slightly above trend, mostly from the weekend Sage Polo run.</p>",
-          sources: ['Stripe · upcoming payout', 'Stripe · payout history'] }
-      ]
-    },
-    returns: {
-      title: "What's our return rate this month?",
-      messages: [
-        { who: 'user', text: "What's our return rate this month?" },
-        { who: 'tend',
-          html: "<p>Returns this month (May, MTD), via Loop:</p><p>· <strong>38 returns</strong> against 1,240 orders<br/>· <strong>3.1% return rate</strong> (within your 2-4% normal range)<br/>· <strong>22 exchanges</strong> and 16 refunds (Loop's exchange-first nudge is working)<br/>· Top return reason: <strong>color expectation mismatch</strong> on Performance Polo (Stone). 11 of the 38<br/>· Average refund: $84<br/>· Median time-to-refund: 2.3 days</p><p>The Stone complaints cluster on mobile-traffic customers, suggesting the product photography reads differently on phones. Worth reshooting Stone with stronger contrast, or adding a color-comparison reference image.</p>",
-          sources: ['Loop Returns · 38 returns', 'Shopify · order metadata', 'ShipStation · return labels'] }
-      ]
-    },
-    books: {
-      title: 'Where are we on May month-end?',
-      messages: [
-        { who: 'user', text: 'Where are we on May month-end?' },
-        { who: 'tend',
-          html: "<p>May month-end close, status:</p><p>· <strong>Bank feeds</strong>. all reconciled through May 27 (Operating, Reserve, Payroll). Mercury auto-feed running clean.<br/>· <strong>Stripe</strong>. payouts categorized and matched to GL through May 27.<br/>· <strong>Shopify</strong>. orders + fees mapped to revenue / merchant fees. 4 orders flagged for manual review (international tax codes).<br/>· <strong>Vendor bills</strong>. 6 entered, 2 outstanding (Acushnet PO, Olive Hat reorder).<br/>· <strong>Inventory adjustment</strong>. Stocky count finalizes Friday after the warehouse audit.</p><p>You're roughly 3 days ahead of last month's close pace. Once the inventory adjustment lands, I can draft the May P&amp;L and email it to you.</p>",
-          sources: ['QuickBooks · close checklist', 'Stripe · matched payouts', 'Shopify · GL mapping', 'Stocky · pending count'] }
-      ]
-    }
-  };
-
-  function renderThread(id) {
-    var t = THREADS[id];
-    if (!t) return;
-    currentThreadId = id;
-    document.getElementById('chat-title').textContent = t.title;
-    body.innerHTML = '';
-    t.messages.forEach(function (m) {
-      if (m.who === 'user') {
-        addUser(m.text);
-      } else {
-        addReply(m.html, m.sources);
-      }
-    });
-    document.querySelectorAll('#thread-list .thread').forEach(function (n) {
-      n.classList.toggle('active', n.getAttribute('data-thread') === id);
-    });
-    body.scrollTop = 0;
-  }
-
-  // Thread switching + per-row close
-  var threadList = document.getElementById('thread-list');
-  if (threadList) {
-    threadList.addEventListener('click', function (e) {
-      var close = e.target.closest('.t-close');
-      if (close) {
-        e.stopPropagation();
-        var rid = close.getAttribute('data-thread');
-        var row = close.closest('.thread-row');
-        if (!row) return;
-        var wasActive = !!row.querySelector('.thread.active');
-        row.parentNode.removeChild(row);
-        if (rid && THREADS) { delete THREADS[rid]; }
-        if (wasActive) {
-          // Open the next remaining thread, or fall back to a blank chat.
-          var next = threadList.querySelector('.thread');
-          if (next) {
-            renderThread(next.getAttribute('data-thread'));
-          } else {
-            currentThreadId = null;
-            document.getElementById('chat-body').innerHTML = '';
-            document.getElementById('chat-title').textContent = 'New chat';
-            input.value = '';
-            setTimeout(function () { input.focus(); }, 50);
-          }
-        }
-        return;
-      }
-      var t = e.target.closest('.thread');
-      if (!t) return;
-      var id = t.getAttribute('data-thread');
-      if (id) renderThread(id);
+  // Command pills: insert "/<cmd> " into the composer, focus, wait.
+  var cmdRow = document.getElementById('cmd-row');
+  if (cmdRow) {
+    cmdRow.addEventListener('click', function (e) {
+      var c = e.target.closest('.cmd');
+      if (!c) return;
+      var pre = c.getAttribute('data-cmd') || '';
+      input.value = pre + (input.value || '').replace(/^\/[a-z-]+\s*/, '');
+      input.focus();
+      var pos = input.value.length;
+      try { input.setSelectionRange(pos, pos); } catch (_) {}
+      input.style.height = 'auto';
+      input.style.height = Math.min(input.scrollHeight, 160) + 'px';
     });
   }
 
-  // Connected systems -> open the Tend Ontology modal for that system.
-  // Each system surfaces its current data points; the CTA invites the
-  // user to email us to add more.
-  var ONTOLOGY = {
-    'Shopify':           { sync: 'Connected · synced 2m ago',  points: ['orders + line items', 'refunds + cancellations', 'product catalog + variants', 'customer lifecycle', 'inventory levels', 'transactional emails'] },
-    'Stripe':            { sync: 'Connected · synced 2m ago',  points: ['charges + payouts', 'subscriptions + invoices', 'disputes + refunds', 'balance + reserves', 'customer payment methods'] },
-    'QuickBooks':        { sync: 'Connected · synced 8m ago',  points: ['general ledger', 'invoices + bills', 'expense categories', 'account balances', 'month-end close state'] },
-    'ShipStation':       { sync: 'Connected · synced 1m ago',  points: ['labels created + voided', 'carriers + service levels', 'fulfillment SLAs', 'tracking + delivery events', 'pickup schedules'] },
-    'Stocky':            { sync: 'Connected · synced 12m ago', points: ['stock on hand by SKU', 'sell-through rate', 'open + draft POs', 'supplier lead times', 'reorder points'] },
-    'Inventory Planner': { sync: 'Connected · synced 18m ago', points: ['demand forecast by SKU', 'days of cover', 'replenishment plan', 'stockout risk scoring'] },
-    'Loop Returns':      { sync: 'Connected · synced 6m ago',  points: ['return + exchange cases', 'reason codes', 'restocking + refund state', 'fraud flags', 'lifetime return rate per customer'] }
-  };
-  var overlay = document.getElementById('ont-overlay');
+  // KPI cards (Revenue / Inbox / Team): pre-fill the composer with a
+  // /research query about that surface and submit.
+  var kpiStrip = document.getElementById('kpi-strip');
+  if (kpiStrip) {
+    kpiStrip.addEventListener('click', function (e) {
+      var card = e.target.closest('.kpi-card');
+      if (!card) return;
+      var q = card.getAttribute('data-cmd');
+      if (!q) return;
+      input.value = q;
+      form.requestSubmit();
+    });
+  }
+
+  // ---------- Single-context init ----------
+  // The chat runs as one continuous conversation. The canned-reply
+  // engine above handles all the demo answers.
+
+  // Seed the chat with one opening reply based on prefs.
+  function openingFor(p) {
+    if (p.start === 'question')   return null;
+    if (p.start === 'account')    return canned.find(function (c) { return /best/.test(c.match.source); });
+    if (p.lens === 'help-decide') return canned.find(function (c) { return /low|inventory|stock/.test(c.match.source); });
+    if (p.lens === 'look-ahead')  return canned.find(function (c) { return /best/.test(c.match.source); });
+    return canned[0]; // morning briefing
+  }
+
+  // Connected systems -> route to the Tend Ontology page (currently
+  // /connect, which lists every connection and lets you add new ones).
   var sysList = document.querySelector('.sys-list');
-  if (sysList && overlay) {
+  if (sysList) {
     sysList.addEventListener('click', function (e) {
       var s = e.target.closest('.sys');
       if (!s) return;
-      var sys = s.getAttribute('data-system');
-      if (!sys) return;
-      var entry = ONTOLOGY[sys] || { sync: 'Connected', points: [] };
-      document.getElementById('ont-title').textContent = sys;
-      document.getElementById('ont-sync').textContent = entry.sync;
-      var ul = document.getElementById('ont-points');
-      ul.innerHTML = '';
-      entry.points.forEach(function (p) {
-        var li = document.createElement('li'); li.textContent = p; ul.appendChild(li);
-      });
-      document.getElementById('ont-cta').href =
-        'mailto:hello@withtend.ai?subject=' + encodeURIComponent('Add data points to my Tend workspace · ' + sys);
-      overlay.classList.add('open');
-      overlay.setAttribute('aria-hidden', 'false');
-    });
-    function closeOnt() {
-      overlay.classList.remove('open');
-      overlay.setAttribute('aria-hidden', 'true');
-    }
-    document.getElementById('ont-close').addEventListener('click', closeOnt);
-    overlay.addEventListener('click', function (e) {
-      if (e.target === overlay) closeOnt();
-    });
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && overlay.classList.contains('open')) closeOnt();
-    });
-  }
-
-  // + New chat: clear the thread, blank the chat, focus the composer.
-  var newChat = document.getElementById('new-chat');
-  if (newChat) {
-    newChat.addEventListener('click', function () {
-      currentThreadId = null;
-      document.querySelectorAll('#thread-list .thread').forEach(function (n) {
-        n.classList.remove('active');
-      });
-      document.getElementById('chat-body').innerHTML = '';
-      document.getElementById('chat-title').textContent = 'New chat';
-      input.value = '';
-      input.style.height = 'auto';
-      setTimeout(function () { input.focus(); }, 50);
+      var sys = s.getAttribute('data-system') || '';
+      window.location.href = 'connect.html' + (sys ? '#' + encodeURIComponent(sys) : '');
     });
   }
 
@@ -1360,18 +1162,6 @@ body {
   }
 
   var prefs = loadPrefs();
-
-  // start + lens together pick which thread opens first.
-  function threadForStart(p) {
-    if (p.start === 'account')   return 'bestsellers';
-    if (p.start === 'question')  return null;          // blank, focus input
-    if (p.start === 'dashboard') return 'briefing';    // numbers-shaped briefing
-    if (p.start === 'brief')     return 'briefing';
-    // Fall back to lens when start is unset
-    if (p.lens === 'help-decide') return 'inventory';
-    if (p.lens === 'look-ahead')  return 'bestsellers';
-    return 'briefing';
-  }
 
   // Reorder the connected-systems list by focus.
   var FOCUS_SYS_ORDER = {
@@ -1443,28 +1233,22 @@ body {
       prefs[key] = val;
       savePrefs(prefs);
       applyPrefs(prefs);
-      // If they changed where to begin, jump the chat there too.
+      // If lens/start changed, re-seed the opening reply.
       if (key === 'start' || key === 'lens') {
-        var t = threadForStart(prefs);
-        if (t) renderThread(t);
-        else {
-          currentThreadId = null;
-          document.getElementById('chat-body').innerHTML = '';
-          document.getElementById('chat-title').textContent = 'Ask anything';
-          input.focus();
-        }
+        document.getElementById('chat-body').innerHTML = '';
+        var op = openingFor(prefs);
+        if (op) addReply(op.html, op.sources);
+        else setTimeout(function () { input.focus(); }, 30);
       }
     });
   }
 
-  // Initial render: apply prefs, then open the right thread.
+  // Initial render: apply prefs, seed the opening reply.
   applyPrefs(prefs);
-  var startThread = threadForStart(prefs);
-  if (startThread) {
-    renderThread(startThread);
+  var _opening = openingFor(prefs);
+  if (_opening) {
+    addReply(_opening.html, _opening.sources);
   } else {
-    currentThreadId = null;
-    document.getElementById('chat-title').textContent = 'Ask anything';
     setTimeout(function () { input.focus(); }, 50);
   }
 })();
