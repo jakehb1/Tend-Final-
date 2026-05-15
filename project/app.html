@@ -460,6 +460,10 @@ body {
   font-size: 15px;
   line-height: 1.6;
   color: var(--fg);
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 14px 18px;
 }
 .msg.user .bubble {
   background: var(--bg-2);
@@ -481,7 +485,8 @@ body {
   letter-spacing: 0.06em;
   color: var(--fg-dim);
   border: 1px solid var(--line);
-  padding: 4px 8px;
+  border-radius: 999px;
+  padding: 4px 10px;
 }
 .src::before { content: "● "; color: var(--accent); }
 
@@ -619,7 +624,7 @@ body {
     <button type="button" class="app-toggle" id="app-toggle" aria-controls="sidebar" aria-expanded="false" aria-label="Open sidebar">
       <svg width="18" height="14" viewBox="0 0 18 14" aria-hidden="true"><g stroke="currentColor" stroke-width="1.5" stroke-linecap="square"><line x1="0" y1="2" x2="18" y2="2"/><line x1="0" y1="7" x2="18" y2="7"/><line x1="0" y1="12" x2="18" y2="12"/></g></svg>
     </button>
-    <a class="brand" href="index.html"><img src="images/tend-logo.png" alt="tend" /></a>
+    <a class="brand" href="#" id="brand-btn" aria-label="Team overview"><img src="images/tend-logo.png" alt="tend" /></a>
     <div class="ws-tag">WORKSPACE · <strong>quiet golf</strong></div>
   </div>
   <div class="right">
@@ -957,6 +962,11 @@ body {
       sources: ['Shopify · order #QG-18420', 'Shopify · customer LTV', 'Loop Returns · case draft']
     },
     {
+      match: /team.*up to|what.*team|team.*today|team.*activity|team.*overview|team.*update|morning.*team/i,
+      html: "<p>Here's what the team has been up to since yesterday evening:</p><p><strong>Sam (Operations).</strong> Closed the Q2 returns planning doc and shared it with the group. Also approved the Olive Hat reorder with the Heritage cap supplier. Last active at 8:14 AM today.</p><p><strong>Jordan (Fulfillment).</strong> Marked the Toronto Cart Bag delay as customer-notified and resolved the Chicago Heritage Hat tracking issue with ShipStation support. Running 100% on-time this week.</p><p><strong>Alex (Finance).</strong> Reconciled bank feeds through May 27 in QuickBooks. Flagged 4 orders with international tax codes for your manual review.</p><p>No blockers raised. Next team sync: Friday standup, 9 AM.</p>",
+      sources: ['Team activity · today', 'Loop Returns · Q2 plan', 'ShipStation · resolved', 'QuickBooks · reconciled']
+    },
+    {
       match: /.*/,
       html: "<p>Pulling that across your data layer now. From what I'm reading right now in your workspace:</p><p>· <strong>Shopify</strong> shows 1,240 orders MTD ($128.4K, AOV $103.5), repeat-rate 38%. <strong>Stripe</strong> has $18.4K queued for the next payout (Wed). <strong>QuickBooks</strong> is reconciled through May 27. <strong>ShipStation</strong> SLA is holding at 6.4h order-to-label.<br/>· <strong>Stocky</strong> + <strong>Inventory Planner</strong> are flagging 3 SKUs at low stock (Players Glove M, Heritage Hat Olive, Performance Polo Sage XL). <strong>Loop Returns</strong> shows 38 returns this month (3.1% rate).</p><p>I can dig into any of those threads. Want me to focus on a specific account, SKU, time window, or KPI? The more specific the better.</p>",
       sources: ['Shopify · live', 'Stripe · live', 'QuickBooks · live', 'Stocky · live', 'Loop Returns · live']
@@ -1131,6 +1141,17 @@ body {
     });
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && cmdMenu.classList.contains('open')) closeCmdMenu();
+    });
+  }
+
+  // Brand logo: clicking tend shows a team activity overview in the chat.
+  var brandBtn = document.getElementById('brand-btn');
+  if (brandBtn) {
+    brandBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      var q = 'What is the team up to today?';
+      addUser(q);
+      reply(q);
     });
   }
 
