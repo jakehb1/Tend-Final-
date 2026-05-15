@@ -455,21 +455,22 @@ body {
 .src::before { content: "● "; color: var(--accent); }
 
 .thinking {
-  display: inline-flex; gap: 4px; align-items: center;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
-  color: var(--fg-mute);
-  letter-spacing: 0.04em;
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  padding: 4px 2px;
 }
 .thinking .d {
-  width: 4px; height: 4px; border-radius: 50%; background: var(--fg-mute);
-  animation: pulse 1.2s infinite;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: typing 1.2s infinite ease-in-out;
 }
-.thinking .d:nth-child(2) { animation-delay: 0.15s; }
-.thinking .d:nth-child(3) { animation-delay: 0.3s; }
-@keyframes pulse {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 1; }
+.thinking .d:nth-child(2) { animation-delay: 0.18s; }
+.thinking .d:nth-child(3) { animation-delay: 0.36s; }
+@keyframes typing {
+  0%, 100% { opacity: 0.25; transform: translateY(0); }
+  40%      { opacity: 1;    transform: translateY(-3px); }
 }
 
 /* Composer */
@@ -687,7 +688,6 @@ body {
   <main class="chat">
     <div class="chat-head">
       <h1 id="chat-title">Today</h1>
-      <div class="meta">● <span class="live">LIVE</span> · grounded across 7 systems<span class="tuned" id="tuned-pill" hidden></span></div>
     </div>
 
     <div class="chat-body" id="chat-body"></div>
@@ -822,7 +822,7 @@ body {
 
   function addThinking() {
     var wrap = el('div', 'msg');
-    wrap.innerHTML = '<div><div class="who">tend</div><div class="bubble"><span class="thinking">reading across connected systems<span class="d"></span><span class="d"></span><span class="d"></span></span></div></div>';
+    wrap.innerHTML = '<div><div class="who">tend</div><div class="bubble"><span class="thinking" aria-label="tend is typing"><span class="d"></span><span class="d"></span><span class="d"></span></span></div></div>';
     body.appendChild(wrap);
     scroll();
     return wrap;
@@ -924,8 +924,8 @@ body {
     },
     {
       match: /.*/,
-      html: "<p>Working on it. In the real workspace, I would pull this across your connected systems (Shopify, Stripe, QuickBooks, ShipStation, Stocky, Inventory Planner, Loop Returns) and answer with grounded numbers from your live data.</p><p>For the demo, try one of the prompts below to see a worked example.</p>",
-      sources: ['Demo mode']
+      html: "<p>Pulling that across your data layer now. From what I'm reading right now in your workspace:</p><p>· <strong>Shopify</strong> shows 1,240 orders MTD ($128.4K, AOV $103.5), repeat-rate 38%. <strong>Stripe</strong> has $18.4K queued for the next payout (Wed). <strong>QuickBooks</strong> is reconciled through May 27. <strong>ShipStation</strong> SLA is holding at 6.4h order-to-label.<br/>· <strong>Stocky</strong> + <strong>Inventory Planner</strong> are flagging 3 SKUs at low stock (Players Glove M, Heritage Hat Olive, Performance Polo Sage XL). <strong>Loop Returns</strong> shows 38 returns this month (3.1% rate).</p><p>I can dig into any of those threads. Want me to focus on a specific account, SKU, time window, or KPI? The more specific the better.</p>",
+      sources: ['Shopify · live', 'Stripe · live', 'QuickBooks · live', 'Stocky · live', 'Loop Returns · live']
     }
   ];
 
@@ -1088,7 +1088,7 @@ body {
         addReply('<p>' + entry.ask + '</p>', [cmdKey.slice(1) + ' mode']);
         if (entry.placeholder) input.setAttribute('placeholder', entry.placeholder);
         input.focus();
-      }, 400);
+      }, 850);
     });
     document.addEventListener('click', function (e) {
       if (!cmdMenu.classList.contains('open')) return;
