@@ -381,58 +381,6 @@ body {
   display: flex; justify-content: space-between; align-items: center;
 }
 .sb-section .h .count { color: var(--accent); }
-.sys-list { display: flex; flex-direction: column; gap: 4px; }
-.sys {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 10px;
-  border: 1px solid transparent;
-  font-size: 13.5px;
-  color: var(--fg);
-  letter-spacing: -0.005em;
-  background: transparent;
-  text-align: left;
-  font-family: inherit;
-  cursor: pointer;
-  width: 100%;
-  -webkit-appearance: none;
-  appearance: none;
-}
-.sys:hover { border-color: var(--line); background: var(--bg-3); }
-.sys .dot {
-  width: 7px; height: 7px; border-radius: 50%;
-  background: var(--accent);
-  flex-shrink: 0;
-  box-shadow: 0 0 8px rgba(220,210,180,0.45);
-}
-.sys.idle .dot { background: var(--fg-mute); box-shadow: none; }
-.sys.warn .dot { background: #C29A4D; box-shadow: 0 0 8px rgba(194,154,77,0.5); }
-.sys .name { font-size: 13.5px; color: var(--fg); letter-spacing: -0.005em; }
-.sys .meta { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--fg-mute); letter-spacing: 0.04em; }
-.sys .sys-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
-.sys .sys-text .sub {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px;
-  color: var(--fg-mute);
-  letter-spacing: 0.03em;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.sys.warn .sys-text .sub { color: #C29A4D; }
-
-.sb-manage {
-  display: block;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  color: var(--accent);
-  text-decoration: none;
-  padding: 12px 10px 4px;
-  margin-top: 4px;
-}
-.sb-manage:hover { color: var(--fg); }
 
 /* Chat */
 .chat {
@@ -733,19 +681,6 @@ body {
       </div>
     </div>
 
-    <div class="sb-section">
-      <div class="h"><span>Connected systems</span><span class="count">7 live</span></div>
-      <div class="sys-list">
-        <button type="button" class="sys" data-system="Shopify"><span class="dot"></span><div class="sys-text"><div class="name">Shopify</div><div class="sub">2,840 orders · synced 2m ago</div></div></button>
-        <button type="button" class="sys" data-system="Stripe"><span class="dot"></span><div class="sys-text"><div class="name">Stripe</div><div class="sub">payouts · synced 2m ago</div></div></button>
-        <button type="button" class="sys" data-system="QuickBooks"><span class="dot"></span><div class="sys-text"><div class="name">QuickBooks</div><div class="sub">ledger · synced 8m ago</div></div></button>
-        <button type="button" class="sys" data-system="ShipStation"><span class="dot"></span><div class="sys-text"><div class="name">ShipStation</div><div class="sub">fulfillment · synced 1m ago</div></div></button>
-        <button type="button" class="sys" data-system="Stocky"><span class="dot"></span><div class="sys-text"><div class="name">Stocky</div><div class="sub">inventory · synced 12m ago</div></div></button>
-        <button type="button" class="sys" data-system="Inventory Planner"><span class="dot"></span><div class="sys-text"><div class="name">Inventory Planner</div><div class="sub">forecasting · synced 18m ago</div></div></button>
-        <button type="button" class="sys" data-system="Loop Returns"><span class="dot"></span><div class="sys-text"><div class="name">Loop Returns</div><div class="sub">38 returns · synced 6m ago</div></div></button>
-      </div>
-      <a href="connect.html" class="sb-manage">+ Connect more tools →</a>
-    </div>
   </aside>
 
 
@@ -859,7 +794,7 @@ body {
   if (backdrop) {
     backdrop.addEventListener('click', function () { setDrawer(false); });
   }
-  document.querySelectorAll('#sidebar .thread, #sidebar .sys').forEach(function (n) {
+  document.querySelectorAll('#sidebar .kpi-card').forEach(function (n) {
     n.addEventListener('click', function () { setDrawer(false); });
   });
 
@@ -1115,8 +1050,17 @@ body {
     form.requestSubmit();
   });
 
-  // Paperclip command menu: toggle on click, picks insert "/<cmd> "
-  // into the composer and close the menu.
+  // Paperclip command menu: toggle on click. Picking a command points
+  // the agent at that task: the agent immediately asks a focused
+  // follow-up so the user can fill in the specifics.
+  var CMD_PROMPTS = {
+    '/build':           { ask: "Great. What do you want to build? A workflow, a one-off automation, a doc?", placeholder: "e.g. a daily POs-needing-approval digest emailed to me by 7am" },
+    '/research':        { ask: "On it. What do you want to research?", placeholder: "e.g. why returns spiked on Performance Polo Stone last week" },
+    '/market-research': { ask: "Sure. What market, competitor, or trend do you want me to dig into?", placeholder: "e.g. how Linksoul's pricing and bundle structure compares to ours" },
+    '/inventory':       { ask: "Pulling inventory. Any SKU or category in particular, or do you want the full state?", placeholder: "e.g. all gloves and what's running low for the next 14 days" },
+    '/finance':         { ask: "Opening finance. Want runway, AP/AR, payouts, or the month-end view?", placeholder: "e.g. draft the May P&L and flag anything unusual" },
+    '/team':            { ask: "Tapping into team updates. Anyone specific, or do you want the whole team summary?", placeholder: "e.g. what has Sam shipped this week" }
+  };
   var clipBtn = document.getElementById('clip-btn');
   var cmdMenu = document.getElementById('cmd-menu');
   function closeCmdMenu() {
@@ -1133,14 +1077,18 @@ body {
     cmdMenu.addEventListener('click', function (e) {
       var c = e.target.closest('.cmd');
       if (!c) return;
-      var pre = c.getAttribute('data-cmd') || '';
-      input.value = pre + (input.value || '').replace(/^\/[a-z-]+\s*/, '');
-      input.focus();
-      var pos = input.value.length;
-      try { input.setSelectionRange(pos, pos); } catch (_) {}
-      input.style.height = 'auto';
-      input.style.height = Math.min(input.scrollHeight, 160) + 'px';
+      var cmdKey = (c.getAttribute('data-cmd') || '').trim();
+      var entry = CMD_PROMPTS[cmdKey];
       closeCmdMenu();
+      if (!entry) return;
+      addUser(cmdKey);
+      var t = addThinking();
+      setTimeout(function () {
+        t.remove();
+        addReply('<p>' + entry.ask + '</p>', [cmdKey.slice(1) + ' mode']);
+        if (entry.placeholder) input.setAttribute('placeholder', entry.placeholder);
+        input.focus();
+      }, 400);
     });
     document.addEventListener('click', function (e) {
       if (!cmdMenu.classList.contains('open')) return;
@@ -1179,18 +1127,6 @@ body {
     return canned[0]; // morning briefing
   }
 
-  // Connected systems -> route to the Tend Ontology page (currently
-  // /connect, which lists every connection and lets you add new ones).
-  var sysList = document.querySelector('.sys-list');
-  if (sysList) {
-    sysList.addEventListener('click', function (e) {
-      var s = e.target.closest('.sys');
-      if (!s) return;
-      var sys = s.getAttribute('data-system') || '';
-      window.location.href = 'connect.html' + (sys ? '#' + encodeURIComponent(sys) : '');
-    });
-  }
-
   // ---------- Onboarding preferences ----------
   // Read from localStorage (written by /onboarding) and use them to
   // pick the default thread, reorder the sidebar, and surface a
@@ -1220,29 +1156,7 @@ body {
 
   var prefs = loadPrefs();
 
-  // Reorder the connected-systems list by focus.
-  var FOCUS_SYS_ORDER = {
-    revenue:   ['Shopify', 'Stripe', 'QuickBooks', 'Loop Returns', 'ShipStation', 'Stocky', 'Inventory Planner'],
-    customers: ['Loop Returns', 'Shopify', 'Stripe', 'ShipStation', 'QuickBooks', 'Stocky', 'Inventory Planner'],
-    ops:       ['Stocky', 'ShipStation', 'Inventory Planner', 'Shopify', 'Loop Returns', 'Stripe', 'QuickBooks'],
-    cash:      ['Stripe', 'QuickBooks', 'Shopify', 'ShipStation', 'Stocky', 'Inventory Planner', 'Loop Returns']
-  };
-  function reorderList(container, getKey, order) {
-    if (!container || !order) return;
-    var items = Array.prototype.slice.call(container.children);
-    items.sort(function (a, b) {
-      var ai = order.indexOf(getKey(a)); var bi = order.indexOf(getKey(b));
-      if (ai === -1) ai = 999; if (bi === -1) bi = 999;
-      return ai - bi;
-    });
-    items.forEach(function (n) { container.appendChild(n); });
-  }
   function applyPrefs(p) {
-    reorderList(
-      document.querySelector('.sys-list'),
-      function (el) { return el.getAttribute('data-system'); },
-      FOCUS_SYS_ORDER[p.focus]
-    );
     // "Tuned for" pill near the title
     var pill = document.getElementById('tuned-pill');
     if (pill) {
