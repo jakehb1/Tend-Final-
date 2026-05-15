@@ -67,82 +67,6 @@ body {
 }
 .app-bar .ws-tag strong { color: var(--accent); font-weight: 500; }
 
-/* Tune-view button + popover */
-.app-bar .tune {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
-  color: var(--fg-mute);
-  letter-spacing: 0.04em;
-  background: transparent;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  padding: 7px 14px;
-  cursor: pointer;
-  transition: color 0.15s, border-color 0.15s;
-  -webkit-appearance: none;
-  appearance: none;
-}
-.app-bar .tune:hover { color: var(--fg); border-color: var(--line-2); }
-.tune-pop {
-  position: absolute;
-  top: 60px;
-  right: 24px;
-  width: 320px;
-  background: var(--bg-2);
-  border: 1px solid var(--line);
-  border-radius: 20px;
-  box-shadow: 0 14px 40px rgba(0,0,0,0.08);
-  padding: 18px;
-  z-index: 60;
-  display: none;
-  font-family: 'IBM Plex Sans', sans-serif;
-}
-.tune-pop.open { display: block; }
-.tune-pop h4 {
-  margin: 0 0 8px;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10.5px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--fg-mute);
-  font-weight: 500;
-}
-.tune-pop .tune-row { margin-bottom: 16px; }
-.tune-pop .tune-row:last-child { margin-bottom: 0; }
-.tune-pop .pills { display: flex; flex-wrap: wrap; gap: 6px; }
-.tune-pop .pill {
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-size: 12.5px;
-  color: var(--fg-dim);
-  background: transparent;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  padding: 6px 12px;
-  cursor: pointer;
-  -webkit-appearance: none;
-  appearance: none;
-  transition: color 0.12s, border-color 0.12s, background 0.12s;
-}
-.tune-pop .pill:hover { color: var(--fg); border-color: var(--line-2); }
-.tune-pop .pill.on {
-  color: var(--bg);
-  background: var(--fg);
-  border-color: var(--fg);
-}
-.chat-head .tuned {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10.5px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--fg-mute);
-  margin-left: 10px;
-  padding: 2px 8px;
-  border-left: 1px solid var(--line);
-}
-.chat-head .tuned::before { content: "●"; color: var(--accent); font-size: 8px; }
 
 /* KPI cards (stacked, in the left sidebar) */
 .kpi-strip {
@@ -624,7 +548,6 @@ body {
     <div class="ws-tag">WORKSPACE · <strong>quiet golf</strong></div>
   </div>
   <div class="right">
-    <button type="button" class="tune" id="tune-btn" aria-haspopup="true" aria-expanded="false">Tune view ▾</button>
     <button type="button" class="avatar" id="avatar-btn" aria-haspopup="true" aria-expanded="false" aria-label="Profile and Tend Ontology">
       <span id="avatar-initials">YT</span>
     </button>
@@ -662,35 +585,6 @@ body {
   </div>
 </div>
 
-<div class="tune-pop" id="tune-pop" role="dialog" aria-label="Tune dashboard view">
-  <div class="tune-row">
-    <h4>How are you starting today?</h4>
-    <div class="pills" data-tune="lens">
-      <button type="button" class="pill" data-value="catch-up">Catch me up</button>
-      <button type="button" class="pill" data-value="help-decide">Help me decide</button>
-      <button type="button" class="pill" data-value="look-ahead">Look ahead</button>
-      <button type="button" class="pill" data-value="brief">Just the brief</button>
-    </div>
-  </div>
-  <div class="tune-row">
-    <h4>What matters most this week?</h4>
-    <div class="pills" data-tune="focus">
-      <button type="button" class="pill" data-value="revenue">Revenue</button>
-      <button type="button" class="pill" data-value="customers">Customers</button>
-      <button type="button" class="pill" data-value="ops">Operations</button>
-      <button type="button" class="pill" data-value="cash">Cash &amp; books</button>
-    </div>
-  </div>
-  <div class="tune-row">
-    <h4>Where do we begin?</h4>
-    <div class="pills" data-tune="start">
-      <button type="button" class="pill" data-value="brief">A morning brief</button>
-      <button type="button" class="pill" data-value="account">A specific account</button>
-      <button type="button" class="pill" data-value="dashboard">The dashboard</button>
-      <button type="button" class="pill" data-value="question">A blank prompt</button>
-    </div>
-  </div>
-</div>
 
 <div class="app-shell">
 
@@ -763,7 +657,7 @@ body {
   the existing canned replies so the demo works on the static site.
 -->
 <script>
-  window.__TEND_CONFIG__ = window.__TEND_CONFIG__ || { apiBase: null };
+  window.__TEND_CONFIG__ = window.__TEND_CONFIG__ || { apiBase: window.location.origin };
 </script>
 <script>
 (function () {
@@ -837,6 +731,7 @@ body {
   var form = document.getElementById('composer');
   var input = document.getElementById('msg-input');
   var hints = document.getElementById('hints');
+  var chatHistory = [];
 
   function scroll() { body.scrollTop = body.scrollHeight; }
 
@@ -847,12 +742,22 @@ body {
     return n;
   }
 
+  function md(t) {
+    return t
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\n\n+/g, '</p><p>')
+      .replace(/\n/g, '<br>')
+      .replace(/^/, '<p>').replace(/$/, '</p>');
+  }
+
   function addUser(text) {
     var wrap = el('div', 'msg user');
     wrap.innerHTML = '<div><div class="who">you</div><div class="bubble"></div></div>';
     wrap.querySelector('.bubble').textContent = text;
     body.appendChild(wrap);
     scroll();
+    chatHistory.push({ role: 'user', content: text });
   }
 
   function addThinking() {
@@ -869,6 +774,9 @@ body {
     wrap.innerHTML = '<div><div class="who">tend</div><div class="bubble">' + html + (srcHTML ? '<div class="sources">' + srcHTML + '</div>' : '') + '</div></div>';
     body.appendChild(wrap);
     scroll();
+    var tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    chatHistory.push({ role: 'assistant', content: tmp.textContent.trim() });
   }
 
   var canned = [
@@ -983,8 +891,7 @@ body {
     }, 900);
   }
 
-  // Stream from the bridge /api/chat/:user SSE endpoint.
-  // Each chunk arrives as {delta: "..."} and we append it to the bubble.
+  // Stream from /api/chat/:user (same Railway server) via SSE.
   function replyLive(text) {
     var userEmail = 'demo@withtend.ai';
     try {
@@ -997,6 +904,7 @@ body {
 
     var thinking = addThinking();
     var bubble = null;
+    var rawText = '';
 
     function ensureBubble() {
       if (bubble) return bubble;
@@ -1010,16 +918,16 @@ body {
       return b;
     }
 
-    function fail(msg) {
+    function fail() {
       thinking.remove();
-      addReply('<p>Bridge unreachable. Falling back to demo mode.</p><p style="color:var(--fg-mute);font-size:12px;">' + msg + '</p>');
       replyCanned(text);
     }
 
+    var history = chatHistory.slice(0, -1).slice(-10);
     fetch(API + '/api/chat/' + encodeURIComponent(userEmail), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: text })
+      body: JSON.stringify({ message: text, history: history })
     })
     .then(function (r) {
       if (!r.ok || !r.body) throw new Error('http ' + r.status);
@@ -1028,7 +936,10 @@ body {
       var buf = '';
       function pump() {
         return reader.read().then(function (res) {
-          if (res.done) return;
+          if (res.done) {
+            if (rawText) chatHistory.push({ role: 'assistant', content: rawText });
+            return;
+          }
           buf += decoder.decode(res.value, { stream: true });
           var lines = buf.split('\n');
           buf = lines.pop() || '';
@@ -1036,13 +947,17 @@ body {
             var line = lines[i].trim();
             if (!line || !line.startsWith('data:')) continue;
             var payload = line.slice(5).trim();
-            if (payload === '[DONE]') return;
+            if (payload === '[DONE]') {
+              if (rawText) chatHistory.push({ role: 'assistant', content: rawText });
+              return;
+            }
             try {
               var obj = JSON.parse(payload);
               if (obj.error) throw new Error(obj.error);
               if (obj.delta) {
                 ensureBubble();
-                bubble.textContent += obj.delta;
+                rawText += obj.delta;
+                bubble.innerHTML = md(rawText);
                 scroll();
               }
             } catch (e) {
@@ -1056,7 +971,7 @@ body {
     })
     .catch(function (e) {
       console.warn('replyLive error:', e);
-      fail(e.message || 'network error');
+      fail();
     });
   }
 
@@ -1165,114 +1080,10 @@ body {
     });
   }
 
-  // ---------- Single-context init ----------
-  // The chat runs as one continuous conversation. The canned-reply
-  // engine above handles all the demo answers.
-
-  // Seed the chat with one opening reply based on prefs.
-  function openingFor(p) {
-    if (p.start === 'question')   return null;
-    if (p.start === 'account')    return canned.find(function (c) { return /best/.test(c.match.source); });
-    if (p.lens === 'help-decide') return canned.find(function (c) { return /low|inventory|stock/.test(c.match.source); });
-    if (p.lens === 'look-ahead')  return canned.find(function (c) { return /best/.test(c.match.source); });
-    return canned[0]; // morning briefing
-  }
-
-  // ---------- Onboarding preferences ----------
-  // Read from localStorage (written by /onboarding) and use them to
-  // pick the default thread, reorder the sidebar, and surface a
-  // "tuned for" pill. Editable inline via the Tune view popover.
-  function loadPrefs() {
-    try {
-      var raw = localStorage.getItem('tend.onboarded');
-      if (!raw) return { lens: 'catch-up', focus: 'ops', start: 'brief' };
-      var p = JSON.parse(raw) || {};
-      return {
-        lens: p.lens || 'catch-up',
-        focus: p.focus || 'ops',
-        start: p.start || 'brief'
-      };
-    } catch (_) {
-      return { lens: 'catch-up', focus: 'ops', start: 'brief' };
-    }
-  }
-  function savePrefs(p) {
-    try {
-      var existing = JSON.parse(localStorage.getItem('tend.onboarded') || '{}');
-      existing.lens = p.lens; existing.focus = p.focus; existing.start = p.start;
-      existing.at = existing.at || Date.now();
-      localStorage.setItem('tend.onboarded', JSON.stringify(existing));
-    } catch (_) {}
-  }
-
-  var prefs = loadPrefs();
-
-  function applyPrefs(p) {
-    // "Tuned for" pill near the title
-    var pill = document.getElementById('tuned-pill');
-    if (pill) {
-      var labelMap = {
-        'catch-up': 'catch up', 'help-decide': 'decide', 'look-ahead': 'look ahead', 'brief': 'brief',
-        'revenue': 'revenue', 'customers': 'customers', 'ops': 'operations', 'cash': 'cash',
-        'account': 'account', 'dashboard': 'numbers', 'question': 'blank'
-      };
-      pill.textContent = 'Tuned: ' + (labelMap[p.lens] || p.lens)
-        + ' · ' + (labelMap[p.focus] || p.focus)
-        + ' · ' + (labelMap[p.start] || p.start);
-      pill.hidden = false;
-    }
-    // Reflect current values in the popover pills
-    document.querySelectorAll('#tune-pop .pills').forEach(function (group) {
-      var key = group.getAttribute('data-tune');
-      group.querySelectorAll('.pill').forEach(function (b) {
-        b.classList.toggle('on', b.getAttribute('data-value') === p[key]);
-      });
-    });
-  }
-
-  // Wire the Tune view popover
-  var tuneBtn = document.getElementById('tune-btn');
-  var tunePop = document.getElementById('tune-pop');
-  if (tuneBtn && tunePop) {
-    tuneBtn.addEventListener('click', function (e) {
-      e.stopPropagation();
-      var open = tunePop.classList.toggle('open');
-      tuneBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
-    });
-    document.addEventListener('click', function (e) {
-      if (!tunePop.classList.contains('open')) return;
-      if (tunePop.contains(e.target) || tuneBtn.contains(e.target)) return;
-      tunePop.classList.remove('open');
-      tuneBtn.setAttribute('aria-expanded', 'false');
-    });
-    tunePop.addEventListener('click', function (e) {
-      var b = e.target.closest('.pill');
-      if (!b) return;
-      var group = b.closest('.pills');
-      var key = group && group.getAttribute('data-tune');
-      var val = b.getAttribute('data-value');
-      if (!key || !val) return;
-      prefs[key] = val;
-      savePrefs(prefs);
-      applyPrefs(prefs);
-      // If lens/start changed, re-seed the opening reply.
-      if (key === 'start' || key === 'lens') {
-        document.getElementById('chat-body').innerHTML = '';
-        var op = openingFor(prefs);
-        if (op) addReply(op.html, op.sources);
-        else setTimeout(function () { input.focus(); }, 30);
-      }
-    });
-  }
-
-  // Initial render: apply prefs, seed the opening reply.
-  applyPrefs(prefs);
-  var _opening = openingFor(prefs);
-  if (_opening) {
-    addReply(_opening.html, _opening.sources);
-  } else {
-    setTimeout(function () { input.focus(); }, 50);
-  }
+  // Seed the chat with the morning briefing on load.
+  addReply(canned[0].html, canned[0].sources);
+  // Clear history from the seeded reply so it doesn't pollute live context.
+  chatHistory = [];
 })();
 </script>
 
