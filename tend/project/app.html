@@ -338,6 +338,13 @@ body {
   min-width: 0;
   position: relative;
 }
+/* Column wrappers: transparent on mobile (display:contents), structural on desktop */
+.chat-col-left, .chat-col-right { display: contents; }
+/* Mobile flex order: greeting → messages → composer → bento */
+.chat-empty { order: 1; }
+.chat-body  { order: 2; }
+.composer   { order: 3; }
+.home-bento { order: 4; }
 .chat-head {
   padding: 16px 28px;
   border-bottom: 1px solid var(--line);
@@ -704,50 +711,53 @@ body.drawer-open .app-backdrop { display: block; }
 
 /* ---------- Desktop two-column layout (>=1024px) ---------- */
 @media (min-width: 1024px) {
-  .app-bar { display: none; }
-  .chat {
-    display: grid;
-    grid-template-columns: minmax(360px, 1fr) minmax(0, 1.4fr);
-    grid-template-rows: 1fr auto;
-    grid-template-areas:
-      "empty   body"
-      "bento   composer";
-    gap: 0;
-    padding: 22px 22px 22px;
-    box-sizing: border-box;
-  }
-  .chat-head    { display: none; }
-  .chat-empty   { grid-area: empty; max-width: none; padding: 72px 28px 0; justify-content: flex-start; }
-  .chat-empty.hidden { display: flex !important; }   /* keep greeting on desktop */
-  .empty-greeting { font-size: 28px; line-height: 1.2; margin-bottom: 24px; }
-  .chat-body    { grid-area: body; padding: 24px 28px; }
-  .composer     { grid-area: composer; border-top: 1px solid var(--line); padding: 16px 28px 0; }
-  .home-bento   { grid-area: bento; border-top: 0; padding: 0 28px 0; max-width: none; align-self: end; }
-  .home-bento.hidden { display: block !important; }  /* keep bento on desktop */
-  .b-start      { display: none; }                   /* no "Start chatting" — composer is always visible */
+  .app-bar   { display: none; }
+  .chat-head { display: none; }
+  .b-start   { display: none; }
 
-  /* Desktop bento: tighter, capped, lives at bottom-left */
-  .bento { gap: 12px; max-width: 520px; }
+  /* Two independent flex columns — left/right height never coupled */
+  .chat { display: flex; flex-direction: row; padding: 0; box-sizing: border-box; }
+
+  .chat-col-left, .chat-col-right { display: flex; flex-direction: column; }
+
+  .chat-col-left {
+    width: 38%;
+    min-width: 340px;
+    max-width: 500px;
+    flex-shrink: 0;
+    padding: 72px 28px 22px;
+    border-right: 1px solid var(--line);
+  }
+  .chat-col-right { flex: 1; min-width: 0; }
+
+  /* Left column contents */
+  .chat-empty { flex: 1; max-width: none; padding: 0; justify-content: flex-start; order: 0; }
+  .chat-empty.hidden { display: flex !important; }
+  .empty-greeting { font-size: 28px; line-height: 1.2; margin-bottom: 24px; }
+  .home-bento { flex-shrink: 0; border-top: 0; padding: 0 0 22px; max-width: none; order: 0; }
+  .home-bento.hidden { display: block !important; }
+
+  /* Right column contents */
+  .chat-body { flex: 1; min-height: 0; padding: 24px 28px; justify-content: flex-end; order: 0; }
+  .composer  { flex-shrink: 0; border-top: 1px solid var(--line); padding: 16px 28px 22px; order: 0; }
+
+  /* Desktop bento */
+  .bento { gap: 12px; max-width: none; }
   .b-item { font-size: 14px; padding: 14px 18px; }
   .b-item.b-circle { font-size: 12.5px; }
   .b-dec { min-height: 140px; }
 
-  /* Floating gear in top-right corner — no circle background */
+  /* Floating gear — no circle */
   .desktop-gear {
-    position: fixed;
-    top: 22px; right: 22px;
-    z-index: 35;
-    display: inline-flex;
-    background: transparent;
-    border: none;
+    position: fixed; top: 22px; right: 22px;
+    z-index: 35; display: inline-flex;
+    background: transparent; border: none;
   }
   .desktop-gear:hover { background: var(--line-2); }
-  /* Floating brand mark in top-left corner — sage green background */
+  /* Floating brand mark — sage green */
   .desktop-brand {
-    position: fixed;
-    top: 22px; left: 22px;
-    z-index: 35;
-    display: inline-flex;
+    position: fixed; top: 22px; left: 22px;
+    z-index: 35; display: inline-flex;
     background: #E5E9E0;
   }
   .desktop-brand:hover { background: #DBDFD4; }
@@ -773,10 +783,9 @@ body.drawer-open .app-backdrop { display: block; }
   grid-template-columns: minmax(0, auto) 1fr;
   gap: 18px;
   padding: 16px 0;
-  border-bottom: 1px solid rgba(31, 30, 27, 0.10);
+  border-bottom: 0;
   align-items: center;
 }
-.kpi-row:last-of-type { border-bottom: 0; }
 .kpi-row.tall { align-items: flex-start; padding: 18px 0; }
 .kpi-tag {
   background: rgba(31, 30, 27, 0.06);
@@ -901,13 +910,27 @@ body.drawer-open .app-backdrop { display: block; }
       <h1 id="chat-title">New chat</h1>
     </div>
 
-    <div class="chat-empty" id="chat-empty">
-      <h2 class="empty-greeting" id="empty-greeting">Welcome.<br/>How can I help you?</h2>
+    <div class="chat-col-left">
+      <div class="chat-empty" id="chat-empty">
+        <h2 class="empty-greeting" id="empty-greeting">Welcome.<br/>How can I help you?</h2>
+      </div>
+      <div class="home-bento" id="home-bento">
+        <div class="bento" id="bento">
+          <button class="b-item b-rev" type="button" data-text="How is revenue trending? Give me the highlights.">Revenue</button>
+          <button class="b-item b-inb" type="button" data-text="Summarize my unread inbox.">Inbox</button>
+          <button class="b-item b-dec" type="button" data-text="What decisions need my approval today?">Decisions queue</button>
+          <button class="b-item b-team b-circle" type="button" data-text="What is the team up to today?">Team</button>
+          <button class="b-item b-daily b-circle" type="button" data-text="Morning briefing">Daily Brief</button>
+          <button class="b-item b-alerts" type="button" data-text="What needs my attention right now?">Alerts</button>
+          <button class="b-item b-start b-circle" type="button" data-text="">Start Chatting</button>
+        </div>
+      </div>
     </div>
 
-    <div class="chat-body" id="chat-body"></div>
+    <div class="chat-col-right">
+      <div class="chat-body" id="chat-body"></div>
 
-    <div class="composer">
+      <div class="composer">
       <div class="cmd-menu" id="cmd-menu" role="menu" aria-label="Commands">
         <button class="cmd" type="button" data-cmd="/build " role="menuitem"><span class="slash">/</span>build</button>
         <button class="cmd" type="button" data-cmd="/research " role="menuitem"><span class="slash">/</span>research</button>
@@ -940,19 +963,8 @@ body.drawer-open .app-backdrop { display: block; }
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
         </button>
       </form>
-    </div>
-
-    <div class="home-bento" id="home-bento">
-      <div class="bento" id="bento">
-        <button class="b-item b-rev" type="button" data-text="How is revenue trending? Give me the highlights.">Revenue</button>
-        <button class="b-item b-inb" type="button" data-text="Summarize my unread inbox.">Inbox</button>
-        <button class="b-item b-dec" type="button" data-text="What decisions need my approval today?">Decisions queue</button>
-        <button class="b-item b-team b-circle" type="button" data-text="What is the team up to today?">Team</button>
-        <button class="b-item b-daily b-circle" type="button" data-text="Morning briefing">Daily Brief</button>
-        <button class="b-item b-alerts" type="button" data-text="What needs my attention right now?">Alerts</button>
-        <button class="b-item b-start b-circle" type="button" data-text="">Start Chatting</button>
       </div>
-    </div>
+    </div><!-- .chat-col-right -->
   </main>
 
 </div>
