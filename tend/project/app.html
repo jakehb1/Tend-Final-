@@ -348,11 +348,11 @@ button, a, .b-item, .icon-btn, .pill-btn { touch-action: manipulation; }
 }
 /* Column wrappers: transparent on mobile (display:contents), structural on desktop */
 .chat-col-left, .chat-col-right { display: contents; }
-/* Mobile flex order: greeting → messages → composer → bento */
+/* Mobile flex order: greeting → messages → bento → composer (composer pinned to bottom) */
 .chat-empty { order: 1; }
 .chat-body  { order: 2; }
-.composer   { order: 3; }
-.home-bento { order: 4; }
+.home-bento { order: 3; }
+.composer   { order: 4; }
 .chat-head { display: none; }
 .chat-head h1 {
   font-size: 18px;
