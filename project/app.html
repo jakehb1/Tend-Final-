@@ -551,11 +551,17 @@ button, a, .b-item, .icon-btn, .pill-btn { touch-action: manipulation; }
 }
 .composer .pill-btn:hover { background: var(--line-2); }
 .composer .pill-btn svg { display: block; pointer-events: none; }
+/* Send button: idle = light/dim, is-active = inked (text present) */
 .composer .send {
-  background: var(--accent);
-  color: var(--accent-ink);
+  background: var(--bg-3);
+  color: var(--fg-mute);
+  transition: background 0.15s, color 0.15s, transform 0.12s;
 }
-.composer .send:hover { background: var(--fg); }
+.composer .send.is-active {
+  background: var(--fg);
+  color: var(--bg);
+}
+.composer .send.is-active:hover { background: #000; }
 .composer .send:disabled { opacity: 0.5; cursor: default; }
 
 /* Empty state (centered greeting + suggestion cards) */
@@ -999,7 +1005,7 @@ body.drawer-open .app-backdrop { display: block; }
             <line x1="12" y1="19" x2="12" y2="22"/>
           </svg>
         </button>
-        <button type="submit" class="pill-btn send" id="send-btn" aria-label="Send" hidden>
+        <button type="submit" class="pill-btn send" id="send-btn" aria-label="Send">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
         </button>
       </form>
@@ -1341,13 +1347,21 @@ body.drawer-open .app-backdrop { display: block; }
     input.value = '';
     input.style.height = 'auto';
     if (window.__clearAttachments) window.__clearAttachments();
+    if (typeof syncSendState === 'function') syncSendState();
     reply(sent);
   });
 
+  var sendBtn = document.getElementById('send-btn');
+  function syncSendState() {
+    var hasText = !!(input.value || '').trim();
+    if (sendBtn) sendBtn.classList.toggle('is-active', hasText);
+  }
   input.addEventListener('input', function () {
     input.style.height = 'auto';
     input.style.height = Math.min(input.scrollHeight, 160) + 'px';
+    syncSendState();
   });
+  syncSendState();
 
   input.addEventListener('keydown', function (e) {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -1483,6 +1497,7 @@ body.drawer-open .app-backdrop { display: block; }
         for (var i = 0; i < e.results.length; i++) transcript += e.results[i][0].transcript;
         input.value = (input.value ? input.value + ' ' : '') + transcript;
         input.focus();
+        if (typeof syncSendState === 'function') syncSendState();
       };
       rec.onend = function () { listening = false; micBtn.classList.remove('listening'); };
       rec.onerror = function () { listening = false; micBtn.classList.remove('listening'); };
