@@ -1,10 +1,10 @@
 # tend
 
-AI partner for small businesses. Static frontend + a small Node server that
-proxies the chat to Claude, both deployed on Railway. Optional self-hosted
-VPS stack adds real OAuth (Nango) and a per-tenant agent runtime when you
-want that, but the default Railway deploy ships an end-to-end working
-product on its own.
+AI partner for small businesses. Static frontend + a small Node server with
+real auth, Postgres-backed conversation persistence, and a Claude chat API.
+All deployed on Railway. Optional self-hosted VPS stack adds real OAuth
+(Nango) and a per-tenant agent runtime when you want that, but the default
+Railway deploy ships an end-to-end product on its own.
 
 Live: https://withtend.ai
 
@@ -15,13 +15,18 @@ Live: https://withtend.ai
 ```bash
 git clone <this-repo> tend && cd tend
 npm install
-ANTHROPIC_API_KEY=sk-ant-... node server.js
-# open http://localhost:3000
+export ANTHROPIC_API_KEY=sk-ant-...
+export DATABASE_URL=postgres://...        # Railway-style postgres
+export SESSION_SECRET=$(openssl rand -base64 32)
+node server.js
+# open http://localhost:3000/login
 ```
 
-Log in with any email/password. Hit `/app` and chat. Edits to
-`project/*.html` are live on reload. Without the API key, the chat falls
-back to canned replies so the static site still works.
+Create an account, log in, hit `/app`, chat. Conversations persist across
+reloads and are scoped to your user. Edits to `project/*.html` are live on
+reload (no build step). Without `ANTHROPIC_API_KEY` the chat falls back to
+canned replies. Without `DATABASE_URL` the static site still works but
+signup/login/conversations return 503.
 
 ---
 
@@ -30,8 +35,8 @@ back to canned replies so the static site still works.
 ```
 project/                  Site source (HTML/CSS/JS). The Railway deploy serves this.
 tend/project/             Mirror of project/. Edits must land in both trees, see Conventions.
-server.js                 Node server. Serves project/ as static files AND hosts /api/chat.
-package.json              Engines >= 18. No dependencies (uses native fetch + http).
+server.js                 Node server. Static files + /api/auth + /api/conversations + /api/chat.
+package.json              Engines >= 18. Deps: pg, bcryptjs, jsonwebtoken.
 railway.json              Railway deploy config.
 nixpacks.toml             Pins Railway to Node 20. See "Build pinning" below.
 .railwayignore            Hides bridge/, deploy/, cli/ from the Railway build context.
@@ -57,21 +62,31 @@ working on the product surface.
 ## Architecture
 
 ```
-                          Railway
-                  ┌────────────────────────────────────┐
-   browser ────►  │  project/*.html  (static)          │
-                  │  server.js                         │
-                  │   ├─ static files                  │
-                  │   └─ POST /api/chat/:user  ──┐     │
-                  └──────────────────────────────┼─────┘
-                                                 ▼
-                                  api.anthropic.com (Claude)
-                                  streaming Messages API
+                            Railway
+                  ┌────────────────────────────────────────┐
+   browser ────►  │  project/*.html  (static, no build)    │
+                  │                                        │
+                  │  server.js                             │
+                  │   ├─ static file serving               │
+                  │   ├─ /api/auth/{signup,login,...}      │
+                  │   ├─ /api/conversations[/:id]          │
+                  │   └─ /api/chat/:convId ──┐             │
+                  └──────────────────────────┼─────────────┘
+                                 │           ▼
+                                 │   api.anthropic.com (Claude)
+                                 │   streaming Messages API
+                                 ▼
+                         Railway Postgres
+                  ┌──────────────────────────────┐
+                  │  users                       │
+                  │  conversations               │
+                  │  messages                    │
+                  └──────────────────────────────┘
 
    ── optional, only if you stand up the VPS ──────────────────
-                                                 │
-                                                 ▼
-                                        VPS (Docker Compose)
+                                  │
+                                  ▼
+                         VPS (Docker Compose)
    ┌──────────────────────────────────────────────────────────┐
    │  Caddy (HTTPS)                                           │
    │    ├─► bridge ──► Nango (OAuth + scheduled syncs)        │
@@ -81,15 +96,23 @@ working on the product surface.
 ```
 
 - **Frontend**: plain HTML/CSS/JS, no build step. `project/` ships to
-  Railway exactly as written.
-- **Chat backend**: `server.js` POST `/api/chat/:user` streams from
-  `api.anthropic.com` via SSE. The browser hits it same-origin. The system
-  prompt is a constant at the top of `server.js`; conversation history
-  (last 10 turns) comes from the client per request, so the server is
-  stateless.
-- **Demo fallback**: if `ANTHROPIC_API_KEY` isn't set, the API returns 503
-  and the client transparently falls back to canned replies. The static
-  site keeps working.
+  Railway exactly as written. Protected pages (`/app`, `/onboarding`,
+  `/connect`, `/data-brain`) check `/api/auth/me` on load and redirect to
+  `/login` if no session.
+- **Auth**: email + bcrypt-hashed password. Sessions are JWTs signed with
+  `SESSION_SECRET`, stored in an httpOnly `tend.session` cookie. 30-day
+  expiry. Same-origin only.
+- **Chat backend**: `server.js` POST `/api/chat/:convId` is authed.
+  Validates the conversation belongs to the current user, persists the
+  user message, streams from Anthropic, accumulates the response, and
+  persists it on completion.
+- **Conversation memory**: stored in Postgres (`conversations`,
+  `messages`). The server loads the last 20 messages from the DB for
+  context on each turn, so memory persists across reloads and devices.
+- **Demo fallback**: if `ANTHROPIC_API_KEY` isn't set, `/api/chat` returns
+  503 and the client transparently falls back to canned replies. Without
+  `DATABASE_URL`, auth and conversation endpoints return 503 but the
+  static site still loads.
 - **VPS (optional)**: when you eventually want real OAuth and a per-tenant
   agent, see `deploy/README.md`. The frontend has hooks for it but doesn't
   require it.
@@ -117,49 +140,82 @@ All pages share `project/shared.css`. Cache-bust by bumping `?v=N` in the
 
 ---
 
-## The chat backend
+## API reference
 
-`server.js` exposes one API endpoint:
+All API endpoints live in `server.js`. They share JSON request/response
+bodies and use the `tend.session` httpOnly cookie for auth.
 
-### `POST /api/chat/:user`
+### Auth
 
-Request:
+| Endpoint                  | Method | Auth | Body                            | Response                              |
+| ------------------------- | ------ | ---- | ------------------------------- | ------------------------------------- |
+| `/api/auth/signup`        | POST   | no   | `{email, password}` (pass ≥ 6)  | `{user}` + sets cookie. 409 if dupe.  |
+| `/api/auth/login`         | POST   | no   | `{email, password}`             | `{user}` + sets cookie. 401 if wrong. |
+| `/api/auth/logout`        | POST   | no   | —                               | 204, clears cookie.                   |
+| `/api/auth/me`            | GET    | yes  | —                               | `{user}` or 401.                      |
 
-```json
-{
-  "message": "what's selling best this week?",
-  "history": [
-    { "role": "user", "content": "show me revenue" },
-    { "role": "assistant", "content": "Revenue MTD is $128.4K..." }
-  ]
-}
+`user` shape: `{id, email, created_at}`. The cookie is `tend.session`,
+httpOnly + SameSite=Lax + 30-day Max-Age. `Secure` flag is on in
+production, off in dev so localhost over HTTP works.
+
+### Conversations
+
+All require a valid session.
+
+| Endpoint                       | Method | Body | Response                                 |
+| ------------------------------ | ------ | ---- | ---------------------------------------- |
+| `/api/conversations`           | GET    | —    | `{conversations: [{id, title, ...}]}`    |
+| `/api/conversations`           | POST   | —    | `{conversation: {...}}` (new, empty)     |
+| `/api/conversations/:id`       | GET    | —    | `{conversation: {..., messages: [...]}}` |
+| `/api/conversations/:id`       | DELETE | —    | 204                                      |
+
+Conversation shape: `{id, title, created_at, updated_at}`. Message shape:
+`{role: 'user'|'assistant', content, created_at}`. Titles auto-populate
+from the first 60 chars of the first user message.
+
+### Chat (streaming)
+
+```
+POST /api/chat/:conversationId
+body: { "message": "..." }
 ```
 
-Response: SSE stream with `data: {"delta":"chunk"}` lines, terminated by
-`data: [DONE]`. On error, a single `data: {"error":"..."}` line.
+Returns an SSE stream:
 
-Internals:
+```
+data: {"delta":"chunk of text"}
+...
+data: [DONE]
+```
 
-- Reads `ANTHROPIC_API_KEY` from env. Returns 503 if missing.
-- Calls `claude-sonnet-4-6` on `api.anthropic.com/v1/messages` with
-  `stream: true`, `max_tokens: 1024`.
-- Re-emits Anthropic's `content_block_delta` events as our simpler
-  `{delta}` shape so the client doesn't have to know Anthropic's wire
-  format.
-- The `system` prompt is the `SYSTEM_PROMPT` constant at the top of
-  `server.js`. Edit it there. It contains the Quiet Golf demo snapshot so
-  the agent has realistic data to reference without real connector access.
+On error: `data: {"error":"..."}` and the connection closes.
 
-### Frontend integration
+Server-side flow on each request:
+1. Verify session, verify conversation ownership.
+2. Insert the user message into `messages`.
+3. If conversation title is still `New chat`, set it to the first 60
+   chars of this message.
+4. Load the last 20 messages from the DB → history.
+5. Stream from `api.anthropic.com/v1/messages` (`claude-sonnet-4-6`,
+   `max_tokens: 1024`, `stream: true`, baked `system` prompt).
+6. Re-emit Anthropic's `content_block_delta` as our `{delta}` shape so the
+   client doesn't need to know the upstream wire format.
+7. Accumulate the streamed text into `assistantText`. On stream end,
+   insert it as an `assistant` message and bump `conversations.updated_at`.
 
-`project/app.html` reads `window.__TEND_CONFIG__.apiBase` (defaults to
-`window.location.origin` so chat hits the same Railway server). The
-`replyLive()` function in the IIFE sends `{message, history}`, accumulates
-streamed `delta` chunks into a `rawText` string, and renders with a tiny
-`md()` helper that supports `**bold**` and paragraph breaks.
+### Database schema
 
-`chatHistory` is a single in-memory array maintained by `addUser()` and
-`addReply()`. It's sliced to the last 10 turns before sending.
+Created on boot by `migrate()` in `server.js`. Idempotent
+`CREATE TABLE IF NOT EXISTS`, safe to re-run.
+
+```sql
+users(id, email UNIQUE, password_hash, created_at)
+conversations(id, user_id → users, title, created_at, updated_at)
+messages(id, conversation_id → conversations, role, content, created_at)
+```
+
+Plus indexes on `conversations(user_id, updated_at DESC)` and
+`messages(conversation_id, created_at)`.
 
 ### To change the model
 
@@ -171,7 +227,7 @@ Edit `model: 'claude-sonnet-4-6'` in `server.js`. The latest model IDs are:
 ### To change the system prompt
 
 Edit `SYSTEM_PROMPT` at the top of `server.js`. If you remove the Quiet
-Golf snapshot, the agent will lose its grounding and start hallucinating
+Golf snapshot, the agent loses its grounding and starts hallucinating
 business data, so leave it in until real connectors are wired.
 
 ---
@@ -179,35 +235,69 @@ business data, so leave it in until real connectors are wired.
 ## Run locally
 
 ```bash
-npm install                                  # no-op, no deps, just creates lockfile
-ANTHROPIC_API_KEY=sk-ant-... node server.js
-# open http://localhost:3000
+npm install
+export ANTHROPIC_API_KEY=sk-ant-...
+export DATABASE_URL=postgres://localhost/tend       # or your Railway URL
+export SESSION_SECRET=$(openssl rand -base64 32)
+node server.js
+# open http://localhost:3000/login
 ```
 
-Without the key, chat falls back to canned replies. Everything else works.
+On first boot, `server.js` runs `migrate()` and creates the three tables
+if they don't exist. Idempotent, safe to re-run.
+
+Without `ANTHROPIC_API_KEY`: `/api/chat` returns 503, the client falls
+back to canned demo replies.
+Without `DATABASE_URL`: signup/login and conversation endpoints return
+503; the static site still loads but you can't sign in or chat.
+Without `SESSION_SECRET`: a random one is generated on boot. Existing
+sessions break on every restart. Fine for dev, not for prod.
 
 Routes are filename-based: `/data-brain` serves `project/data-brain.html`,
 `/about` serves `project/about.html`, etc. No build, no hot reload, just
 refresh the browser.
 
+### Local Postgres options
+
+Easiest is to use your Railway DB connection string in dev too (free tier
+covers it). Otherwise install Postgres locally and create a `tend`
+database: `createdb tend && export DATABASE_URL=postgres://localhost/tend`.
+
 ---
 
 ## Deploy to Railway
 
-The static site + the chat API both live on the same Railway service.
+The static site, auth, conversation persistence, and chat API all live on
+the same Railway service.
 
 1. **Connect the repo.** Railway dashboard → New Project → Deploy from
    GitHub → pick this repo.
 2. **Branch.** Settings → Source → Branch. Live deploys from
    `claude/prepare-railway-deployment-ujRcM` today; move to `main` once
    merged.
-3. **Set `ANTHROPIC_API_KEY`.** Settings → Variables → New Variable.
-   Paste your key (`sk-ant-...`). Railway redeploys automatically.
-4. **Verify.** After deploy, the home page loads, `/app` loads (log in
-   first), and chat messages stream from real Claude. If they fall back to
-   canned answers, check the Railway logs for `ANTHROPIC_API_KEY not set`.
-5. **Custom domain.** Settings → Networking → Custom Domain. Point apex /
+3. **Add Postgres.** Project → New → Database → Postgres. Railway sets
+   `DATABASE_URL` on the service automatically. The migration runs on the
+   next boot and creates the schema.
+4. **Set the other env vars.** Service → Variables:
+   - `ANTHROPIC_API_KEY` — from console.anthropic.com → API Keys.
+   - `SESSION_SECRET` — generate with `openssl rand -base64 32`. Required
+     in production so sessions survive restarts and deploys.
+5. **Verify.** After deploy, hit `/login`, create an account, log in,
+   send a chat message. Reload `/app`; the conversation should still be
+   in the sidebar.
+6. **Custom domain.** Settings → Networking → Custom Domain. Point apex /
    www at Railway and wait for the cert.
+
+### Production env vars
+
+| Variable             | Required?       | What it does                                    |
+| -------------------- | --------------- | ----------------------------------------------- |
+| `DATABASE_URL`       | yes for auth    | Postgres connection string. Railway auto-sets.  |
+| `ANTHROPIC_API_KEY`  | yes for chat    | Claude API key. Without it, demo fallback.      |
+| `SESSION_SECRET`     | yes in prod     | Signs the JWT cookie. Sessions break on change. |
+| `PORT`               | optional        | Railway sets this. Defaults to 3000 in dev.     |
+| `NODE_ENV`           | optional        | `production` enables `Secure` cookies.          |
+| `RAILWAY_ENVIRONMENT`| auto            | Railway sets this. Also enables `Secure`.       |
 
 ### Build pinning
 
@@ -378,6 +468,21 @@ repo; here's what's actually wired up vs. still stubbed.
 
 ## Common tasks
 
+### Add a field to the user record
+
+Edit the `users` schema in `migrate()` in `server.js`. The migration is
+`CREATE TABLE IF NOT EXISTS`, so adding columns means writing a separate
+`ALTER TABLE IF NOT EXISTS` statement below the `CREATE`. Then update
+`handleSignup` / `handleLogin` / `userFromRequest` to read/write the new
+field, and update `/api/auth/me` callers in the frontend.
+
+### Reset your local DB
+
+```bash
+psql $DATABASE_URL -c 'DROP TABLE messages, conversations, users CASCADE'
+node server.js   # migrate() rebuilds them
+```
+
 ### Change the agent's voice or business context
 
 `SYSTEM_PROMPT` constant at the top of `server.js`. The current prompt
@@ -431,9 +536,15 @@ entry with `match: /.*/` is the catch-all. Order matters: first match wins.
 
 | Thing                                | File                                              |
 | ------------------------------------ | ------------------------------------------------- |
-| Chat API endpoint                    | `server.js` (`/api/chat/:user` handler)           |
+| Auth endpoints + JWT helpers         | `server.js` (handleSignup/Login/Logout/Me)        |
+| DB schema + migration                | `server.js` (`migrate()` function)                |
+| Conversation endpoints               | `server.js` (list/create/get/delete handlers)     |
+| Chat API + Anthropic streaming       | `server.js` (`handleChat`)                        |
 | Agent system prompt                  | `server.js` (`SYSTEM_PROMPT` const)               |
+| Sign in / sign up UI                 | `project/login.html`                              |
 | Workspace UI (chat, sidebar, empty)  | `project/app.html`                                |
+| Conversation list (sidebar Recent)   | `project/app.html` (`#conv-list`, `loadConversations`) |
+| Auth gate (per protected page)       | inline `<script>` calls `/api/auth/me` on load    |
 | Connections accordion + graph        | `project/data-brain.html`                         |
 | Connector list (per-provider)        | `project/connect.html`                            |
 | Canned replies (demo fallback)       | `project/app.html` (`canned` array)               |

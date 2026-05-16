@@ -6,11 +6,16 @@
 <title>tend Workspace</title>
 <script>
   (function () {
-    var raw;
-    try { raw = sessionStorage.getItem('tend.session'); } catch (_) { raw = null; }
-    if (!raw) {
-      window.location.replace('login.html');
-    }
+    document.documentElement.style.visibility = 'hidden';
+    fetch('/api/auth/me', { credentials: 'same-origin' })
+      .then(function (r) {
+        if (!r.ok) return window.location.replace('login.html');
+        return r.json().then(function (data) {
+          window.__TEND_USER__ = data.user;
+          document.documentElement.style.visibility = '';
+        });
+      })
+      .catch(function () { window.location.replace('login.html'); });
   })();
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -171,6 +176,71 @@ body {
 }
 .cmd-menu .cmd:hover { color: var(--fg); background: var(--bg-3); }
 .cmd-menu .cmd .slash { color: var(--accent); }
+
+/* Recent conversations list */
+.sb-recent .h { margin-bottom: 8px; }
+.sb-new-chat {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--fg-mute);
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-transform: uppercase;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.sb-new-chat:hover { color: var(--accent); }
+.conv-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 1px; }
+.conv-list .conv-empty {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  color: var(--fg-mute);
+  padding: 6px 0;
+}
+.conv-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  margin: 0 -10px;
+  border-radius: 8px;
+  font-size: 12.5px;
+  color: var(--fg-dim);
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  width: calc(100% + 20px);
+  text-align: left;
+  font-family: inherit;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: background 0.12s, color 0.12s;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.conv-item:hover { background: var(--bg-3); color: var(--fg); }
+.conv-item.active { background: var(--bg-3); color: var(--fg); font-weight: 500; }
+.conv-item .conv-del {
+  margin-left: auto;
+  opacity: 0;
+  background: transparent;
+  border: 0;
+  color: var(--fg-mute);
+  cursor: pointer;
+  padding: 0 2px;
+  font-size: 14px;
+  line-height: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: opacity 0.12s, color 0.12s;
+}
+.conv-item:hover .conv-del { opacity: 1; }
+.conv-item .conv-del:hover { color: var(--fg); }
 
 /* Sidebar footer */
 .sb-foot {
@@ -558,6 +628,16 @@ body {
       </div>
     </div>
 
+    <div class="sb-section sb-recent">
+      <div class="h">
+        <span>Recent</span>
+        <button type="button" class="sb-new-chat" id="sb-new-chat" aria-label="New chat">+ New</button>
+      </div>
+      <ul class="conv-list" id="conv-list">
+        <li class="conv-empty">No conversations yet.</li>
+      </ul>
+    </div>
+
     <div class="sb-foot">
       <a href="#" id="logout" class="sb-logout">Sign out</a>
       <a class="sb-gear" href="data-brain.html" aria-label="Data Brain and connections">
@@ -640,26 +720,21 @@ body {
 <script>
 (function () {
   var CFG = window.__TEND_CONFIG__ || {};
-  var API = CFG.apiBase || null;
-  try {
-    var raw = sessionStorage.getItem('tend.session');
-    if (raw) {
-      var sess = JSON.parse(raw);
-      if (sess && sess.email) {
-        var firstName = (sess.email.split('@')[0] || '').split(/[.\-_]/)[0];
-        firstName = firstName.charAt(0).toUpperCase() + firstName.slice(1);
-        var greetEl = document.getElementById('empty-greeting');
-        if (greetEl && firstName) greetEl.textContent = 'How can I help, ' + firstName + '?';
-      }
-    }
-  } catch (_) {}
+  var API = CFG.apiBase || '';
+  var ME = window.__TEND_USER__ || null;
+  if (ME && ME.email) {
+    var firstName = (ME.email.split('@')[0] || '').split(/[.\-_]/)[0];
+    firstName = firstName.charAt(0).toUpperCase() + firstName.slice(1);
+    var greetEl = document.getElementById('empty-greeting');
+    if (greetEl && firstName) greetEl.textContent = 'How can I help, ' + firstName + '?';
+  }
 
   var logoutBtn = document.getElementById('logout');
   if (logoutBtn) {
     logoutBtn.addEventListener('click', function (e) {
       e.preventDefault();
-      try { sessionStorage.removeItem('tend.session'); } catch (_) {}
-      window.location.href = 'index.html';
+      fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' })
+        .finally(function () { window.location.href = 'login.html'; });
     });
   }
 
@@ -685,6 +760,7 @@ body {
   var form = document.getElementById('composer');
   var input = document.getElementById('msg-input');
   var chatHistory = [];
+  var activeConvId = null;
 
   function scroll() { body.scrollTop = body.scrollHeight; }
 
@@ -850,17 +926,22 @@ body {
     }, 900);
   }
 
-  // Stream from /api/chat/:user (same Railway server) via SSE.
-  function replyLive(text) {
-    var userEmail = 'demo@withtend.ai';
-    try {
-      var sraw = sessionStorage.getItem('tend.session');
-      if (sraw) {
-        var s = JSON.parse(sraw);
-        if (s && s.email) userEmail = s.email;
-      }
-    } catch (_) {}
+  // Ensures we have an active conversation id, creating one if needed.
+  function ensureConversation() {
+    if (activeConvId) return Promise.resolve(activeConvId);
+    return fetch('/api/conversations', { method: 'POST', credentials: 'same-origin' })
+      .then(function (r) {
+        if (!r.ok) throw new Error('conversation create failed');
+        return r.json();
+      })
+      .then(function (data) {
+        activeConvId = data.conversation.id;
+        return activeConvId;
+      });
+  }
 
+  // Stream a real Claude response via POST /api/chat/:convId
+  function replyLive(text) {
     var thinking = addThinking();
     var bubble = null;
     var rawText = '';
@@ -882,11 +963,13 @@ body {
       replyCanned(text);
     }
 
-    var history = chatHistory.slice(0, -1).slice(-10);
-    fetch(API + '/api/chat/' + encodeURIComponent(userEmail), {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: text, history: history })
+    ensureConversation().then(function (convId) {
+      return fetch('/api/chat/' + convId, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify({ message: text })
+      });
     })
     .then(function (r) {
       if (!r.ok || !r.body) throw new Error('http ' + r.status);
@@ -895,10 +978,7 @@ body {
       var buf = '';
       function pump() {
         return reader.read().then(function (res) {
-          if (res.done) {
-            if (rawText) chatHistory.push({ role: 'assistant', content: rawText });
-            return;
-          }
+          if (res.done) return;
           buf += decoder.decode(res.value, { stream: true });
           var lines = buf.split('\n');
           buf = lines.pop() || '';
@@ -906,10 +986,7 @@ body {
             var line = lines[i].trim();
             if (!line || !line.startsWith('data:')) continue;
             var payload = line.slice(5).trim();
-            if (payload === '[DONE]') {
-              if (rawText) chatHistory.push({ role: 'assistant', content: rawText });
-              return;
-            }
+            if (payload === '[DONE]') return;
             try {
               var obj = JSON.parse(payload);
               if (obj.error) throw new Error(obj.error);
@@ -927,6 +1004,10 @@ body {
         });
       }
       return pump();
+    })
+    .then(function () {
+      if (rawText) chatHistory.push({ role: 'assistant', content: rawText });
+      loadConversations();
     })
     .catch(function (e) {
       console.warn('replyLive error:', e);
@@ -1042,6 +1123,108 @@ body {
     });
   }
 
+  // ─── Conversation list (sidebar) ────────────────────────────────────
+  var convListEl = document.getElementById('conv-list');
+  var newChatBtn = document.getElementById('sb-new-chat');
+
+  function renderConvList(items) {
+    if (!convListEl) return;
+    if (!items || !items.length) {
+      convListEl.innerHTML = '<li class="conv-empty">No conversations yet.</li>';
+      return;
+    }
+    convListEl.innerHTML = '';
+    items.forEach(function (c) {
+      var li = document.createElement('li');
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'conv-item' + (c.id === activeConvId ? ' active' : '');
+      btn.setAttribute('data-id', c.id);
+      btn.innerHTML = '<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;">' +
+        escapeHtml(c.title || 'New chat') + '</span>';
+      var del = document.createElement('button');
+      del.type = 'button';
+      del.className = 'conv-del';
+      del.setAttribute('aria-label', 'Delete conversation');
+      del.textContent = '×';
+      del.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (!confirm('Delete this conversation?')) return;
+        fetch('/api/conversations/' + c.id, { method: 'DELETE', credentials: 'same-origin' })
+          .then(function () {
+            if (activeConvId === c.id) {
+              activeConvId = null;
+              clearChat();
+            }
+            loadConversations();
+          });
+      });
+      btn.appendChild(del);
+      btn.addEventListener('click', function () { openConversation(c.id); });
+      li.appendChild(btn);
+      convListEl.appendChild(li);
+    });
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function loadConversations() {
+    fetch('/api/conversations', { credentials: 'same-origin' })
+      .then(function (r) { return r.ok ? r.json() : { conversations: [] }; })
+      .then(function (data) { renderConvList(data.conversations); });
+  }
+
+  function clearChat() {
+    body.innerHTML = '';
+    chatHistory = [];
+    if (chatEmpty) {
+      var tpl = chatEmpty.cloneNode(true);
+      tpl.classList.remove('hidden');
+      body.appendChild(tpl);
+      chatEmpty = tpl;
+    }
+  }
+
+  function openConversation(id) {
+    fetch('/api/conversations/' + id, { credentials: 'same-origin' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (data) {
+        if (!data) return;
+        activeConvId = id;
+        clearChat();
+        if (chatEmpty) chatEmpty.classList.add('hidden');
+        chatHistory = [];
+        data.conversation.messages.forEach(function (m) {
+          if (m.role === 'user') {
+            var wrap = el('div', 'msg user');
+            wrap.innerHTML = '<div><div class="who">you</div><div class="bubble"></div></div>';
+            wrap.querySelector('.bubble').textContent = m.content;
+            body.appendChild(wrap);
+            chatHistory.push({ role: 'user', content: m.content });
+          } else {
+            var wrap2 = el('div', 'msg');
+            wrap2.innerHTML = '<div><div class="who">tend</div><div class="bubble">' + md(m.content) + '</div></div>';
+            body.appendChild(wrap2);
+            chatHistory.push({ role: 'assistant', content: m.content });
+          }
+        });
+        scroll();
+        loadConversations();
+      });
+  }
+
+  if (newChatBtn) {
+    newChatBtn.addEventListener('click', function () {
+      activeConvId = null;
+      clearChat();
+      loadConversations();
+      input.focus();
+    });
+  }
+
+  loadConversations();
   setTimeout(function () { input.focus(); }, 100);
 })();
 </script>

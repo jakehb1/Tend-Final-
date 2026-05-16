@@ -6,11 +6,13 @@
 <title>tend · Data Brain</title>
 <script>
   (function () {
-    var raw;
-    try { raw = sessionStorage.getItem('tend.session'); } catch (_) { raw = null; }
-    if (!raw) {
-      window.location.replace('login.html');
-    }
+    document.documentElement.style.visibility = 'hidden';
+    fetch('/api/auth/me', { credentials: 'same-origin' })
+      .then(function (r) {
+        if (!r.ok) return window.location.replace('login.html');
+        document.documentElement.style.visibility = '';
+      })
+      .catch(function () { window.location.replace('login.html'); });
   })();
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">

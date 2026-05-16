@@ -3,113 +3,139 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Login · tend</title>
+<title>Sign in · tend</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="shared.css?v=5">
 <style>
+:root {
+  --bg:    #FAF9F5;
+  --bg-2:  #F4F1EA;
+  --bg-3:  #EBE7DC;
+  --fg:    #1F1E1B;
+  --fg-dim: rgba(31, 30, 27, 0.66);
+  --fg-mute: rgba(31, 30, 27, 0.42);
+  --line:   rgba(31, 30, 27, 0.08);
+  --line-2: rgba(31, 30, 27, 0.18);
+  --accent: #2D2A24;
+  --accent-ink: #FAF9F5;
+}
+html { background: var(--bg); }
+html, body { height: 100%; }
+body { background: var(--bg); color: var(--fg); }
+
+.nav, .nav .brand img { filter: brightness(0); }
+.nav-login { color: var(--fg-mute); }
+.nav-login:hover { color: var(--fg); }
+
 .login-wrap {
-  min-height: calc(100vh - 60px);
+  min-height: calc(100vh - 80px);
   display: grid;
   place-items: center;
-  padding: 120px 24px 80px;
+  padding: 80px 24px 60px;
 }
 .login-card {
   width: 100%;
-  max-width: 420px;
+  max-width: 400px;
   border: 1px solid var(--line);
   background: var(--bg-2);
-  padding: 40px 36px 32px;
+  border-radius: 20px;
+  padding: 36px 32px 28px;
   position: relative;
 }
 .login-kicker {
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
+  font-size: 10.5px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--accent);
-  margin-bottom: 18px;
+  margin-bottom: 14px;
 }
 .login-card h1 {
-  font-size: 28px;
-  font-weight: 300;
+  font-size: 24px;
+  font-weight: 400;
   letter-spacing: -0.02em;
-  line-height: 1.15;
+  line-height: 1.2;
   margin: 0 0 8px;
 }
-.login-card h1 .serif { font-weight: 400; }
 .login-card .sub {
   font-size: 14px;
   color: var(--fg-dim);
   line-height: 1.55;
-  margin: 0 0 28px;
+  margin: 0 0 24px;
 }
-.login-form { display: flex; flex-direction: column; gap: 16px; }
+.login-form { display: flex; flex-direction: column; gap: 14px; }
 .field { display: flex; flex-direction: column; gap: 6px; }
 .field label {
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
+  font-size: 10.5px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--fg-mute);
 }
 .field input {
   background: var(--bg);
-  border: 1px solid var(--line);
+  border: 1px solid var(--line-2);
+  border-radius: 10px;
   color: var(--fg);
   font-family: 'FH Premier', 'IBM Plex Sans', system-ui, sans-serif;
-  font-size: 15px;
+  font-size: 14px;
   padding: 11px 14px;
   outline: none;
-  transition: border-color 0.15s;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
-.field input:focus { border-color: var(--fg-dim); }
-.login-form button {
-  margin-top: 8px;
+.field input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(45, 42, 36, 0.08);
+}
+.login-form button.submit {
+  margin-top: 6px;
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 13px;
-  letter-spacing: 0.02em;
-  padding: 13px 20px;
-  text-decoration: none;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  padding: 12px 20px;
+  border-radius: 999px;
   border: 1px solid var(--accent);
   background: var(--accent);
   color: var(--accent-ink);
   cursor: pointer;
-  transition: filter 0.15s, transform 0.15s;
   -webkit-appearance: none;
   appearance: none;
+  transition: background 0.15s, transform 0.15s;
 }
-.login-form button:hover { filter: brightness(1.08); transform: translateY(-1px); }
-.demo-note {
-  margin-top: 20px;
-  border: 1px dashed var(--line-2);
-  padding: 12px 14px;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
-  color: var(--fg-mute);
-  letter-spacing: 0.04em;
-  line-height: 1.55;
+.login-form button.submit:hover { background: var(--fg); }
+.login-form button.submit[disabled] { opacity: 0.6; cursor: wait; }
+.error-note {
+  display: none;
+  margin-top: 12px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(176, 122, 46, 0.08);
+  border: 1px solid rgba(176, 122, 46, 0.28);
+  font-size: 12.5px;
+  color: #8a5d24;
+  line-height: 1.45;
 }
-.demo-note strong { color: var(--accent); font-weight: 500; }
+.error-note.show { display: block; }
 .login-foot {
-  margin-top: 22px;
+  margin-top: 18px;
   font-size: 13px;
   color: var(--fg-dim);
   text-align: center;
 }
-.login-foot a { color: var(--fg); text-decoration: underline; text-decoration-color: var(--line-2); text-underline-offset: 3px; }
-.login-foot a:hover { text-decoration-color: var(--fg-dim); }
-.login-corner {
-  position: absolute;
-  top: 14px;
-  right: 16px;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  color: var(--fg-mute);
-  text-transform: uppercase;
+.login-foot button {
+  color: var(--fg);
+  background: transparent;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--line-2);
+  text-underline-offset: 3px;
+  cursor: pointer;
 }
+.login-foot button:hover { text-decoration-color: var(--fg-dim); }
 </style>
 </head>
 <body>
@@ -127,52 +153,129 @@
 </nav>
 
 <div class="login-wrap">
-  <form class="login-card" id="login-form" method="get" action="app.html" autocomplete="on">
-    <span class="login-corner">FIG. 01 / AUTH</span>
-    <div class="login-kicker">Sign in</div>
-    <h1>Welcome back to <span class="serif">tend</span>.</h1>
-    <p class="sub">Pick up where your team left off. One standardized data layer across every connected system.</p>
+  <form class="login-card" id="auth-form" autocomplete="on">
+    <div class="login-kicker" id="kicker">Sign in</div>
+    <h1 id="title">Welcome back.</h1>
+    <p class="sub" id="sub">Pick up where your team left off.</p>
 
     <div class="login-form">
       <div class="field">
-        <label for="email">Work email</label>
-        <input id="email" name="email" type="email" placeholder="you@company.com" required />
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" placeholder="you@company.com" required autocomplete="email" />
       </div>
       <div class="field">
         <label for="password">Password</label>
-        <input id="password" name="password" type="password" placeholder="••••••••" required />
+        <input id="password" name="password" type="password" placeholder="At least 6 characters" required autocomplete="current-password" />
       </div>
-      <button type="submit">Sign in <span style="margin-left:6px;">→</span></button>
+      <button type="submit" class="submit" id="submit">Sign in <span style="margin-left:6px;">→</span></button>
     </div>
 
-    <div class="demo-note">
-      <strong>● Demo</strong> &nbsp;Any email and password will get you into the preview workspace.
-    </div>
+    <div class="error-note" id="error"></div>
 
     <div class="login-foot">
-      New to tend? <a href="index.html#contact">Book a demo →</a>
+      <span id="toggle-text">New to tend?</span>
+      <button type="button" id="toggle-btn">Create an account →</button>
     </div>
   </form>
 </div>
 
 <script>
   (function () {
-    var form = document.getElementById('login-form');
-    if (!form) return;
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      var email = (form.elements.email.value || '').trim();
-      try {
-        sessionStorage.setItem('tend.session', JSON.stringify({
-          email: email || 'you@company.com',
-          at: Date.now()
-        }));
-      } catch (_) {}
+    fetch('/api/auth/me', { credentials: 'same-origin' })
+      .then(function (r) {
+        if (!r.ok) return;
+        var onboarded = false;
+        try { onboarded = !!localStorage.getItem('tend.onboarded'); } catch (_) {}
+        window.location.replace(onboarded ? 'app.html' : 'onboarding.html');
+      })
+      .catch(function () {});
+  })();
+</script>
+
+<script>
+(function () {
+  var form = document.getElementById('auth-form');
+  var emailEl = document.getElementById('email');
+  var passwordEl = document.getElementById('password');
+  var kicker = document.getElementById('kicker');
+  var title = document.getElementById('title');
+  var sub = document.getElementById('sub');
+  var submit = document.getElementById('submit');
+  var error = document.getElementById('error');
+  var toggleText = document.getElementById('toggle-text');
+  var toggleBtn = document.getElementById('toggle-btn');
+
+  var mode = 'login';
+
+  function setMode(next) {
+    mode = next;
+    if (mode === 'login') {
+      kicker.textContent = 'Sign in';
+      title.textContent = 'Welcome back.';
+      sub.textContent = 'Pick up where your team left off.';
+      submit.innerHTML = 'Sign in <span style="margin-left:6px;">→</span>';
+      toggleText.textContent = 'New to tend?';
+      toggleBtn.textContent = 'Create an account →';
+      passwordEl.setAttribute('autocomplete', 'current-password');
+    } else {
+      kicker.textContent = 'Create account';
+      title.textContent = 'Start your workspace.';
+      sub.textContent = 'Email and a password. That\'s it.';
+      submit.innerHTML = 'Create account <span style="margin-left:6px;">→</span>';
+      toggleText.textContent = 'Already have an account?';
+      toggleBtn.textContent = 'Sign in →';
+      passwordEl.setAttribute('autocomplete', 'new-password');
+    }
+    error.classList.remove('show');
+    error.textContent = '';
+  }
+
+  toggleBtn.addEventListener('click', function () {
+    setMode(mode === 'login' ? 'signup' : 'login');
+    emailEl.focus();
+  });
+
+  function showError(msg) {
+    error.textContent = msg;
+    error.classList.add('show');
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    error.classList.remove('show');
+    var email = (emailEl.value || '').trim();
+    var password = passwordEl.value || '';
+    if (!email || !password) return showError('Email and password are required.');
+    if (mode === 'signup' && password.length < 6) return showError('Password must be at least 6 characters.');
+
+    submit.disabled = true;
+    var endpoint = mode === 'login' ? '/api/auth/login' : '/api/auth/signup';
+    fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'same-origin',
+      body: JSON.stringify({ email: email, password: password })
+    })
+    .then(function (r) {
+      return r.json().then(function (body) { return { ok: r.ok, status: r.status, body: body }; });
+    })
+    .then(function (res) {
+      submit.disabled = false;
+      if (!res.ok) return showError(res.body.error || 'Something went wrong.');
       var onboarded = false;
       try { onboarded = !!localStorage.getItem('tend.onboarded'); } catch (_) {}
-      window.location.href = onboarded ? 'app.html' : 'onboarding.html';
+      if (mode === 'signup') {
+        window.location.href = 'onboarding.html';
+      } else {
+        window.location.href = onboarded ? 'app.html' : 'onboarding.html';
+      }
+    })
+    .catch(function (e) {
+      submit.disabled = false;
+      showError('Network error. Try again.');
     });
-  })();
+  });
+})();
 </script>
 
 </body>

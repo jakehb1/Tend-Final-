@@ -1,9 +1,21 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
+const { Pool } = require('pg');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const PORT = process.env.PORT || 3000;
 const ROOT = path.join(__dirname, 'project');
+const COOKIE_NAME = 'tend.session';
+const COOKIE_MAX_AGE = 30 * 24 * 60 * 60;
+const IS_PRODUCTION = !!(process.env.RAILWAY_ENVIRONMENT || process.env.NODE_ENV === 'production');
+
+if (!process.env.SESSION_SECRET) {
+  console.warn('warning: SESSION_SECRET not set. Using an ephemeral key; existing sessions break on restart.');
+}
+const SESSION_SECRET = process.env.SESSION_SECRET || crypto.randomBytes(32).toString('hex');
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -44,12 +56,351 @@ Current workspace snapshot:
 
 Respond as a knowledgeable business operator. Be concise and specific. Use numbers from the snapshot above when relevant. Do not use em dashes. Format with clear structure when it helps. You are not a general assistant — stay focused on operations, revenue, inventory, fulfillment, and finance for Quiet Golf.`;
 
+// ─── Database ─────────────────────────────────────────────────────────────
+
+const pool = process.env.DATABASE_URL ? new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false },
+}) : null;
+
+async function migrate() {
+  if (!pool) {
+    console.warn('warning: DATABASE_URL not set. Auth and conversation persistence disabled.');
+    return;
+  }
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS users (
+      id SERIAL PRIMARY KEY,
+      email TEXT UNIQUE NOT NULL,
+      password_hash TEXT NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+    CREATE TABLE IF NOT EXISTS conversations (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      title TEXT NOT NULL DEFAULT 'New chat',
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+    CREATE INDEX IF NOT EXISTS conversations_user_updated
+      ON conversations (user_id, updated_at DESC);
+    CREATE TABLE IF NOT EXISTS messages (
+      id SERIAL PRIMARY KEY,
+      conversation_id INTEGER NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
+      role TEXT NOT NULL CHECK (role IN ('user', 'assistant')),
+      content TEXT NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+    CREATE INDEX IF NOT EXISTS messages_conv_created
+      ON messages (conversation_id, created_at);
+  `);
+  console.log('db: migrations complete');
+}
+
+// ─── Helpers ──────────────────────────────────────────────────────────────
+
+function readJson(req) {
+  return new Promise((resolve, reject) => {
+    let body = '';
+    req.on('data', (chunk) => { body += chunk; });
+    req.on('end', () => {
+      if (!body) return resolve({});
+      try { resolve(JSON.parse(body)); } catch (e) { reject(e); }
+    });
+    req.on('error', reject);
+  });
+}
+
+function send(res, status, body) {
+  res.writeHead(status, { 'Content-Type': 'application/json' });
+  res.end(JSON.stringify(body));
+}
+
+function parseCookies(header) {
+  const out = {};
+  if (!header) return out;
+  header.split(';').forEach((part) => {
+    const [k, ...v] = part.trim().split('=');
+    if (k) out[k] = decodeURIComponent(v.join('='));
+  });
+  return out;
+}
+
+function signToken(userId) {
+  return jwt.sign({ sub: userId }, SESSION_SECRET, { expiresIn: '30d' });
+}
+
+function setSessionCookie(res, token) {
+  const flags = ['Path=/', 'HttpOnly', 'SameSite=Lax', `Max-Age=${COOKIE_MAX_AGE}`];
+  if (IS_PRODUCTION) flags.push('Secure');
+  res.setHeader('Set-Cookie', `${COOKIE_NAME}=${token}; ${flags.join('; ')}`);
+}
+
+function clearSessionCookie(res) {
+  const flags = ['Path=/', 'HttpOnly', 'SameSite=Lax', 'Max-Age=0'];
+  if (IS_PRODUCTION) flags.push('Secure');
+  res.setHeader('Set-Cookie', `${COOKIE_NAME}=; ${flags.join('; ')}`);
+}
+
+async function userFromRequest(req) {
+  if (!pool) return null;
+  const cookies = parseCookies(req.headers.cookie);
+  const token = cookies[COOKIE_NAME];
+  if (!token) return null;
+  let claims;
+  try { claims = jwt.verify(token, SESSION_SECRET); } catch { return null; }
+  const { rows } = await pool.query(
+    'SELECT id, email, created_at FROM users WHERE id = $1',
+    [claims.sub]
+  );
+  return rows[0] || null;
+}
+
+// ─── Auth endpoints ───────────────────────────────────────────────────────
+
+async function handleSignup(req, res) {
+  if (!pool) return send(res, 503, { error: 'DATABASE_URL not configured' });
+  const { email, password } = await readJson(req);
+  if (!email || !password) return send(res, 400, { error: 'email and password are required' });
+  if (typeof password !== 'string' || password.length < 6) {
+    return send(res, 400, { error: 'password must be at least 6 characters' });
+  }
+  const normalized = String(email).trim().toLowerCase();
+  const hash = await bcrypt.hash(password, 10);
+  try {
+    const { rows } = await pool.query(
+      'INSERT INTO users (email, password_hash) VALUES ($1, $2) RETURNING id, email, created_at',
+      [normalized, hash]
+    );
+    setSessionCookie(res, signToken(rows[0].id));
+    send(res, 200, { user: rows[0] });
+  } catch (e) {
+    if (e.code === '23505') return send(res, 409, { error: 'that email is already registered' });
+    throw e;
+  }
+}
+
+async function handleLogin(req, res) {
+  if (!pool) return send(res, 503, { error: 'DATABASE_URL not configured' });
+  const { email, password } = await readJson(req);
+  if (!email || !password) return send(res, 400, { error: 'email and password are required' });
+  const normalized = String(email).trim().toLowerCase();
+  const { rows } = await pool.query(
+    'SELECT id, email, password_hash, created_at FROM users WHERE email = $1',
+    [normalized]
+  );
+  if (!rows[0]) return send(res, 401, { error: 'invalid credentials' });
+  const ok = await bcrypt.compare(password, rows[0].password_hash);
+  if (!ok) return send(res, 401, { error: 'invalid credentials' });
+  setSessionCookie(res, signToken(rows[0].id));
+  send(res, 200, { user: { id: rows[0].id, email: rows[0].email, created_at: rows[0].created_at } });
+}
+
+function handleLogout(res) {
+  clearSessionCookie(res);
+  res.writeHead(204);
+  res.end();
+}
+
+async function handleMe(req, res) {
+  const user = await userFromRequest(req);
+  if (!user) return send(res, 401, { error: 'not signed in' });
+  send(res, 200, { user });
+}
+
+// ─── Conversations ────────────────────────────────────────────────────────
+
+async function listConversations(user, res) {
+  const { rows } = await pool.query(
+    'SELECT id, title, created_at, updated_at FROM conversations WHERE user_id = $1 ORDER BY updated_at DESC LIMIT 50',
+    [user.id]
+  );
+  send(res, 200, { conversations: rows });
+}
+
+async function createConversation(user, res) {
+  const { rows } = await pool.query(
+    'INSERT INTO conversations (user_id) VALUES ($1) RETURNING id, title, created_at, updated_at',
+    [user.id]
+  );
+  send(res, 200, { conversation: rows[0] });
+}
+
+async function getConversation(user, convId, res) {
+  const { rows: convRows } = await pool.query(
+    'SELECT id, title, created_at, updated_at FROM conversations WHERE id = $1 AND user_id = $2',
+    [convId, user.id]
+  );
+  if (!convRows[0]) return send(res, 404, { error: 'conversation not found' });
+  const { rows: msgRows } = await pool.query(
+    'SELECT role, content, created_at FROM messages WHERE conversation_id = $1 ORDER BY created_at',
+    [convId]
+  );
+  send(res, 200, { conversation: { ...convRows[0], messages: msgRows } });
+}
+
+async function deleteConversation(user, convId, res) {
+  const { rowCount } = await pool.query(
+    'DELETE FROM conversations WHERE id = $1 AND user_id = $2',
+    [convId, user.id]
+  );
+  if (!rowCount) return send(res, 404, { error: 'conversation not found' });
+  res.writeHead(204);
+  res.end();
+}
+
+// ─── Chat ─────────────────────────────────────────────────────────────────
+
+async function handleChat(req, res, convId) {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) return send(res, 503, { error: 'ANTHROPIC_API_KEY not set' });
+
+  const user = await userFromRequest(req);
+  if (!user) return send(res, 401, { error: 'not signed in' });
+
+  const { rows: convRows } = await pool.query(
+    'SELECT id, title FROM conversations WHERE id = $1 AND user_id = $2',
+    [convId, user.id]
+  );
+  if (!convRows[0]) return send(res, 404, { error: 'conversation not found' });
+  const isFirstMessage = convRows[0].title === 'New chat';
+
+  let message;
+  try { ({ message } = await readJson(req)); } catch { return send(res, 400, { error: 'invalid body' }); }
+  if (!message) return send(res, 400, { error: 'message is required' });
+
+  await pool.query(
+    'INSERT INTO messages (conversation_id, role, content) VALUES ($1, $2, $3)',
+    [convId, 'user', message]
+  );
+  if (isFirstMessage) {
+    const title = String(message).slice(0, 60).trim() || 'New chat';
+    await pool.query('UPDATE conversations SET title = $1 WHERE id = $2', [title, convId]);
+  }
+
+  const { rows: history } = await pool.query(
+    `SELECT role, content FROM messages
+     WHERE conversation_id = $1
+     ORDER BY created_at DESC LIMIT 20`,
+    [convId]
+  );
+  const messages = history.reverse().map((m) => ({ role: m.role, content: m.content }));
+
+  let upstream;
+  try {
+    upstream = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1024,
+        stream: true,
+        system: SYSTEM_PROMPT,
+        messages,
+      }),
+    });
+  } catch (e) {
+    return send(res, 502, { error: 'upstream fetch failed: ' + e.message });
+  }
+  if (!upstream.ok) {
+    const errText = await upstream.text().catch(() => '');
+    return send(res, 502, { error: errText || `upstream ${upstream.status}` });
+  }
+
+  res.writeHead(200, {
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache',
+    'Connection': 'keep-alive',
+  });
+
+  const decoder = new TextDecoder();
+  let buf = '';
+  let assistantText = '';
+  try {
+    for await (const chunk of upstream.body) {
+      buf += decoder.decode(chunk, { stream: true });
+      const lines = buf.split('\n');
+      buf = lines.pop() || '';
+      for (const line of lines) {
+        if (!line.startsWith('data:')) continue;
+        const payload = line.slice(5).trim();
+        if (payload === '[DONE]') continue;
+        try {
+          const obj = JSON.parse(payload);
+          if (obj.type === 'content_block_delta' && obj.delta?.type === 'text_delta') {
+            assistantText += obj.delta.text;
+            res.write(`data: ${JSON.stringify({ delta: obj.delta.text })}\n\n`);
+          }
+        } catch {}
+      }
+    }
+  } catch (e) {
+    res.write(`data: ${JSON.stringify({ error: e.message })}\n\n`);
+  }
+
+  if (assistantText) {
+    await pool.query(
+      'INSERT INTO messages (conversation_id, role, content) VALUES ($1, $2, $3)',
+      [convId, 'assistant', assistantText]
+    );
+    await pool.query('UPDATE conversations SET updated_at = NOW() WHERE id = $1', [convId]);
+  }
+
+  res.write('data: [DONE]\n\n');
+  res.end();
+}
+
+// ─── Router ───────────────────────────────────────────────────────────────
+
+async function handleApi(req, res) {
+  const url = req.url.split('?')[0];
+
+  if (url === '/api/auth/signup' && req.method === 'POST') return handleSignup(req, res);
+  if (url === '/api/auth/login'  && req.method === 'POST') return handleLogin(req, res);
+  if (url === '/api/auth/logout' && req.method === 'POST') return handleLogout(res);
+  if (url === '/api/auth/me'     && req.method === 'GET')  return handleMe(req, res);
+
+  if (url === '/api/conversations') {
+    if (!pool) return send(res, 503, { error: 'DATABASE_URL not configured' });
+    const user = await userFromRequest(req);
+    if (!user) return send(res, 401, { error: 'not signed in' });
+    if (req.method === 'GET') return listConversations(user, res);
+    if (req.method === 'POST') return createConversation(user, res);
+    return send(res, 405, { error: 'method not allowed' });
+  }
+
+  const convMatch = url.match(/^\/api\/conversations\/(\d+)$/);
+  if (convMatch) {
+    if (!pool) return send(res, 503, { error: 'DATABASE_URL not configured' });
+    const user = await userFromRequest(req);
+    if (!user) return send(res, 401, { error: 'not signed in' });
+    const convId = Number(convMatch[1]);
+    if (req.method === 'GET') return getConversation(user, convId, res);
+    if (req.method === 'DELETE') return deleteConversation(user, convId, res);
+    return send(res, 405, { error: 'method not allowed' });
+  }
+
+  const chatMatch = url.match(/^\/api\/chat\/(\d+)$/);
+  if (chatMatch) {
+    if (req.method !== 'POST') return send(res, 405, { error: 'method not allowed' });
+    if (!pool) return send(res, 503, { error: 'DATABASE_URL not configured' });
+    return handleChat(req, res, Number(chatMatch[1]));
+  }
+
+  send(res, 404, { error: 'not found' });
+}
+
+// ─── Static file serving ──────────────────────────────────────────────────
+
 function resolveFile(urlPath) {
   const decoded = decodeURIComponent(urlPath.split('?')[0].split('#')[0]);
   const safe = path.normalize(decoded).replace(/^(\.\.[\/\\])+/, '');
   let filePath = path.join(ROOT, safe);
   if (!filePath.startsWith(ROOT)) return null;
-
   try {
     const stat = fs.statSync(filePath);
     if (stat.isDirectory()) filePath = path.join(filePath, 'index.html');
@@ -62,104 +413,7 @@ function resolveFile(urlPath) {
   return filePath;
 }
 
-const server = http.createServer(async (req, res) => {
-  // Chat API endpoint: POST /api/chat/:user
-  if (req.url && req.url.startsWith('/api/chat/')) {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-    if (req.method === 'OPTIONS') { res.writeHead(204); res.end(); return; }
-    if (req.method !== 'POST') { res.writeHead(405); res.end(); return; }
-
-    const apiKey = process.env.ANTHROPIC_API_KEY;
-    if (!apiKey) {
-      res.writeHead(503, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ error: 'ANTHROPIC_API_KEY not set' }));
-      return;
-    }
-
-    let body = '';
-    req.on('data', chunk => { body += chunk; });
-    req.on('end', async () => {
-      let message, history;
-      try {
-        const parsed = JSON.parse(body);
-        message = parsed.message;
-        history = parsed.history || [];
-      } catch (_) {
-        res.writeHead(400); res.end(); return;
-      }
-      if (!message) { res.writeHead(400); res.end(); return; }
-
-      const messages = [
-        ...history.slice(-10),
-        { role: 'user', content: message }
-      ];
-
-      try {
-        const upstream = await fetch('https://api.anthropic.com/v1/messages', {
-          method: 'POST',
-          headers: {
-            'x-api-key': apiKey,
-            'anthropic-version': '2023-06-01',
-            'content-type': 'application/json',
-          },
-          body: JSON.stringify({
-            model: 'claude-sonnet-4-6',
-            max_tokens: 1024,
-            stream: true,
-            system: SYSTEM_PROMPT,
-            messages,
-          })
-        });
-
-        if (!upstream.ok) {
-          const err = await upstream.text();
-          res.writeHead(502, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ error: err }));
-          return;
-        }
-
-        res.writeHead(200, {
-          'Content-Type': 'text/event-stream',
-          'Cache-Control': 'no-cache',
-          'Connection': 'keep-alive',
-        });
-
-        const decoder = new TextDecoder();
-        let buf = '';
-        for await (const chunk of upstream.body) {
-          buf += decoder.decode(chunk, { stream: true });
-          const lines = buf.split('\n');
-          buf = lines.pop() || '';
-          for (const line of lines) {
-            if (!line.startsWith('data:')) continue;
-            const payload = line.slice(5).trim();
-            if (payload === '[DONE]') continue;
-            try {
-              const obj = JSON.parse(payload);
-              if (obj.type === 'content_block_delta' && obj.delta?.type === 'text_delta') {
-                res.write(`data: ${JSON.stringify({ delta: obj.delta.text })}\n\n`);
-              }
-            } catch (_) {}
-          }
-        }
-        res.write('data: [DONE]\n\n');
-        res.end();
-      } catch (e) {
-        if (!res.headersSent) {
-          res.writeHead(500, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ error: e.message }));
-        } else {
-          res.write(`data: ${JSON.stringify({ error: e.message })}\n\n`);
-          res.end();
-        }
-      }
-    });
-    return;
-  }
-
-  // Static file serving
+function serveStatic(req, res) {
   const filePath = resolveFile(req.url || '/');
   if (!filePath || !fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) {
     res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
@@ -169,7 +423,9 @@ const server = http.createServer(async (req, res) => {
   const ext = path.extname(filePath).toLowerCase();
   const stat = fs.statSync(filePath);
   const contentType = MIME[ext] || 'application/octet-stream';
-  const cacheControl = ext === '.html' || ext === '.css' || ext === '.js' ? 'no-cache' : 'public, max-age=3600';
+  const cacheControl = ext === '.html' || ext === '.css' || ext === '.js'
+    ? 'no-cache'
+    : 'public, max-age=3600';
 
   if (req.headers.range && (ext === '.mp4' || ext === '.mov' || ext === '.webm')) {
     const m = /bytes=(\d*)-(\d*)/.exec(req.headers.range);
@@ -198,8 +454,25 @@ const server = http.createServer(async (req, res) => {
     'Cache-Control': cacheControl,
   });
   fs.createReadStream(filePath).pipe(res);
+}
+
+// ─── Boot ─────────────────────────────────────────────────────────────────
+
+const server = http.createServer(async (req, res) => {
+  try {
+    if (req.url && req.url.startsWith('/api/')) return await handleApi(req, res);
+    return serveStatic(req, res);
+  } catch (e) {
+    console.error('unhandled error:', e);
+    if (!res.headersSent) send(res, 500, { error: 'internal error' });
+    else { try { res.end(); } catch {} }
+  }
 });
 
-server.listen(PORT, '0.0.0.0', () => {
-  console.log(`tend site serving ${ROOT} on port ${PORT}`);
-});
+migrate()
+  .catch((e) => { console.error('migration failed:', e); })
+  .finally(() => {
+    server.listen(PORT, '0.0.0.0', () => {
+      console.log(`tend on port ${PORT} (${IS_PRODUCTION ? 'production' : 'dev'})`);
+    });
+  });

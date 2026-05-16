@@ -6,9 +6,13 @@
 <title>Welcome · tend</title>
 <script>
   (function () {
-    var raw;
-    try { raw = sessionStorage.getItem('tend.session'); } catch (_) { raw = null; }
-    if (!raw) { window.location.replace('login.html'); }
+    document.documentElement.style.visibility = 'hidden';
+    fetch('/api/auth/me', { credentials: 'same-origin' })
+      .then(function (r) {
+        if (!r.ok) return window.location.replace('login.html');
+        document.documentElement.style.visibility = '';
+      })
+      .catch(function () { window.location.replace('login.html'); });
   })();
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -389,20 +393,17 @@ body {
   var prefix = hr < 12 ? 'Morning' : (hr < 18 ? 'Afternoon' : 'Evening');
   greetEl.firstChild.textContent = prefix + ', ';
 
-  // Name from session
-  try {
-    var raw = sessionStorage.getItem('tend.session');
-    if (raw) {
-      var sess = JSON.parse(raw);
-      if (sess && sess.email) {
-        var local = sess.email.split('@')[0].split(/[.\-_]/)[0];
-        if (local) {
-          var nm = local.charAt(0).toUpperCase() + local.slice(1).toLowerCase();
-          document.getElementById('ob-name').textContent = nm;
-        }
-      }
-    }
-  } catch (_) {}
+  // Name from /api/auth/me
+  fetch('/api/auth/me', { credentials: 'same-origin' })
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (data) {
+      if (!data || !data.user || !data.user.email) return;
+      var local = data.user.email.split('@')[0].split(/[.\-_]/)[0];
+      if (!local) return;
+      var nm = local.charAt(0).toUpperCase() + local.slice(1).toLowerCase();
+      document.getElementById('ob-name').textContent = nm;
+    })
+    .catch(function () {});
 
   var stepLabel = document.getElementById('ob-step-label');
   var dots = document.querySelectorAll('.ob-progress .dot');
