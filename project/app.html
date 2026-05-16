@@ -33,9 +33,9 @@
   --fg-mute: rgba(31, 30, 27, 0.42);
   --line:   rgba(31, 30, 27, 0.08);
   --line-2: rgba(31, 30, 27, 0.18);
-  --accent: #3F5C46;
-  --accent-ink: #FAF9F5;
-  --accent-soft: rgba(63, 92, 70, 0.10);
+  --accent: #E5E9E0;
+  --accent-ink: #1F1E1B;
+  --accent-soft: rgba(229, 233, 224, 0.45);
 }
 html { background: var(--bg); overflow-x: hidden; }
 
@@ -86,11 +86,18 @@ body {
 .icon-btn svg { display: block; }
 .icon-btn .brand-mark {
   display: block;
-  width: 22px;
-  height: 16px;
+  width: 26px;
+  height: 18px;
   background: url('images/tend-logo.png') no-repeat left center / auto 100%;
   filter: brightness(0);
 }
+#brand-btn {
+  background: transparent;
+  width: auto;
+  height: auto;
+  padding: 0;
+}
+#brand-btn:hover { background: transparent; }
 
 .tend-chip {
   font-family: 'IBM Plex Mono', monospace;
@@ -184,7 +191,7 @@ body {
   transition: color 0.12s, background 0.12s;
 }
 .cmd-menu .cmd:hover { color: var(--fg); background: var(--bg-3); }
-.cmd-menu .cmd .slash { color: var(--accent); }
+.cmd-menu .cmd .slash { color: var(--fg); }
 
 /* Recent conversations list */
 .sb-recent .h { margin-bottom: 8px; }
@@ -201,7 +208,7 @@ body {
   -webkit-appearance: none;
   appearance: none;
 }
-.sb-new-chat:hover { color: var(--accent); }
+.sb-new-chat:hover { color: var(--fg); }
 .conv-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 1px; }
 .conv-list .conv-empty {
   font-family: 'IBM Plex Mono', monospace;
@@ -320,7 +327,7 @@ body {
   margin-bottom: 12px;
   display: flex; justify-content: space-between; align-items: center;
 }
-.sb-section .h .count { color: var(--accent); }
+.sb-section .h .count { color: var(--fg); }
 
 /* Chat */
 .chat {
@@ -356,7 +363,7 @@ body {
   color: var(--fg-mute);
   letter-spacing: 0.05em;
 }
-.chat-head .meta .live { color: var(--accent); }
+.chat-head .meta .live { color: var(--fg); }
 
 .chat-body {
   flex: 1;
@@ -377,7 +384,7 @@ body {
   color: var(--fg-mute);
   margin-bottom: 6px;
 }
-.msg.user .who { color: var(--accent); }
+.msg.user .who { color: var(--fg); }
 .msg .bubble {
   font-size: 15px;
   line-height: 1.6;
@@ -400,7 +407,7 @@ body {
 }
 .msg .bubble p { margin: 0 0 10px; }
 .msg .bubble p:last-child { margin-bottom: 0; }
-.msg .bubble strong { color: var(--accent); font-weight: 500; }
+.msg .bubble strong { color: var(--fg); font-weight: 600; }
 
 .sources {
   display: flex; flex-wrap: wrap; gap: 6px;
@@ -415,7 +422,7 @@ body {
   border-radius: 999px;
   padding: 4px 10px;
 }
-.src::before { content: "● "; color: var(--accent); }
+.src::before { content: "● "; color: var(--fg); }
 
 .thinking {
   display: inline-flex;
@@ -426,7 +433,7 @@ body {
 .thinking .d {
   width: 7px; height: 7px;
   border-radius: 50%;
-  background: var(--accent);
+  background: var(--fg-dim);
   animation: typing 1.2s infinite ease-in-out;
 }
 .thinking .d:nth-child(2) { animation-delay: 0.18s; }
@@ -435,6 +442,42 @@ body {
   0%, 100% { opacity: 0.25; transform: translateY(0); }
   40%      { opacity: 1;    transform: translateY(-3px); }
 }
+
+.attach-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  max-width: min(760px, 100%);
+  margin: 0 auto 8px;
+}
+.attach-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px 5px 8px;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 12px;
+  color: var(--fg);
+  max-width: 100%;
+}
+.attach-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 200px;
+}
+.attach-remove {
+  background: transparent;
+  border: 0;
+  color: var(--fg-dim);
+  font-size: 16px;
+  line-height: 1;
+  padding: 0 2px;
+  cursor: pointer;
+}
+.attach-remove:hover { color: var(--fg); }
 
 /* Composer (horizontal: [+] [input pill] [paperclip] [mic]) */
 .composer {
@@ -522,8 +565,8 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  padding: 24px 24px 0;
+  justify-content: flex-start;
+  padding: 8px 24px 0;
   max-width: 760px;
   margin: 0 auto;
   width: 100%;
@@ -531,23 +574,33 @@ body {
 }
 .chat-empty.hidden { display: none; }
 .empty-greeting {
-  font-size: 26px;
+  font-size: 30px;
   font-weight: 500;
   letter-spacing: -0.01em;
   color: var(--fg);
-  line-height: 1.25;
-  margin: 0 0 32px;
+  line-height: 1.2;
+  margin: 0;
   opacity: 0;
   animation: fadeUp 0.5s 0.1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
+
+.home-bento {
+  border-top: 1px solid var(--line);
+  padding: 16px 18px 22px;
+  background: var(--bg);
+  flex-shrink: 0;
+  max-width: 760px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+.home-bento.hidden { display: none; }
 .bento {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  grid-template-rows: auto auto auto;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
   gap: 10px;
   width: 100%;
   min-width: 0;
-  margin-bottom: 18px;
   opacity: 0;
   animation: fadeUp 0.5s 0.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
@@ -572,27 +625,41 @@ body {
   appearance: none;
   transition: background 0.12s, transform 0.12s;
 }
-.b-item:hover { background: var(--bg-3); }
+.b-item { background: var(--accent); }
+.b-item:hover { background: #DBDFD4; }
 .b-item.b-circle {
   border-radius: 50%;
   aspect-ratio: 1;
   padding: 8px;
   font-size: 13.5px;
 }
-.b-rev    { grid-column: span 3; }
-.b-inb    { grid-column: span 3; }
-.b-dec    { grid-column: span 4; min-height: 100px; padding: 24px; }
-.b-team   { grid-column: span 2; }
-.b-daily  { grid-column: span 2; }
-.b-alerts { grid-column: span 2; }
-.b-start  { grid-column: span 2; background: var(--accent); color: var(--accent-ink); }
-.b-start:hover { background: var(--fg); }
+.b-rev    { grid-column: 1 / 7;  padding: 16px; }
+.b-inb    { grid-column: 7 / 13; padding: 16px; }
+.b-dec    { grid-column: 1 / 8;  min-height: 120px; padding: 18px; border-radius: 28px; }
+.b-team   { grid-column: 8 / 13; aspect-ratio: 1; }
+.b-daily  { grid-column: 1 / 5;  aspect-ratio: 1; }
+.b-alerts { grid-column: 5 / 9;  align-self: center; padding: 16px; }
+.b-start  {
+  grid-column: 9 / 13;
+  aspect-ratio: 1;
+  background: var(--fg);
+  color: var(--bg);
+  font-size: 13.5px;
+  line-height: 1.2;
+}
+.b-start:hover { background: #000; }
 
 @media (max-width: 720px) {
-  .empty-greeting { font-size: 22px; margin-bottom: 24px; }
-  .b-item { font-size: 13.5px; padding: 14px 16px; }
+  .empty-greeting { font-size: 26px; }
+  .b-item { font-size: 14px; padding: 14px 16px; }
+  .b-item.b-circle { font-size: 13px; }
+  .b-dec { padding: 18px; min-height: 110px; }
+  .home-bento { padding: 14px 14px 18px; }
+}
+@media (max-width: 480px) {
+  .empty-greeting { font-size: 22px; }
+  .b-item { font-size: 13px; padding: 12px 14px; }
   .b-item.b-circle { font-size: 12px; }
-  .b-dec { padding: 18px; min-height: 80px; }
 }
 
 .app-toggle {
@@ -644,9 +711,7 @@ body.drawer-open .app-backdrop { display: block; }
       <span class="brand-mark" aria-hidden="true"></span>
     </button>
   </div>
-  <div class="bar-slot bar-center">
-    <div class="tend-chip">TEND</div>
-  </div>
+  <div class="bar-slot bar-center"></div>
   <div class="bar-slot bar-right">
     <a class="icon-btn" href="data-brain.html" aria-label="Settings">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -714,15 +779,6 @@ body.drawer-open .app-backdrop { display: block; }
     <div class="chat-body" id="chat-body">
       <div class="chat-empty" id="chat-empty">
         <h2 class="empty-greeting" id="empty-greeting">Welcome.<br/>How can I help you?</h2>
-        <div class="bento" id="bento">
-          <button class="b-item b-rev" type="button" data-text="How is revenue trending? Give me the highlights.">Revenue</button>
-          <button class="b-item b-inb" type="button" data-text="Summarize my unread inbox.">Inbox</button>
-          <button class="b-item b-dec" type="button" data-text="What decisions need my approval today?">Decisions queue</button>
-          <button class="b-item b-team b-circle" type="button" data-text="What is the team up to today?">Team</button>
-          <button class="b-item b-daily b-circle" type="button" data-text="Morning briefing">Daily Brief</button>
-          <button class="b-item b-alerts" type="button" data-text="What needs my attention right now?">Alerts</button>
-          <button class="b-item b-start b-circle" type="button" data-text="">Start Chatting</button>
-        </div>
       </div>
     </div>
 
@@ -759,6 +815,18 @@ body.drawer-open .app-backdrop { display: block; }
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
         </button>
       </form>
+    </div>
+
+    <div class="home-bento" id="home-bento">
+      <div class="bento" id="bento">
+        <button class="b-item b-rev" type="button" data-text="How is revenue trending? Give me the highlights.">Revenue</button>
+        <button class="b-item b-inb" type="button" data-text="Summarize my unread inbox.">Inbox</button>
+        <button class="b-item b-dec" type="button" data-text="What decisions need my approval today?">Decisions queue</button>
+        <button class="b-item b-team b-circle" type="button" data-text="What is the team up to today?">Team</button>
+        <button class="b-item b-daily b-circle" type="button" data-text="Morning briefing">Daily Brief</button>
+        <button class="b-item b-alerts" type="button" data-text="What needs my attention right now?">Alerts</button>
+        <button class="b-item b-start b-circle" type="button" data-text="">Start Chatting</button>
+      </div>
     </div>
   </main>
 
@@ -837,8 +905,14 @@ body.drawer-open .app-backdrop { display: block; }
   }
 
   var chatEmpty = document.getElementById('chat-empty');
+  var homeBento = document.getElementById('home-bento');
   function hideEmpty() {
     if (chatEmpty && !chatEmpty.classList.contains('hidden')) chatEmpty.classList.add('hidden');
+    if (homeBento && !homeBento.classList.contains('hidden')) homeBento.classList.add('hidden');
+  }
+  function showEmpty() {
+    if (chatEmpty) chatEmpty.classList.remove('hidden');
+    if (homeBento) homeBento.classList.remove('hidden');
   }
 
   function addUser(text) {
@@ -1074,11 +1148,21 @@ body.drawer-open .app-backdrop { display: block; }
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     var text = (input.value || '').trim();
-    if (!text) return;
-    addUser(text);
+    var files = (window.__getAttachments && window.__getAttachments()) || [];
+    if (!text && !files.length) return;
+    var sent = text;
+    if (files.length) {
+      var names = files.map(function (f) {
+        var kb = Math.max(1, Math.round(f.size / 1024));
+        return f.name + ' (' + kb + ' KB)';
+      }).join(', ');
+      sent = (text ? text + '\n\n' : '') + 'Attached: ' + names;
+    }
+    addUser(sent);
     input.value = '';
     input.style.height = 'auto';
-    reply(text);
+    if (window.__clearAttachments) window.__clearAttachments();
+    reply(sent);
   });
 
   input.addEventListener('input', function () {
@@ -1135,9 +1219,67 @@ body.drawer-open .app-backdrop { display: block; }
     }
   }
 
-  // Attach button is a placeholder for now.
+  // Attach button: open a hidden file input and append a chip to the composer.
   var attachBtn = document.getElementById('attach-btn');
-  if (attachBtn) attachBtn.addEventListener('click', function () { input.focus(); });
+  var attachedFiles = [];
+  var fileInput = document.createElement('input');
+  fileInput.type = 'file';
+  fileInput.multiple = true;
+  fileInput.accept = '*/*';
+  fileInput.style.display = 'none';
+  document.body.appendChild(fileInput);
+
+  function renderAttachments() {
+    var existing = document.getElementById('attach-chips');
+    if (existing) existing.remove();
+    if (!attachedFiles.length) return;
+    var row = document.createElement('div');
+    row.id = 'attach-chips';
+    row.className = 'attach-chips';
+    attachedFiles.forEach(function (f, idx) {
+      var chip = document.createElement('span');
+      chip.className = 'attach-chip';
+      chip.innerHTML =
+        '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+          '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>' +
+          '<polyline points="17 8 12 3 7 8"/>' +
+          '<line x1="12" y1="3" x2="12" y2="15"/>' +
+        '</svg>' +
+        '<span class="attach-name"></span>' +
+        '<button type="button" class="attach-remove" aria-label="Remove">&times;</button>';
+      chip.querySelector('.attach-name').textContent = f.name;
+      chip.querySelector('.attach-remove').addEventListener('click', function () {
+        attachedFiles.splice(idx, 1);
+        renderAttachments();
+      });
+      row.appendChild(chip);
+    });
+    var composerEl = document.querySelector('.composer');
+    var composerInner = document.getElementById('composer');
+    if (composerEl && composerInner) composerEl.insertBefore(row, composerInner);
+  }
+
+  if (attachBtn) {
+    attachBtn.addEventListener('click', function () { fileInput.click(); });
+  }
+  fileInput.addEventListener('change', function () {
+    var files = Array.from(fileInput.files || []);
+    var MAX = 10 * 1024 * 1024;
+    files.forEach(function (f) {
+      if (f.size > MAX) {
+        alert(f.name + ' is larger than 10MB and was skipped.');
+        return;
+      }
+      attachedFiles.push(f);
+    });
+    fileInput.value = '';
+    renderAttachments();
+    input.focus();
+  });
+
+  // Expose so the submit handler can include filenames in the message.
+  window.__getAttachments = function () { return attachedFiles.slice(); };
+  window.__clearAttachments = function () { attachedFiles = []; renderAttachments(); };
 
   // Paperclip command menu: toggle on click. Picking a command points
   // the agent at that task: the agent immediately asks a focused
@@ -1265,6 +1407,7 @@ body.drawer-open .app-backdrop { display: block; }
       body.appendChild(tpl);
       chatEmpty = tpl;
     }
+    if (homeBento) homeBento.classList.remove('hidden');
   }
 
   function openConversation(id) {
@@ -1274,7 +1417,7 @@ body.drawer-open .app-backdrop { display: block; }
         if (!data) return;
         activeConvId = id;
         clearChat();
-        if (chatEmpty) chatEmpty.classList.add('hidden');
+        hideEmpty();
         chatHistory = [];
         data.conversation.messages.forEach(function (m) {
           if (m.role === 'user') {
