@@ -33,9 +33,9 @@
   --fg-mute: rgba(31, 30, 27, 0.42);
   --line:   rgba(31, 30, 27, 0.08);
   --line-2: rgba(31, 30, 27, 0.18);
-  --accent: #2D2A24;
+  --accent: #3F5C46;
   --accent-ink: #FAF9F5;
-  --accent-soft: rgba(45, 42, 36, 0.10);
+  --accent-soft: rgba(63, 92, 70, 0.10);
 }
 html { background: var(--bg); }
 
@@ -313,9 +313,11 @@ body {
 
 /* Chat */
 .chat {
+  flex: 1;
   display: flex;
   flex-direction: column;
   min-height: 0;
+  min-width: 0;
   position: relative;
 }
 .chat-head {
@@ -341,11 +343,14 @@ body {
 .chat-body {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 32px 28px 24px;
   display: flex; flex-direction: column; gap: 24px;
+  min-width: 0;
 }
-.msg { display: flex; gap: 14px; max-width: 760px; }
-.msg.user { align-self: flex-end; max-width: 540px; }
+.msg { display: flex; gap: 14px; max-width: min(760px, 100%); min-width: 0; }
+.msg.user { align-self: flex-end; max-width: min(540px, 100%); }
+.msg > div { min-width: 0; flex: 1; }
 .msg .who {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 10px;
@@ -359,6 +364,9 @@ body {
   font-size: 15px;
   line-height: 1.6;
   color: var(--fg);
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  min-width: 0;
 }
 .msg.user .bubble {
   background: var(--bg-2);
@@ -582,9 +590,17 @@ body.drawer-open .sidebar { transform: translateX(0); }
 body.drawer-open .app-backdrop { display: block; }
 
 @media (max-width: 720px) {
-  .chat-body, .composer, .chat-head { padding-left: 16px; padding-right: 16px; }
+  .chat-body { padding: 24px 18px 20px; }
+  .composer, .chat-head { padding-left: 16px; padding-right: 16px; }
   .tend-chip { font-size: 11px; padding: 7px 18px; }
   .icon-btn { width: 34px; height: 34px; }
+  .app-bar { padding: 10px 14px; }
+  .msg.user { max-width: min(420px, 100%); }
+  .msg.user .bubble { padding: 10px 14px; font-size: 14.5px; }
+}
+@media (max-width: 480px) {
+  .chat-body { padding: 18px 14px 16px; gap: 18px; }
+  .msg { gap: 10px; }
 }
 </style>
 </head>

@@ -20,8 +20,25 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="shared.css?v=5">
 <style>
+/* ----- Light theme override (matches /app, /data-brain, /connect) ----- */
+:root {
+  --bg:    #FAF9F5;
+  --bg-2:  #F4F1EA;
+  --bg-3:  #EBE7DC;
+  --fg:    #1F1E1B;
+  --fg-dim: rgba(31, 30, 27, 0.66);
+  --fg-mute: rgba(31, 30, 27, 0.42);
+  --line:   rgba(31, 30, 27, 0.08);
+  --line-2: rgba(31, 30, 27, 0.18);
+  --accent: #3F5C46;
+  --accent-ink: #FAF9F5;
+  --accent-soft: rgba(63, 92, 70, 0.10);
+}
+html { background: var(--bg); }
 html, body { min-height: 100vh; }
 body {
+  background: var(--bg);
+  color: var(--fg);
   display: flex;
   flex-direction: column;
 }
