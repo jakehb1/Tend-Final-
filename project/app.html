@@ -708,23 +708,23 @@ body.drawer-open .app-backdrop { display: block; }
   .chat {
     display: grid;
     grid-template-columns: minmax(360px, 1fr) minmax(0, 1.4fr);
-    grid-template-rows: auto 1fr auto;
+    grid-template-rows: 1fr auto;
     grid-template-areas:
-      "empty   head"
       "empty   body"
       "bento   composer";
     gap: 0;
     padding: 22px 22px 22px;
     box-sizing: border-box;
   }
-  .chat-head    { grid-area: head; padding: 0 28px 16px; border-bottom: 1px solid var(--line); }
-  .chat-empty   { grid-area: empty; max-width: none; padding: 24px 28px 0; justify-content: flex-start; }
+  .chat-head    { display: none; }
+  .chat-empty   { grid-area: empty; max-width: none; padding: 72px 28px 0; justify-content: flex-start; }
   .chat-empty.hidden { display: flex !important; }   /* keep greeting on desktop */
-  .empty-greeting { font-size: 48px; line-height: 1.05; margin-bottom: 24px; }
-  .chat-body    { grid-area: body; padding: 24px 28px; }
+  .empty-greeting { font-size: 28px; line-height: 1.2; margin-bottom: 24px; }
+  .chat-body    { grid-area: body; padding: 72px 28px 24px; }
   .composer     { grid-area: composer; border-top: 1px solid var(--line); padding: 16px 28px 0; }
   .home-bento   { grid-area: bento; border-top: 0; padding: 0 28px 0; max-width: none; align-self: end; }
   .home-bento.hidden { display: block !important; }  /* keep bento on desktop */
+  .b-start      { display: none; }                   /* no "Start chatting" — composer is always visible */
 
   /* Desktop bento: tighter, capped, lives at bottom-left */
   .bento { gap: 12px; max-width: 520px; }
@@ -732,20 +732,25 @@ body.drawer-open .app-backdrop { display: block; }
   .b-item.b-circle { font-size: 12.5px; }
   .b-dec { min-height: 140px; }
 
-  /* Floating gear in top-right corner */
+  /* Floating gear in top-right corner — no circle background */
   .desktop-gear {
     position: fixed;
     top: 22px; right: 22px;
     z-index: 35;
     display: inline-flex;
+    background: transparent;
+    border: none;
   }
-  /* Floating brand mark in top-left corner */
+  .desktop-gear:hover { background: var(--line-2); }
+  /* Floating brand mark in top-left corner — sage green background */
   .desktop-brand {
     position: fixed;
     top: 22px; left: 22px;
     z-index: 35;
     display: inline-flex;
+    background: #E5E9E0;
   }
+  .desktop-brand:hover { background: #DBDFD4; }
 }
 @media (max-width: 1023px) {
   .desktop-gear, .desktop-brand { display: none; }
