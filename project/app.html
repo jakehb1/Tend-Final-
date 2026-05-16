@@ -701,9 +701,129 @@ body.drawer-open .app-backdrop { display: block; }
   .chat-body { padding: 18px 14px 16px; gap: 18px; }
   .msg { gap: 10px; }
 }
+
+/* ---------- Desktop two-column layout (>=1024px) ---------- */
+@media (min-width: 1024px) {
+  .app-bar { display: none; }
+  .chat {
+    display: grid;
+    grid-template-columns: minmax(360px, 1fr) minmax(0, 1.4fr);
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas:
+      "empty   head"
+      "empty   body"
+      "bento   composer";
+    gap: 0;
+    padding: 22px 22px 22px;
+    box-sizing: border-box;
+  }
+  .chat-head    { grid-area: head; padding: 0 28px 16px; border-bottom: 1px solid var(--line); }
+  .chat-empty   { grid-area: empty; max-width: none; padding: 24px 28px 0; justify-content: flex-start; }
+  .chat-empty.hidden { display: flex !important; }   /* keep greeting on desktop */
+  .empty-greeting { font-size: 48px; line-height: 1.05; margin-bottom: 24px; }
+  .chat-body    { grid-area: body; padding: 24px 28px; }
+  .composer     { grid-area: composer; border-top: 1px solid var(--line); padding: 16px 28px 0; }
+  .home-bento   { grid-area: bento; border-top: 0; padding: 0 28px 0; max-width: none; align-self: end; }
+  .home-bento.hidden { display: block !important; }  /* keep bento on desktop */
+
+  /* Desktop bento: tighter, capped, lives at bottom-left */
+  .bento { gap: 12px; max-width: 520px; }
+  .b-item { font-size: 14px; padding: 14px 18px; }
+  .b-item.b-circle { font-size: 12.5px; }
+  .b-dec { min-height: 140px; }
+
+  /* Floating gear in top-right corner */
+  .desktop-gear {
+    position: fixed;
+    top: 22px; right: 22px;
+    z-index: 35;
+    display: inline-flex;
+  }
+  /* Floating brand mark in top-left corner */
+  .desktop-brand {
+    position: fixed;
+    top: 22px; left: 22px;
+    z-index: 35;
+    display: inline-flex;
+  }
+}
+@media (max-width: 1023px) {
+  .desktop-gear, .desktop-brand { display: none; }
+}
+
+/* ---------- KPI / context card (rendered when bento clicked) ---------- */
+.kpi-bubble {
+  background: var(--accent);
+  border-radius: 26px;
+  padding: 8px 22px 18px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+}
+.kpi-row {
+  display: grid;
+  grid-template-columns: minmax(0, auto) 1fr;
+  gap: 18px;
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(31, 30, 27, 0.10);
+  align-items: center;
+}
+.kpi-row:last-of-type { border-bottom: 0; }
+.kpi-row.tall { align-items: flex-start; padding: 18px 0; }
+.kpi-tag {
+  background: rgba(31, 30, 27, 0.06);
+  border-radius: 18px;
+  padding: 10px 18px;
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  color: var(--fg);
+}
+.kpi-desc {
+  font-size: 14.5px;
+  color: var(--fg);
+  text-align: right;
+  line-height: 1.45;
+}
+.kpi-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 14px;
+  font-size: 12px;
+  color: var(--fg-dim);
+}
+.kpi-mark {
+  display: inline-block;
+  width: 18px;
+  height: 12px;
+  background: url('images/tend-logo.png') no-repeat left center / auto 100%;
+  filter: brightness(0);
+  opacity: 0.45;
+}
+@media (max-width: 480px) {
+  .kpi-row { grid-template-columns: 1fr; gap: 8px; padding: 14px 0; }
+  .kpi-desc { text-align: left; }
+  .kpi-tag { font-size: 18px; padding: 8px 14px; align-self: flex-start; }
+  .kpi-bubble { padding: 6px 16px 14px; border-radius: 22px; }
+}
 </style>
 </head>
 <body>
+
+<button type="button" class="desktop-brand icon-btn" id="brand-btn-desktop" aria-label="Conversations">
+  <span class="brand-mark" aria-hidden="true"></span>
+</button>
+<a class="desktop-gear icon-btn" href="data-brain.html" aria-label="Settings">
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="3"/>
+    <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
+  </svg>
+</a>
 
 <header class="app-bar">
   <div class="bar-slot bar-left">
@@ -776,11 +896,11 @@ body.drawer-open .app-backdrop { display: block; }
       <h1 id="chat-title">New chat</h1>
     </div>
 
-    <div class="chat-body" id="chat-body">
-      <div class="chat-empty" id="chat-empty">
-        <h2 class="empty-greeting" id="empty-greeting">Welcome.<br/>How can I help you?</h2>
-      </div>
+    <div class="chat-empty" id="chat-empty">
+      <h2 class="empty-greeting" id="empty-greeting">Welcome.<br/>How can I help you?</h2>
     </div>
+
+    <div class="chat-body" id="chat-body"></div>
 
     <div class="composer">
       <div class="cmd-menu" id="cmd-menu" role="menu" aria-label="Commands">
@@ -863,16 +983,18 @@ body.drawer-open .app-backdrop { display: block; }
 
   var backdrop = document.getElementById('app-backdrop');
   var brandBtn = document.getElementById('brand-btn');
+  var brandBtnDesktop = document.getElementById('brand-btn-desktop');
   function setDrawer(open) {
     document.body.classList.toggle('drawer-open', open);
     if (brandBtn) brandBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (brandBtnDesktop) brandBtnDesktop.setAttribute('aria-expanded', open ? 'true' : 'false');
   }
-  if (brandBtn) {
-    brandBtn.addEventListener('click', function (e) {
-      e.preventDefault();
-      setDrawer(!document.body.classList.contains('drawer-open'));
-    });
+  function toggleDrawer(e) {
+    if (e) e.preventDefault();
+    setDrawer(!document.body.classList.contains('drawer-open'));
   }
+  if (brandBtn) brandBtn.addEventListener('click', toggleDrawer);
+  if (brandBtnDesktop) brandBtnDesktop.addEventListener('click', toggleDrawer);
   if (backdrop) {
     backdrop.addEventListener('click', function () { setDrawer(false); });
   }
@@ -1177,16 +1299,111 @@ body.drawer-open .app-backdrop { display: block; }
     }
   });
 
+  // Pre-built context cards rendered when a bento action is clicked.
+  // These are structured (KPI rows) instead of free-text replies so the
+  // common queries land in a glanceable card shape.
+  var CONTEXT_CARDS = {
+    'b-rev': {
+      caption: 'Revenue trend last 7 days',
+      rows: [
+        { tag: '$184K',    desc: 'Sales across 1,240 orders' },
+        { tag: '$6,600',   desc: 'That implies a daily average of roughly $6,600/day through May 27' },
+        { tag: '$4,820',   desc: 'Overnight (last night): $4,820 across 47 orders, which is below the MTD daily average' },
+        { tag: 'Top 7 Day', desc: 'Top 7-day unit velocity is strong<br/>Performance Polo Sage (84 units)<br/>Heritage Hat Navy (62 units)<br/>Tour Towel (51 units)', tall: true }
+      ]
+    },
+    'b-inb': {
+      caption: 'Inbox · 3 unread',
+      rows: [
+        { tag: 'Acushnet',  desc: 'PO for Players Glove (M) × 144 ready for approval. $1,728. Lead time 7 days.' },
+        { tag: 'M. Patterson', desc: 'Return request: Performance Polo (Stone) → Cream. Repeat customer, $410 LTV.' },
+        { tag: 'USPS',      desc: 'Toronto Cart Bag delayed 4 days. Customer comms drafted.' }
+      ]
+    },
+    'b-dec': {
+      caption: 'Decisions queue · today',
+      rows: [
+        { tag: 'POs',     desc: '4 purchase orders pending approval. $10,528 total.' },
+        { tag: 'Returns', desc: 'Patterson swap (Performance Polo Stone → Cream). Loop draft ready.' },
+        { tag: 'Polo XL', desc: 'Sage XL at 1.5 days cover. Backorder on PDP or hold from next ad rotation?' }
+      ]
+    },
+    'b-team': {
+      caption: 'Team activity · today',
+      rows: [
+        { tag: 'Sam',    desc: 'Closed Q2 returns planning doc. Approved Olive Hat reorder.' },
+        { tag: 'Jordan', desc: 'Resolved two ShipStation tracking issues.' },
+        { tag: 'Alex',   desc: 'Reconciled books through May 27. Flagged 4 international tax-code orders.' }
+      ]
+    },
+    'b-daily': {
+      caption: 'Daily brief · this morning',
+      rows: [
+        { tag: 'Orders',       desc: '47 overnight orders for $4,820. AOV $103. 38% repeat-rate.' },
+        { tag: 'Inventory',    desc: '3 SKUs low: Players Glove M (8), Heritage Hat Olive (12), Polo Sage XL (6).' },
+        { tag: 'Fulfillment',  desc: '38 shipments out by 6:30 AM. One USPS delay flagged.' },
+        { tag: 'Cash',         desc: 'Stripe payout $18,420 hits Wednesday. No disputes overnight.' }
+      ]
+    },
+    'b-alerts': {
+      caption: 'Needs attention',
+      rows: [
+        { tag: 'Glove M',      desc: '8 units left, ~1 day cover. PO drafted to Acushnet for 144 units.' },
+        { tag: 'Polo Sage XL', desc: '6 units, ~1.5 days cover. 35-day lead time.' },
+        { tag: 'Chicago Hat',  desc: 'Label never scanned. Reship or wait?' }
+      ]
+    }
+  };
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[c];
+    });
+  }
+
+  function insertContextCard(data) {
+    hideEmpty();
+    var wrap = document.createElement('div');
+    wrap.className = 'msg msg-card';
+    var rowsHtml = data.rows.map(function (r) {
+      // r.desc may contain <br/> tags so we don't escape it; tag is escaped.
+      return '<div class="kpi-row' + (r.tall ? ' tall' : '') + '">' +
+        '<div class="kpi-tag">' + escapeHtml(r.tag) + '</div>' +
+        '<div class="kpi-desc">' + r.desc + '</div>' +
+      '</div>';
+    }).join('');
+    wrap.innerHTML =
+      '<div style="width:100%"><div class="kpi-bubble">' +
+        rowsHtml +
+        '<div class="kpi-foot">' +
+          '<span class="kpi-caption">' + escapeHtml(data.caption) + '</span>' +
+          '<span class="kpi-mark" aria-hidden="true"></span>' +
+        '</div>' +
+      '</div></div>';
+    body.appendChild(wrap);
+    scroll();
+  }
+
   var bentoEl = document.getElementById('bento');
   if (bentoEl) {
     bentoEl.addEventListener('click', function (e) {
       var b = e.target.closest('.b-item');
       if (!b) return;
-      var text = b.getAttribute('data-text') || '';
-      if (!text) {
-        input.focus();
+
+      // Start Chatting: just focus the composer.
+      if (b.classList.contains('b-start')) { input.focus(); return; }
+
+      // Match the action button to its context card.
+      var cardKey = ['b-rev','b-inb','b-dec','b-team','b-daily','b-alerts']
+        .find(function (k) { return b.classList.contains(k); });
+      if (cardKey && CONTEXT_CARDS[cardKey]) {
+        insertContextCard(CONTEXT_CARDS[cardKey]);
         return;
       }
+
+      // Fallback: send the data-text to the agent as a chat message.
+      var text = b.getAttribute('data-text') || '';
+      if (!text) { input.focus(); return; }
       input.value = text;
       input.focus();
       form.requestSubmit();
