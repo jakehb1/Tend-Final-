@@ -360,24 +360,28 @@ body {
   margin: 0 0 32px;
 }
 .db-row {
-  display: grid;
-  grid-template-columns: 160px 1fr auto;
-  align-items: baseline;
-  gap: 24px;
-  padding: 14px 0;
   border-bottom: 1px solid var(--line);
+}
+.db-row-head {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 4px;
+  cursor: pointer;
+  list-style: none;
   transition: background 0.15s;
 }
-.db-row:hover { background: rgba(45,42,36,0.02); }
+.db-row-head::-webkit-details-marker { display: none; }
+.db-row-head:hover { background: rgba(45,42,36,0.02); }
 .db-row .sys-name {
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: 14px;
   font-weight: 500;
-  letter-spacing: 0;
   color: var(--fg);
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 .db-row .sys-name .d {
   width: 6px; height: 6px;
@@ -387,38 +391,52 @@ body {
 }
 .db-row.broken .sys-name { color: var(--amber); }
 .db-row.broken .sys-name .d { background: var(--amber); }
-.db-row .sys-desc {
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-size: 13px;
-  font-style: normal;
-  color: var(--fg-dim);
-  line-height: 1.45;
-  margin: 0;
-}
-.db-row .sys-meta {
+.db-row .sys-status {
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px;
+  font-size: 10.5px;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   color: var(--fg-mute);
-  margin-top: 4px;
 }
-.db-row .sys-meta strong { color: var(--accent); font-weight: 500; }
-.db-row.broken .sys-meta strong { color: var(--amber); }
-.db-row .sys-act {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11.5px;
-  letter-spacing: 0.06em;
+.db-row.broken .sys-status { color: var(--amber); }
+.db-chev {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 18px;
+  line-height: 1;
   color: var(--fg-mute);
-  text-decoration: none;
-  white-space: nowrap;
+  transition: transform 0.18s ease;
+  display: inline-block;
 }
-.db-row .sys-act:hover { color: var(--fg); }
-.db-row.broken .sys-act { color: var(--amber); }
-.db-row.broken .sys-act:hover { color: var(--fg); }
+.db-row[open] .db-chev { transform: rotate(90deg); }
+.db-row-body {
+  padding: 4px 4px 18px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+}
+.db-row .sys-desc {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 13px;
+  color: var(--fg-dim);
+  line-height: 1.5;
+  margin: 0;
+  max-width: 640px;
+}
+.db-row .sys-act {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--fg);
+  text-decoration: none;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  padding: 6px 14px;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.db-row .sys-act:hover { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.db-row.broken .sys-act { color: var(--amber); border-color: var(--amber); }
+.db-row.broken .sys-act:hover { background: var(--amber); color: var(--bg); }
 
 /* ---- footer actions ---- */
 .db-footer-actions {
@@ -484,13 +502,12 @@ body {
       <div class="db-kicker">Tend Ontology · v. 1</div>
       <h1>Data <span class="it">Brain</span>.</h1>
       <p class="lede">
-        Every system you've connected, every field mapped, every relationship between them. All drawn into <em>one structured graph</em> that grounds every answer in your workspace.
+        Every system you've connected and every relationship between them, drawn into <em>one structured graph</em> that grounds every answer in your workspace.
       </p>
     </div>
     <div class="db-hero-right">
-      <div class="db-bignum">68<sup>points mapped</sup></div>
+      <div class="db-bignum">7<sup>live systems</sup></div>
       <div class="db-bignum-cap">
-        Across <strong>7 live systems</strong>.<br/>
         Re-indexed continuously.<br/>
         Last reading <strong>2 minutes ago</strong>.
       </div>
@@ -501,7 +518,6 @@ body {
   <div class="db-meta">
     <div class="item"><span class="num">7</span><span class="lbl">Live systems</span></div>
     <div class="item"><span class="num warn">1</span><span class="lbl">Needs attention</span></div>
-    <div class="item"><span class="num">68</span><span class="lbl">Data points</span></div>
     <div class="item"><span class="num">2m</span><span class="lbl">Since last sync</span></div>
     <div class="item"><span class="num">14</span><span class="lbl">Relationships</span></div>
   </div>
@@ -544,24 +560,20 @@ body {
       <g class="gn-node">
         <circle class="outer" cx="380" cy="100" r="34"/>
         <text x="380" y="103">SHOPIFY</text>
-        <text x="380" y="156" class="gn-points">6 points</text>
       </g>
       <g class="gn-node">
         <circle class="outer" cx="565" cy="170" r="34"/>
         <text x="565" y="173">STRIPE</text>
-        <text x="612" y="158" class="gn-points" text-anchor="start">5 points</text>
       </g>
       <g class="gn-node">
         <circle class="outer" cx="620" cy="320" r="34"/>
         <text x="620" y="318">QUICK</text>
         <text x="620" y="329">BOOKS</text>
-        <text x="664" y="325" class="gn-points" text-anchor="start">5 pts</text>
       </g>
       <g class="gn-node">
         <circle class="outer" cx="565" cy="470" r="34"/>
         <text x="565" y="468">SHIP</text>
         <text x="565" y="479">STATION</text>
-        <text x="612" y="490" class="gn-points" text-anchor="start">5 pts</text>
       </g>
       <g class="gn-node broken">
         <circle class="outer" cx="380" cy="540" r="34"/>
@@ -571,93 +583,114 @@ body {
       <g class="gn-node">
         <circle class="outer" cx="195" cy="470" r="34"/>
         <text x="195" y="473">STOCKY</text>
-        <text x="148" y="490" class="gn-points" text-anchor="end">5 pts</text>
       </g>
       <g class="gn-node">
         <circle class="outer" cx="140" cy="320" r="34"/>
         <text x="140" y="318">INV</text>
         <text x="140" y="329">PLANNER</text>
-        <text x="96" y="325" class="gn-points" text-anchor="end">4 pts</text>
       </g>
       <g class="gn-node">
         <circle class="outer" cx="195" cy="170" r="34"/>
         <text x="195" y="168">LOOP</text>
         <text x="195" y="179">RETURNS</text>
-        <text x="148" y="158" class="gn-points" text-anchor="end">5 pts</text>
       </g>
     </svg>
   </div>
 
   <!-- CONNECTIONS -->
   <div class="db-sec-h">
-    <h2>What's <span class="it">mapped</span>.</h2>
+    <h2>Connections</h2>
     <div class="ts">7 live · 1 stale</div>
   </div>
   <div class="db-list">
-    <div class="db-row">
-      <div class="sys-name"><span class="d"></span>Shopify</div>
-      <div>
+    <details class="db-row">
+      <summary class="db-row-head">
+        <span class="sys-name"><span class="d"></span>Shopify</span>
+        <span class="sys-status">live · synced 2 min ago</span>
+        <span class="db-chev" aria-hidden="true">›</span>
+      </summary>
+      <div class="db-row-body">
         <p class="sys-desc">Orders, line items, refunds, customers, products, transactional email.</p>
-        <div class="sys-meta"><strong>6 points</strong> · live · synced 2 min ago</div>
+        <a class="sys-act" href="connect.html#shopify">Manage →</a>
       </div>
-      <a class="sys-act" href="connect.html#shopify">Manage →</a>
-    </div>
-    <div class="db-row">
-      <div class="sys-name"><span class="d"></span>Stripe</div>
-      <div>
+    </details>
+    <details class="db-row">
+      <summary class="db-row-head">
+        <span class="sys-name"><span class="d"></span>Stripe</span>
+        <span class="sys-status">live · synced 2 min ago</span>
+        <span class="db-chev" aria-hidden="true">›</span>
+      </summary>
+      <div class="db-row-body">
         <p class="sys-desc">Charges, payouts, subscriptions, disputes, customer payment methods.</p>
-        <div class="sys-meta"><strong>5 points</strong> · live · synced 2 min ago</div>
+        <a class="sys-act" href="connect.html#stripe">Manage →</a>
       </div>
-      <a class="sys-act" href="connect.html#stripe">Manage →</a>
-    </div>
-    <div class="db-row">
-      <div class="sys-name"><span class="d"></span>QuickBooks</div>
-      <div>
+    </details>
+    <details class="db-row">
+      <summary class="db-row-head">
+        <span class="sys-name"><span class="d"></span>QuickBooks</span>
+        <span class="sys-status">live · synced 8 min ago</span>
+        <span class="db-chev" aria-hidden="true">›</span>
+      </summary>
+      <div class="db-row-body">
         <p class="sys-desc">General ledger, invoices, bills, account balances, month-end close state.</p>
-        <div class="sys-meta"><strong>5 points</strong> · live · synced 8 min ago</div>
+        <a class="sys-act" href="connect.html#quickbooks">Manage →</a>
       </div>
-      <a class="sys-act" href="connect.html#quickbooks">Manage →</a>
-    </div>
-    <div class="db-row">
-      <div class="sys-name"><span class="d"></span>ShipStation</div>
-      <div>
+    </details>
+    <details class="db-row">
+      <summary class="db-row-head">
+        <span class="sys-name"><span class="d"></span>ShipStation</span>
+        <span class="sys-status">live · synced 1 min ago</span>
+        <span class="db-chev" aria-hidden="true">›</span>
+      </summary>
+      <div class="db-row-body">
         <p class="sys-desc">Labels, carriers, SLAs, tracking events, pickup schedules.</p>
-        <div class="sys-meta"><strong>5 points</strong> · live · synced 1 min ago</div>
+        <a class="sys-act" href="connect.html#shipstation">Manage →</a>
       </div>
-      <a class="sys-act" href="connect.html#shipstation">Manage →</a>
-    </div>
-    <div class="db-row broken">
-      <div class="sys-name"><span class="d"></span>Klaviyo</div>
-      <div>
+    </details>
+    <details class="db-row broken">
+      <summary class="db-row-head">
+        <span class="sys-name"><span class="d"></span>Klaviyo</span>
+        <span class="sys-status">auth expired · stale since 03:14</span>
+        <span class="db-chev" aria-hidden="true">›</span>
+      </summary>
+      <div class="db-row-body">
         <p class="sys-desc">Email lists, segments, abandoned-cart flows, deliverability.</p>
-        <div class="sys-meta"><strong>3 points</strong> · auth expired · stale since 03:14</div>
+        <a class="sys-act" href="connect.html#klaviyo">Reconnect →</a>
       </div>
-      <a class="sys-act" href="connect.html#klaviyo">Reconnect →</a>
-    </div>
-    <div class="db-row">
-      <div class="sys-name"><span class="d"></span>Stocky</div>
-      <div>
+    </details>
+    <details class="db-row">
+      <summary class="db-row-head">
+        <span class="sys-name"><span class="d"></span>Stocky</span>
+        <span class="sys-status">live · synced 12 min ago</span>
+        <span class="db-chev" aria-hidden="true">›</span>
+      </summary>
+      <div class="db-row-body">
         <p class="sys-desc">Stock on hand, sell-through, open POs, supplier lead times, reorder points.</p>
-        <div class="sys-meta"><strong>5 points</strong> · live · synced 12 min ago</div>
+        <a class="sys-act" href="connect.html#stocky">Manage →</a>
       </div>
-      <a class="sys-act" href="connect.html#stocky">Manage →</a>
-    </div>
-    <div class="db-row">
-      <div class="sys-name"><span class="d"></span>Inventory Planner</div>
-      <div>
+    </details>
+    <details class="db-row">
+      <summary class="db-row-head">
+        <span class="sys-name"><span class="d"></span>Inventory Planner</span>
+        <span class="sys-status">live · synced 18 min ago</span>
+        <span class="db-chev" aria-hidden="true">›</span>
+      </summary>
+      <div class="db-row-body">
         <p class="sys-desc">Demand forecast, days of cover, replenishment plan, stockout risk scoring.</p>
-        <div class="sys-meta"><strong>4 points</strong> · live · synced 18 min ago</div>
+        <a class="sys-act" href="connect.html#inventory-planner">Manage →</a>
       </div>
-      <a class="sys-act" href="connect.html#inventory-planner">Manage →</a>
-    </div>
-    <div class="db-row">
-      <div class="sys-name"><span class="d"></span>Loop Returns</div>
-      <div>
+    </details>
+    <details class="db-row">
+      <summary class="db-row-head">
+        <span class="sys-name"><span class="d"></span>Loop Returns</span>
+        <span class="sys-status">live · synced 6 min ago</span>
+        <span class="db-chev" aria-hidden="true">›</span>
+      </summary>
+      <div class="db-row-body">
         <p class="sys-desc">Return cases, reason codes, restocking, fraud flags, per-customer return rate.</p>
-        <div class="sys-meta"><strong>5 points</strong> · live · synced 6 min ago</div>
+        <a class="sys-act" href="connect.html#loop">Manage →</a>
       </div>
-      <a class="sys-act" href="connect.html#loop">Manage →</a>
-    </div>
+    </details>
   </div>
 
   <div class="db-footer-actions">
