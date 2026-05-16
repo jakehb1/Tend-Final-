@@ -1,10 +1,27 @@
 # tend
 
-AI partner for small businesses. Static marketing + product surface deployed on
-Railway, optional self-hosted VPS backend for OAuth integrations and per-tenant
-agent runtime.
+AI partner for small businesses. Static frontend + a small Node server that
+proxies the chat to Claude, both deployed on Railway. Optional self-hosted
+VPS stack adds real OAuth (Nango) and a per-tenant agent runtime when you
+want that, but the default Railway deploy ships an end-to-end working
+product on its own.
 
 Live: https://withtend.ai
+
+---
+
+## TL;DR for a new dev
+
+```bash
+git clone <this-repo> tend && cd tend
+npm install
+ANTHROPIC_API_KEY=sk-ant-... node server.js
+# open http://localhost:3000
+```
+
+Log in with any email/password. Hit `/app` and chat. Edits to
+`project/*.html` are live on reload. Without the API key, the chat falls
+back to canned replies so the static site still works.
 
 ---
 
@@ -12,278 +29,421 @@ Live: https://withtend.ai
 
 ```
 project/                  Site source (HTML/CSS/JS). The Railway deploy serves this.
-tend/project/             Mirror of project/ kept in sync for the design-bundle layout.
-server.js                 Tiny static Node server used by Railway.
-package.json              Just enough Node for the static server.
-railway.json              Railway deploy config (builder, start cmd, healthcheck).
-nixpacks.toml             Pins the Railway build to Node 20. See "Build pinning" below.
-.railwayignore            Excludes bridge/, deploy/, cli/ from the Railway build context.
+tend/project/             Mirror of project/. Edits must land in both trees, see Conventions.
+server.js                 Node server. Serves project/ as static files AND hosts /api/chat.
+package.json              Engines >= 18. No dependencies (uses native fetch + http).
+railway.json              Railway deploy config.
+nixpacks.toml             Pins Railway to Node 20. See "Build pinning" below.
+.railwayignore            Hides bridge/, deploy/, cli/ from the Railway build context.
 
-bridge/                   Optional Node service the frontend can call for live data.
-bridge/bridge.js          OAuth state + chat SSE proxy + Nango webhook handler.
-bridge/Dockerfile         Image for the bridge service (used by docker-compose).
-bridge/hermes-sidecar/    Python sidecar wrapping the Hermes agent runtime.
+bridge/                   Optional VPS Node service. OAuth proxy + Hermes agent proxy.
+bridge/bridge.js          Nango webhook, OAuth state, chat SSE to hermes-sidecar.
+bridge/hermes-sidecar/    Python FastAPI wrapper around the Hermes agent runtime.
 
-deploy/                   VPS deploy stack (Docker Compose + Caddy).
-deploy/docker-compose.yml Nango + Postgres + bridge + hermes-sidecar + Caddy.
-deploy/Caddyfile          HTTPS reverse proxy config.
-deploy/.env.example       Required env vars.
+deploy/                   Optional Docker Compose stack (Nango + bridge + Caddy).
 deploy/agent-templates/   Per-tenant agent + skill YAML templates.
-deploy/README.md          Step-by-step VPS install guide.
+deploy/README.md          VPS install guide.
 
 cli/                      Helper scripts.
 ```
 
-The frontend works on its own. `project/` is fully static and ships as-is.
-The `bridge/` + `deploy/` stack is only required when you want real OAuth
-connections and a live agent. Without it, the site runs in demo mode using
-`localStorage` and canned chat replies.
+`project/` is the only directory you need to touch for almost all UI work.
+`server.js` is a single file. `bridge/` and `deploy/` are scaffolding for a
+future VPS that adds OAuth and on-prem agents; you can ignore them while
+working on the product surface.
 
 ---
 
 ## Architecture
 
 ```
-                     Railway (static)
-                  ┌──────────────────────┐
-   browser ────►  │  project/*.html      │
-                  │  server.js (static)  │
-                  └──────────────────────┘
-                              │
-                              │  optional, when window.__TEND_CONFIG__.apiBase is set
-                              ▼
-                       VPS (Docker Compose)
-   ┌──────────────────────────────────────────────────────┐
-   │  Caddy (HTTPS, auto-LE)                              │
-   │    ├─► bridge (Node) ──► Nango (OAuth + sync)        │
-   │    │                  └─► hermes-sidecar (Python)    │
-   │    └─► nango-server (dashboard)                      │
-   └──────────────────────────────────────────────────────┘
+                          Railway
+                  ┌────────────────────────────────────┐
+   browser ────►  │  project/*.html  (static)          │
+                  │  server.js                         │
+                  │   ├─ static files                  │
+                  │   └─ POST /api/chat/:user  ──┐     │
+                  └──────────────────────────────┼─────┘
+                                                 ▼
+                                  api.anthropic.com (Claude)
+                                  streaming Messages API
+
+   ── optional, only if you stand up the VPS ──────────────────
+                                                 │
+                                                 ▼
+                                        VPS (Docker Compose)
+   ┌──────────────────────────────────────────────────────────┐
+   │  Caddy (HTTPS)                                           │
+   │    ├─► bridge ──► Nango (OAuth + scheduled syncs)        │
+   │    │           └─► hermes-sidecar (per-tenant agent)     │
+   │    └─► nango-server (admin dashboard)                    │
+   └──────────────────────────────────────────────────────────┘
 ```
 
-- **Frontend** is plain HTML/CSS/JS. No build step. Railway serves
-  `project/` via the Node static server in `server.js`.
-- **Bridge** is a small Node service (no deps) exposing CORS-safe endpoints
-  for connector state, chat (SSE), and a Nango webhook.
-- **Nango** handles every OAuth integration and the scheduled sync engine.
-- **Hermes sidecar** is a FastAPI wrapper around the Hermes agent runtime
-  (https://github.com/NousResearch/hermes-agent). The bridge talks to it
-  over plain HTTP+SSE so the Node side never has to load Python.
+- **Frontend**: plain HTML/CSS/JS, no build step. `project/` ships to
+  Railway exactly as written.
+- **Chat backend**: `server.js` POST `/api/chat/:user` streams from
+  `api.anthropic.com` via SSE. The browser hits it same-origin. The system
+  prompt is a constant at the top of `server.js`; conversation history
+  (last 10 turns) comes from the client per request, so the server is
+  stateless.
+- **Demo fallback**: if `ANTHROPIC_API_KEY` isn't set, the API returns 503
+  and the client transparently falls back to canned replies. The static
+  site keeps working.
+- **VPS (optional)**: when you eventually want real OAuth and a per-tenant
+  agent, see `deploy/README.md`. The frontend has hooks for it but doesn't
+  require it.
 
 ---
 
 ## Key pages
 
-| Path             | What it is                                                  |
-| ---------------- | ----------------------------------------------------------- |
-| `/`              | Marketing home                                              |
-| `/about`         | About                                                       |
-| `/platform`      | Product overview                                            |
-| `/use-cases`     | Use cases                                                   |
-| `/org`           | Lighter-tier marketing variant (smaller teams)              |
-| `/org-light`     | Light-theme version of `/org` (current canonical org page)  |
-| `/login`         | Demo auth (any email/password)                              |
-| `/onboarding`    | Post-login wizard, writes `tend.onboarded` to localStorage  |
-| `/connect`       | Connector picker. Drives Nango Connect UI in live mode      |
-| `/app`           | Workspace / chat surface (currently Quiet Golf demo data)   |
+| Path             | What it is                                                |
+| ---------------- | --------------------------------------------------------- |
+| `/`              | Marketing home                                            |
+| `/about`         | About                                                     |
+| `/platform`      | Product overview                                          |
+| `/use-cases`     | Use cases                                                 |
+| `/org`           | Lighter-tier marketing variant                            |
+| `/org-light`     | Light-theme variant of `/org`                             |
+| `/login`         | Demo auth. Any email/password works. Writes session.      |
+| `/onboarding`    | Post-login wizard. Writes `tend.onboarded` to localStorage|
+| `/connect`       | Connector picker. Demo-mode toggles via localStorage.     |
+| `/app`           | Workspace + chat surface. Default landing after login.    |
+| `/data-brain`    | Connections overview. Accessible from the sidebar gear.   |
 
 All pages share `project/shared.css`. Cache-bust by bumping `?v=N` in the
-`<link>` tags when you change it.
+`<link>` tags after editing.
+
+---
+
+## The chat backend
+
+`server.js` exposes one API endpoint:
+
+### `POST /api/chat/:user`
+
+Request:
+
+```json
+{
+  "message": "what's selling best this week?",
+  "history": [
+    { "role": "user", "content": "show me revenue" },
+    { "role": "assistant", "content": "Revenue MTD is $128.4K..." }
+  ]
+}
+```
+
+Response: SSE stream with `data: {"delta":"chunk"}` lines, terminated by
+`data: [DONE]`. On error, a single `data: {"error":"..."}` line.
+
+Internals:
+
+- Reads `ANTHROPIC_API_KEY` from env. Returns 503 if missing.
+- Calls `claude-sonnet-4-6` on `api.anthropic.com/v1/messages` with
+  `stream: true`, `max_tokens: 1024`.
+- Re-emits Anthropic's `content_block_delta` events as our simpler
+  `{delta}` shape so the client doesn't have to know Anthropic's wire
+  format.
+- The `system` prompt is the `SYSTEM_PROMPT` constant at the top of
+  `server.js`. Edit it there. It contains the Quiet Golf demo snapshot so
+  the agent has realistic data to reference without real connector access.
+
+### Frontend integration
+
+`project/app.html` reads `window.__TEND_CONFIG__.apiBase` (defaults to
+`window.location.origin` so chat hits the same Railway server). The
+`replyLive()` function in the IIFE sends `{message, history}`, accumulates
+streamed `delta` chunks into a `rawText` string, and renders with a tiny
+`md()` helper that supports `**bold**` and paragraph breaks.
+
+`chatHistory` is a single in-memory array maintained by `addUser()` and
+`addReply()`. It's sliced to the last 10 turns before sending.
+
+### To change the model
+
+Edit `model: 'claude-sonnet-4-6'` in `server.js`. The latest model IDs are:
+- `claude-opus-4-7` (most capable)
+- `claude-sonnet-4-6` (current default, good balance)
+- `claude-haiku-4-5-20251001` (fastest, cheapest)
+
+### To change the system prompt
+
+Edit `SYSTEM_PROMPT` at the top of `server.js`. If you remove the Quiet
+Golf snapshot, the agent will lose its grounding and start hallucinating
+business data, so leave it in until real connectors are wired.
 
 ---
 
 ## Run locally
 
 ```bash
-npm install
-node server.js
+npm install                                  # no-op, no deps, just creates lockfile
+ANTHROPIC_API_KEY=sk-ant-... node server.js
 # open http://localhost:3000
 ```
 
-That's it for the frontend. Edits to `project/*.html` are reflected on reload.
+Without the key, chat falls back to canned replies. Everything else works.
 
-When editing pages, mirror your changes into `tend/project/` so the design
-bundle layout stays consistent. (Both directories ship to Railway; the live
-site uses `project/`.)
-
----
-
-## Demo mode vs live mode
-
-The site has two modes, switched by a single config block on `/connect` and
-`/app`:
-
-```html
-<script>
-  window.__TEND_CONFIG__ = { apiBase: null };
-</script>
-```
-
-- `apiBase: null` (default) — demo mode. `/connect` uses `localStorage` to
-  remember which connectors are toggled; `/app` uses canned chat replies.
-  This is what Railway serves today, and it's what runs during the Quiet
-  Golf demo.
-- `apiBase: 'https://api.withtend.ai'` — live mode. `/connect` opens the
-  Nango Connect popup for real OAuth; `/app` streams from
-  `bridge ─► hermes-sidecar`.
-
-**Important for handoff:** the Quiet Golf demo expects `apiBase: null`.
-Do not flip it on `main` until the VPS backend is in production.
+Routes are filename-based: `/data-brain` serves `project/data-brain.html`,
+`/about` serves `project/about.html`, etc. No build, no hot reload, just
+refresh the browser.
 
 ---
 
-## Setup guide
+## Deploy to Railway
 
-A fresh handoff, from cloning the repo to a live site with a real
-backend, in order. Skip Phase 2 + 3 if you only need the static site.
+The static site + the chat API both live on the same Railway service.
 
-### Phase 1. Local dev (5 min)
+1. **Connect the repo.** Railway dashboard → New Project → Deploy from
+   GitHub → pick this repo.
+2. **Branch.** Settings → Source → Branch. Live deploys from
+   `claude/prepare-railway-deployment-ujRcM` today; move to `main` once
+   merged.
+3. **Set `ANTHROPIC_API_KEY`.** Settings → Variables → New Variable.
+   Paste your key (`sk-ant-...`). Railway redeploys automatically.
+4. **Verify.** After deploy, the home page loads, `/app` loads (log in
+   first), and chat messages stream from real Claude. If they fall back to
+   canned answers, check the Railway logs for `ANTHROPIC_API_KEY not set`.
+5. **Custom domain.** Settings → Networking → Custom Domain. Point apex /
+   www at Railway and wait for the cert.
 
-```bash
-git clone <this-repo> tend && cd tend
-npm install
-node server.js
-# open http://localhost:3000
-```
+### Build pinning
 
-`server.js` is a tiny static file server. Routes are filename-based
-(`/org-light` -> `project/org-light.html`). No build step, no
-hot-reload — just refresh the browser after edits.
+Railway uses Nixpacks, which auto-detects the build target by scanning the
+whole repo. Because this monorepo has Python under `bridge/hermes-sidecar/`,
+Nixpacks's heuristic can flip the build target to Python and the deploy
+404s on every route. Two files prevent this:
 
-When editing pages, mirror your edits into `tend/project/` to keep the
-two trees in sync. Bump `shared.css?v=N` (in the `<link>` tags) so
-Railway's HTTP cache invalidates.
+- `nixpacks.toml` pins Node 20 and `node server.js`.
+- `.railwayignore` hides `bridge/`, `deploy/`, `cli/`, `*.md` from the
+  build context.
 
-### Phase 2. Frontend on Railway (10 min)
+If you add a `requirements.txt`, `pyproject.toml`, `Dockerfile`, etc.
+anywhere in the repo and the deploy starts 404'ing, that's the first place
+to check.
 
-The static site is what `withtend.ai` serves. Setup once, then every
-push to the configured branch deploys.
+---
 
-1. **Connect the repo.** Railway dashboard -> New Project -> Deploy
-   from GitHub -> pick this repo.
-2. **Pick the branch.** Settings -> Source -> Branch. Today the live
-   site deploys from `claude/prepare-railway-deployment-ujRcM`; move
-   it to `main` once you've merged.
-3. **No env vars required** for the static frontend. The site reads
-   `window.__TEND_CONFIG__.apiBase` from inline `<script>` blocks in
-   `connect.html` and `app.html` — see "Demo vs live mode" below.
-4. **Build pinning.** `nixpacks.toml` pins Railway to Node 20 and
-   `.railwayignore` keeps the bridge/agent code out of the build
-   context. Don't delete these — without them Nixpacks flips to a
-   Python build target the moment any `.py` or `requirements.txt`
-   file lands anywhere in the repo, and the deploy fails.
-5. **Verify.** After the first deploy, `https://<your-domain>/` should
-   load the home page and `/org-light` should load the four-stage
-   page. If you hit 404s, the build probably failed — check the
-   Railway deploy log.
-6. **Custom domain.** Settings -> Networking -> Custom Domain. Point
-   the apex / `www` A or CNAME at Railway and wait for cert issue.
+## Optional: VPS for real OAuth and a self-hosted agent
 
-### Phase 3. Backend on a VPS (45 min, optional)
+This is what makes `/connect` perform real OAuth and `/app` route through
+a per-tenant agent runtime instead of the default Claude pass-through.
 
-This is what makes `/connect` do real OAuth and `/app` stream from a
-real agent. Until this is up, the site runs in demo mode.
+Full guide: `deploy/README.md`. Short version:
 
-Full step-by-step is in `deploy/README.md`. The short version:
+1. Provision a $10-20/mo VPS, install Docker + Compose.
+2. Two A records: `api.<your-domain>` and `nango.<your-domain>` → VPS IP.
+3. `cp deploy/.env.example deploy/.env`, fill secrets (`openssl rand
+   -base64 32` for `NANGO_ENCRYPTION_KEY`).
+4. `docker compose up -d nango-db nango-server`, grab Nango master key
+   from logs, paste into `NANGO_SECRET_KEY`.
+5. `docker compose up -d` for the full stack. Caddy auto-issues
+   Let's Encrypt certs.
+6. In the Nango dashboard, configure each provider's OAuth client. Each
+   integration's Unique Key must match the slug in the `PROVIDERS` map in
+   `bridge/bridge.js` (`shopify`, `stripe`, `quickbooks`, etc.).
+7. To use Hermes instead of the default Claude path, replace
+   `_stream_from_stub()` in `bridge/hermes-sidecar/sidecar.py` with a real
+   call to the Hermes runtime, then update the frontend's `apiBase` to
+   point at the VPS bridge URL instead of same-origin.
+8. `curl https://api.<your-domain>/healthz` should return `{"ok":true,...}`.
 
-1. **Provision** a $10-20/mo VPS (Hetzner, DO, Hostinger). Install
-   Docker + Docker Compose.
-2. **DNS.** Two A records at the VPS IP:
-   - `api.<your-domain>`   bridge API
-   - `nango.<your-domain>` Nango dashboard
-3. **Clone + env.** `git clone` the repo onto the VPS,
-   `cp deploy/.env.example deploy/.env`, fill in secrets
-   (`openssl rand -base64 32` for `NANGO_ENCRYPTION_KEY`, strong
-   passwords for the DB and dashboard).
-4. **First boot.** `docker compose up -d nango-db nango-server`,
-   grab the Nango master key from first-boot logs, paste it into
-   `NANGO_SECRET_KEY` in `.env`.
-5. **Full stack.** `docker compose up -d`. Caddy issues Let's Encrypt
-   certs automatically.
-6. **Provider OAuth.** In the Nango dashboard, configure each provider
-   with its OAuth client id/secret. Each provider's Integration Unique
-   Key must exactly match the slug in the `PROVIDERS` map in
-   `bridge/bridge.js` (e.g. `shopify`, `stripe`, `quickbooks`).
-7. **Hermes.** The sidecar boots with a stub so `/app` streams
-   placeholder text. To go live: uncomment the `hermes-agent` line in
-   `bridge/hermes-sidecar/requirements.txt`, replace
-   `_stream_response()` in `bridge/hermes-sidecar/sidecar.py` with a
-   real call to the Hermes runtime
-   (https://github.com/NousResearch/hermes-agent), then
-   `docker compose build hermes-sidecar && docker compose up -d`.
-8. **Verify.** `curl https://api.<your-domain>/healthz` should return
-   `{"ok":true,...}`.
+---
 
-### Phase 4. Flip the frontend to live mode
+## Production roadmap (Hermes / OpenClaw harness)
 
-Once the backend is up, point the frontend at it. In
-`project/connect.html` AND `project/app.html` (and their mirrors in
-`tend/project/`), find the config block at the top:
+Today the chat goes Browser → `server.js` → Claude API. That's the
+"good enough for the demo" path. The intended production architecture
+is per-tenant OpenClaw agents that route through Hermes and have access
+to live data via Nango-synced skills. Most of the scaffolding is in the
+repo; here's what's actually wired up vs. still stubbed.
 
-```html
-<script>
-  window.__TEND_CONFIG__ = { apiBase: null };
-</script>
-```
+### Already in place
 
-Set `apiBase` to the bridge URL:
+- `bridge/bridge.js` — Node service. Has `hermesChat()`, Nango connect
+  session creation, connection revoke, and a Nango webhook handler.
+- `bridge/hermes-sidecar/sidecar.py` — FastAPI sidecar exposing `/chat`
+  with SSE streaming. Talks to the bridge, isolates Python so Node
+  doesn't have to load it.
+- `deploy/docker-compose.yml` — Nango (server + Postgres) + bridge +
+  hermes-sidecar + Caddy.
+- `deploy/agent-templates/templates/` — `agent.ecomm.yaml` plus skill
+  YAMLs for `query_orders`, `top_skus`, `meta_ads_summary`.
+- The frontend already has the seam: flip `apiBase` from
+  `window.location.origin` to your VPS bridge URL and the chat starts
+  hitting the bridge instead of the local `/api/chat`.
 
-```html
-<script>
-  window.__TEND_CONFIG__ = { apiBase: 'https://api.<your-domain>' };
-</script>
-```
+### What's left (in dependency order)
 
-Commit + push; Railway redeploys.
+1. **Stand up an OpenClaw Gateway.**
+   `deploy/docker-compose.yml` does not include an OpenClaw service yet.
+   Add it as a sibling to `hermes-sidecar`. The bridge currently routes
+   chat at the *sidecar*; once OpenClaw is the orchestrator, the sidecar
+   becomes a backend the Gateway can call.
 
-**Important for handoff:** the Quiet Golf demo expects `apiBase: null`.
-Do not flip on `main` until the VPS backend is in production.
+2. **Replace the Hermes sidecar stub.**
+   `bridge/hermes-sidecar/sidecar.py` lines 103-106:
 
-### Build pinning, why it matters
+   ```python
+   # ---- begin TODO: replace with Hermes call ----
+   async for chunk in _stream_from_stub(agent_name, message):
+       yield chunk
+   # ---- end TODO ----
+   ```
 
-Railway uses Nixpacks. Nixpacks auto-detects the build target by
-scanning the whole repo. Because this monorepo contains both a Node
-frontend AND a Python sidecar under `bridge/hermes-sidecar/`,
-Nixpacks's heuristic can flip the build target to Python and the
-deploy will fail with 404s on every route.
+   Swap `_stream_from_stub` for a real Hermes runtime call. Uncomment the
+   `hermes-agent` line in `bridge/hermes-sidecar/requirements.txt` and
+   rebuild the image.
 
-Two files keep that from happening:
+3. **Write `provisionTenant()`.**
+   `deploy/agent-templates/README.md` references a provisioner that fills
+   the `${TENANT_ID}`, `${TENANT_NAME}`, etc. tokens in
+   `agent.ecomm.yaml` and writes the result into the OpenClaw Gateway's
+   agents directory. This function does not exist yet. Suggested home:
+   `bridge/provisioner.js`, called on first login or from a CLI command.
 
-- `nixpacks.toml` — explicitly pins Node 20 and `node server.js`.
-- `.railwayignore` — hides `bridge/`, `deploy/`, `cli/`, and `*.md`
-  from the build context, so Nixpacks never even sees the Python
-  files.
+4. **Expose per-tenant data endpoints in the bridge.**
+   The skill YAMLs reference endpoints shaped like
+   `GET /api/data/${TENANT_USER}/<dataset>?<filters>` (orders, top_skus,
+   etc.). `bridge/bridge.js` does not implement these yet. Each one is
+   typically a thin wrapper around Nango sync state in Postgres.
 
-If you add a new build-signal file anywhere in the repo
-(`requirements.txt`, `pyproject.toml`, `Dockerfile`, etc.) and the
-Railway deploy starts 404'ing, that's the first place to look.
+5. **Tenant persistence layer.**
+   Nango handles OAuth and scheduled syncs, but the synced data needs a
+   home so the bridge's data endpoints (step 4) have something to read.
+   No DB schema exists yet for tenant order/inventory/finance state.
+   Recommended: one Postgres schema per tenant, populated by Nango
+   sync handlers in the webhook.
+
+6. **Flesh out the skill set.**
+   Three skill YAMLs ship today (`query_orders`, `top_skus`,
+   `meta_ads_summary`). The agent-templates README sketches the full
+   e-commerce skill list (`customer_segments`, `inventory_status`, plus
+   non-profit and dental verticals). Each new skill is a YAML file + a
+   matching bridge endpoint.
+
+7. **Auth and tenant isolation.**
+   `/login` currently writes any email/password into sessionStorage. Real
+   product needs proper auth (e.g. magic link or OAuth) and tenant
+   identifiers that map 1:1 to OpenClaw agent IDs. `agentNameForUser()`
+   in `bridge/bridge.js` is a placeholder slugifier of the email.
+
+8. **Flip the frontend.**
+   Once steps 1-7 work end-to-end, change
+   `window.__TEND_CONFIG__.apiBase` in `project/app.html` from
+   `window.location.origin` to your bridge URL
+   (e.g. `https://api.withtend.ai`). The existing `replyLive()` function
+   already speaks the bridge's SSE format; no client changes required.
+   Keep `server.js` `/api/chat` as the fallback so anything that doesn't
+   yet route through OpenClaw still works.
+
+### Things that don't need to change
+
+- The frontend chat client. `replyLive()` already streams from any
+  SSE endpoint that emits `{delta}` chunks. The bridge speaks this same
+  shape on purpose.
+- The system prompt. Once tenants are real, move
+  `SYSTEM_PROMPT` content into the per-tenant `workspace/business-
+  profile.md` and let the OpenClaw agent load it as context per turn.
+  `server.js` can keep its baked-in prompt as the fallback path.
+- The demo fallback. `replyCanned()` is the safety net when *any* live
+  path returns an error. Keep it.
 
 ---
 
 ## Conventions
 
 - **No em dashes anywhere in user-facing copy.** Use periods, commas, or
-  "to" for ranges. This has been a consistent author preference.
-- The site is **backend-focused**, not marketing/social. The workspace
-  and `/connect` page deliberately exclude marketing/SMS/reviews
-  categories. Don't reintroduce them without asking.
-- Mirror every page edit into both `project/` and `tend/project/`.
-- Bump `shared.css?v=N` whenever you change CSS so Railway's cache
-  invalidates.
-- Scroll-reveal: add `class="reveal"` to any element you want to fade
-  in on scroll. Optional `style="--reveal-delay:0.1s"` for stagger.
+  "to" for ranges. Consistent author preference.
+- **Mirror every page edit into both `project/` and `tend/project/`.**
+  Both directories ship to Railway. The live site reads from `project/`,
+  but the design-bundle layout in `tend/project/` must stay in sync. The
+  simplest workflow: edit `project/X.html`, then `cp project/X.html
+  tend/project/X.html` before committing.
+- **Bump `shared.css?v=N`** in the `<link>` tags whenever you change
+  `shared.css` so Railway's HTTP cache invalidates.
+- **Light theme overrides.** `/app`, `/data-brain`, and `/connect` each
+  override the global dark theme via a `:root { --bg: #FAF9F5; ... }`
+  block at the top of their inline `<style>`. Match this pattern for any
+  new product-surface page. Marketing pages keep the dark theme.
+- **No marketing or social connectors** in `/connect` or the workspace.
+  The product is backend-focused (orders, inventory, fulfillment, cash).
+  Don't reintroduce SMS/reviews/social without asking.
+- **Logo on light backgrounds**: add `filter: brightness(0)` to the
+  `<img>`. The asset is white by default for the dark theme.
 
 ---
 
-## Where to find things
+## Common tasks
 
-- Hero animation + four-stage layout: `project/org-light.html`
-- Workspace demo data (Quiet Golf): `project/app.html`
-- Connector list + categories: `project/connect.html`
-- Provider OAuth map: `bridge/bridge.js` (`PROVIDERS` constant)
-- Agent + skill templates: `deploy/agent-templates/templates/`
-- Hermes integration seam: `bridge/hermes-sidecar/sidecar.py`
-  (`_stream_response`)
+### Change the agent's voice or business context
+
+`SYSTEM_PROMPT` constant at the top of `server.js`. The current prompt
+includes the full Quiet Golf demo snapshot (orders, inventory, team
+updates) so responses stay grounded.
+
+### Add a suggestion card to the empty chat state
+
+In `project/app.html`, find `<div class="empty-hints" id="hints">`. Each
+card is a `<button class="empty-hint" type="button" data-text="...">`.
+The `data-text` is what gets sent into the composer on click. Add an SVG
+icon in `.eh-icon`, title in `.eh-title`, subtitle in `.eh-sub`. Then
+mirror to `tend/project/app.html`.
+
+### Add a slash command to the composer
+
+`CMD_PROMPTS` map in `project/app.html` JS section. Add a new entry like:
+
+```js
+'/forecast': {
+  ask: "What do you want me to forecast?",
+  placeholder: "e.g. next 30 days of Sage Polo demand"
+}
+```
+
+Then add a matching `<button>` to the `#cmd-menu` div with
+`data-cmd="/forecast "`. The paperclip menu opens it.
+
+### Add a new connection to the Data Brain accordion
+
+`project/data-brain.html`, find the `<!-- CONNECTIONS -->` section. Each
+connection is a `<details class="db-row">` block. Copy an existing one,
+change the name / status / description / link. The accordion is native
+`<details>`/`<summary>`, no JS.
+
+### Add a new page
+
+Create `project/<name>.html`. Filename = URL (`/<name>`). Link to
+`shared.css?v=N`. If it's a product surface, copy the light-theme
+`:root` override from `app.html`. Mirror to `tend/project/`.
+
+### Adjust the canned-reply fallback
+
+`project/app.html` has a `canned` array near the top of the IIFE. Each
+entry is `{ match: /regex/i, html: "...", sources: [...] }`. The last
+entry with `match: /.*/` is the catch-all. Order matters: first match wins.
+
+---
+
+## Where things live
+
+| Thing                                | File                                              |
+| ------------------------------------ | ------------------------------------------------- |
+| Chat API endpoint                    | `server.js` (`/api/chat/:user` handler)           |
+| Agent system prompt                  | `server.js` (`SYSTEM_PROMPT` const)               |
+| Workspace UI (chat, sidebar, empty)  | `project/app.html`                                |
+| Connections accordion + graph        | `project/data-brain.html`                         |
+| Connector list (per-provider)        | `project/connect.html`                            |
+| Canned replies (demo fallback)       | `project/app.html` (`canned` array)               |
+| Slash commands                       | `project/app.html` (`CMD_PROMPTS` map + #cmd-menu)|
+| Suggestion cards                     | `project/app.html` (`.empty-hints`)               |
+| Hero animation + four-stage layout   | `project/org-light.html`                          |
+| Shared light-theme palette           | inline `:root` override at top of each page       |
+| Provider OAuth map (VPS-only)        | `bridge/bridge.js` (`PROVIDERS` const)            |
+| Agent + skill templates (VPS-only)   | `deploy/agent-templates/templates/`               |
+| Hermes integration seam (VPS-only)   | `bridge/hermes-sidecar/sidecar.py`                |
 
 ---
 
