@@ -698,14 +698,51 @@ body.drawer-open .app-backdrop { display: block; }
 
 @media (max-width: 720px) {
   .chat-body { padding: 24px 18px 20px; }
-  .composer, .chat-head { padding-left: 16px; padding-right: 16px; }
+  .chat-head { padding-left: 16px; padding-right: 16px; }
+  .composer { padding: 10px 14px 14px; }
   .tend-chip { font-size: 11px; padding: 7px 18px; }
   .icon-btn { width: 34px; height: 34px; }
   .app-bar { padding: 10px 14px; }
   .msg.user { max-width: min(420px, 100%); }
   .msg.user .bubble { padding: 10px 14px; font-size: 14.5px; }
-  .composer textarea { font-size: 17px; min-height: 52px; padding: 15px 20px; border-radius: 28px; }
-  .composer .pill-btn { width: 46px; height: 46px; }
+
+  /* Claude Code mobile composer: one rounded card, textarea on top, actions below */
+  .composer-inner {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto auto;
+    grid-template-areas:
+      "ta   ta ta     ta  ta"
+      "clip .  attach mic send";
+    column-gap: 8px;
+    row-gap: 6px;
+    align-items: center;
+    background: var(--bg-2);
+    border: 1px solid var(--line-2);
+    border-radius: 26px;
+    padding: 10px 10px 10px;
+    transition: border-color 0.18s, box-shadow 0.18s;
+  }
+  .composer-inner:focus-within {
+    border-color: rgba(45, 42, 36, 0.25);
+    box-shadow: 0 0 0 4px rgba(45, 42, 36, 0.05);
+  }
+  #clip-btn   { grid-area: clip; }
+  #msg-input  { grid-area: ta; }
+  #attach-btn { grid-area: attach; }
+  #mic-btn    { grid-area: mic; }
+  #send-btn   { grid-area: send; }
+  .composer-inner textarea {
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    padding: 8px 10px 2px;
+    min-height: 44px;
+    max-height: 160px;
+    font-size: 17px;
+    width: 100%;
+  }
+  .composer-inner textarea:focus { border-color: transparent; box-shadow: none; }
+  .composer .pill-btn { width: 38px; height: 38px; }
 }
 @media (max-width: 480px) {
   .chat-body { padding: 18px 14px 16px; gap: 18px; }
