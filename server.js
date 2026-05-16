@@ -126,8 +126,9 @@ function parseCookies(header) {
   return out;
 }
 
-function signToken(userId) {
-  return jwt.sign({ sub: userId }, SESSION_SECRET, { expiresIn: '30d' });
+function signToken(userId, demo = false) {
+  const payload = demo ? { sub: userId, demo: true } : { sub: userId };
+  return jwt.sign(payload, SESSION_SECRET, { expiresIn: '30d' });
 }
 
 function setSessionCookie(res, token) {
@@ -143,12 +144,14 @@ function clearSessionCookie(res) {
 }
 
 async function userFromRequest(req) {
-  if (!pool) return null;
   const cookies = parseCookies(req.headers.cookie);
   const token = cookies[COOKIE_NAME];
   if (!token) return null;
   let claims;
   try { claims = jwt.verify(token, SESSION_SECRET); } catch { return null; }
+  if (claims.demo || !pool) {
+    return { id: 0, email: claims.sub, demo: true };
+  }
   const { rows } = await pool.query(
     'SELECT id, email, created_at FROM users WHERE id = $1',
     [claims.sub]
@@ -159,13 +162,16 @@ async function userFromRequest(req) {
 // ─── Auth endpoints ───────────────────────────────────────────────────────
 
 async function handleSignup(req, res) {
-  if (!pool) return send(res, 503, { error: 'DATABASE_URL not configured' });
   const { email, password } = await readJson(req);
   if (!email || !password) return send(res, 400, { error: 'email and password are required' });
   if (typeof password !== 'string' || password.length < 6) {
     return send(res, 400, { error: 'password must be at least 6 characters' });
   }
   const normalized = String(email).trim().toLowerCase();
+  if (!pool) {
+    setSessionCookie(res, signToken(normalized, true));
+    return send(res, 200, { user: { id: 0, email: normalized } });
+  }
   const hash = await bcrypt.hash(password, 10);
   try {
     const { rows } = await pool.query(
@@ -181,10 +187,13 @@ async function handleSignup(req, res) {
 }
 
 async function handleLogin(req, res) {
-  if (!pool) return send(res, 503, { error: 'DATABASE_URL not configured' });
   const { email, password } = await readJson(req);
   if (!email || !password) return send(res, 400, { error: 'email and password are required' });
   const normalized = String(email).trim().toLowerCase();
+  if (!pool) {
+    setSessionCookie(res, signToken(normalized, true));
+    return send(res, 200, { user: { id: 0, email: normalized } });
+  }
   const { rows } = await pool.query(
     'SELECT id, email, password_hash, created_at FROM users WHERE email = $1',
     [normalized]
@@ -211,6 +220,7 @@ async function handleMe(req, res) {
 // ─── Conversations ────────────────────────────────────────────────────────
 
 async function listConversations(user, res) {
+  if (!pool) return send(res, 200, { conversations: [] });
   const { rows } = await pool.query(
     'SELECT id, title, created_at, updated_at FROM conversations WHERE user_id = $1 ORDER BY updated_at DESC LIMIT 50',
     [user.id]
@@ -219,6 +229,10 @@ async function listConversations(user, res) {
 }
 
 async function createConversation(user, res) {
+  if (!pool) {
+    const now = new Date().toISOString();
+    return send(res, 200, { conversation: { id: 0, title: 'New chat', created_at: now, updated_at: now } });
+  }
   const { rows } = await pool.query(
     'INSERT INTO conversations (user_id) VALUES ($1) RETURNING id, title, created_at, updated_at',
     [user.id]
@@ -227,6 +241,10 @@ async function createConversation(user, res) {
 }
 
 async function getConversation(user, convId, res) {
+  if (!pool) {
+    const now = new Date().toISOString();
+    return send(res, 200, { conversation: { id: convId, title: 'New chat', created_at: now, updated_at: now, messages: [] } });
+  }
   const { rows: convRows } = await pool.query(
     'SELECT id, title, created_at, updated_at FROM conversations WHERE id = $1 AND user_id = $2',
     [convId, user.id]
@@ -240,6 +258,7 @@ async function getConversation(user, convId, res) {
 }
 
 async function deleteConversation(user, convId, res) {
+  if (!pool) { res.writeHead(204); res.end(); return; }
   const { rowCount } = await pool.query(
     'DELETE FROM conversations WHERE id = $1 AND user_id = $2',
     [convId, user.id]
@@ -258,33 +277,40 @@ async function handleChat(req, res, convId) {
   const user = await userFromRequest(req);
   if (!user) return send(res, 401, { error: 'not signed in' });
 
-  const { rows: convRows } = await pool.query(
-    'SELECT id, title FROM conversations WHERE id = $1 AND user_id = $2',
-    [convId, user.id]
-  );
-  if (!convRows[0]) return send(res, 404, { error: 'conversation not found' });
-  const isFirstMessage = convRows[0].title === 'New chat';
-
-  let message;
-  try { ({ message } = await readJson(req)); } catch { return send(res, 400, { error: 'invalid body' }); }
+  let message, clientHistory;
+  try { ({ message, history: clientHistory } = await readJson(req)); } catch { return send(res, 400, { error: 'invalid body' }); }
   if (!message) return send(res, 400, { error: 'message is required' });
 
-  await pool.query(
-    'INSERT INTO messages (conversation_id, role, content) VALUES ($1, $2, $3)',
-    [convId, 'user', message]
-  );
-  if (isFirstMessage) {
-    const title = String(message).slice(0, 60).trim() || 'New chat';
-    await pool.query('UPDATE conversations SET title = $1 WHERE id = $2', [title, convId]);
-  }
+  let messages;
+  if (!pool) {
+    // Demo mode: use history sent by client, no DB persistence
+    const prior = Array.isArray(clientHistory) ? clientHistory.slice(-20) : [];
+    messages = [...prior, { role: 'user', content: message }];
+  } else {
+    const { rows: convRows } = await pool.query(
+      'SELECT id, title FROM conversations WHERE id = $1 AND user_id = $2',
+      [convId, user.id]
+    );
+    if (!convRows[0]) return send(res, 404, { error: 'conversation not found' });
+    const isFirstMessage = convRows[0].title === 'New chat';
 
-  const { rows: history } = await pool.query(
-    `SELECT role, content FROM messages
-     WHERE conversation_id = $1
-     ORDER BY created_at DESC LIMIT 20`,
-    [convId]
-  );
-  const messages = history.reverse().map((m) => ({ role: m.role, content: m.content }));
+    await pool.query(
+      'INSERT INTO messages (conversation_id, role, content) VALUES ($1, $2, $3)',
+      [convId, 'user', message]
+    );
+    if (isFirstMessage) {
+      const title = String(message).slice(0, 60).trim() || 'New chat';
+      await pool.query('UPDATE conversations SET title = $1 WHERE id = $2', [title, convId]);
+    }
+
+    const { rows: history } = await pool.query(
+      `SELECT role, content FROM messages
+       WHERE conversation_id = $1
+       ORDER BY created_at DESC LIMIT 20`,
+      [convId]
+    );
+    messages = history.reverse().map((m) => ({ role: m.role, content: m.content }));
+  }
 
   let upstream;
   try {
@@ -342,7 +368,7 @@ async function handleChat(req, res, convId) {
     res.write(`data: ${JSON.stringify({ error: e.message })}\n\n`);
   }
 
-  if (assistantText) {
+  if (assistantText && pool) {
     await pool.query(
       'INSERT INTO messages (conversation_id, role, content) VALUES ($1, $2, $3)',
       [convId, 'assistant', assistantText]
@@ -365,7 +391,6 @@ async function handleApi(req, res) {
   if (url === '/api/auth/me'     && req.method === 'GET')  return handleMe(req, res);
 
   if (url === '/api/conversations') {
-    if (!pool) return send(res, 503, { error: 'DATABASE_URL not configured' });
     const user = await userFromRequest(req);
     if (!user) return send(res, 401, { error: 'not signed in' });
     if (req.method === 'GET') return listConversations(user, res);
@@ -375,7 +400,6 @@ async function handleApi(req, res) {
 
   const convMatch = url.match(/^\/api\/conversations\/(\d+)$/);
   if (convMatch) {
-    if (!pool) return send(res, 503, { error: 'DATABASE_URL not configured' });
     const user = await userFromRequest(req);
     if (!user) return send(res, 401, { error: 'not signed in' });
     const convId = Number(convMatch[1]);
@@ -387,7 +411,6 @@ async function handleApi(req, res) {
   const chatMatch = url.match(/^\/api\/chat\/(\d+)$/);
   if (chatMatch) {
     if (req.method !== 'POST') return send(res, 405, { error: 'method not allowed' });
-    if (!pool) return send(res, 503, { error: 'DATABASE_URL not configured' });
     return handleChat(req, res, Number(chatMatch[1]));
   }
 

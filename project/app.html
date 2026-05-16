@@ -976,7 +976,7 @@ body.drawer-open .app-backdrop { display: block; }
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'same-origin',
-        body: JSON.stringify({ message: text })
+        body: JSON.stringify({ message: text, history: chatHistory.slice(0, -1) })
       });
     })
     .then(function (r) {
