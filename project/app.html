@@ -370,7 +370,7 @@ body {
   overflow-y: auto;
   overflow-x: hidden;
   padding: 32px 28px 24px;
-  display: flex; flex-direction: column; gap: 24px;
+  display: flex; flex-direction: column; gap: 24px; justify-content: flex-end;
   min-width: 0;
 }
 .msg { display: flex; gap: 14px; max-width: min(760px, 100%); min-width: 0; }
@@ -720,7 +720,7 @@ body.drawer-open .app-backdrop { display: block; }
   .chat-empty   { grid-area: empty; max-width: none; padding: 72px 28px 0; justify-content: flex-start; }
   .chat-empty.hidden { display: flex !important; }   /* keep greeting on desktop */
   .empty-greeting { font-size: 28px; line-height: 1.2; margin-bottom: 24px; }
-  .chat-body    { grid-area: body; padding: 72px 28px 24px; }
+  .chat-body    { grid-area: body; padding: 24px 28px; }
   .composer     { grid-area: composer; border-top: 1px solid var(--line); padding: 16px 28px 0; }
   .home-bento   { grid-area: bento; border-top: 0; padding: 0 28px 0; max-width: none; align-self: end; }
   .home-bento.hidden { display: block !important; }  /* keep bento on desktop */
