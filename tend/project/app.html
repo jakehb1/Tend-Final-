@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
 <title>tend Workspace</title>
 <script>
   (function () {
@@ -37,9 +37,15 @@
   --accent-ink: #1F1E1B;
   --accent-soft: rgba(229, 233, 224, 0.45);
 }
-html { background: var(--bg); overflow-x: hidden; }
+html {
+  background: var(--bg);
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
 
-html, body { height: 100%; max-width: 100vw; }
+html, body { height: 100dvh; max-width: 100vw; }
+@supports not (height: 100dvh) { html, body { height: 100vh; } }
 body {
   background: var(--bg);
   color: var(--fg);
@@ -47,7 +53,9 @@ body {
   flex-direction: column;
   overflow: hidden;
   width: 100%;
+  overscroll-behavior: none;
 }
+button, a, .b-item, .icon-btn, .pill-btn { touch-action: manipulation; }
 
 /* App top bar */
 .app-bar {
@@ -512,7 +520,7 @@ body {
   resize: none;
   color: var(--fg);
   font-family: 'FH Premier', 'IBM Plex Sans', system-ui, sans-serif;
-  font-size: 14.5px;
+  font-size: 16px;
   line-height: 1.4;
   min-height: 40px;
   max-height: 140px;
