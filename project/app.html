@@ -337,6 +337,31 @@ button, a, .b-item, .icon-btn, .pill-btn { touch-action: manipulation; }
 }
 .sb-section .h .count { color: var(--fg); }
 
+.sb-nav { display: flex; flex-direction: column; gap: 2px; }
+.sb-nav .h { padding: 0 0 8px; }
+.sb-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  color: var(--fg);
+  text-decoration: none;
+  font-size: 14.5px;
+  transition: background 0.12s, color 0.12s;
+}
+.sb-nav-link:hover { background: var(--bg-3); }
+.sb-nav-link.active { background: var(--accent); color: var(--accent-ink); }
+.sb-nav-ic {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  color: var(--fg-mute);
+}
+.sb-nav-link.active .sb-nav-ic { color: var(--fg); }
+.sb-nav-lbl { font-weight: 500; letter-spacing: -0.005em; }
+
 /* Chat */
 .chat {
   flex: 1;
@@ -1107,7 +1132,7 @@ body.drawer-open .app-backdrop { display: block; }
 <button type="button" class="desktop-brand icon-btn" id="brand-btn-desktop" aria-label="Conversations">
   <span class="brand-mark" aria-hidden="true"></span>
 </button>
-<a class="desktop-gear icon-btn" href="data-brain.html" aria-label="Settings">
+<a class="desktop-gear icon-btn" href="data-layer.html" aria-label="Settings">
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
     <circle cx="12" cy="12" r="3"/>
     <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
@@ -1122,7 +1147,7 @@ body.drawer-open .app-backdrop { display: block; }
   </div>
   <div class="bar-slot bar-center"></div>
   <div class="bar-slot bar-right">
-    <a class="icon-btn" href="data-brain.html" aria-label="Settings">
+    <a class="icon-btn" href="data-layer.html" aria-label="Settings">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <circle cx="12" cy="12" r="3"/>
         <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
@@ -1136,6 +1161,34 @@ body.drawer-open .app-backdrop { display: block; }
 
   <div class="app-backdrop" id="app-backdrop" aria-hidden="true"></div>
   <aside class="sidebar" id="sidebar">
+    <div class="sb-section sb-nav">
+      <div class="h"><span>Navigate</span></div>
+      <a class="sb-nav-link active" href="app.html" data-page="app">
+        <span class="sb-nav-ic" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        </span>
+        <span class="sb-nav-lbl">Chat</span>
+      </a>
+      <a class="sb-nav-link" href="dashboard.html" data-page="dashboard">
+        <span class="sb-nav-ic" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+        </span>
+        <span class="sb-nav-lbl">Dashboard</span>
+      </a>
+      <a class="sb-nav-link" href="data-layer.html" data-page="data-layer">
+        <span class="sb-nav-ic" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6a9 3 0 0018 0V5"/><path d="M3 11v6a9 3 0 0018 0v-6"/></svg>
+        </span>
+        <span class="sb-nav-lbl">Data layer</span>
+      </a>
+      <a class="sb-nav-link" href="connect.html" data-page="connect">
+        <span class="sb-nav-ic" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+        </span>
+        <span class="sb-nav-lbl">Connections</span>
+      </a>
+    </div>
+
     <div class="sb-section">
       <div class="h"><span>Metrics</span><span class="count">● LIVE</span></div>
       <div class="kpi-strip" id="kpi-strip">
@@ -1169,7 +1222,7 @@ body.drawer-open .app-backdrop { display: block; }
 
     <div class="sb-foot">
       <a href="#" id="logout" class="sb-logout">Sign out</a>
-      <a class="sb-gear" href="data-brain.html" aria-label="Data Brain and connections">
+      <a class="sb-gear" href="data-layer.html" aria-label="Data layer and connections">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <circle cx="12" cy="12" r="3"/>
           <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
@@ -1348,9 +1401,8 @@ body.drawer-open .app-backdrop { display: block; }
     if (e) e.preventDefault();
     setDrawer(!document.body.classList.contains('drawer-open'));
   }
-  function goDashboard(e) { if (e) e.preventDefault(); window.location.href = 'dashboard.html'; }
-  if (brandBtn) brandBtn.addEventListener('click', goDashboard);
-  if (brandBtnDesktop) brandBtnDesktop.addEventListener('click', goDashboard);
+  if (brandBtn) brandBtn.addEventListener('click', toggleDrawer);
+  if (brandBtnDesktop) brandBtnDesktop.addEventListener('click', toggleDrawer);
   if (backdrop) {
     backdrop.addEventListener('click', function () { setDrawer(false); });
   }

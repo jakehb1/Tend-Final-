@@ -68,21 +68,102 @@ body {
   z-index: 20;
 }
 .app-bar .left, .app-bar .right { display: flex; align-items: center; gap: 18px; }
-.app-bar .brand {
+.app-bar .brand-btn {
   display: inline-flex;
-  width: 32px;
-  height: 22px;
+  width: 36px;
+  height: 26px;
   background: var(--accent);
   border-radius: 6px;
-  padding: 4px 6px;
+  padding: 4px 7px;
   box-sizing: border-box;
-  text-decoration: none;
+  border: 0;
+  cursor: pointer;
+  transition: background 0.12s;
 }
-.app-bar .brand .mark {
+.app-bar .brand-btn:hover { background: #DBDFD4; }
+.app-bar .brand-btn .mark {
   flex: 1;
   background: url('images/tend-logo.png') no-repeat left center / auto 100%;
   filter: brightness(0);
 }
+
+/* ---- slide-out drawer ---- */
+.drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(31, 30, 27, 0.42);
+  backdrop-filter: blur(2px);
+  z-index: 40;
+  display: none;
+}
+.drawer {
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  width: min(86vw, 320px);
+  z-index: 50;
+  transform: translateX(-100%);
+  transition: transform 0.22s ease;
+  background: var(--bg-2);
+  border-right: 1px solid var(--line);
+  box-shadow: 12px 0 40px rgba(0,0,0,0.08);
+  padding: 24px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  overflow-y: auto;
+}
+body.drawer-open .drawer { transform: translateX(0); }
+body.drawer-open .drawer-backdrop { display: block; }
+.drw-section { padding: 0 20px; }
+.drw-section .h {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+  margin-bottom: 12px;
+}
+.drw-nav { display: flex; flex-direction: column; gap: 2px; }
+.drw-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  color: var(--fg);
+  text-decoration: none;
+  font-size: 14.5px;
+  font-weight: 500;
+  transition: background 0.12s;
+}
+.drw-link:hover { background: var(--bg-3); }
+.drw-link.active { background: var(--accent); color: var(--accent-ink); }
+.drw-ic {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  color: var(--fg-mute);
+}
+.drw-link.active .drw-ic { color: var(--fg); }
+.drw-foot {
+  margin-top: auto;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+}
+.drw-logout {
+  color: var(--fg-mute);
+  text-decoration: none;
+  font-size: 13px;
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.04em;
+}
+.drw-logout:hover { color: var(--fg); }
 .app-bar .ws-tag {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 11px;
@@ -465,6 +546,76 @@ body {
 }
 .dl-row.broken .status { color: var(--amber); }
 
+/* ---------- Daily Welcome overlay (post-login) ---------- */
+.daily-welcome {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: var(--bg);
+  display: none;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 48px 28px 28px;
+  box-sizing: border-box;
+}
+.daily-welcome.open { display: flex; }
+.dw-stage { flex: 1; width: 100%; max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
+.dw-stage[hidden] { display: none; }
+.dw-label { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fg-mute); }
+.dw-title { font-size: 36px; line-height: 1.1; letter-spacing: -0.02em; margin: 4px 0 0; font-weight: 500; color: var(--fg); }
+.dw-sub { color: var(--fg-mute); font-size: 15.5px; line-height: 1.55; margin: 0 0 10px; max-width: 560px; }
+.dw-options { display: flex; flex-direction: column; gap: 10px; }
+.dw-option { background: var(--bg-2); border: 1px solid var(--line-2); border-radius: 14px; padding: 16px 20px; display: grid; grid-template-columns: 22px 1fr; gap: 16px; align-items: center; text-align: left; font-family: 'FH Premier', 'IBM Plex Sans', system-ui, sans-serif; color: var(--fg); cursor: pointer; -webkit-appearance: none; appearance: none; transition: border-color 0.15s, background 0.15s; }
+.dw-option:hover { border-color: var(--fg); }
+.dw-option.selected { border-color: var(--fg); background: var(--accent); }
+.dw-arrow { font-family: 'IBM Plex Mono', monospace; color: var(--fg-mute); font-size: 16px; line-height: 1; }
+.dw-option.selected .dw-arrow { color: var(--fg); }
+.dw-opt-title { font-size: 17px; font-weight: 500; margin: 0; color: var(--fg); }
+.dw-opt-desc { font-size: 13.5px; color: var(--fg-mute); margin: 4px 0 0; }
+.dw-textarea { background: var(--bg-2); border: 1px solid var(--line-2); border-radius: 14px; padding: 18px 20px; font-family: 'FH Premier', 'IBM Plex Sans', system-ui, sans-serif; font-size: 16px; line-height: 1.55; color: var(--fg); resize: none; min-height: 160px; outline: 0; width: 100%; box-sizing: border-box; }
+.dw-textarea:focus { border-color: rgba(45,42,36,0.3); box-shadow: 0 0 0 4px rgba(45,42,36,0.06); }
+.dw-textarea::placeholder { color: var(--fg-mute); }
+.dw-foot { display: flex; align-items: center; justify-content: space-between; padding: 12px 0 4px; gap: 12px; flex-wrap: wrap; margin-top: auto; }
+.dw-dots { display: flex; gap: 6px; }
+.dw-dot { width: 36px; height: 3px; background: var(--line-2); border-radius: 2px; transition: background 0.18s; }
+.dw-dot.done { background: var(--fg); }
+.dw-actions { display: flex; gap: 10px; margin-left: auto; }
+.dw-btn { background: transparent; border: 1px solid var(--line-2); color: var(--fg); font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; padding: 12px 22px; cursor: pointer; border-radius: 999px; -webkit-appearance: none; appearance: none; transition: background 0.15s, color 0.15s, border-color 0.15s; }
+.dw-btn:hover { background: var(--bg-3); }
+.dw-btn.primary { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.dw-btn.primary:hover { background: #000; }
+@media (max-width: 720px) {
+  .daily-welcome { padding: 36px 18px 20px; }
+  .dw-title { font-size: 28px; }
+  .dw-option { padding: 14px 16px; grid-template-columns: 20px 1fr; gap: 12px; }
+  .dw-opt-title { font-size: 15.5px; }
+  .dw-btn { padding: 11px 16px; font-size: 10.5px; }
+  .dw-dot { width: 26px; }
+}
+
+/* ---- onboarding-driven affordances ---- */
+.db-note {
+  border-left: 3px solid var(--accent);
+  background: var(--accent-soft);
+  padding: 14px 18px;
+  border-radius: 4px;
+  margin: -8px 0 28px;
+  font-size: 14.5px;
+  color: var(--fg);
+  line-height: 1.5;
+}
+.db-note-lbl {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+  margin-right: 6px;
+}
+.focus-hit { box-shadow: inset 4px 0 0 var(--fg); }
+.appr-row.focus-hit { border-left-color: var(--fg); }
+.sess-card.focus-hit { border-color: var(--fg); }
+
 /* ---- responsive ---- */
 @media (max-width: 1024px) {
   .db { padding: 32px 24px 60px; }
@@ -494,11 +645,94 @@ body {
 </head>
 <body>
 
+<div class="daily-welcome" id="daily-welcome" aria-hidden="true">
+  <div class="dw-stage" data-step="1">
+    <div class="dw-label">§ Daily Welcome &middot; Step 01 of 03</div>
+    <h2 class="dw-title">Pick today's focus.</h2>
+    <p class="dw-sub">I'll bias today's snapshot and which sessions surface to the top accordingly. You can switch any time.</p>
+    <div class="dw-options" data-group="focus">
+      <button class="dw-option" type="button" data-value="listing"><span class="dw-arrow">&rarr;</span><div><p class="dw-opt-title">Listing pipeline</p><p class="dw-opt-desc">Pre-launch, comps, vendor coordination</p></div></button>
+      <button class="dw-option" type="button" data-value="past-clients"><span class="dw-arrow">&rarr;</span><div><p class="dw-opt-title">Past clients</p><p class="dw-opt-desc">Reactivation, anniversary, retention</p></div></button>
+      <button class="dw-option" type="button" data-value="field-day"><span class="dw-arrow">&rarr;</span><div><p class="dw-opt-title">Field day</p><p class="dw-opt-desc">Showings, walkthroughs, on-the-go</p></div></button>
+      <button class="dw-option" type="button" data-value="admin-ops"><span class="dw-arrow">&rarr;</span><div><p class="dw-opt-title">Admin &amp; ops</p><p class="dw-opt-desc">Approvals, vendor decisions, billing</p></div></button>
+    </div>
+    <div class="dw-foot">
+      <div class="dw-dots"><span class="dw-dot done"></span><span class="dw-dot"></span><span class="dw-dot"></span></div>
+      <div class="dw-actions">
+        <button class="dw-btn" type="button" data-action="skip">Skip</button>
+        <button class="dw-btn primary" type="button" data-action="next">Next &rarr;</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="dw-stage" data-step="2" hidden>
+    <div class="dw-label">§ Daily Welcome &middot; Step 02 of 03</div>
+    <h2 class="dw-title">Energy check.</h2>
+    <p class="dw-sub">Honest answer is fine &mdash; I'll shorten the queue if you're tight on bandwidth.</p>
+    <div class="dw-options" data-group="energy">
+      <button class="dw-option" type="button" data-value="full"><span class="dw-arrow">&rarr;</span><div><p class="dw-opt-title">Full bandwidth</p><p class="dw-opt-desc">Bring me everything</p></div></button>
+      <button class="dw-option" type="button" data-value="half"><span class="dw-arrow">&rarr;</span><div><p class="dw-opt-title">Half day</p><p class="dw-opt-desc">Only what needs me today</p></div></button>
+      <button class="dw-option" type="button" data-value="thin"><span class="dw-arrow">&rarr;</span><div><p class="dw-opt-title">Thin slice</p><p class="dw-opt-desc">Just the decisions, nothing else</p></div></button>
+    </div>
+    <div class="dw-foot">
+      <div class="dw-dots"><span class="dw-dot done"></span><span class="dw-dot done"></span><span class="dw-dot"></span></div>
+      <div class="dw-actions">
+        <button class="dw-btn" type="button" data-action="back">Back</button>
+        <button class="dw-btn" type="button" data-action="skip">Skip</button>
+        <button class="dw-btn primary" type="button" data-action="next">Next &rarr;</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="dw-stage" data-step="3" hidden>
+    <div class="dw-label">§ Daily Welcome &middot; Step 03 of 03</div>
+    <h2 class="dw-title">Anything on your mind I should know?</h2>
+    <p class="dw-sub">Optional. Free-text. I'll factor it into how I prioritize today.</p>
+    <textarea class="dw-textarea" id="dw-notes" rows="6" placeholder="e.g. nervous about the Tom Miller listing comp, want to think through pricing first&hellip;"></textarea>
+    <div class="dw-foot">
+      <div class="dw-dots"><span class="dw-dot done"></span><span class="dw-dot done"></span><span class="dw-dot done"></span></div>
+      <div class="dw-actions">
+        <button class="dw-btn" type="button" data-action="back">Back</button>
+        <button class="dw-btn" type="button" data-action="skip">Skip</button>
+        <button class="dw-btn primary" type="button" data-action="finish">Build my day &rarr;</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="drawer-backdrop" id="drawer-backdrop" aria-hidden="true"></div>
+<aside class="drawer" id="drawer" aria-label="Navigation">
+  <div class="drw-section">
+    <div class="h">Navigate</div>
+    <nav class="drw-nav">
+      <a class="drw-link" href="app.html">
+        <span class="drw-ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></span>
+        <span>Chat</span>
+      </a>
+      <a class="drw-link active" href="dashboard.html">
+        <span class="drw-ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg></span>
+        <span>Dashboard</span>
+      </a>
+      <a class="drw-link" href="data-layer.html">
+        <span class="drw-ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v6a9 3 0 0018 0V5"/><path d="M3 11v6a9 3 0 0018 0v-6"/></svg></span>
+        <span>Data layer</span>
+      </a>
+      <a class="drw-link" href="connect.html">
+        <span class="drw-ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg></span>
+        <span>Connections</span>
+      </a>
+    </nav>
+  </div>
+  <div class="drw-foot">
+    <a href="#" id="drw-logout" class="drw-logout">Sign out</a>
+  </div>
+</aside>
+
 <header class="app-bar">
   <div class="left">
-    <a href="app.html" class="brand" aria-label="Back to chat">
+    <button type="button" class="brand-btn" id="brand-btn" aria-label="Open navigation" aria-expanded="false">
       <span class="mark" aria-hidden="true"></span>
-    </a>
+    </button>
     <span class="ws-tag">workspace · <strong>quiet golf</strong></span>
   </div>
   <div class="right">
@@ -760,6 +994,141 @@ body {
       window.location.href = 'app.html';
     });
   });
+
+  // ── Slide-out drawer (logo top-left) ─────────────────────────────────────
+  var brandBtn = document.getElementById('brand-btn');
+  var backdrop = document.getElementById('drawer-backdrop');
+  function setDrawer(open) {
+    document.body.classList.toggle('drawer-open', open);
+    if (brandBtn) brandBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  if (brandBtn) brandBtn.addEventListener('click', function () {
+    setDrawer(!document.body.classList.contains('drawer-open'));
+  });
+  if (backdrop) backdrop.addEventListener('click', function () { setDrawer(false); });
+  var drwLogout = document.getElementById('drw-logout');
+  if (drwLogout) drwLogout.addEventListener('click', function (e) {
+    e.preventDefault();
+    fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' })
+      .finally(function () { window.location.replace('login.html'); });
+  });
+
+  // ── Daily Welcome overlay: shows once per session after login ───────────
+  (function () {
+    var dw = document.getElementById('daily-welcome');
+    if (!dw) return;
+    var WELCOMED_KEY = 'tend.welcomed';
+    try { if (sessionStorage.getItem(WELCOMED_KEY) === '1') return; } catch (e) {}
+
+    var stages = dw.querySelectorAll('.dw-stage');
+    var current = 1;
+    var data = { focus: null, energy: null, notes: '' };
+
+    function show(step) {
+      stages.forEach(function (s) {
+        var n = parseInt(s.getAttribute('data-step'), 10);
+        s.hidden = n !== step;
+      });
+      current = step;
+    }
+    function close(persist) {
+      try { sessionStorage.setItem(WELCOMED_KEY, '1'); } catch (e) {}
+      if (persist) {
+        try { sessionStorage.setItem('tend.daily', JSON.stringify(data)); } catch (e) {}
+      }
+      dw.classList.remove('open');
+      dw.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      // Re-run the onboarding-driven affordances after a fresh save.
+      if (persist && typeof applyDaily === 'function') applyDaily();
+    }
+    dw.addEventListener('click', function (e) {
+      var opt = e.target.closest('.dw-option');
+      if (opt) {
+        var group = opt.parentElement.getAttribute('data-group');
+        var value = opt.getAttribute('data-value');
+        if (group) data[group] = value;
+        Array.from(opt.parentElement.children).forEach(function (c) {
+          c.classList.toggle('selected', c === opt);
+        });
+        return;
+      }
+      var btn = e.target.closest('[data-action]');
+      if (!btn) return;
+      var action = btn.getAttribute('data-action');
+      if (action === 'skip') { close(false); return; }
+      if (action === 'back') { show(Math.max(1, current - 1)); return; }
+      if (action === 'next') { show(Math.min(3, current + 1)); return; }
+      if (action === 'finish') {
+        var ta = document.getElementById('dw-notes');
+        if (ta) data.notes = (ta.value || '').trim();
+        close(true);
+      }
+    });
+    dw.classList.add('open');
+    dw.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    show(1);
+  })();
+
+  // ── Apply onboarding selections (focus / energy / notes) to dashboard ───
+  function loadDaily() {
+    try { return JSON.parse(sessionStorage.getItem('tend.daily') || 'null'); }
+    catch (e) { return null; }
+  }
+  function applyDaily() {
+    var daily = loadDaily();
+    if (!daily) return;
+    // Note callout near the hero
+    if (daily.notes) {
+      var heroSection = document.querySelector('.db-hero');
+      if (heroSection) {
+        var noteEl = document.createElement('div');
+        noteEl.className = 'db-note';
+        noteEl.innerHTML = '<span class="db-note-lbl">Your note &middot;</span> ' +
+          daily.notes.replace(/[<>]/g, function (c) { return c === '<' ? '&lt;' : '&gt;'; });
+        heroSection.parentNode.insertBefore(noteEl, heroSection.nextSibling);
+      }
+    }
+
+    // Focus → which session/approval cards get the priority flag
+    var focusMap = {
+      'listing':      ['Mueller pre-launch', 'Tom Miller listing', 'Mueller comp set'],
+      'past-clients': ['Past-client reactivation', 'Halpern household', 'Paterson household'],
+      'field-day':    ['Showings', 'walkthroughs'],
+      'admin-ops':    ['Q2 vendor sourcing', 'Vendor RFP', 'Inbox triage']
+    };
+    var focusHits = focusMap[daily.focus] || [];
+    function isHit(text) {
+      for (var i = 0; i < focusHits.length; i++) {
+        if (text.indexOf(focusHits[i]) !== -1) return true;
+      }
+      return false;
+    }
+    document.querySelectorAll('.sess-card, .appr-row, .out-table tbody tr').forEach(function (el) {
+      var text = el.textContent || '';
+      if (isHit(text)) el.classList.add('focus-hit');
+    });
+
+    // Energy = thin → hide non-decision items
+    if (daily.energy === 'thin') {
+      document.querySelectorAll('.sess-card').forEach(function (card) {
+        var pill = card.querySelector('.foot .pill');
+        if (!pill || !/decision/i.test(pill.textContent)) card.style.display = 'none';
+      });
+    }
+
+    // Reflect the focus in the hero kicker
+    var labelMap = { 'listing': 'Listing pipeline', 'past-clients': 'Past clients', 'field-day': 'Field day', 'admin-ops': 'Admin & ops' };
+    var focusLabel = labelMap[daily.focus];
+    if (focusLabel) {
+      var kicker = document.querySelector('.db-kicker');
+      if (kicker && !kicker.querySelector('.dw-focus-tag')) {
+        kicker.insertAdjacentHTML('beforeend', ' <span class="sep">/</span> <span class="dw-focus-tag" style="color:var(--fg)">Focus: ' + focusLabel + '</span>');
+      }
+    }
+  }
+  applyDaily();
 })();
 </script>
 

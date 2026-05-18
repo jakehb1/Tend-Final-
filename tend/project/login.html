@@ -186,7 +186,7 @@ body { background: var(--bg); color: var(--fg); }
         if (!r.ok) return;
         var onboarded = false;
         try { onboarded = !!localStorage.getItem('tend.onboarded'); } catch (_) {}
-        window.location.replace(onboarded ? 'app.html' : 'onboarding.html');
+        window.location.replace(onboarded ? 'dashboard.html' : 'onboarding.html');
       })
       .catch(function () {});
   })();
@@ -267,7 +267,7 @@ body { background: var(--bg); color: var(--fg); }
       if (mode === 'signup') {
         window.location.href = 'onboarding.html';
       } else {
-        window.location.href = onboarded ? 'app.html' : 'onboarding.html';
+        window.location.href = onboarded ? 'dashboard.html' : 'onboarding.html';
       }
     })
     .catch(function (e) {
