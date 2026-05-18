@@ -442,6 +442,63 @@ button, a, .b-item, .icon-btn, .pill-btn { touch-action: manipulation; }
 .msg .bubble p:last-child { margin-bottom: 0; }
 .msg .bubble strong { color: var(--fg); font-weight: 600; }
 
+/* ---- per-message edit / export actions ---- */
+.msg-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+  padding-left: 2px;
+  align-items: center;
+}
+.ma-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--fg-mute);
+  padding: 5px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+}
+.ma-btn:hover { color: var(--fg); background: var(--bg-3); }
+.ma-btn svg { display: block; }
+.ma-btn.ma-save {
+  background: var(--fg);
+  color: var(--bg);
+  border-color: var(--fg);
+  padding: 5px 14px;
+}
+.ma-btn.ma-save:hover { background: #000; color: var(--bg); }
+.ma-btn.ma-cancel { color: var(--fg-mute); }
+.msg-edit-ta {
+  width: 100%;
+  min-height: 140px;
+  background: var(--bg-2);
+  border: 1px solid var(--line-2);
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--fg);
+  resize: vertical;
+  outline: 0;
+  box-sizing: border-box;
+  display: block;
+}
+.msg-edit-ta:focus {
+  border-color: rgba(45, 42, 36, 0.3);
+  box-shadow: 0 0 0 4px rgba(45, 42, 36, 0.06);
+}
+
 .sources {
   display: flex; flex-wrap: wrap; gap: 6px;
   margin-top: 12px;
@@ -1440,6 +1497,86 @@ body.drawer-open .app-backdrop { display: block; }
     if (chatEmpty && !chatEmpty.classList.contains('hidden')) chatEmpty.classList.add('hidden');
     if (homeBento && !homeBento.classList.contains('hidden')) homeBento.classList.add('hidden');
   }
+
+  // Attach Edit + Export .md controls under an assistant message bubble.
+  // getMd / setMd let edits propagate back to chat history so follow-ups
+  // see the corrected content.
+  function attachMsgActions(wrap, getMd, setMd) {
+    var bubble = wrap.querySelector('.bubble');
+    if (!bubble || wrap.querySelector('.msg-actions')) return;
+    var actions = document.createElement('div');
+    actions.className = 'msg-actions';
+    actions.innerHTML =
+        '<button type="button" class="ma-btn ma-edit" aria-label="Edit">'
+      +   '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/></svg>'
+      +   '<span>Edit</span>'
+      + '</button>'
+      + '<button type="button" class="ma-btn ma-export" aria-label="Export as .md">'
+      +   '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>'
+      +   '<span>Export .md</span>'
+      + '</button>';
+    wrap.querySelector('div').appendChild(actions);
+
+    actions.querySelector('.ma-edit').addEventListener('click', function () {
+      if (actions.classList.contains('editing')) return;
+      actions.classList.add('editing');
+      var raw = getMd();
+      var snapshot = bubble.innerHTML;
+      var ta = document.createElement('textarea');
+      ta.className = 'msg-edit-ta';
+      ta.value = raw;
+      bubble.innerHTML = '';
+      bubble.appendChild(ta);
+      ta.style.height = 'auto';
+      ta.style.height = Math.min(Math.max(ta.scrollHeight, 140), 480) + 'px';
+      ta.focus();
+
+      var save = document.createElement('button');
+      save.type = 'button';
+      save.className = 'ma-btn ma-save';
+      save.textContent = 'Save';
+      var cancel = document.createElement('button');
+      cancel.type = 'button';
+      cancel.className = 'ma-btn ma-cancel';
+      cancel.textContent = 'Cancel';
+      actions.appendChild(save);
+      actions.appendChild(cancel);
+
+      function endEdit() {
+        save.remove(); cancel.remove();
+        actions.classList.remove('editing');
+      }
+      save.addEventListener('click', function () {
+        var newMd = ta.value;
+        setMd(newMd);
+        bubble.innerHTML = md(newMd);
+        endEdit();
+      });
+      cancel.addEventListener('click', function () {
+        bubble.innerHTML = snapshot;
+        endEdit();
+      });
+    });
+
+    actions.querySelector('.ma-export').addEventListener('click', function () {
+      var raw = getMd();
+      if (!raw) return;
+      var firstLine = (raw.split('\n').find(function (l) { return l.trim(); }) || 'tend-message')
+        .replace(/^#+\s*/, '')
+        .slice(0, 48)
+        .trim();
+      var slug = firstLine.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'tend-message';
+      var blob = new Blob([raw], { type: 'text/markdown;charset=utf-8' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = slug + '.md';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+    });
+  }
   function showEmpty() {
     if (chatEmpty) chatEmpty.classList.remove('hidden');
     if (homeBento) homeBento.classList.remove('hidden');
@@ -1604,6 +1741,7 @@ body.drawer-open .app-backdrop { display: block; }
   function replyLive(text) {
     var thinking = addThinking();
     var bubble = null;
+    var msgWrap = null;
     var rawText = '';
 
     function ensureBubble() {
@@ -1615,6 +1753,7 @@ body.drawer-open .app-backdrop { display: block; }
       var b = wrap.querySelector('.bubble');
       body.appendChild(wrap);
       bubble = b;
+      msgWrap = wrap;
       return b;
     }
 
@@ -1666,7 +1805,19 @@ body.drawer-open .app-backdrop { display: block; }
       return pump();
     })
     .then(function () {
-      if (rawText) chatHistory.push({ role: 'assistant', content: rawText });
+      if (rawText) {
+        var entry = { role: 'assistant', content: rawText };
+        chatHistory.push(entry);
+        if (msgWrap) {
+          attachMsgActions(msgWrap,
+            function () { return entry.content; },
+            function (v) {
+              entry.content = v;
+              rawText = v;
+            }
+          );
+        }
+      }
       loadConversations();
     })
     .catch(function (e) {
@@ -2075,7 +2226,12 @@ body.drawer-open .app-backdrop { display: block; }
             var wrap2 = el('div', 'msg');
             wrap2.innerHTML = '<div><div class="who">tend</div><div class="bubble">' + md(m.content) + '</div></div>';
             body.appendChild(wrap2);
-            chatHistory.push({ role: 'assistant', content: m.content });
+            var entry2 = { role: 'assistant', content: m.content };
+            chatHistory.push(entry2);
+            attachMsgActions(wrap2,
+              function () { return entry2.content; },
+              function (v) { entry2.content = v; }
+            );
           }
         });
         scroll();
