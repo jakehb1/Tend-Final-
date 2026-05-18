@@ -1708,6 +1708,17 @@ body.drawer-open .app-backdrop { display: block; }
   });
   syncSendState();
 
+  // Pick up a pending message handed off from dashboard.html / data-layer.html
+  try {
+    var pending = sessionStorage.getItem('tend.pendingMessage');
+    if (pending) {
+      sessionStorage.removeItem('tend.pendingMessage');
+      input.value = pending;
+      syncSendState();
+      setTimeout(function () { form.requestSubmit(); }, 120);
+    }
+  } catch (e) {}
+
   input.addEventListener('keydown', function (e) {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();

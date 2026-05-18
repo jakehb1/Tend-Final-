@@ -453,6 +453,70 @@ body {
 }
 .dl-link:hover { color: var(--fg); }
 
+/* ---- chat launcher (fixed bottom composer) ---- */
+.chat-launcher {
+  position: fixed;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(640px, calc(100vw - 32px));
+  z-index: 30;
+}
+.cl-form {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-2);
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  padding: 6px 6px 6px 22px;
+  box-shadow: 0 6px 24px rgba(31, 30, 27, 0.08);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.cl-form:focus-within {
+  border-color: rgba(45, 42, 36, 0.25);
+  box-shadow: 0 0 0 4px rgba(45, 42, 36, 0.05), 0 6px 24px rgba(31, 30, 27, 0.1);
+}
+.cl-input {
+  flex: 1;
+  border: 0;
+  background: transparent;
+  outline: 0;
+  resize: none;
+  font-family: 'FH Premier', 'IBM Plex Sans', system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.4;
+  color: var(--fg);
+  padding: 9px 0;
+  min-width: 0;
+  max-height: 96px;
+}
+.cl-input::placeholder { color: var(--fg-mute); }
+.cl-send {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 0;
+  background: var(--bg-3);
+  color: var(--fg-mute);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s;
+  -webkit-appearance: none;
+  appearance: none;
+  flex-shrink: 0;
+}
+.cl-send.is-active { background: var(--fg); color: var(--bg); }
+.cl-send.is-active:hover { background: #000; }
+.cl-send svg { display: block; }
+.dl { padding-bottom: 120px !important; }
+@media (max-width: 720px) {
+  .chat-launcher { bottom: 14px; width: calc(100vw - 20px); }
+  .cl-form { padding: 5px 5px 5px 18px; }
+}
+
 /* ---- responsive ---- */
 @media (max-width: 1024px) {
   .dl { padding: 32px 24px 60px; }
@@ -690,6 +754,43 @@ body {
   </div>
 
 </main>
+
+<div class="chat-launcher">
+  <form class="cl-form" id="cl-form" autocomplete="off">
+    <textarea class="cl-input" id="cl-input" rows="1" placeholder="Ask Tend anything&hellip;"></textarea>
+    <button type="submit" class="cl-send" id="cl-send" aria-label="Send">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+    </button>
+  </form>
+</div>
+
+<script>
+(function () {
+  var form = document.getElementById('cl-form');
+  var input = document.getElementById('cl-input');
+  var send = document.getElementById('cl-send');
+  if (!form || !input) return;
+  function syncSend() {
+    send.classList.toggle('is-active', !!(input.value || '').trim());
+  }
+  input.addEventListener('input', function () {
+    input.style.height = 'auto';
+    input.style.height = Math.min(input.scrollHeight, 96) + 'px';
+    syncSend();
+  });
+  input.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); form.requestSubmit(); }
+  });
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var msg = (input.value || '').trim();
+    if (!msg) return;
+    try { sessionStorage.setItem('tend.pendingMessage', msg); } catch (err) {}
+    window.location.href = 'app.html';
+  });
+  syncSend();
+})();
+</script>
 
 </body>
 </html>
