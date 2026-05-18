@@ -1,0 +1,767 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+<title>tend · Dashboard</title>
+<script>
+  (function () {
+    document.documentElement.style.visibility = 'hidden';
+    fetch('/api/auth/me', { credentials: 'same-origin' })
+      .then(function (r) {
+        if (!r.ok) return window.location.replace('login.html');
+        return r.json();
+      })
+      .then(function (data) {
+        if (data && data.user) window.__TEND_USER__ = data.user;
+        document.documentElement.style.visibility = '';
+      })
+      .catch(function () { window.location.replace('login.html'); });
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="shared.css?v=5">
+<style>
+:root {
+  --bg:     #FAF9F5;
+  --bg-2:   #F4F1EA;
+  --bg-3:   #EBE7DC;
+  --fg:     #1F1E1B;
+  --fg-dim: rgba(31, 30, 27, 0.66);
+  --fg-mute: rgba(31, 30, 27, 0.42);
+  --line:   rgba(31, 30, 27, 0.08);
+  --line-2: rgba(31, 30, 27, 0.18);
+  --accent: #E5E9E0;
+  --accent-ink: #1F1E1B;
+  --accent-soft: rgba(229, 233, 224, 0.45);
+  --amber: #B07A2E;
+}
+html { background: var(--bg); -webkit-text-size-adjust: 100%; }
+html, body { height: 100%; }
+body {
+  background:
+    radial-gradient(1200px 600px at 50% -200px, rgba(45,42,36,0.04), transparent 60%),
+    var(--bg);
+  color: var(--fg);
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  margin: 0;
+  font-family: 'FH Premier', 'IBM Plex Sans', system-ui, sans-serif;
+}
+
+/* ---- top bar ---- */
+.app-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 28px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(250, 249, 245, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+.app-bar .left, .app-bar .right { display: flex; align-items: center; gap: 18px; }
+.app-bar .brand {
+  display: inline-flex;
+  width: 32px;
+  height: 22px;
+  background: var(--accent);
+  border-radius: 6px;
+  padding: 4px 6px;
+  box-sizing: border-box;
+  text-decoration: none;
+}
+.app-bar .brand .mark {
+  flex: 1;
+  background: url('images/tend-logo.png') no-repeat left center / auto 100%;
+  filter: brightness(0);
+}
+.app-bar .ws-tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--fg-mute);
+  letter-spacing: 0.06em;
+  border-left: 1px solid var(--line);
+  padding-left: 18px;
+}
+.app-bar .ws-tag strong { color: var(--fg); font-weight: 500; }
+.app-bar .nav-back, .app-bar .nav-gear {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px;
+  letter-spacing: 0.04em;
+  color: var(--fg-mute);
+  text-decoration: none;
+  padding: 7px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.app-bar .nav-back:hover, .app-bar .nav-gear:hover { color: var(--fg); border-color: var(--line-2); background: var(--bg-2); }
+
+/* ---- editorial wrap ---- */
+.db {
+  flex: 1;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 44px 44px 80px;
+  box-sizing: border-box;
+}
+
+/* ---- hero ---- */
+.db-hero {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  align-items: end;
+  gap: 48px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 36px;
+}
+.db-kicker {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+.db-kicker .sep { color: var(--line-2); }
+.db-hero h1 {
+  font-family: 'FH Premier', 'IBM Plex Sans', serif;
+  font-size: clamp(28px, 3.4vw, 40px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  margin: 0 0 14px;
+  color: var(--fg);
+}
+.db-hero h1 .it {
+  font-style: italic;
+  color: var(--accent-ink);
+  background: var(--accent);
+  padding: 0 8px;
+  border-radius: 6px;
+  font-weight: 400;
+}
+.db-hero .lede {
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--fg-dim);
+  margin: 0;
+  max-width: 540px;
+}
+.db-hero .lede em { font-style: italic; color: var(--fg); }
+.db-hero-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+.db-bignum {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: clamp(44px, 5vw, 56px);
+  line-height: 1.0;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: var(--fg);
+}
+.db-bignum sup {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--fg-mute);
+  vertical-align: super;
+  margin-left: 6px;
+  font-weight: 400;
+}
+.db-bignum-cap {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+  text-align: right;
+  max-width: 280px;
+  line-height: 1.5;
+}
+.db-bignum-cap strong { color: var(--fg); font-weight: 500; }
+
+/* ---- section heads ---- */
+.db-sec {
+  margin: 0 0 36px;
+}
+.db-sec-h {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin: 0 0 18px;
+  gap: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+}
+.db-sec-h h2 {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+  margin: 0;
+}
+.db-sec-h h2 .sec-num { color: var(--fg); font-weight: 500; }
+.db-sec-h h2 .sec-label { color: var(--fg); margin: 0 8px; }
+.db-sec-h .meta {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--fg-mute);
+  text-transform: uppercase;
+}
+.db-sec-h .meta strong { color: var(--fg); font-weight: 500; }
+
+/* ---- KPI grid (Operating Snapshot) ---- */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0;
+  border: 1px solid var(--line-2);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--bg);
+}
+.kpi-tile {
+  padding: 22px 24px;
+  border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.kpi-tile:last-child { border-right: 0; }
+.kpi-tile .lbl {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+}
+.kpi-tile .val {
+  font-family: 'FH Premier', 'IBM Plex Sans', serif;
+  font-size: clamp(28px, 3vw, 36px);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+}
+.kpi-tile .val sup { font-size: 0.55em; font-weight: 400; color: var(--fg-mute); vertical-align: super; margin-left: 2px; }
+.kpi-tile .foot {
+  font-size: 13px;
+  color: var(--fg-dim);
+}
+.kpi-tile .foot.warm { color: var(--amber); }
+
+/* ---- two-column row (approvals + sessions) ---- */
+.db-split {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: 40px;
+  margin-bottom: 36px;
+}
+.db-split .db-sec { margin-bottom: 0; }
+
+/* ---- approvals list ---- */
+.appr-list {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--bg);
+  overflow: hidden;
+}
+.appr-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 18px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--line);
+  background: var(--bg);
+  border-left: 3px solid transparent;
+  transition: background 0.12s;
+  cursor: pointer;
+}
+.appr-row:last-child { border-bottom: 0; }
+.appr-row:hover { background: var(--bg-2); }
+.appr-row.flag { border-left-color: var(--amber); }
+.appr-row .title {
+  font-size: 15px;
+  font-weight: 500;
+  margin: 0 0 4px;
+  color: var(--fg);
+}
+.appr-row .sub {
+  font-size: 12.5px;
+  color: var(--fg-mute);
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.04em;
+  margin: 0;
+}
+.appr-row .badge {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+}
+.appr-more {
+  padding: 14px 20px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--amber);
+  text-align: center;
+  background: var(--bg-2);
+  border-top: 1px solid var(--line);
+  text-decoration: none;
+  display: block;
+}
+.appr-more:hover { background: var(--bg-3); }
+
+/* ---- live sessions ---- */
+.sess-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+.sess-card {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  min-width: 0;
+}
+.sess-card:hover { border-color: var(--line-2); box-shadow: 0 1px 0 var(--line-2); }
+.sess-card .lbl {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+}
+.sess-card h3 {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0;
+  color: var(--fg);
+  letter-spacing: -0.005em;
+}
+.sess-card p {
+  font-size: 13.5px;
+  color: var(--fg-dim);
+  margin: 0;
+  line-height: 1.5;
+}
+.sess-card .foot {
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+}
+.sess-card .foot .pill {
+  background: var(--bg-3);
+  color: var(--fg);
+  padding: 5px 10px;
+  border-radius: 999px;
+}
+
+/* ---- automation outputs (recent landings) ---- */
+.out-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.out-table th, .out-table td {
+  text-align: left;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line);
+}
+.out-table th {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+  font-weight: 500;
+}
+.out-table td.mono { font-family: 'IBM Plex Mono', monospace; color: var(--fg-mute); font-size: 12px; letter-spacing: 0.04em; }
+.out-table td.title { font-weight: 500; }
+.out-table tbody tr:hover { background: var(--bg-2); cursor: pointer; }
+.out-toolbar {
+  display: flex;
+  gap: 18px;
+  justify-content: flex-end;
+  padding: 14px 0 0;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.out-toolbar a { color: var(--fg-mute); text-decoration: none; }
+.out-toolbar a:hover { color: var(--fg); }
+.out-toolbar a.active { color: var(--fg); border-bottom: 1px solid var(--fg); padding-bottom: 2px; }
+
+/* ---- data layer snapshot tabs ---- */
+.dl-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 18px;
+  padding: 14px 18px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg);
+  margin-bottom: 8px;
+}
+.dl-row .sys {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 500;
+}
+.dl-row .sys .d { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+.dl-row.broken .sys .d { background: var(--amber); }
+.dl-row .status {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--fg-mute);
+}
+.dl-row.broken .status { color: var(--amber); }
+
+/* ---- responsive ---- */
+@media (max-width: 1024px) {
+  .db { padding: 32px 24px 60px; }
+  .db-hero { grid-template-columns: 1fr; gap: 22px; }
+  .db-hero-right { align-items: flex-start; }
+  .db-bignum-cap { text-align: left; }
+  .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .kpi-tile { border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .kpi-tile:nth-child(2n) { border-right: 0; }
+  .kpi-tile:nth-last-child(-n+2) { border-bottom: 0; }
+  .db-split { grid-template-columns: 1fr; gap: 28px; }
+  .sess-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .db { padding: 24px 18px 60px; }
+  .app-bar { padding: 12px 16px; }
+  .app-bar .ws-tag { display: none; }
+  .db-hero h1 { font-size: 28px; }
+  .kpi-grid { grid-template-columns: 1fr; }
+  .kpi-tile { border-right: 0; }
+  .kpi-tile:nth-last-child(-n+2) { border-bottom: 1px solid var(--line); }
+  .kpi-tile:last-child { border-bottom: 0; }
+  .out-table th, .out-table td { padding: 12px 10px; font-size: 13px; }
+  .nav-back .full, .nav-gear .full { display: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="app-bar">
+  <div class="left">
+    <a href="app.html" class="brand" aria-label="Back to chat">
+      <span class="mark" aria-hidden="true"></span>
+    </a>
+    <span class="ws-tag">workspace · <strong>quiet golf</strong></span>
+  </div>
+  <div class="right">
+    <a class="nav-back" href="app.html"><span>&larr;</span> <span class="full">Back to chat</span></a>
+    <a class="nav-gear" href="data-layer.html" aria-label="Settings">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
+      </svg>
+      <span class="full">Data layer</span>
+    </a>
+  </div>
+</header>
+
+<main class="db">
+
+  <!-- Hero -->
+  <section class="db-hero">
+    <div>
+      <div class="db-kicker">
+        <span>§ Dashboard</span>
+        <span class="sep">/</span>
+        <span id="hero-date">SUN MAY 17, 2026</span>
+        <span class="sep">/</span>
+        <span>Your Daily Orientation</span>
+      </div>
+      <h1>Good morning, <span id="hero-name">Sarah</span>.&nbsp;<span class="it">Here's your day.</span></h1>
+      <p class="lede">Snapshot rebuilt at <em id="hero-time">8:14 AM</em>. Click any session below to jump into the room.</p>
+    </div>
+    <div class="db-hero-right">
+      <span class="db-bignum">78<sup>%</sup></span>
+      <span class="db-bignum-cap">DATA <strong>COVERAGE</strong> · 3 gaps flagged</span>
+    </div>
+  </section>
+
+  <!-- §01 Operating Snapshot -->
+  <section class="db-sec">
+    <div class="db-sec-h">
+      <h2><span class="sec-num">§01</span> / Today <span class="sec-label">/</span> <span style="color:var(--fg)">Operating Snapshot</span></h2>
+      <span class="meta"><strong id="snap-date">SUN MAY 17</strong></span>
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi-tile">
+        <div class="lbl">Runs this week</div>
+        <div class="val">8</div>
+        <div class="foot">+3 vs last week</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="lbl">Approvals pending</div>
+        <div class="val">6</div>
+        <div class="foot warm">Across 4 automations</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="lbl">Hours saved (est.)</div>
+        <div class="val">6.4</div>
+        <div class="foot">vs manual baseline</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="lbl">Data coverage</div>
+        <div class="val">78<sup>%</sup></div>
+        <div class="foot warm">3 gaps flagged</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Two-column: Approvals + Live Sessions -->
+  <div class="db-split">
+    <section class="db-sec">
+      <div class="db-sec-h">
+        <h2><span class="sec-num">§02</span> / Approvals <span class="sec-label">/</span> <span style="color:var(--fg)">Approvals</span></h2>
+        <a class="meta" href="app.html" style="text-decoration:none"><strong>6 pending</strong> &rarr;</a>
+      </div>
+      <div class="appr-list">
+        <div class="appr-row">
+          <div>
+            <p class="title">Halpern household · 3yr note</p>
+            <p class="sub">Anniversary cadence · 6h</p>
+          </div>
+          <span class="badge">→</span>
+        </div>
+        <div class="appr-row">
+          <div>
+            <p class="title">Paterson household · 1yr note</p>
+            <p class="sub">Anniversary cadence · 6h</p>
+          </div>
+          <span class="badge">→</span>
+        </div>
+        <div class="appr-row flag">
+          <div>
+            <p class="title">3★ Zillow review · pending owner call</p>
+            <p class="sub">Review watcher · 3d</p>
+          </div>
+          <span class="badge">→</span>
+        </div>
+        <a class="appr-more" href="app.html">+ 3 more in queue &rarr;</a>
+      </div>
+    </section>
+
+    <section class="db-sec">
+      <div class="db-sec-h">
+        <h2><span class="sec-num">§03</span> / Active <span class="sec-label">/</span> <span style="color:var(--fg)">Live Sessions</span></h2>
+        <span class="meta"><strong>3</strong> open</span>
+      </div>
+      <div class="sess-grid">
+        <div class="sess-card">
+          <div class="lbl">Operations</div>
+          <h3>Q2 vendor sourcing</h3>
+          <p>Skybridge bid in at $325, awaiting decision.</p>
+          <div class="foot">
+            <span class="pill">Decision needed</span>
+            <span>12m ago</span>
+          </div>
+        </div>
+        <div class="sess-card">
+          <div class="lbl">Operations</div>
+          <h3>Mueller pre-launch</h3>
+          <p>Pricing review open. $639K rec.</p>
+          <div class="foot">
+            <span class="pill">Decision needed</span>
+            <span>Spawned 8:22</span>
+          </div>
+        </div>
+        <div class="sess-card">
+          <div class="lbl">Operations</div>
+          <h3>Past-client reactivation</h3>
+          <p>8 drafts; Halperns held for call.</p>
+          <div class="foot">
+            <span class="pill">Awaiting approval</span>
+            <span>3h ago</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- §04 Automation Outputs -->
+  <section class="db-sec">
+    <div class="db-sec-h">
+      <h2><span class="sec-num">§04</span> / Automation Outputs <span class="sec-label">/</span> <span style="color:var(--fg)">Recent Landings</span></h2>
+      <span class="meta">last 24h · <strong>9 runs</strong></span>
+    </div>
+    <table class="out-table">
+      <thead>
+        <tr>
+          <th style="width:46%">Output</th>
+          <th>Automation</th>
+          <th>Status</th>
+          <th>Landed</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="title">Halpern · 3yr anniversary draft</td>
+          <td class="mono">past-clients</td>
+          <td class="mono">awaiting approval</td>
+          <td class="mono">6h ago</td>
+        </tr>
+        <tr>
+          <td class="title">Mueller comp set · 11 properties</td>
+          <td class="mono">listing-pricer</td>
+          <td class="mono">decision needed</td>
+          <td class="mono">8:22</td>
+        </tr>
+        <tr>
+          <td class="title">Vendor RFP · Skybridge</td>
+          <td class="mono">vendor-sourcer</td>
+          <td class="mono">decision needed</td>
+          <td class="mono">12m ago</td>
+        </tr>
+        <tr>
+          <td class="title">Tom Miller listing · pricing memo</td>
+          <td class="mono">listing-pricer</td>
+          <td class="mono">delivered</td>
+          <td class="mono">yesterday</td>
+        </tr>
+        <tr>
+          <td class="title">Inbox triage · 14 messages</td>
+          <td class="mono">inbox-router</td>
+          <td class="mono">delivered</td>
+          <td class="mono">2h ago</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="out-toolbar">
+      <a href="#" class="active">All outputs</a>
+      <a href="#">Files</a>
+      <a href="#">Coverage</a>
+      <a href="connect.html">Connectors</a>
+    </div>
+  </section>
+
+  <!-- §05 Data Layer -->
+  <section class="db-sec">
+    <div class="db-sec-h">
+      <h2><span class="sec-num">§05</span> / Data Layer <span class="sec-label">/</span> <span style="color:var(--fg)">Snapshot</span></h2>
+      <a class="meta" href="data-layer.html" style="text-decoration:none">full report &rarr;</a>
+    </div>
+    <div class="dl-row">
+      <div class="sys"><span class="d"></span>Shopify</div>
+      <div class="status">live · synced 4 min ago</div>
+    </div>
+    <div class="dl-row">
+      <div class="sys"><span class="d"></span>QuickBooks</div>
+      <div class="status">live · synced 8 min ago</div>
+    </div>
+    <div class="dl-row broken">
+      <div class="sys"><span class="d"></span>Klaviyo</div>
+      <div class="status">auth expired · stale since 03:14</div>
+    </div>
+    <div class="dl-row">
+      <div class="sys"><span class="d"></span>ShipStation</div>
+      <div class="status">live · synced 1 min ago</div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+(function () {
+  // Personalize hero with logged-in user's first name.
+  function applyName() {
+    var ME = window.__TEND_USER__ || null;
+    if (!ME || !ME.email) return;
+    var fn = (ME.email.split('@')[0] || '').split(/[.\-_]/)[0];
+    fn = fn.charAt(0).toUpperCase() + fn.slice(1);
+    var el = document.getElementById('hero-name');
+    if (el && fn) el.textContent = fn;
+  }
+  // Auth bootstrap ran in <head> before this script; poll briefly in case it's still pending.
+  if (window.__TEND_USER__) applyName();
+  else {
+    var tries = 0;
+    var iv = setInterval(function () {
+      if (window.__TEND_USER__ || tries > 30) { clearInterval(iv); applyName(); }
+      tries++;
+    }, 100);
+  }
+
+  // Live date + snapshot time
+  var now = new Date();
+  var days = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
+  var months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  var heroDate = days[now.getDay()] + ' ' + months[now.getMonth()] + ' ' + String(now.getDate()).padStart(2, '0') + ', ' + now.getFullYear();
+  var snapDate = days[now.getDay()] + ' ' + months[now.getMonth()] + ' ' + String(now.getDate()).padStart(2, '0');
+  var hr = now.getHours(), mn = String(now.getMinutes()).padStart(2, '0');
+  var ampm = hr >= 12 ? 'PM' : 'AM';
+  hr = hr % 12 || 12;
+  var heroTime = hr + ':' + mn + ' ' + ampm;
+  var hd = document.getElementById('hero-date');
+  var sd = document.getElementById('snap-date');
+  var ht = document.getElementById('hero-time');
+  if (hd) hd.textContent = heroDate;
+  if (sd) sd.textContent = snapDate;
+  if (ht) ht.textContent = heroTime;
+
+  // Card / row click → jump into chat
+  document.querySelectorAll('.sess-card, .appr-row').forEach(function (el) {
+    el.addEventListener('click', function () {
+      window.location.href = 'app.html';
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

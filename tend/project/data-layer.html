@@ -1,0 +1,694 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+<title>tend · Data Layer</title>
+<script>
+  (function () {
+    document.documentElement.style.visibility = 'hidden';
+    fetch('/api/auth/me', { credentials: 'same-origin' })
+      .then(function (r) {
+        if (!r.ok) return window.location.replace('login.html');
+        return r.json();
+      })
+      .then(function (data) {
+        if (data && data.user) window.__TEND_USER__ = data.user;
+        document.documentElement.style.visibility = '';
+      })
+      .catch(function () { window.location.replace('login.html'); });
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="shared.css?v=5">
+<style>
+:root {
+  --bg:     #FAF9F5;
+  --bg-2:   #F4F1EA;
+  --bg-3:   #EBE7DC;
+  --fg:     #1F1E1B;
+  --fg-dim: rgba(31, 30, 27, 0.66);
+  --fg-mute: rgba(31, 30, 27, 0.42);
+  --line:   rgba(31, 30, 27, 0.08);
+  --line-2: rgba(31, 30, 27, 0.18);
+  --accent: #E5E9E0;
+  --accent-ink: #1F1E1B;
+  --amber: #B07A2E;
+  --good: #4F7A4B;
+}
+html { background: var(--bg); -webkit-text-size-adjust: 100%; }
+html, body { height: 100%; }
+body {
+  background:
+    radial-gradient(1200px 600px at 50% -200px, rgba(45,42,36,0.04), transparent 60%),
+    var(--bg);
+  color: var(--fg);
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  margin: 0;
+  font-family: 'FH Premier', 'IBM Plex Sans', system-ui, sans-serif;
+}
+
+/* ---- top bar ---- */
+.app-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 28px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(250, 249, 245, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+.app-bar .left, .app-bar .right { display: flex; align-items: center; gap: 18px; }
+.app-bar .brand {
+  display: inline-flex;
+  width: 32px;
+  height: 22px;
+  background: var(--accent);
+  border-radius: 6px;
+  padding: 4px 6px;
+  box-sizing: border-box;
+  text-decoration: none;
+}
+.app-bar .brand .mark {
+  flex: 1;
+  background: url('images/tend-logo.png') no-repeat left center / auto 100%;
+  filter: brightness(0);
+}
+.app-bar .ws-tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--fg-mute);
+  letter-spacing: 0.06em;
+  border-left: 1px solid var(--line);
+  padding-left: 18px;
+}
+.app-bar .ws-tag strong { color: var(--fg); font-weight: 500; }
+.app-bar .nav-back, .app-bar .nav-gear {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px;
+  letter-spacing: 0.04em;
+  color: var(--fg-mute);
+  text-decoration: none;
+  padding: 7px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.app-bar .nav-back:hover, .app-bar .nav-gear:hover { color: var(--fg); border-color: var(--line-2); background: var(--bg-2); }
+
+/* ---- editorial wrap ---- */
+.dl {
+  flex: 1;
+  max-width: 1080px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 44px 44px 80px;
+  box-sizing: border-box;
+}
+
+/* ---- hero ---- */
+.dl-hero {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  align-items: end;
+  gap: 48px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 32px;
+}
+.dl-kicker {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+.dl-kicker .sep { color: var(--line-2); }
+.dl-hero h1 {
+  font-family: 'FH Premier', 'IBM Plex Sans', serif;
+  font-size: clamp(28px, 3.4vw, 40px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  margin: 0 0 14px;
+  color: var(--fg);
+}
+.dl-hero h1 .it {
+  font-style: italic;
+  font-weight: 400;
+  background: var(--accent);
+  padding: 0 8px;
+  border-radius: 6px;
+}
+.dl-hero .lede {
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--fg-dim);
+  margin: 0;
+  max-width: 540px;
+}
+.dl-hero .lede em { font-style: italic; color: var(--fg); }
+.dl-hero-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+.dl-bignum {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: clamp(44px, 5vw, 56px);
+  line-height: 1.0;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: var(--fg);
+}
+.dl-bignum sup {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--fg-mute);
+  vertical-align: super;
+  margin-left: 6px;
+  font-weight: 400;
+}
+.dl-bignum .slash { color: var(--fg-mute); margin: 0 2px; }
+.dl-bignum-cap {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+  text-align: right;
+  max-width: 280px;
+  line-height: 1.5;
+}
+.dl-bignum-cap strong { color: var(--fg); font-weight: 500; }
+
+/* ---- connector chip strip (quick view + add) ---- */
+.conn-strip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 0 0 28px;
+  padding: 18px 22px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--bg);
+}
+.conn-strip .lbl {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+  margin-right: 10px;
+}
+.conn-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg);
+  border: 1px solid var(--line-2);
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  color: var(--fg);
+  text-decoration: none;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+  cursor: pointer;
+}
+.conn-chip:hover { border-color: var(--fg); }
+.conn-chip .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--good);
+}
+.conn-chip.inactive { color: var(--fg-mute); background: var(--bg-2); }
+.conn-chip.inactive .dot { background: var(--fg-mute); opacity: 0.55; }
+.conn-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px dashed var(--amber);
+  border-radius: 10px;
+  padding: 8px 16px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  color: var(--amber);
+  text-decoration: none;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.conn-add:hover { background: var(--amber); color: var(--bg); }
+
+/* ---- meta strip ---- */
+.dl-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 32px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+  margin: 0 0 36px;
+  align-items: baseline;
+}
+.dl-meta .item { display: flex; align-items: baseline; gap: 8px; }
+.dl-meta .num {
+  font-size: 16px;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+  font-weight: 500;
+}
+.dl-meta .num.warn { color: var(--amber); }
+.dl-meta .num.good { color: var(--good); }
+
+/* ---- section heads ---- */
+.dl-sec { margin: 0 0 36px; }
+.dl-sec-h {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin: 0 0 18px;
+  gap: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+}
+.dl-sec-h h2 {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+  margin: 0;
+}
+.dl-sec-h h2 .sec-num { color: var(--fg); font-weight: 500; }
+.dl-sec-h h2 .sec-label { color: var(--fg); margin: 0 6px; }
+.dl-sec-h .meta {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--fg-mute);
+  text-transform: uppercase;
+}
+.dl-sec-h .meta strong { color: var(--fg); font-weight: 500; }
+
+/* ---- connector rows ---- */
+.conn-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.conn-row {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 18px 22px;
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  gap: 20px;
+  transition: border-color 0.15s, background 0.15s;
+}
+.conn-row:hover { border-color: var(--line-2); }
+.conn-row.broken { border-color: rgba(176, 122, 46, 0.32); }
+.conn-row .dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--good);
+  box-shadow: 0 0 0 3px rgba(79, 122, 75, 0.12);
+}
+.conn-row.broken .dot { background: var(--amber); box-shadow: 0 0 0 3px rgba(176, 122, 46, 0.14); }
+.conn-row.pending .dot { background: var(--fg-mute); box-shadow: 0 0 0 3px rgba(31, 30, 27, 0.06); }
+.conn-row .name {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--fg);
+  margin: 0 0 4px;
+}
+.conn-row .desc {
+  font-size: 13px;
+  color: var(--fg-mute);
+  margin: 0;
+  line-height: 1.5;
+}
+.conn-row .status {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--fg-mute);
+  text-transform: lowercase;
+  text-align: right;
+}
+.conn-row.broken .status { color: var(--amber); }
+.conn-row .act {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--fg);
+  text-decoration: none;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  padding: 7px 14px;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.conn-row .act:hover { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.conn-row.broken .act { color: var(--amber); border-color: var(--amber); }
+.conn-row.broken .act:hover { background: var(--amber); color: var(--bg); }
+
+/* ---- coverage callout ---- */
+.cov-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 24px;
+}
+.cov-tile {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 18px;
+}
+.cov-tile .lbl {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-mute);
+  margin-bottom: 8px;
+}
+.cov-tile .val {
+  font-family: 'FH Premier', 'IBM Plex Sans', serif;
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+}
+.cov-tile .val sup { font-size: 0.55em; font-weight: 400; color: var(--fg-mute); vertical-align: super; margin-left: 2px; }
+.cov-tile .desc {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--fg-dim);
+}
+
+/* ---- footer actions ---- */
+.dl-footer {
+  margin-top: 36px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.dl-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--fg);
+  color: var(--bg);
+  border-radius: 999px;
+  padding: 12px 22px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  border: 1px solid var(--fg);
+  transition: background 0.15s;
+}
+.dl-add:hover { background: #000; }
+.dl-link {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--fg-mute);
+  text-decoration: none;
+}
+.dl-link:hover { color: var(--fg); }
+
+/* ---- responsive ---- */
+@media (max-width: 1024px) {
+  .dl { padding: 32px 24px 60px; }
+  .dl-hero { grid-template-columns: 1fr; gap: 22px; }
+  .dl-hero-right { align-items: flex-start; }
+  .dl-bignum-cap { text-align: left; }
+  .cov-grid { grid-template-columns: 1fr; }
+  .conn-row { grid-template-columns: auto 1fr; gap: 14px; row-gap: 10px; }
+  .conn-row .status { grid-column: 2; text-align: left; }
+  .conn-row .act { grid-column: 2; justify-self: start; }
+}
+@media (max-width: 640px) {
+  .dl { padding: 22px 16px 60px; }
+  .app-bar { padding: 12px 16px; }
+  .app-bar .ws-tag { display: none; }
+  .dl-hero h1 { font-size: 28px; }
+  .nav-back .full, .nav-gear .full { display: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="app-bar">
+  <div class="left">
+    <a href="dashboard.html" class="brand" aria-label="Back to dashboard">
+      <span class="mark" aria-hidden="true"></span>
+    </a>
+    <span class="ws-tag">workspace · <strong>quiet golf</strong></span>
+  </div>
+  <div class="right">
+    <a class="nav-back" href="dashboard.html"><span>&larr;</span> <span class="full">Dashboard</span></a>
+    <a class="nav-gear" href="app.html" aria-label="Back to chat"><span class="full">Chat</span> <span>&rarr;</span></a>
+  </div>
+</header>
+
+<main class="dl">
+
+  <!-- Hero -->
+  <section class="dl-hero">
+    <div>
+      <div class="dl-kicker">
+        <span>§ Data Layer</span>
+        <span class="sep">/</span>
+        <span>Connections</span>
+        <span class="sep">/</span>
+        <span>Snapshot</span>
+      </div>
+      <h1>Your <span class="it">data layer</span><br />at a glance.</h1>
+      <p class="lede">Every signal that feeds the chat starts here. Connectors marked <em>live</em> are streaming; broken ones <em>silently exclude</em> their rows from the snapshot until reconnected.</p>
+    </div>
+    <div class="dl-hero-right">
+      <span class="dl-bignum">7<span class="slash">/</span>8</span>
+      <span class="dl-bignum-cap"><strong>CONNECTORS</strong> live · 1 needs attention</span>
+    </div>
+  </section>
+
+  <!-- Connector quick-view strip -->
+  <div class="conn-strip" id="conn-strip">
+    <span class="lbl">Connectors</span>
+    <a class="conn-chip" href="connect.html#gmail"><span class="dot" aria-hidden="true"></span>Gmail</a>
+    <a class="conn-chip" href="connect.html#calendar"><span class="dot" aria-hidden="true"></span>Calendar</a>
+    <a class="conn-chip" href="connect.html#drive"><span class="dot" aria-hidden="true"></span>Drive</a>
+    <a class="conn-chip" href="connect.html#notion"><span class="dot" aria-hidden="true"></span>Notion</a>
+    <a class="conn-chip" href="connect.html#mls-austin"><span class="dot" aria-hidden="true"></span>MLS Austin</a>
+    <a class="conn-chip inactive" href="connect.html#hubspot"><span class="dot" aria-hidden="true"></span>HubSpot</a>
+    <a class="conn-chip inactive" href="connect.html#stripe"><span class="dot" aria-hidden="true"></span>Stripe</a>
+    <a class="conn-add" href="connect.html">+ ADD</a>
+  </div>
+
+  <!-- Meta strip -->
+  <div class="dl-meta">
+    <div class="item"><span class="num good">7</span><span>live</span></div>
+    <div class="item"><span class="num warn">1</span><span>broken</span></div>
+    <div class="item"><span class="num">14</span><span>data sources</span></div>
+    <div class="item"><span class="num">4m</span><span>median sync age</span></div>
+    <div class="item"><span class="num">78%</span><span>data coverage</span></div>
+  </div>
+
+  <!-- §01 Coverage at a glance -->
+  <section class="dl-sec">
+    <div class="dl-sec-h">
+      <h2><span class="sec-num">§01</span><span class="sec-label">/</span> Coverage at a glance</h2>
+      <span class="meta">refreshed <strong>4m ago</strong></span>
+    </div>
+    <div class="cov-grid">
+      <div class="cov-tile">
+        <div class="lbl">Revenue surface</div>
+        <div class="val">94<sup>%</sup></div>
+        <div class="desc">Shopify + Stripe complete. QuickBooks ledger live.</div>
+      </div>
+      <div class="cov-tile">
+        <div class="lbl">Customer surface</div>
+        <div class="val">62<sup>%</sup></div>
+        <div class="desc">Klaviyo lists stale — segments not refreshed since 03:14.</div>
+      </div>
+      <div class="cov-tile">
+        <div class="lbl">Ops surface</div>
+        <div class="val">88<sup>%</sup></div>
+        <div class="desc">ShipStation + Stocky + Inventory Planner all current.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- §02 Connections -->
+  <section class="dl-sec">
+    <div class="dl-sec-h">
+      <h2><span class="sec-num">§02</span><span class="sec-label">/</span> Connections</h2>
+      <span class="meta">8 wired · <strong>1 needs attention</strong></span>
+    </div>
+    <div class="conn-list">
+
+      <div class="conn-row">
+        <span class="dot" aria-hidden="true"></span>
+        <div>
+          <p class="name">Shopify</p>
+          <p class="desc">Orders, customers, products, inventory levels, store events.</p>
+        </div>
+        <span class="status">live · synced 4 min ago</span>
+        <a class="act" href="connect.html#shopify">Manage &rarr;</a>
+      </div>
+
+      <div class="conn-row">
+        <span class="dot" aria-hidden="true"></span>
+        <div>
+          <p class="name">QuickBooks</p>
+          <p class="desc">General ledger, invoices, bills, account balances, month-end close state.</p>
+        </div>
+        <span class="status">live · synced 8 min ago</span>
+        <a class="act" href="connect.html#quickbooks">Manage &rarr;</a>
+      </div>
+
+      <div class="conn-row">
+        <span class="dot" aria-hidden="true"></span>
+        <div>
+          <p class="name">ShipStation</p>
+          <p class="desc">Labels, carriers, SLAs, tracking events, pickup schedules.</p>
+        </div>
+        <span class="status">live · synced 1 min ago</span>
+        <a class="act" href="connect.html#shipstation">Manage &rarr;</a>
+      </div>
+
+      <div class="conn-row broken">
+        <span class="dot" aria-hidden="true"></span>
+        <div>
+          <p class="name">Klaviyo</p>
+          <p class="desc">Email lists, segments, abandoned-cart flows, deliverability.</p>
+        </div>
+        <span class="status">auth expired · stale since 03:14</span>
+        <a class="act" href="connect.html#klaviyo">Reconnect &rarr;</a>
+      </div>
+
+      <div class="conn-row">
+        <span class="dot" aria-hidden="true"></span>
+        <div>
+          <p class="name">Stocky</p>
+          <p class="desc">Stock on hand, sell-through, open POs, supplier lead times, reorder points.</p>
+        </div>
+        <span class="status">live · synced 12 min ago</span>
+        <a class="act" href="connect.html#stocky">Manage &rarr;</a>
+      </div>
+
+      <div class="conn-row">
+        <span class="dot" aria-hidden="true"></span>
+        <div>
+          <p class="name">Inventory Planner</p>
+          <p class="desc">Demand forecast, days of cover, replenishment plan, stockout risk scoring.</p>
+        </div>
+        <span class="status">live · synced 18 min ago</span>
+        <a class="act" href="connect.html#inventory-planner">Manage &rarr;</a>
+      </div>
+
+      <div class="conn-row">
+        <span class="dot" aria-hidden="true"></span>
+        <div>
+          <p class="name">Loop Returns</p>
+          <p class="desc">Return cases, reason codes, restocking, fraud flags, per-customer return rate.</p>
+        </div>
+        <span class="status">live · synced 6 min ago</span>
+        <a class="act" href="connect.html#loop">Manage &rarr;</a>
+      </div>
+
+      <div class="conn-row">
+        <span class="dot" aria-hidden="true"></span>
+        <div>
+          <p class="name">Stripe</p>
+          <p class="desc">Payments, payouts, disputes, refunds, fee schedule.</p>
+        </div>
+        <span class="status">live · synced 2 min ago</span>
+        <a class="act" href="connect.html#stripe">Manage &rarr;</a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- §03 Sources & roles -->
+  <section class="dl-sec">
+    <div class="dl-sec-h">
+      <h2><span class="sec-num">§03</span><span class="sec-label">/</span> What this powers</h2>
+      <span class="meta">read-only</span>
+    </div>
+    <div class="conn-list">
+      <div class="conn-row">
+        <span class="dot" aria-hidden="true"></span>
+        <div>
+          <p class="name">Revenue trend (7d / 30d / MTD)</p>
+          <p class="desc">Built from Shopify + Stripe. Updates inline as new orders settle.</p>
+        </div>
+        <span class="status">streaming</span>
+        <span class="act" style="opacity:0.55">Auto &rarr;</span>
+      </div>
+      <div class="conn-row">
+        <span class="dot" aria-hidden="true"></span>
+        <div>
+          <p class="name">Inbox triage</p>
+          <p class="desc">Vendor replies and customer escalations routed by recent thread context.</p>
+        </div>
+        <span class="status">streaming</span>
+        <span class="act" style="opacity:0.55">Auto &rarr;</span>
+      </div>
+      <div class="conn-row pending">
+        <span class="dot" aria-hidden="true"></span>
+        <div>
+          <p class="name">Email cohort retention</p>
+          <p class="desc">Waiting on Klaviyo segments — last refresh 03:14. Reconnect to resume.</p>
+        </div>
+        <span class="status">paused</span>
+        <a class="act" href="connect.html#klaviyo">Fix &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="dl-footer">
+    <a class="dl-add" href="connect.html">+ Add a connection</a>
+    <a class="dl-link" href="dashboard.html">&larr; back to dashboard</a>
+  </div>
+
+</main>
+
+</body>
+</html>
