@@ -2,9 +2,15 @@
 
 AI partner for small businesses. Static frontend + a small Node server with
 real auth, Postgres-backed conversation persistence, and a Claude chat API.
-All deployed on Railway. Optional self-hosted VPS stack adds real OAuth
-(Nango) and a per-tenant agent runtime when you want that, but the default
-Railway deploy ships an end-to-end product on its own.
+
+Two deploy paths, same codebase:
+- **Railway** — simplest. Push, it builds, you get a URL.
+- **VPS** (Docker Compose) — main app + optional Nango/bridge for live
+  OAuth + per-tenant agents. See `deploy/README.md`.
+
+The demo client is fully **swappable** via a single JSON file in
+`config/demos/`. No code changes, no rebuild — see "Swap the demo client"
+below.
 
 Live: https://withtend.ai
 
@@ -18,6 +24,7 @@ npm install
 export ANTHROPIC_API_KEY=sk-ant-...
 export DATABASE_URL=postgres://...        # Railway-style postgres
 export SESSION_SECRET=$(openssl rand -base64 32)
+export DEMO_CLIENT=quiet-golf             # which config/demos/<name>.json to load
 node server.js
 # open http://localhost:3000/login
 ```
@@ -26,7 +33,44 @@ Create an account, log in, hit `/app`, chat. Conversations persist across
 reloads and are scoped to your user. Edits to `project/*.html` are live on
 reload (no build step). Without `ANTHROPIC_API_KEY` the chat falls back to
 canned replies. Without `DATABASE_URL` the static site still works but
-signup/login/conversations return 503.
+signup/login/conversations return 503. Without `DEMO_CLIENT` the server
+loads `config/demo.json` (the active demo).
+
+---
+
+## Swap the demo client
+
+The whole point of `config/`: any demo client is wired up by editing **one
+JSON file**. No code changes, no image rebuild.
+
+```bash
+bin/swap-demo.sh                  # list available demos + show active one
+bin/swap-demo.sh quiet-golf       # activate the Quiet Golf demo
+bin/swap-demo.sh sample-saas      # activate the sample SaaS demo
+```
+
+To add a new customer:
+
+```bash
+cp config/demos/sample-saas.json config/demos/acme.json
+# Edit acme.json: change client.name, KPIs, connectors, systemPrompt
+bin/swap-demo.sh acme
+```
+
+What's inside a demo config:
+- `client.name` / `client.industry` — shown in the context panel and used in prompts
+- `kpis[]` — surface metrics (label, value, sub-text)
+- `connectors[]` — data sources with `status: live | inactive`
+- `systemPrompt` — the full system prompt sent to Claude on every chat turn
+
+The server resolves config in this order:
+1. `DEMO_CONFIG_PATH` env var (absolute path)
+2. `DEMO_CLIENT` env var (loads `config/demos/<DEMO_CLIENT>.json`)
+3. `config/demo.json` (default — what `bin/swap-demo.sh` writes to)
+
+In Docker Compose, `config/` is mounted as a read-only volume. The host's
+`bin/swap-demo.sh` updates the file *and* restarts the container, so
+swapping demos is a one-command operation on a live VPS.
 
 ---
 
@@ -35,17 +79,30 @@ signup/login/conversations return 503.
 ```
 project/                  Site source (HTML/CSS/JS). The Railway deploy serves this.
 tend/project/             Mirror of project/. Edits must land in both trees, see Conventions.
-server.js                 Node server. Static files + /api/auth + /api/conversations + /api/chat.
+server.js                 Node server. Static files + /api/auth + /api/conversations + /api/chat + /api/config.
 package.json              Engines >= 18. Deps: pg, bcryptjs, jsonwebtoken.
+
+config/demo.json          Active demo client. The server reads this on boot.
+config/demos/             Per-client config files. Swap one to change the demo.
+  ├─ quiet-golf.json      DTC golf apparel demo
+  └─ sample-saas.json     B2B SaaS demo (template for new clients)
+bin/swap-demo.sh          Helper: copies a demos/<name>.json to demo.json, restarts container.
+
+Dockerfile                Containerizes the main app for VPS deploy.
+.dockerignore             Keeps bridge/deploy/cli out of the image.
+
 railway.json              Railway deploy config.
 nixpacks.toml             Pins Railway to Node 20. See "Build pinning" below.
-.railwayignore            Hides bridge/, deploy/, cli/ from the Railway build context.
+.railwayignore            Hides bridge/, deploy/, cli/, bin/, Dockerfile from Railway build context.
 
 bridge/                   Optional VPS Node service. OAuth proxy + Hermes agent proxy.
 bridge/bridge.js          Nango webhook, OAuth state, chat SSE to hermes-sidecar.
 bridge/hermes-sidecar/    Python FastAPI wrapper around the Hermes agent runtime.
 
-deploy/                   Optional Docker Compose stack (Nango + bridge + Caddy).
+deploy/                   Docker Compose stack. App + Nango + bridge + Caddy.
+deploy/docker-compose.yml Includes the `app` service (main server) with config/ mounted as volume.
+deploy/Caddyfile          Reverse proxy. APP_DOMAIN, API_DOMAIN, NANGO_DOMAIN.
+deploy/.env.example       Env template. DEMO_CLIENT, ANTHROPIC_API_KEY, etc.
 deploy/agent-templates/   Per-tenant agent + skill YAML templates.
 deploy/README.md          VPS install guide.
 
@@ -158,6 +215,16 @@ bodies and use the `tend.session` httpOnly cookie for auth.
 httpOnly + SameSite=Lax + 30-day Max-Age. `Secure` flag is on in
 production, off in dev so localhost over HTTP works.
 
+### Config
+
+| Endpoint        | Method | Auth | Response                                                       |
+| --------------- | ------ | ---- | -------------------------------------------------------------- |
+| `/api/config`   | GET    | yes  | `{client, connectors, kpis, systemPrompt}` from the active demo|
+
+Used by the Context panel in `/app` to show the user what data and prompt
+the agent is working with. Returns whatever client `config/demo.json` (or
+the env-var override) is pointed at.
+
 ### Conversations
 
 All require a valid session.
@@ -226,9 +293,13 @@ Edit `model: 'claude-sonnet-4-6'` in `server.js`. The latest model IDs are:
 
 ### To change the system prompt
 
-Edit `SYSTEM_PROMPT` at the top of `server.js`. If you remove the Quiet
-Golf snapshot, the agent loses its grounding and starts hallucinating
-business data, so leave it in until real connectors are wired.
+Edit `systemPrompt` inside the active demo file under `config/demos/`
+(e.g. `config/demos/quiet-golf.json`). The server loads this on boot.
+Restart the server (or `docker compose restart app`) to pick up changes.
+
+If no config file is found at all, `server.js` falls back to a built-in
+Quiet Golf prompt so the chat keeps working. Don't rely on the fallback
+for production — point `DEMO_CLIENT` at a real config.
 
 ---
 
@@ -290,14 +361,16 @@ the same Railway service.
 
 ### Production env vars
 
-| Variable             | Required?       | What it does                                    |
-| -------------------- | --------------- | ----------------------------------------------- |
-| `DATABASE_URL`       | yes for auth    | Postgres connection string. Railway auto-sets.  |
-| `ANTHROPIC_API_KEY`  | yes for chat    | Claude API key. Without it, demo fallback.      |
-| `SESSION_SECRET`     | yes in prod     | Signs the JWT cookie. Sessions break on change. |
-| `PORT`               | optional        | Railway sets this. Defaults to 3000 in dev.     |
-| `NODE_ENV`           | optional        | `production` enables `Secure` cookies.          |
-| `RAILWAY_ENVIRONMENT`| auto            | Railway sets this. Also enables `Secure`.       |
+| Variable             | Required?       | What it does                                              |
+| -------------------- | --------------- | --------------------------------------------------------- |
+| `DATABASE_URL`       | yes for auth    | Postgres connection string. Railway auto-sets.            |
+| `ANTHROPIC_API_KEY`  | yes for chat    | Claude API key. Without it, demo fallback.                |
+| `SESSION_SECRET`     | yes in prod     | Signs the JWT cookie. Sessions break on change.           |
+| `DEMO_CLIENT`        | optional        | Loads `config/demos/<DEMO_CLIENT>.json`. Default: none.   |
+| `DEMO_CONFIG_PATH`   | optional        | Absolute path to a demo config. Overrides `DEMO_CLIENT`.  |
+| `PORT`               | optional        | Railway sets this. Defaults to 3000 in dev.               |
+| `NODE_ENV`           | optional        | `production` enables `Secure` cookies.                    |
+| `RAILWAY_ENVIRONMENT`| auto            | Railway sets this. Also enables `Secure`.                 |
 
 ### Build pinning
 
@@ -316,29 +389,38 @@ to check.
 
 ---
 
-## Optional: VPS for real OAuth and a self-hosted agent
+## VPS deploy (Docker Compose)
 
-This is what makes `/connect` perform real OAuth and `/app` route through
-a per-tenant agent runtime instead of the default Claude pass-through.
+The same `server.js` runs on a $10-20/mo VPS via the Docker Compose stack
+in `deploy/`. The `app` service mounts `config/` as a volume, so
+`bin/swap-demo.sh` on the host changes the demo without rebuilding.
 
 Full guide: `deploy/README.md`. Short version:
 
-1. Provision a $10-20/mo VPS, install Docker + Compose.
-2. Two A records: `api.<your-domain>` and `nango.<your-domain>` → VPS IP.
-3. `cp deploy/.env.example deploy/.env`, fill secrets (`openssl rand
-   -base64 32` for `NANGO_ENCRYPTION_KEY`).
-4. `docker compose up -d nango-db nango-server`, grab Nango master key
-   from logs, paste into `NANGO_SECRET_KEY`.
-5. `docker compose up -d` for the full stack. Caddy auto-issues
-   Let's Encrypt certs.
-6. In the Nango dashboard, configure each provider's OAuth client. Each
-   integration's Unique Key must match the slug in the `PROVIDERS` map in
-   `bridge/bridge.js` (`shopify`, `stripe`, `quickbooks`, etc.).
-7. To use Hermes instead of the default Claude path, replace
+1. Provision a VPS, install Docker + Compose.
+2. Three A records → VPS IP:
+   - `demo.<your-domain>`  — main app (end-user URL)
+   - `api.<your-domain>`   — bridge API (only for live OAuth)
+   - `nango.<your-domain>` — Nango dashboard (only for live OAuth)
+3. `cp deploy/.env.example deploy/.env`, fill:
+   - `APP_DOMAIN`, `ANTHROPIC_API_KEY`, `APP_SESSION_SECRET`
+   - `DEMO_CLIENT=quiet-golf` (or whichever client to serve)
+4. `cd deploy && docker compose up -d app caddy` — that's enough for the
+   demo to be live behind HTTPS.
+5. To swap demos later: on the host, `bin/swap-demo.sh <name>`. The script
+   updates `config/demo.json` and restarts the container.
+
+For live OAuth + per-tenant agents (optional):
+
+6. Bring up Nango: `docker compose up -d nango-db nango-server`, grab
+   the master key from logs into `NANGO_SECRET_KEY`.
+7. `docker compose up -d` to bring up `bridge` + `hermes-sidecar`.
+8. Configure providers in the Nango dashboard. Each integration's Unique
+   Key must match `PROVIDERS` in `bridge/bridge.js` (`shopify`, `stripe`...).
+9. To use Hermes instead of Claude pass-through, replace
    `_stream_from_stub()` in `bridge/hermes-sidecar/sidecar.py` with a real
-   call to the Hermes runtime, then update the frontend's `apiBase` to
-   point at the VPS bridge URL instead of same-origin.
-8. `curl https://api.<your-domain>/healthz` should return `{"ok":true,...}`.
+   Hermes call, then update the frontend's `apiBase` to the VPS bridge URL.
+10. `curl https://api.<your-domain>/healthz` → `{"ok":true,...}`.
 
 ---
 
@@ -485,9 +567,10 @@ node server.js   # migrate() rebuilds them
 
 ### Change the agent's voice or business context
 
-`SYSTEM_PROMPT` constant at the top of `server.js`. The current prompt
-includes the full Quiet Golf demo snapshot (orders, inventory, team
-updates) so responses stay grounded.
+Edit `systemPrompt` in the active demo file under `config/demos/` (e.g.
+`config/demos/quiet-golf.json`). The active demo is whatever
+`bin/swap-demo.sh` last wrote to `config/demo.json`, or whatever
+`DEMO_CLIENT` env var points at. Restart the server to pick it up.
 
 ### Add a suggestion card to the empty chat state
 
