@@ -4,5 +4,8 @@
 bridge/
 deploy/
 cli/
+bin/
+Dockerfile
+.dockerignore
 *.md
 .git/

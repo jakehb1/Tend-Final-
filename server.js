@@ -6,11 +6,30 @@ const { Pool } = require('pg');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-// ─── Demo config (swap config/demo.json to change the client) ─────────────
-const DEMO_CONFIG_PATH = path.join(__dirname, 'config', 'demo.json');
-const demoConfig = fs.existsSync(DEMO_CONFIG_PATH)
+// ─── Demo config (swappable per deployment) ───────────────────────────────
+// Resolution order:
+//   1. DEMO_CONFIG_PATH (absolute path to a json file)
+//   2. DEMO_CLIENT      (loads ./config/demos/<DEMO_CLIENT>.json)
+//   3. ./config/demo.json (default)
+function resolveDemoConfigPath() {
+  if (process.env.DEMO_CONFIG_PATH && fs.existsSync(process.env.DEMO_CONFIG_PATH)) {
+    return process.env.DEMO_CONFIG_PATH;
+  }
+  if (process.env.DEMO_CLIENT) {
+    const candidate = path.join(__dirname, 'config', 'demos', `${process.env.DEMO_CLIENT}.json`);
+    if (fs.existsSync(candidate)) return candidate;
+    console.warn(`warning: DEMO_CLIENT=${process.env.DEMO_CLIENT} but ${candidate} not found.`);
+  }
+  const fallback = path.join(__dirname, 'config', 'demo.json');
+  return fs.existsSync(fallback) ? fallback : null;
+}
+
+const DEMO_CONFIG_PATH = resolveDemoConfigPath();
+const demoConfig = DEMO_CONFIG_PATH
   ? JSON.parse(fs.readFileSync(DEMO_CONFIG_PATH, 'utf8'))
   : null;
+if (demoConfig) console.log(`config: loaded ${DEMO_CONFIG_PATH} (client: ${demoConfig.client?.name || 'unknown'})`);
+else            console.log('config: no demo config found, using built-in fallback');
 
 const PORT = process.env.PORT || 3000;
 const ROOT = path.join(__dirname, 'project');
