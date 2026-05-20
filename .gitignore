@@ -3,3 +3,8 @@ npm-debug.log*
 .DS_Store
 .env
 .env.local
+
+# local UX review scratch — never push
+_before/
+BEFORE-AFTER.html
+.gitignore_local

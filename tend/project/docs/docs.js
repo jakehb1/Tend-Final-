@@ -15,7 +15,7 @@
           <a href="index.html" class="active">Docs</a>
           <a href="../about.html">About</a>
         </div>
-        <button type="button" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}' class="nav-cta">Book a demo <span>→</span></button>
+        <button type="button" onclick="window.location.href='mailto:hello@withtend.ai?subject=Tend%20demo%20request'"class="nav-cta">Book a demo <span>→</span></button>
       </div>
     </nav>
   `);

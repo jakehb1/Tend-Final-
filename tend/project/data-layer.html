@@ -4,17 +4,31 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
 <title>tend · Data Layer</title>
+<style>
+  /* Auth skeleton: show a quiet loader instead of a blank screen on slow networks. */
+  html { visibility: hidden; }
+  html::before {
+    content: 'checking your session';
+    visibility: visible;
+    position: fixed; inset: 0; z-index: 99999;
+    display: flex; align-items: center; justify-content: center;
+    background: #FAF9F5;
+    color: rgba(31,30,27,0.42);
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  html.tend-ready { visibility: visible; }
+  html.tend-ready::before { display: none; }
+</style>
 <script>
   (function () {
-    document.documentElement.style.visibility = 'hidden';
     fetch('/api/auth/me', { credentials: 'same-origin' })
       .then(function (r) {
         if (!r.ok) return window.location.replace('login.html');
-        return r.json();
-      })
-      .then(function (data) {
-        if (data && data.user) window.__TEND_USER__ = data.user;
-        document.documentElement.style.visibility = '';
+        return r.json().then(function (data) {
+          if (data && data.user) window.__TEND_USER__ = data.user;
+          document.documentElement.classList.add('tend-ready');
+        });
       })
       .catch(function () { window.location.replace('login.html'); });
   })();
@@ -29,8 +43,8 @@
   --bg-2:   #F4F1EA;
   --bg-3:   #EBE7DC;
   --fg:     #1F1E1B;
-  --fg-dim: rgba(31, 30, 27, 0.66);
-  --fg-mute: rgba(31, 30, 27, 0.42);
+  --fg-dim: rgba(31, 30, 27, 0.72);
+  --fg-mute: rgba(31, 30, 27, 0.55);
   --line:   rgba(31, 30, 27, 0.08);
   --line-2: rgba(31, 30, 27, 0.18);
   --accent: #E5E9E0;
@@ -511,10 +525,19 @@ body {
 .cl-send.is-active { background: var(--fg); color: var(--bg); }
 .cl-send.is-active:hover { background: #000; }
 .cl-send svg { display: block; }
-.dl { padding-bottom: 120px !important; }
+.dl { padding-bottom: 140px !important; }
+.chat-launcher::before {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 100%;
+  height: 28px;
+  pointer-events: none;
+  background: linear-gradient(to top, var(--bg) 0%, rgba(250, 249, 245, 0) 100%);
+}
 @media (max-width: 720px) {
   .chat-launcher { bottom: 14px; width: calc(100vw - 20px); }
   .cl-form { padding: 5px 5px 5px 18px; }
+  .dl { padding-bottom: 160px !important; }
 }
 
 /* ---- responsive ---- */
@@ -544,7 +567,7 @@ body {
     <a href="dashboard.html" class="brand" aria-label="Back to dashboard">
       <span class="mark" aria-hidden="true"></span>
     </a>
-    <span class="ws-tag">workspace · <strong>quiet golf</strong></span>
+    <span class="ws-tag">workspace · <strong id="ws-name">—</strong></span>
   </div>
   <div class="right">
     <a class="nav-back" href="dashboard.html"><span>&larr;</span> <span class="full">Dashboard</span></a>
@@ -766,6 +789,28 @@ body {
 
 <script>
 (function () {
+  // Workspace tag — only render when the user has actually named one.
+  function applyWorkspace() {
+    var ME = window.__TEND_USER__ || null;
+    if (!ME) return;
+    var wsName = ME.workspace || ME.workspaceName || null;
+    var ws = document.getElementById('ws-name');
+    if (wsName && ws) {
+      ws.textContent = wsName;
+    } else {
+      var tag = document.querySelector('.app-bar .ws-tag');
+      if (tag) tag.style.display = 'none';
+    }
+  }
+  if (window.__TEND_USER__) applyWorkspace();
+  else {
+    var tries = 0;
+    var iv = setInterval(function () {
+      if (window.__TEND_USER__ || tries > 30) { clearInterval(iv); applyWorkspace(); }
+      tries++;
+    }, 100);
+  }
+
   var form = document.getElementById('cl-form');
   var input = document.getElementById('cl-input');
   var send = document.getElementById('cl-send');
