@@ -6,6 +6,12 @@ const { Pool } = require('pg');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+// ─── Demo config (swap config/demo.json to change the client) ─────────────
+const DEMO_CONFIG_PATH = path.join(__dirname, 'config', 'demo.json');
+const demoConfig = fs.existsSync(DEMO_CONFIG_PATH)
+  ? JSON.parse(fs.readFileSync(DEMO_CONFIG_PATH, 'utf8'))
+  : null;
+
 const PORT = process.env.PORT || 3000;
 const ROOT = path.join(__dirname, 'project');
 const COOKIE_NAME = 'tend.session';
@@ -39,7 +45,10 @@ const MIME = {
   '.txt': 'text/plain; charset=utf-8',
 };
 
-const SYSTEM_PROMPT = `You are tend, an AI business partner embedded in the Quiet Golf workspace. Quiet Golf is a direct-to-consumer premium golf apparel brand.
+// Load system prompt from demo config if available, else fall back to built-in default.
+const SYSTEM_PROMPT = (demoConfig && demoConfig.systemPrompt)
+  ? demoConfig.systemPrompt
+  : `You are tend, an AI business partner embedded in the Quiet Golf workspace. Quiet Golf is a direct-to-consumer premium golf apparel brand.
 
 Connected data systems: Shopify (orders, customers, products), Stripe (payments, payouts, disputes), QuickBooks (accounting, bank feeds, P&L), ShipStation (fulfillment, shipments, tracking), Stocky (inventory levels, purchase orders), Inventory Planner (demand forecasting, reorder recommendations), Loop Returns (returns and exchanges).
 
@@ -389,6 +398,18 @@ async function handleApi(req, res) {
   if (url === '/api/auth/login'  && req.method === 'POST') return handleLogin(req, res);
   if (url === '/api/auth/logout' && req.method === 'POST') return handleLogout(res);
   if (url === '/api/auth/me'     && req.method === 'GET')  return handleMe(req, res);
+
+  // Returns client config + system prompt (for the context panel in app.html)
+  if (url === '/api/config' && req.method === 'GET') {
+    const user = await userFromRequest(req);
+    if (!user) return send(res, 401, { error: 'not signed in' });
+    return send(res, 200, {
+      client: demoConfig?.client || { name: 'Quiet Golf', slug: 'quiet-golf' },
+      connectors: demoConfig?.connectors || [],
+      kpis: demoConfig?.kpis || [],
+      systemPrompt: SYSTEM_PROMPT,
+    });
+  }
 
   if (url === '/api/conversations') {
     const user = await userFromRequest(req);
