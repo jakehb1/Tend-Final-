@@ -8,3 +8,4 @@ npm-debug.log*
 _before/
 BEFORE-AFTER.html
 .gitignore_local
+mockups/
