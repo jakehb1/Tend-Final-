@@ -67,6 +67,7 @@
   --line-2: rgba(31, 30, 27, 0.18);
   --accent: #E5E9E0;
   --accent-deep: #DBDFD4;
+  --accent-ink: #1F1E1B;
   --good: #3D6650;
   --warn: #B07A2E;
 }
@@ -1017,6 +1018,151 @@ body.drawer-open .app-backdrop { display: block; }
   .empty-greeting, .stage-head h2 { font-size: 26px; }
   .starters { grid-template-columns: 1fr 1fr; }
 }
+
+/* ---------- Memory / Context panel ---------- */
+.ctx-panel {
+  position: fixed;
+  top: 0; right: 0; bottom: 0;
+  width: min(92vw, 380px);
+  z-index: 60;
+  transform: translateX(100%);
+  transition: transform 0.22s ease;
+  background: var(--bg-2);
+  border-left: 1px solid var(--line-2);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+body.ctx-open .ctx-panel { transform: translateX(0); }
+body.ctx-open .app-backdrop { display: block; }
+.ctx-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid var(--line);
+  flex-shrink: 0;
+}
+.ctx-head-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ctx-head-title .ctx-live {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #3A7B45;
+  flex-shrink: 0;
+  animation: ctx-pulse 2s ease-in-out infinite;
+}
+@keyframes ctx-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.ctx-close {
+  background: transparent; border: 0; cursor: pointer;
+  color: var(--fg-mute); padding: 4px; line-height: 1;
+  transition: color 0.12s;
+}
+.ctx-close:hover { color: var(--fg); }
+.ctx-section {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--line);
+}
+.ctx-section-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(31, 30, 27, 0.55);
+  margin-bottom: 10px;
+}
+.ctx-client-name {
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+}
+.ctx-client-sub {
+  font-size: 12.5px;
+  color: rgba(31, 30, 27, 0.62);
+  margin-top: 3px;
+}
+.ctx-kv {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 12.5px;
+}
+.ctx-kv:last-child { border-bottom: 0; }
+.ctx-k { color: rgba(31, 30, 27, 0.62); font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.03em; }
+.ctx-v { color: var(--fg); font-family: 'IBM Plex Mono', monospace; font-size: 11px; text-align: right; }
+.ctx-v.live { color: #3A7B45; font-weight: 500; }
+.ctx-v.inactive { color: rgba(31, 30, 27, 0.45); }
+.ctx-prompt-box {
+  background: #FFFFFF;
+  border: 1px solid var(--line-2);
+  padding: 12px 14px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--fg);
+  white-space: pre-wrap;
+  overflow-y: auto;
+  max-height: 220px;
+  border-radius: 4px;
+  word-break: break-word;
+}
+.ctx-brief-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 5px 0;
+  font-size: 12.5px;
+  color: var(--fg);
+}
+.ctx-brief-row .ctx-k { flex-shrink: 0; }
+.ctx-brief-val { color: var(--fg); }
+.ctx-turns {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: var(--fg-dim);
+  padding: 12px 20px 14px;
+}
+.ctx-turns-num {
+  color: var(--fg);
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+/* Context toggle button in toolbar */
+.ctx-toggle-btn {
+  flex-shrink: 0;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-3);
+  border: 0;
+  color: var(--fg-mute);
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: background 0.15s, color 0.15s;
+}
+.ctx-toggle-btn:hover { background: var(--line-2); color: var(--fg); }
+.ctx-toggle-btn.active { background: var(--accent); color: var(--accent-ink); }
 </style>
 </head>
 <body>
@@ -1316,6 +1462,9 @@ body.drawer-open .app-backdrop { display: block; }
       <button type="submit" class="pill-btn send" id="send-btn" aria-label="Send">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
       </button>
+      <button type="button" class="ctx-toggle-btn" id="ctx-toggle-btn" aria-label="Show context" title="View active context">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>
+      </button>
     </form>
     <div class="composer-foot">
       <span><kbd>/</kbd> commands · <kbd>⌘</kbd>+<kbd>K</kbd> search</span>
@@ -1324,6 +1473,56 @@ body.drawer-open .app-backdrop { display: block; }
   </div>
 
 </main>
+
+<!-- ───────── Memory / Context panel (ported from base branch) ───────── -->
+<aside class="ctx-panel" id="ctx-panel" aria-label="Active context" aria-hidden="true">
+  <div class="ctx-head">
+    <div class="ctx-head-title">
+      <span class="ctx-live"></span>
+      Active context
+    </div>
+    <button class="ctx-close" id="ctx-close" aria-label="Close context panel">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+
+  <div class="ctx-section" id="ctx-client-section">
+    <div class="ctx-section-label">Client</div>
+    <div class="ctx-client-name" id="ctx-client-name">—</div>
+    <div class="ctx-client-sub" id="ctx-client-industry">—</div>
+  </div>
+
+  <div class="ctx-section" id="ctx-brief-section">
+    <div class="ctx-section-label">Today's brief</div>
+    <div class="ctx-brief-row">
+      <span class="ctx-k">Focus</span>
+      <span class="ctx-brief-val" id="ctx-focus">—</span>
+    </div>
+    <div class="ctx-brief-row">
+      <span class="ctx-k">Energy</span>
+      <span class="ctx-brief-val" id="ctx-energy">—</span>
+    </div>
+    <div class="ctx-brief-row" id="ctx-notes-row" style="display:none">
+      <span class="ctx-k">Notes</span>
+      <span class="ctx-brief-val" id="ctx-notes">—</span>
+    </div>
+  </div>
+
+  <div class="ctx-section" id="ctx-connectors-section">
+    <div class="ctx-section-label">Data sources</div>
+    <div id="ctx-connectors-list"></div>
+  </div>
+
+  <div class="ctx-section">
+    <div class="ctx-section-label">System context sent to AI</div>
+    <div class="ctx-prompt-box" id="ctx-prompt-box">Loading…</div>
+  </div>
+
+  <div class="ctx-turns">
+    <span class="ctx-turns-num" id="ctx-turns-num">0</span>
+    <span>conversation turns in window</span>
+  </div>
+</aside>
 
 <!-- ───────── App config (apiBase) ───────── -->
 <script>
@@ -1451,6 +1650,7 @@ body.drawer-open .app-backdrop { display: block; }
   var form = document.getElementById('composer');
   var input = document.getElementById('msg-input');
   var chatHistory = [];
+  window.__chatHistory = chatHistory; // expose to context panel
   var activeConvId = null;
 
   function scroll() { body.scrollTop = body.scrollHeight; }
@@ -2076,6 +2276,114 @@ body.drawer-open .app-backdrop { display: block; }
 
   loadConversations();
   setTimeout(function () { input.focus(); }, 100);
+})();
+</script>
+
+<script>
+/* ---------- Context / Memory panel ---------- */
+(function () {
+  var toggleBtn = document.getElementById('ctx-toggle-btn');
+  var closeBtn  = document.getElementById('ctx-close');
+  var panel     = document.getElementById('ctx-panel');
+  var backdrop  = document.getElementById('app-backdrop');
+  if (!toggleBtn || !panel) return;
+
+  var loaded = false;
+
+  function openPanel() {
+    document.body.classList.add('ctx-open');
+    toggleBtn.classList.add('active');
+    panel.removeAttribute('aria-hidden');
+    if (!loaded) loadConfig();
+    refreshLive();
+  }
+
+  function closePanel() {
+    document.body.classList.remove('ctx-open');
+    toggleBtn.classList.remove('active');
+    panel.setAttribute('aria-hidden', 'true');
+  }
+
+  toggleBtn.addEventListener('click', function () {
+    document.body.classList.contains('ctx-open') ? closePanel() : openPanel();
+  });
+  if (closeBtn) closeBtn.addEventListener('click', closePanel);
+  if (backdrop) backdrop.addEventListener('click', function () {
+    if (document.body.classList.contains('ctx-open')) closePanel();
+  });
+
+  function loadConfig() {
+    fetch('/api/config', { credentials: 'same-origin' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (cfg) {
+        if (!cfg) return;
+        loaded = true;
+        var clientNameEl = document.getElementById('ctx-client-name');
+        var clientSubEl  = document.getElementById('ctx-client-industry');
+        var promptEl     = document.getElementById('ctx-prompt-box');
+        var connList     = document.getElementById('ctx-connectors-list');
+
+        if (clientNameEl && cfg.client) clientNameEl.textContent = cfg.client.name || '—';
+        if (clientSubEl  && cfg.client) clientSubEl.textContent  = cfg.client.industry || '—';
+        if (promptEl && cfg.systemPrompt) promptEl.textContent   = cfg.systemPrompt;
+
+        if (connList && cfg.connectors && cfg.connectors.length) {
+          connList.innerHTML = '';
+          cfg.connectors.forEach(function (c) {
+            var row = document.createElement('div');
+            row.className = 'ctx-kv';
+            row.innerHTML =
+              '<span class="ctx-k">' + escHtml(c.name) + '</span>' +
+              '<span class="ctx-v ' + (c.status === 'live' ? 'live' : 'inactive') + '">' +
+              (c.status === 'live' ? '● live' : '○ inactive') + '</span>';
+            connList.appendChild(row);
+          });
+        }
+      })
+      .catch(function () {
+        var promptEl = document.getElementById('ctx-prompt-box');
+        if (promptEl) promptEl.textContent = '(context not available — running in static mode)';
+      });
+  }
+
+  function refreshLive() {
+    // Daily brief from sessionStorage
+    var focusEl  = document.getElementById('ctx-focus');
+    var energyEl = document.getElementById('ctx-energy');
+    var notesEl  = document.getElementById('ctx-notes');
+    var notesRow = document.getElementById('ctx-notes-row');
+    var turnsEl  = document.getElementById('ctx-turns-num');
+
+    try {
+      var brief = JSON.parse(sessionStorage.getItem('tend.daily') || 'null');
+      if (brief) {
+        if (focusEl)  focusEl.textContent  = brief.focus  || '—';
+        if (energyEl) energyEl.textContent = brief.energy ? brief.energy + ' / 5' : '—';
+        if (notesEl && brief.notes) {
+          notesEl.textContent = brief.notes;
+          if (notesRow) notesRow.style.display = '';
+        }
+      } else {
+        if (focusEl)  focusEl.textContent  = 'not set';
+        if (energyEl) energyEl.textContent = 'not set';
+      }
+    } catch (e) {}
+
+    // Conversation turns — count from chatHistory if it exists in outer scope
+    if (turnsEl) {
+      try {
+        var hist = window.__chatHistory || [];
+        turnsEl.textContent = hist.length;
+      } catch (e) { turnsEl.textContent = '0'; }
+    }
+  }
+
+  function escHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  // Expose chatHistory to the context panel
+  window.__ctxRefresh = refreshLive;
 })();
 </script>
 

@@ -1,8 +1,8 @@
-# tend connectors. VPS deploy
+# tend. VPS deploy
 
-Stack: **Nango** (OAuth + scheduled sync) + **bridge** (small Node API that the
-frontend talks to) + **hermes-sidecar** (per-tenant AI agent runtime, Python
-FastAPI wrapper around https://github.com/NousResearch/hermes-agent) +
+Stack: **app** (the main Node server — frontend + chat) +
+**Nango** (OAuth + scheduled sync) + **bridge** (small Node API that the
+connect page talks to) + **hermes-sidecar** (per-tenant AI agent runtime) +
 **Caddy** (HTTPS reverse proxy).
 
 Runs on a $10 to $20/mo VPS. Handles dozens of small tenants on one box.
@@ -11,9 +11,39 @@ Runs on a $10 to $20/mo VPS. Handles dozens of small tenants on one box.
 
 - A VPS with Docker + Docker Compose (Hetzner CPX21, Digital Ocean Basic, Hostinger VPS)
 - A domain you control (e.g. `withtend.ai`)
-- Two A records pointing at the VPS IP:
-  - `api.withtend.ai` — the bridge API
-  - `nango.withtend.ai` — Nango's dashboard
+- Three A records pointing at the VPS IP:
+  - `demo.withtend.ai`  — the main app (frontend + chat)
+  - `api.withtend.ai`   — the bridge API (only needed for live data connectors)
+  - `nango.withtend.ai` — Nango's dashboard (only needed for live data connectors)
+
+## Swapping demo data (the easy part)
+
+The whole point of this setup: any demo client can be wired up by editing
+**one JSON file**, no code changes, no rebuild.
+
+```bash
+# List available demos:
+bin/swap-demo.sh
+
+# Swap to a specific one:
+bin/swap-demo.sh quiet-golf
+bin/swap-demo.sh sample-saas
+
+# Create a new demo:
+cp config/demos/sample-saas.json config/demos/acme-co.json
+# Edit acme-co.json — change client name, KPIs, connectors, systemPrompt
+bin/swap-demo.sh acme-co
+```
+
+Behind the scenes:
+- `config/demos/<name>.json` holds everything the demo needs: client name,
+  industry, KPIs, connector list, full system prompt for the AI
+- `bin/swap-demo.sh <name>` copies it to `config/demo.json` (what the server reads)
+- If docker compose is running, the script auto-restarts the `app` container
+- The mounted `config/` volume means the file change reaches the container
+  without a rebuild
+
+Alternative: set `DEMO_CLIENT=<name>` in `.env` and `docker compose restart app`.
 
 ## First-time setup
 

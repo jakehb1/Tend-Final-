@@ -1,6 +1,31 @@
 name: tend
 
 services:
+  # tend app — main frontend + chat server (the thing you see in a browser)
+  # Config is mounted as a volume so demo data swaps without rebuilding.
+  app:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      PORT: 3000
+      NODE_ENV: production
+      # Pick which demo client to serve. Change DEMO_CLIENT in .env and
+      # `docker compose restart app` — no rebuild needed.
+      DEMO_CLIENT: ${DEMO_CLIENT:-quiet-golf}
+      # Anthropic key for /api/chat. Without it the chat returns a friendly error.
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      # Optional: persists conversations. Leave empty for ephemeral demo mode.
+      DATABASE_URL: ${APP_DATABASE_URL:-}
+      SESSION_SECRET: ${APP_SESSION_SECRET}
+    volumes:
+      # Mount config read-only so `bin/swap-demo.sh` on the host swaps
+      # the demo without rebuilding the container.
+      - ../config:/app/config:ro
+    expose:
+      - "3000"
+
   # Postgres for Nango (Nango requires Postgres for credential storage)
   nango-db:
     image: postgres:15-alpine
@@ -79,9 +104,11 @@ services:
       - caddy_data:/data
       - caddy_config:/config
     depends_on:
+      - app
       - bridge
       - nango-server
     environment:
+      APP_DOMAIN: ${APP_DOMAIN}
       API_DOMAIN: ${API_DOMAIN}
       NANGO_DOMAIN: ${NANGO_DOMAIN}
 
