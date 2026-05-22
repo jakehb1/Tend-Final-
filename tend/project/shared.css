@@ -23,8 +23,8 @@
   --line: rgba(255,255,255,0.09);
   --line-2: rgba(255,255,255,0.16);
   --fg: #ECE7DE;
-  --fg-dim: rgba(236,231,222,0.62);
-  --fg-mute: rgba(236,231,222,0.38);
+  --fg-dim: rgba(236,231,222,0.72);
+  --fg-mute: rgba(236,231,222,0.55);
   --paper: #ECE7DE;
   --paper-ink: #14150F;
   --accent: oklch(0.78 0.012 70);
