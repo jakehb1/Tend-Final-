@@ -225,13 +225,12 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 .hero p {
   font-size: clamp(14px, 1.1vw, 15.5px);
   color: var(--ink-mute);
-  max-width: 620px;
+  max-width: 480px;
   margin: 0 auto;
   line-height: 1.55;
-  text-wrap: balance;
 }
 .hero-spheres {
-  margin-top: 16px;
+  margin-top: 64px;
   width: 100%;
   display: block;
 }
@@ -507,9 +506,9 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 }
 
 /* ─── Intelligence Layer (big diagram) ─────────────────────────── */
-.intel { padding: 40px 0 80px; text-align: center; }
+.intel { padding: 24px 0; text-align: center; }
 .intel h2 {
-  margin: 0 0 36px;
+  margin: 0 0 20px;
   font-size: clamp(28px, 3vw, 38px);
   font-weight: 500;
   letter-spacing: -0.02em;
@@ -524,9 +523,12 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 }
 .intel-panel picture, .intel-panel img {
   width: auto; height: auto;
-  max-width: 1280px;
-  max-height: 78svh;
+  max-width: 100%;
+  max-height: calc(100svh - 220px);
   display: block;
+}
+@media (max-width: 980px) {
+  .intel-panel picture, .intel-panel img { max-height: none; max-width: 100%; }
 }
 
 /* ─── This is the intelligence layer ───────────────────────────── */
@@ -696,31 +698,29 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 .proof-stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  margin-bottom: 20px;
-  justify-content: center;
+  gap: 16px;
+  margin-bottom: 16px;
 }
 .proof-stat {
   background: var(--panel);
   border-radius: 18px;
-  padding: 40px 32px;
+  padding: 36px 28px;
   text-align: center;
-  aspect-ratio: 478 / 722;
-  max-height: 42svh;
+  min-height: 200px;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 24px;
+  gap: 16px;
 }
 .proof-stat .v {
-  font-size: clamp(48px, 5vw, 72px);
+  font-size: clamp(32px, 3vw, 44px);
   font-weight: 500;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.02em;
   line-height: 1;
 }
 .proof-stat .k {
   color: var(--ink-mute);
-  font-size: 15px;
+  font-size: 13px;
   line-height: 1.5;
-  max-width: 30ch;
+  max-width: 28ch;
 }
 .proof-quote {
   background: var(--panel);
@@ -733,12 +733,12 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 }
 .proof-quote blockquote {
   margin: 0;
-  font-size: clamp(24px, 2.4vw, 36px);
+  font-size: clamp(16px, 1.4vw, 20px);
   font-weight: 500;
-  letter-spacing: -0.015em;
-  line-height: 1.18;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
   color: var(--ink);
-  max-width: 30ch;
+  max-width: 50ch;
 }
 @media (max-width: 980px) {
   .proof { padding: 24px 0 56px; }
