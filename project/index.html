@@ -2,2217 +2,1210 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>tend. Agentic systems for the work your team shouldn't have to do.</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Tend — The AI partner that knows your business better than you do.</title>
+<meta name="description" content="The AI operating layer for businesses run by humans. Tend reads across your tools, surfaces decisions, and runs the work that shouldn't need a human." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 <style>
 @font-face {
-  font-family: 'FH Lecturis Rounded';
-  src: url('fonts/FHLecturisRoundedTest-Regular.otf') format('opentype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
+  font-family: 'ABC Favorit Mono';
+  src: url('fonts/ABC Favorit Mono/ABCFavoritMono-Regular-Trial.woff2') format('woff2');
+  font-weight: 400; font-style: normal; font-display: swap;
 }
 @font-face {
-  font-family: 'FH Premier';
-  src: url('fonts/FHPremierTest-Regular.otf') format('opentype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
+  font-family: 'ABC Favorit Mono';
+  src: url('fonts/ABC Favorit Mono/ABCFavoritMono-Medium-Trial.woff2') format('woff2');
+  font-weight: 500; font-style: normal; font-display: swap;
 }
+
 :root {
-  --bg: #0A0B0D;
-  --bg-2: #101215;
-  --bg-3: #16191D;
-  --line: rgba(255,255,255,0.09);
-  --line-2: rgba(255,255,255,0.16);
-  --fg: #ECE7DE;
-  --fg-dim: rgba(236,231,222,0.62);
-  --fg-mute: rgba(236,231,222,0.38);
-  --paper: #ECE7DE;
-  --paper-ink: #14150F;
-  /* accent, variant A (warm grey) by default */
-  --accent: oklch(0.78 0.012 70);
-  --accent-ink: #14150F;
-  --accent-soft: oklch(0.78 0.012 70 / 0.14);
-  --grid-col: 1fr;
-}
-html[data-variant="B"] {
-  --accent: oklch(0.88 0.008 70);
-  --accent-ink: #14150F;
-  --accent-soft: oklch(0.88 0.008 70 / 0.14);
+  --bg:         #F5F5F2;
+  --panel:      #ECECE9;
+  --panel-2:   #E4E4E0;
+  --ink:        #14150F;
+  --ink-2:      #2A2B26;
+  --ink-mute:   #6B6C66;
+  --ink-faint:  #9B9C95;
+  --line:       rgba(20, 21, 15, 0.10);
+  --line-2:     rgba(20, 21, 15, 0.18);
+  --teal:       #87D1BC;
+  --teal-soft:  rgba(135, 209, 188, 0.22);
+  --teal-tint:  #DFEEEA;
+  --paper:      #FFFFFF;
 }
 * { box-sizing: border-box; }
-em, i, blockquote, cite, address { font-style: normal; }
-html, body { margin: 0; padding: 0; background: var(--bg); color: var(--fg); }
+html, body {
+  margin: 0; padding: 0; background: var(--bg); color: var(--ink);
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+}
 body {
-  font-family: 'FH Premier', 'IBM Plex Sans', system-ui, sans-serif;
+  font-family: 'Inter', 'FH Premier', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
   font-weight: 400;
   font-size: 16px;
   line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
   overflow-x: hidden;
 }
-.mono { font-family: 'IBM Plex Mono', ui-monospace, monospace; }
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'FH Lecturis Rounded', 'IBM Plex Sans', system-ui, sans-serif;
-}
-.serif { font-family: 'FH Lecturis Rounded', 'IBM Plex Sans', system-ui, sans-serif; font-weight: 400; font-style: normal; letter-spacing: -0.015em; color: var(--accent); }
-
-/* ---------- layout primitives ---------- */
-.wrap { max-width: 1440px; margin: 0 auto; padding: 0 40px; }
-.hair { height: 1px; background: var(--line); width: 100%; }
-.hair-v { width: 1px; background: var(--line); }
-
-section { position: relative; border-top: 1px solid var(--line); }
-section:first-of-type { border-top: none; }
-
-.meta {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.08em;
+.mono {
+  font-family: 'ABC Favorit Mono', 'IBM Plex Mono', ui-monospace, monospace;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--fg-mute);
 }
-.meta strong { color: var(--fg-dim); font-weight: 500; }
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; }
+button { font: inherit; cursor: pointer; background: none; border: none; color: inherit; padding: 0; }
 
-.sec-head {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 40px;
-  padding: 28px 0 48px;
+.wrap { max-width: 1568px; margin: 0 auto; padding: 0 80px; }
+@media (max-width: 980px) { .wrap { padding: 0 32px; } }
+@media (max-width: 520px) { .wrap { padding: 0 20px; } }
+
+/* ─── Brand mark ───────────────────────────────────────────────── */
+.mark {
+  display: inline-block;
+  width: 1em; height: 1em;
+  vertical-align: -0.12em;
+  flex: 0 0 auto;
 }
-.sec-num { color: var(--fg-mute); }
-.sec-num em { color: var(--accent); font-style: normal; }
+.mark svg { width: 100%; height: 100%; display: block; }
 
-/* ---------- nav ---------- */
+/* ─── Buttons ──────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: 'ABC Favorit Mono', 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 12px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  padding: 12px 18px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  transition: background 0.18s, color 0.18s, border-color 0.18s, transform 0.18s;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.btn-primary { background: var(--ink); color: #fff; border-color: var(--ink); }
+.btn-primary:hover { background: #000; }
+.btn-outline { background: transparent; color: var(--ink); border-color: var(--line-2); }
+.btn-outline:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+.btn-outline-light { background: transparent; color: #fff; border-color: rgba(255,255,255,0.65); }
+.btn-outline-light:hover { background: #fff; color: var(--ink); }
+.btn-light { background: #fff; color: var(--ink); border-color: #fff; }
+.btn-light:hover { background: rgba(255,255,255,0.85); }
+
+/* ─── Nav ──────────────────────────────────────────────────────── */
 .nav {
-  position: fixed; top: 0; left: 0; right: 0;
-  z-index: 50;
-  background: rgba(10,11,13,0.75);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid var(--line);
+  position: sticky; top: 0; z-index: 50;
+  background: var(--bg);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s, background 0.2s;
+}
+.nav.scrolled {
+  background: rgba(245, 245, 242, 0.88);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  border-color: var(--line);
 }
 .nav-inner {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 14px 40px;
-  max-width: 1440px; margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  height: 72px;
+  max-width: 1568px;
+  margin: 0 auto;
+  padding: 0 80px;
+  gap: 24px;
 }
 .brand {
-  display: inline-flex; align-items: center;
-  text-decoration: none;
-  color: var(--fg);
+  display: inline-flex; align-items: center; gap: 10px;
+  font-weight: 500; font-size: 22px; letter-spacing: -0.02em;
+  color: var(--ink);
 }
-.brand img {
-  height: 22px;
-  width: auto;
-  display: block;
+.brand .mark { width: 22px; height: 22px; }
+.nav-links {
+  display: inline-flex; align-items: center; gap: 38px;
+  font-size: 15px;
+  color: var(--ink-2);
 }
-.brand.brand-sm img { height: 20px; }
-.nav-links { display: flex; gap: 28px; font-size: 13px; }
-.nav-links a { color: var(--fg-dim); text-decoration: none; font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.02em; }
-.nav-links a:hover { color: var(--fg); }
-.nav-cta {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 13px;
-  color: var(--bg);
-  background: var(--fg);
-  padding: 9px 16px;
-  text-decoration: none;
-  display: inline-flex; align-items: center; gap: 8px;
-  border: 1px solid var(--fg);
-  transition: background 0.15s, color 0.15s;
-  cursor: pointer;
-  line-height: normal;
-  -webkit-appearance: none;
-  appearance: none;
-}
-.nav-cta:hover { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
-button.nav-cta, button.btn { font: inherit; }
-button.nav-cta { font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: normal; }
-.nav-right { display: inline-flex; align-items: center; gap: 10px; }
-.nav-login {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 13px;
-  color: var(--fg);
-  background: var(--bg-3);
-  padding: 9px 16px;
-  text-decoration: none;
-  display: inline-flex; align-items: center; gap: 8px;
-  border: 1px solid var(--line-2);
-  letter-spacing: 0.02em;
-  line-height: normal;
-  transition: background 0.15s, border-color 0.15s, color 0.15s;
-  cursor: pointer;
-}
-.nav-login:hover { background: var(--bg-2); border-color: var(--fg-dim); color: var(--fg); }
+.nav-links a:hover { color: var(--ink); }
+.nav-right { display: inline-flex; align-items: center; gap: 10px; justify-content: flex-end; }
 .nav-toggle {
-  display: none;
-  background: transparent;
-  border: 1px solid var(--line-2);
-  color: var(--fg);
-  padding: 8px 10px;
-  cursor: pointer;
-  -webkit-appearance: none;
-  appearance: none;
-  align-items: center;
-  justify-content: center;
+  display: none; width: 40px; height: 40px;
+  align-items: center; justify-content: center;
+  border: 1px solid var(--line-2); border-radius: 8px; background: transparent;
 }
-.nav-toggle svg { display: block; }
+.nav-toggle svg { width: 18px; height: 18px; }
 .nav-drawer { display: none; }
-.nav.open .nav-toggle { background: var(--bg-3); }
 
-/* ---------- HERO ---------- */
+@media (max-width: 980px) {
+  .nav-inner { padding: 0 32px; grid-template-columns: 1fr auto; height: 64px; }
+  .nav-links { display: none; }
+  .nav-right .btn { display: none; }
+  .nav-toggle { display: inline-flex; }
+  .nav.open .nav-drawer {
+    display: flex; flex-direction: column;
+    position: absolute; top: 64px; left: 0; right: 0;
+    background: var(--bg);
+    border-top: 1px solid var(--line);
+    padding: 12px 32px 24px;
+    gap: 4px;
+  }
+  .nav.open .nav-drawer a {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 17px;
+    color: var(--ink);
+  }
+  .nav.open .nav-drawer .drawer-ctas {
+    display: flex; gap: 8px; padding-top: 16px;
+  }
+  .nav.open .nav-drawer .drawer-ctas .btn { flex: 1; }
+}
+@media (max-width: 520px) {
+  .nav-inner { padding: 0 20px; }
+}
+
+/* ─── Hero ─────────────────────────────────────────────────────── */
 .hero {
-  padding-top: 72px;
+  padding: 64px 0 0;
   position: relative;
   overflow: hidden;
 }
-.hero-video {
-  position: absolute;
-  inset: 72px 0 0 0;
-  width: 100%;
-  height: calc(100% - 72px);
-  object-fit: cover;
-  z-index: 0;
-  opacity: 1;
-  pointer-events: none;
-}
-.hero-video::-webkit-media-controls,
-.hero-video::-webkit-media-controls-panel,
-.hero-video::-webkit-media-controls-start-playback-button,
-.hero-video::-webkit-media-controls-overlay-play-button {
-  display: none !important;
-  -webkit-appearance: none !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-}
-.hero::after {
-  content: "";
-  position: absolute;
-  inset: 72px 0 0 0;
-  background:
-    linear-gradient(90deg, rgba(10,11,13,0.62) 0%, rgba(10,11,13,0.36) 55%, rgba(10,11,13,0.16) 100%),
-    linear-gradient(180deg, rgba(10,11,13,0.16) 0%, rgba(10,11,13,0) 30%, rgba(10,11,13,0.48) 100%);
-  z-index: 1;
-  pointer-events: none;
-}
-.hero > .wrap { position: relative; z-index: 2; }
-.hero-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 720px);
-  gap: 80px;
-  padding: 140px 0 160px;
-  align-items: start;
+.hero-inner {
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 20px;
+  position: relative;
+  z-index: 2;
 }
 .hero h1 {
-  font-weight: 300;
-  font-size: clamp(44px, 5.4vw, 80px);
-  line-height: 0.98;
-  letter-spacing: -0.035em;
-  margin: 0 0 32px;
+  font-size: clamp(32px, 4.2vw, 56px);
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  margin: 0 0 24px;
+  color: var(--ink);
   text-wrap: balance;
 }
-.hero h1 .serif { font-weight: 400; letter-spacing: -0.015em; color: var(--accent); }
-
-.hero-sub {
-  font-size: 19px;
-  line-height: 1.5;
-  color: var(--fg-dim);
-  max-width: 520px;
-  margin: 0 0 40px;
-  text-wrap: pretty;
-}
-.hero-ctas { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
-.btn {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 13px;
-  letter-spacing: 0.02em;
-  padding: 13px 20px;
-  text-decoration: none;
-  border: 1px solid var(--line-2);
-  color: var(--fg);
-  display: inline-flex; align-items: center; gap: 10px;
-  transition: all 0.18s;
-  cursor: pointer;
-  background: transparent;
-}
-.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
-.btn.primary:hover { filter: brightness(1.08); transform: translateY(-1px); }
-.btn:hover { border-color: var(--fg-dim); }
-.btn .arr { display: inline-block; transition: transform 0.2s; }
-.btn:hover .arr { transform: translateX(3px); }
-
-/* ontology showcase (schematic section below hero) */
-.ontology-showcase {
-  border-top: 1px solid var(--line);
-  padding: 96px 0;
-}
-.ontology-showcase .showcase-head {
-  display: flex; justify-content: space-between; align-items: baseline;
-  margin-bottom: 32px;
-  gap: 24px;
-  flex-wrap: wrap;
-}
-.ontology-showcase h2 {
-  font-size: clamp(28px, 3vw, 44px);
-  font-weight: 300;
-  letter-spacing: -0.025em;
-  margin: 0;
-  max-width: 20ch;
-}
-.ontology-showcase h2 .serif { font-weight: 400; color: var(--accent); }
-.ontology-showcase .showcase-sub {
-  color: var(--fg-dim);
-  max-width: 420px;
-  margin: 0;
-  font-size: 15px;
-  line-height: 1.5;
-}
-.ontology-showcase .hero-schem {
+.hero p {
+  font-size: clamp(14px, 1.1vw, 15.5px);
+  color: var(--ink-mute);
   max-width: 480px;
   margin: 0 auto;
-  aspect-ratio: 1 / 0.9;
+  line-height: 1.55;
+}
+.hero-spheres {
+  margin-top: 56px;
+  width: 100%;
+  display: block;
+}
+.hero-spheres img {
+  width: 100%; height: auto;
+  display: block;
+  background: transparent;
+}
+@media (max-width: 980px) {
+  .hero { padding-top: 32px; }
+  .hero h1 { font-size: 32px; }
+  .hero p { font-size: 14px; max-width: 320px; }
+  .hero-spheres { margin-top: 36px; }
 }
 
-/* hero schematic panel */
-.hero-schem {
-  border: 1px solid var(--line);
-  background: linear-gradient(180deg, var(--bg-2), var(--bg));
-  padding: 20px;
-  position: relative;
-  aspect-ratio: 1 / 1.1;
-  overflow: hidden;
-}
-.hero-schem::before {
-  content: '';
-  position: absolute; inset: 0;
-  background-image:
-    linear-gradient(var(--line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--line) 1px, transparent 1px);
-  background-size: 28px 28px;
-  opacity: 0.45;
-  pointer-events: none;
-}
-.schem-label {
-  position: absolute;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.06em;
-  color: var(--fg-mute);
-  text-transform: uppercase;
-  background: var(--bg);
-  padding: 3px 7px;
-  border: 1px solid var(--line);
-  z-index: 3;
-}
-.schem-label.tl { top: 12px; left: 12px; }
-.schem-label.tr { top: 12px; right: 12px; color: var(--accent); border-color: var(--accent); }
-.schem-label.bl { bottom: 12px; left: 12px; }
-.schem-label.br { bottom: 12px; right: 12px; }
-
-/* hero ticker */
-.ticker-row {
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-  padding: 18px 0;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 40px;
-}
-.ticker-row .cell {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
-  color: var(--fg-dim);
-  display: flex; align-items: baseline; gap: 10px;
-  letter-spacing: 0.04em;
-}
-.ticker-row .cell::before {
-  content: ''; display: inline-block; width: 6px; height: 6px; background: var(--accent);
-  flex: 0 0 6px;
-}
-.ticker-row .cell strong { color: var(--fg); font-weight: 500; }
-
-/* ---------- WHAT WE DO ---------- */
-.what {
-  padding: 80px 0 100px;
-}
-.what-grid {
+/* ─── Cards row (Individuals / Business) ───────────────────────── */
+.cards { padding: 56px 0 80px; }
+.cards-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 80px;
-  align-items: start;
+  gap: 24px;
 }
-.what-lead {
-  font-size: clamp(36px, 3.8vw, 56px);
-  line-height: 1.06;
-  letter-spacing: -0.025em;
-  font-weight: 300;
-  margin: 0;
-  text-wrap: pretty;
+.feature-card {
+  position: relative;
+  border-radius: 22px;
+  overflow: hidden;
+  aspect-ratio: 720 / 410;
+  background: #1a1a1a;
+  isolation: isolate;
 }
-.what-lead .muted { color: var(--fg-mute); }
-.what-lead .accent { color: var(--accent); }
-.what-lead .serif { font-weight: 400; }
-.what-side p {
-  font-size: 16px;
-  line-height: 1.6;
-  color: var(--fg-dim);
-  margin: 0 0 20px;
+.feature-card .bg {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  z-index: 0;
 }
-.what-side p:last-child { margin-bottom: 0; }
-.what-side .kicker {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 20px;
+.feature-card .title {
+  position: absolute;
+  top: 36px; left: 0; right: 0;
+  text-align: center;
+  color: #fff;
+  font-size: clamp(20px, 1.7vw, 26px);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  z-index: 2;
+}
+.feature-card .panel {
+  position: absolute;
+  left: 28px; right: 28px; bottom: 28px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(18px) saturate(1.1);
+  -webkit-backdrop-filter: blur(18px) saturate(1.1);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
+  padding: 18px 22px;
+  display: flex; flex-direction: column; gap: 14px;
+  z-index: 2;
+}
+.feature-card .panel .lead { color: rgba(255,255,255,0.92); font-size: 13px; font-weight: 500; }
+.feature-card .panel .body { color: rgba(255,255,255,0.78); font-size: 12.5px; line-height: 1.55; }
+.feature-card .panel .cta-row { display: flex; justify-content: flex-end; margin-top: 4px; }
+.feature-card .panel .btn-light { padding: 9px 14px; font-size: 11px; letter-spacing: 0.08em; }
+@media (max-width: 980px) {
+  .cards { padding: 24px 0 40px; }
+  .cards-grid { grid-template-columns: 1fr; gap: 16px; }
+  .feature-card { aspect-ratio: 360 / 320; }
+  .feature-card .panel { left: 18px; right: 18px; bottom: 18px; padding: 14px 16px; }
 }
 
-/* ---------- HOW IT WORKS ---------- */
-.how { padding: 80px 0 120px; background: var(--bg-2); }
-.how-steps {
+/* ─── Tagline two-up ───────────────────────────────────────────── */
+.tagline { padding: 60px 0 40px; }
+.tagline-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0;
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
+  grid-template-columns: 1.4fr 1fr;
+  gap: 80px;
+  align-items: start;
+  border-left: 1px solid var(--line-2);
+  padding-left: 28px;
 }
-.step {
-  padding: 32px 28px 40px;
-  border-right: 1px solid var(--line);
-  position: relative;
-  min-height: 320px;
-  display: flex; flex-direction: column;
+.tagline h2 {
+  margin: 0;
+  font-size: clamp(22px, 2.2vw, 30px);
+  font-weight: 500;
+  line-height: 1.18;
+  letter-spacing: -0.018em;
+  color: var(--ink);
+  max-width: 22ch;
 }
-.step:last-child { border-right: none; }
-.step .n {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
-  color: var(--fg-mute);
-  margin-bottom: 48px;
-  letter-spacing: 0.05em;
+.tagline p {
+  margin: 0;
+  color: var(--ink-mute);
+  font-size: 14px; line-height: 1.55;
+  max-width: 36ch;
+}
+@media (max-width: 980px) {
+  .tagline { padding: 32px 0 16px; }
+  .tagline-grid { grid-template-columns: 1fr; gap: 24px; }
+  .tagline h2 { font-size: 22px; }
+}
+
+/* ─── Tend Dashboard band ──────────────────────────────────────── */
+.dashboard { padding: 60px 0 90px; }
+.dashboard-head {
+  display: flex; align-items: center; gap: 10px; justify-content: center;
+  font-size: 20px; font-weight: 500;
+  margin: 0 auto 28px;
+  letter-spacing: -0.015em;
+  width: fit-content;
+}
+.dashboard-head .mark { width: 22px; height: 22px; }
+.dashboard-panel {
+  background: var(--panel-2);
+  border-radius: 16px;
+  padding: 64px clamp(24px, 6vw, 96px);
+  display: flex; align-items: center; justify-content: center;
+  min-height: 420px;
+}
+.dashboard-panel img { max-width: min(420px, 100%); height: auto; }
+@media (max-width: 980px) {
+  .dashboard { padding: 24px 0 48px; }
+  .dashboard-panel { padding: 32px 18px; min-height: 260px; }
+  .dashboard-panel img { max-width: 280px; }
+}
+
+/* ─── How it works ─────────────────────────────────────────────── */
+.how { padding: 80px 0 100px; text-align: center; }
+.how h2 {
+  margin: 0 0 56px;
+  font-size: clamp(28px, 3vw, 38px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.steps {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 28px; text-align: left;
+}
+.step .kicker {
+  font-family: 'ABC Favorit Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-bottom: 12px;
 }
 .step h3 {
-  font-size: 22px;
-  font-weight: 400;
-  letter-spacing: -0.01em;
-  margin: 0 0 12px;
+  margin: 0 0 14px;
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: var(--ink);
   line-height: 1.15;
 }
 .step p {
+  margin: 0 0 24px;
+  color: var(--ink-mute);
   font-size: 14px;
   line-height: 1.55;
-  color: var(--fg-dim);
-  margin: 0;
 }
-.step .diag {
-  margin-top: auto;
-  padding-top: 32px;
-  color: var(--accent);
-}
-
-/* ---------- ONTOLOGY DEMO ---------- */
-.demo {
-  padding: 80px 0 120px;
-}
-.demo-frame {
-  border: 1px solid var(--line);
-  background: var(--bg-2);
-  display: grid;
-  grid-template-columns: 280px 1fr 320px;
-  min-height: 620px;
-}
-.demo-col {
-  border-right: 1px solid var(--line);
-  padding: 20px;
-  display: flex; flex-direction: column;
-  gap: 4px;
-  overflow: hidden;
-}
-.demo-col:last-child { border-right: none; }
-.demo-col .col-label {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--fg-mute);
-  margin-bottom: 14px;
-  display: flex; justify-content: space-between; align-items: center;
-}
-.demo-col .col-label .count { color: var(--accent); }
-
-.entity {
-  padding: 10px 12px;
-  border: 1px solid var(--line);
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
-  cursor: pointer;
-  display: flex; justify-content: space-between; align-items: center;
-  background: var(--bg);
-  transition: all 0.15s;
-  color: var(--fg-dim);
-}
-.entity:hover { border-color: var(--fg-mute); color: var(--fg); }
-.entity.active { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
-.entity .tag { font-size: 10px; color: var(--fg-mute); }
-.entity.active .tag { color: var(--accent); }
-
-/* graph center */
-.graph { position: relative; overflow: hidden; aspect-ratio: 800 / 560; }
-.graph svg { width: 100%; height: 100%; display: block; }
-.graph .col-header {
-  position: absolute;
-  top: 16px;
-  transform: translateX(-50%);
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 9.5px;
-  letter-spacing: 0.08em;
-  color: var(--fg-mute);
-  text-transform: uppercase;
-  pointer-events: none;
-  white-space: nowrap;
-  text-align: center;
-  line-height: 1.4;
-}
-.graph .col-header .count {
-  display: block;
-  margin-top: 3px;
-  color: var(--accent);
-  font-size: 10px;
-}
-/* count styled above in col-header block */
-.graph .col-guide {
-  position: absolute;
-  top: 60px;
-  bottom: 40px;
-  width: 1px;
-  background: repeating-linear-gradient(to bottom, var(--line) 0 4px, transparent 4px 8px);
-  opacity: 0.5;
-  pointer-events: none;
-}
-.graph .node-label {
-  position: absolute;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10.5px;
-  padding: 3px 7px;
-  color: var(--fg-dim);
-  white-space: nowrap;
-  transform: translateX(-50%);
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.2s ease, color 0.2s ease;
-  letter-spacing: 0.01em;
-}
-.graph .node-label.neighbor {
-  opacity: 0.85 !important;
-  color: var(--fg-dim);
-}
-.graph .node-label.active {
-  opacity: 1 !important;
-  color: var(--accent);
-  background: var(--bg);
-  border: 1px solid var(--accent);
-  padding: 4px 9px;
-}
-.graph .node-label.dim { opacity: 0 !important; }
-.graph-meta {
-  position: absolute;
-  bottom: 14px;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.06em;
-  white-space: nowrap;
-}
-.graph-meta.l { left: 14px; color: var(--fg-mute); }
-.graph-meta.r { right: 14px; color: var(--accent); }
-
-/* right panel */
-.detail-head {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--fg-mute);
-  margin-bottom: 10px;
-}
-.detail-title {
-  font-size: 22px;
-  font-weight: 400;
-  letter-spacing: -0.015em;
-  margin: 0 0 18px;
-  color: var(--fg);
-}
-.detail-title .type { color: var(--accent); font-family: 'IBM Plex Mono', monospace; font-size: 12px; margin-left: 8px; letter-spacing: 0.05em; vertical-align: middle; }
-.prop-row {
-  display: flex; justify-content: space-between;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--line);
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
-}
-.prop-row .k { color: var(--fg-mute); }
-.prop-row .v { color: var(--fg); }
-
-.automations {
-  margin-top: 22px;
-  padding-top: 20px;
-  border-top: 1px solid var(--line-2);
-}
-.automations .kicker {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 12px;
-}
-.auto-item {
-  display: flex; align-items: flex-start; gap: 10px;
-  padding: 10px 0;
-  border-bottom: 1px dashed var(--line);
-  font-size: 13px;
-  color: var(--fg-dim);
-  line-height: 1.4;
-}
-.auto-item .bullet {
-  flex: 0 0 6px; width: 6px; height: 6px;
-  background: var(--accent); margin-top: 7px;
-}
-
-/* ---------- CAPABILITIES ---------- */
-.caps { padding: 80px 0 120px; }
-.caps-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0;
-  border: 1px solid var(--line);
-}
-.cap {
-  padding: 32px 28px;
-  border-right: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-  min-height: 260px;
-  display: flex; flex-direction: column;
-  background: var(--bg);
-  transition: background 0.2s;
+.step-art {
+  background: linear-gradient(155deg, rgba(135, 209, 188, 0.55) 0%, rgba(135, 209, 188, 0.22) 100%);
+  border-radius: 16px;
+  padding: 22px;
+  aspect-ratio: 1 / 0.78;
+  display: flex; align-items: center; justify-content: center;
   position: relative;
   overflow: hidden;
 }
-.cap:hover { background: var(--bg-2); }
-.cap:nth-child(3n) { border-right: none; }
-.cap:nth-last-child(-n+3) { border-bottom: none; }
-.cap .num {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
-  color: var(--fg-mute);
-  letter-spacing: 0.05em;
-  margin-bottom: 40px;
-}
-.cap h4 {
-  font-size: 20px;
-  font-weight: 400;
-  letter-spacing: -0.01em;
-  margin: 0 0 10px;
-  line-height: 1.2;
-}
-.cap p {
-  font-size: 13.5px;
-  color: var(--fg-dim);
-  line-height: 1.55;
-  margin: 0;
-}
-.cap .glyph {
+.step-art::before, .step-art::after {
+  content: '';
   position: absolute;
-  bottom: 24px; right: 24px;
-  width: 40px; height: 40px;
-  opacity: 0.7;
+  width: 14px; height: 14px;
+}
+.step-art::before { top: 18px; left: 18px; border-left: 1px solid var(--ink); border-top: 1px solid var(--ink); }
+.step-art::after  { bottom: 18px; right: 18px; border-right: 1px solid var(--ink); border-bottom: 1px solid var(--ink); }
+.step-art img {
+  max-width: 88%; max-height: 88%;
+  width: auto; height: auto; object-fit: contain;
+}
+@media (max-width: 980px) {
+  .how { padding: 40px 0 56px; }
+  .how h2 { margin-bottom: 32px; font-size: 26px; }
+  .steps { grid-template-columns: 1fr; gap: 32px; }
+  .step h3 { font-size: 22px; }
 }
 
-/* ---------- USE CASES ---------- */
-.uc { padding: 80px 0 120px; background: var(--paper); color: var(--paper-ink); border-top: 1px solid var(--line); }
-.uc .meta { color: rgba(20,21,15,0.5); }
-.uc .meta strong { color: rgba(20,21,15,0.72); }
-.uc .sec-num em { color: var(--paper-ink); }
-.uc h2 {
-  font-size: clamp(44px, 5vw, 72px);
-  font-weight: 300;
-  letter-spacing: -0.03em;
-  line-height: 1;
+/* ─── Eclipse CTA ──────────────────────────────────────────────── */
+.eclipse { padding: 0 0 80px; }
+.eclipse-card {
+  position: relative;
+  border-radius: 22px;
+  overflow: hidden;
+  aspect-ratio: 1568 / 540;
+  background: #0b0c0d;
+  display: flex; align-items: flex-end;
+  padding: 56px clamp(28px, 5vw, 64px);
+}
+.eclipse-card .bg {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center 30%;
+  z-index: 0;
+}
+.eclipse-card::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0) 50%, rgba(0,0,0,0.42) 100%);
+  z-index: 1;
+}
+.eclipse-card .content {
+  position: relative; z-index: 2;
+  display: flex; align-items: flex-end; justify-content: space-between; gap: 24px;
+  width: 100%;
+  flex-wrap: wrap;
+}
+.eclipse-card h2 {
   margin: 0;
-}
-.uc h2 .serif { font-weight: 400; }
-.uc-tabs {
-  display: grid;
-  grid-template-columns: 320px 1fr;
-  gap: 60px;
-  margin-top: 40px;
-}
-.uc-list {
-  display: flex; flex-direction: column;
-  border-top: 1px solid rgba(20,21,15,0.18);
-}
-.uc-item {
-  padding: 22px 0;
-  border-bottom: 1px solid rgba(20,21,15,0.18);
-  cursor: pointer;
-  display: flex; justify-content: space-between; align-items: center;
-  font-size: 22px;
-  letter-spacing: -0.01em;
-  color: rgba(20,21,15,0.55);
-  transition: color 0.15s;
-  font-weight: 400;
-}
-.uc-item:hover { color: var(--paper-ink); }
-.uc-item.active { color: var(--paper-ink); font-weight: 500; }
-.uc-item .idx {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.05em;
-  color: rgba(20,21,15,0.45);
-}
-.uc-item.active .idx { color: var(--accent); }
-.uc-panel {
-  border: 1px solid rgba(20,21,15,0.18);
-  padding: 40px;
-  min-height: 420px;
-  background: rgba(20,21,15,0.02);
-  display: flex; flex-direction: column;
-}
-.uc-panel .kicker {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgba(20,21,15,0.5);
-  margin-bottom: 20px;
-}
-.uc-panel h3 {
-  font-size: 38px;
-  font-weight: 300;
+  font-size: clamp(28px, 4vw, 52px);
+  font-weight: 500;
   letter-spacing: -0.025em;
-  line-height: 1.06;
-  margin: 0 0 18px;
-  text-wrap: pretty;
+  line-height: 1.05;
+  color: #fff;
+  max-width: 14ch;
 }
-.uc-panel h3 .serif { font-weight: 400; font-style: normal; }
-.uc-panel p {
-  font-size: 16px;
-  line-height: 1.55;
-  color: rgba(20,21,15,0.72);
-  margin: 0 0 24px;
-  max-width: 560px;
+@media (max-width: 980px) {
+  .eclipse { padding-bottom: 48px; }
+  .eclipse-card { aspect-ratio: 360 / 280; padding: 28px; }
+  .eclipse-card h2 { font-size: 24px; }
+  .eclipse-card .content { flex-direction: column; align-items: flex-start; }
 }
-.uc-stats {
+
+/* ─── Intelligence Layer (big diagram) ─────────────────────────── */
+.intel { padding: 40px 0 80px; text-align: center; }
+.intel h2 {
+  margin: 0 0 36px;
+  font-size: clamp(28px, 3vw, 38px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+.intel-panel {
+  background: var(--teal-tint);
+  border-radius: 18px;
+  padding: clamp(32px, 4vw, 72px) clamp(20px, 4vw, 48px);
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+}
+.intel-panel img { width: 100%; height: auto; max-width: 1280px; }
+
+/* ─── This is the intelligence layer ───────────────────────────── */
+.this-intel { padding: 60px 0 80px; }
+.this-intel-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 80px;
+  align-items: start;
+}
+.this-intel .icon-tile {
+  width: 56px; height: 56px;
+  background: var(--teal-soft);
+  border-radius: 12px;
+  display: inline-flex; align-items: center; justify-content: center;
+  margin-bottom: 18px;
+}
+.this-intel .icon-tile .mark { width: 24px; height: 24px; }
+.this-intel h2 {
+  margin: 0 0 16px;
+  font-size: clamp(24px, 2.5vw, 32px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+.this-intel p {
+  margin: 0 0 28px;
+  color: var(--ink-mute);
+  max-width: 36ch;
+  font-size: 15px; line-height: 1.55;
+}
+.pills {
+  display: flex; flex-direction: column; gap: 10px;
+}
+.pill {
+  background: var(--teal-soft);
+  border-radius: 999px;
+  padding: 14px 22px;
+  font-family: 'ABC Favorit Mono', monospace;
+  font-size: 12.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.pill.muted { background: rgba(20, 21, 15, 0.06); color: var(--ink-mute); }
+@media (max-width: 980px) {
+  .this-intel-grid { grid-template-columns: 1fr; gap: 32px; }
+  .pill { padding: 12px 16px; font-size: 11px; }
+}
+
+/* ─── Ops tabs ─────────────────────────────────────────────────── */
+.ops { padding: 40px 0 80px; }
+.ops h2 {
+  text-align: center;
+  font-size: clamp(28px, 3vw, 38px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  margin: 0 0 48px;
+}
+.ops-grid {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 24px;
+  align-items: stretch;
+}
+.ops-tabs {
+  background: var(--panel);
+  border-radius: 18px;
+  padding: 28px 24px;
+  display: flex; flex-direction: column;
+  gap: 6px;
+}
+.ops-tab {
+  text-align: left;
+  font-family: 'ABC Favorit Mono', monospace;
+  font-size: 12.5px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  padding: 18px 16px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+}
+.ops-tab:hover { color: var(--ink); }
+.ops-tab.active { background: #fff; border-color: var(--line-2); color: var(--ink); }
+.ops-panel {
+  background: var(--panel);
+  border-radius: 18px;
+  padding: 36px 40px;
+  display: flex; flex-direction: column;
+}
+.ops-panel h3 {
+  margin: 0 0 14px;
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+}
+.ops-panel p {
+  margin: 0;
+  color: var(--ink-mute);
+  font-size: 15px; line-height: 1.55;
+  max-width: 56ch;
+}
+.ops-stats {
   margin-top: auto;
+  padding-top: 36px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 24px;
-  padding-top: 24px;
-  border-top: 1px solid rgba(20,21,15,0.18);
 }
-.uc-stat .v {
-  font-size: 36px;
-  font-weight: 300;
+.ops-stat .v {
+  font-size: clamp(32px, 3vw, 42px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--ink);
+}
+.ops-stat .k {
+  margin-top: 8px;
+  font-family: 'ABC Favorit Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+@media (max-width: 980px) {
+  .ops { padding: 24px 0 56px; }
+  .ops-grid { grid-template-columns: 1fr; gap: 16px; }
+  .ops-tabs { flex-direction: row; overflow-x: auto; padding: 16px; gap: 8px; }
+  .ops-tab { white-space: nowrap; padding: 10px 14px; }
+  .ops-panel { padding: 24px 22px; }
+  .ops-stats { padding-top: 24px; gap: 16px; }
+  .ops-stat .v { font-size: 28px; }
+}
+
+/* ─── Tend Proof ───────────────────────────────────────────────── */
+.proof { padding: 40px 0 80px; }
+.proof h2 {
+  text-align: center;
+  font-size: clamp(28px, 3vw, 38px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  margin: 0 0 48px;
+}
+.proof-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 28px;
+}
+.proof-stat {
+  background: var(--panel);
+  border-radius: 18px;
+  padding: 64px 48px 36px;
+  text-align: center;
+  min-height: 280px;
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+  gap: 22px;
+}
+.proof-stat .v {
+  font-size: clamp(40px, 4vw, 56px);
+  font-weight: 500;
   letter-spacing: -0.025em;
   line-height: 1;
 }
-.uc-stat .v .unit { font-size: 18px; color: rgba(20,21,15,0.5); margin-left: 2px; }
-.uc-stat .k {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.05em;
-  color: rgba(20,21,15,0.5);
-  margin-top: 8px;
-  text-transform: uppercase;
+.proof-stat .k {
+  color: var(--ink-mute);
+  font-size: 14px;
+  line-height: 1.45;
+  max-width: 30ch;
 }
-
-/* ---------- METRICS ---------- */
-.metrics {
-  padding: 80px 0 100px;
-}
-.metrics-grid {
+.proof-quote {
+  background: var(--panel);
+  border-radius: 18px;
+  padding: 48px clamp(28px, 4vw, 64px);
   display: grid;
-  grid-template-columns: 1.2fr 1fr 1fr 1fr;
-  gap: 0;
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
+  grid-template-columns: 1fr auto;
+  gap: 32px;
+  align-items: center;
 }
-.metric {
-  padding: 40px 32px;
-  border-right: 1px solid var(--line);
-  min-height: 220px;
-  display: flex; flex-direction: column; justify-content: space-between;
-}
-.metric:last-child { border-right: none; }
-.metric .v {
-  font-size: clamp(48px, 5vw, 76px);
-  font-weight: 300;
-  letter-spacing: -0.035em;
-  line-height: 0.95;
-}
-.metric .v .unit { color: var(--accent); }
-.metric .k {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--fg-mute);
-  margin-top: 16px;
-}
-.metric.quote {
-  padding: 40px 32px;
-}
-.metric.quote blockquote {
+.proof-quote blockquote {
   margin: 0;
-  font-size: 18px;
-  line-height: 1.4;
-  letter-spacing: -0.01em;
-  color: var(--fg);
-  font-weight: 300;
+  font-size: clamp(20px, 2.1vw, 28px);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  line-height: 1.18;
+  color: var(--ink);
+  max-width: 28ch;
 }
-.metric.quote blockquote .serif { color: var(--accent); }
-.metric.quote .attr {
-  margin-top: 16px;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
-  color: var(--fg-mute);
-  letter-spacing: 0.04em;
+@media (max-width: 980px) {
+  .proof { padding: 24px 0 56px; }
+  .proof-stats { grid-template-columns: 1fr; gap: 12px; margin-bottom: 16px; }
+  .proof-stat { padding: 36px 24px; min-height: 200px; }
+  .proof-quote { grid-template-columns: 1fr; padding: 28px 24px; gap: 20px; }
+  .proof-quote blockquote { font-size: 20px; }
 }
 
-/* ---------- FAQ ---------- */
-.faq { padding: 80px 0 120px; }
+/* ─── FAQ ──────────────────────────────────────────────────────── */
+.faq { padding: 40px 0 80px; }
 .faq-grid {
   display: grid;
-  grid-template-columns: 1fr 2fr;
+  grid-template-columns: 1fr 1.6fr;
   gap: 80px;
   align-items: start;
 }
 .faq h2 {
-  font-size: clamp(44px, 5vw, 64px);
-  font-weight: 300;
-  letter-spacing: -0.03em;
-  line-height: 1;
-  margin: 0 0 20px;
+  margin: 0 0 18px;
+  font-size: clamp(28px, 3vw, 40px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
 }
-.faq h2 .serif { font-weight: 400; color: var(--accent); }
-.faq .intro {
-  color: var(--fg-dim);
-  font-size: 15px;
-  line-height: 1.55;
-  max-width: 340px;
+.faq .lede {
+  margin: 0;
+  color: var(--ink-mute);
+  font-size: 14px; line-height: 1.55;
+  max-width: 30ch;
 }
-.qa {
-  border-top: 1px solid var(--line);
+.qa-list { display: flex; flex-direction: column; gap: 10px; }
+.qa-item {
+  background: var(--panel);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: background 0.18s;
 }
-.qa-item { border-bottom: 1px solid var(--line); }
 .qa-q {
   width: 100%;
-  background: transparent;
-  border: none;
-  padding: 22px 0;
-  display: flex; justify-content: space-between; align-items: flex-start;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 24px;
+  padding: 22px 28px;
   text-align: left;
-  color: var(--fg);
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-size: 18px;
-  font-weight: 400;
-  letter-spacing: -0.01em;
-  cursor: pointer;
-  gap: 20px;
+  font-size: 15px;
+  color: var(--ink);
+  font-weight: 500;
 }
-.qa-q:hover { color: var(--accent); }
 .qa-q .sign {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 14px;
-  color: var(--fg-mute);
+  font-family: 'ABC Favorit Mono', monospace;
+  font-size: 18px;
+  color: var(--ink-mute);
+  transition: transform 0.2s;
   flex: 0 0 auto;
-  margin-top: 4px;
-  transition: transform 0.25s;
 }
-.qa-item.open .qa-q .sign { transform: rotate(45deg); color: var(--accent); }
 .qa-a {
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.32s ease, opacity 0.2s;
-  opacity: 0;
-  color: var(--fg-dim);
-  font-size: 15px;
-  line-height: 1.6;
-  padding-right: 60px;
+  transition: max-height 0.28s ease;
+  padding: 0 28px;
 }
-.qa-item.open .qa-a {
-  max-height: 300px;
-  opacity: 1;
+.qa-a-inner {
+  color: var(--ink-mute);
+  font-size: 14px;
+  line-height: 1.55;
   padding-bottom: 22px;
+  max-width: 70ch;
+}
+.qa-item.open .qa-a { max-height: 360px; }
+@media (max-width: 980px) {
+  .faq { padding: 24px 0 56px; }
+  .faq-grid { grid-template-columns: 1fr; gap: 24px; }
+  .qa-q { padding: 18px 20px; font-size: 14px; }
+  .qa-a { padding: 0 20px; }
 }
 
-/* ---------- FINAL CTA + FOOTER ---------- */
-.final {
-  padding: 120px 0 80px;
-  border-top: 1px solid var(--line);
+/* ─── Footer ───────────────────────────────────────────────────── */
+.foot {
+  background: var(--teal-tint);
+  padding: 100px 0 36px;
+}
+.foot-hero {
   text-align: center;
+  margin-bottom: 96px;
 }
-.final h2 {
-  font-size: clamp(56px, 7vw, 104px);
-  font-weight: 300;
-  letter-spacing: -0.04em;
-  line-height: 0.98;
-  margin: 0 0 40px;
-  text-wrap: balance;
+.foot-hero .big-mark {
+  width: 132px; height: 132px;
+  margin: 0 auto 32px;
+  color: var(--ink);
 }
-.final h2 .serif { font-weight: 400; color: var(--accent); }
-.final .cta-row {
-  display: flex; justify-content: center; gap: 12px;
-  flex-wrap: wrap;
+.foot-hero .big-mark svg { width: 100%; height: 100%; }
+.foot-hero h3 {
+  margin: 0 0 22px;
+  font-size: clamp(20px, 1.8vw, 24px);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: var(--ink);
 }
-footer {
-  border-top: 1px solid var(--line);
-  padding: 40px 0 32px;
-  color: var(--fg-mute);
-}
-.foot-row {
+.foot-cols {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  gap: 40px;
-  padding-bottom: 40px;
-  border-bottom: 1px solid var(--line);
-  margin-bottom: 24px;
+  grid-template-columns: 1.4fr repeat(6, 1fr) 1.5fr;
+  gap: 28px;
+  align-items: start;
+  padding-bottom: 24px;
 }
-.foot-row .col .h {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--fg);
-  margin-bottom: 14px;
+.foot-cols .col h4 {
+  margin: 0 0 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
 }
-.foot-row .col a {
+.foot-cols .col a {
   display: block;
-  color: var(--fg-dim);
-  text-decoration: none;
-  font-size: 14px;
+  font-size: 13px;
+  color: var(--ink-2);
   padding: 4px 0;
 }
-.foot-row .col a:hover { color: var(--fg); }
-.foot-bottom {
-  display: flex; justify-content: space-between; align-items: center;
-  font-family: 'IBM Plex Mono', monospace;
+.foot-cols .col a:hover { color: var(--ink); text-decoration: underline; }
+.foot-cols .brand-col {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 20px; font-weight: 500; letter-spacing: -0.02em;
+}
+.foot-cols .brand-col .mark { width: 18px; height: 18px; }
+.foot-cols .copyright {
+  font-family: 'ABC Favorit Mono', monospace;
   font-size: 11px;
-  letter-spacing: 0.05em;
-}
-
-/* ---------- TWEAKS PANEL ---------- */
-.tweaks {
-  position: fixed;
-  bottom: 20px; right: 20px;
-  z-index: 100;
-  background: var(--bg-2);
-  border: 1px solid var(--line-2);
-  padding: 16px;
-  width: 260px;
-  display: none;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
-}
-.tweaks.show { display: block; }
-.tweaks .th {
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  color: var(--fg-mute);
-  text-transform: uppercase;
-  margin-bottom: 12px;
-  display: flex; justify-content: space-between;
-}
-.tweaks .th .dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; }
-.tweak-row { margin-bottom: 12px; }
-.tweak-row .lbl { color: var(--fg-dim); margin-bottom: 6px; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; }
-.variant-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-.variant-btns button {
-  background: var(--bg);
-  border: 1px solid var(--line-2);
-  color: var(--fg);
-  padding: 10px 8px;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
-  cursor: pointer;
-  letter-spacing: 0.04em;
-}
-.variant-btns button.active { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
-
-@keyframes tend-orbit {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
-
-/* ---------- staged data-flow schematic ---------- */
-/* Initial (pre-scroll) state */
-.hero-schem .flow-tools .ghost { opacity: 0; }
-.hero-schem .flow-tools .real { opacity: 0; }
-.hero-schem .flow-in-lines .in-line { stroke-dasharray: 200; stroke-dashoffset: 200; }
-.hero-schem .flow-core .core-ring { opacity: 0; transform-box: fill-box; transform-origin: center; transform: scale(0.4); }
-.hero-schem .flow-core .core-pulse { opacity: 0; }
-.hero-schem .flow-core .core-graph { opacity: 0; }
-.hero-schem .flow-core .core-label { opacity: 0; }
-.hero-schem .flow-out-lines .out-line { stroke-dasharray: 95; stroke-dashoffset: 95; }
-.hero-schem .flow-agents .agent .dot,
-.hero-schem .flow-agents .agent .ring { opacity: 0; transform-box: fill-box; transform-origin: center; transform: scale(0.4); }
-.hero-schem .flow-agents .agent .label { opacity: 0; }
-.hero-schem .flow-packets { opacity: 0; }
-
-/* Playing state */
-.hero-schem.playing .flow-tools .ghost {
-  animation: tend-ghost 1.6s ease forwards;
-  animation-delay: var(--delay, 0s);
-}
-.hero-schem.playing .flow-tools .real {
-  animation: tend-fadein 0.6s ease forwards;
-  animation-delay: calc(var(--delay, 0s) + 0.2s);
-}
-.hero-schem.playing .flow-in-lines .in-line {
-  animation: tend-draw 0.9s ease forwards;
-  animation-delay: calc(1.2s + var(--i, 0) * 0.08s);
-}
-.hero-schem.playing .flow-core .core-ring {
-  animation: tend-pop 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-  animation-delay: 1.9s;
-}
-.hero-schem.playing .flow-core .core-pulse {
-  animation: tend-fadein 0.5s ease forwards;
-  animation-delay: 2.4s;
-}
-.hero-schem.playing .flow-core .core-graph {
-  animation: tend-fadein 0.6s ease forwards;
-  animation-delay: 2.5s;
-}
-.hero-schem.playing .flow-core .core-label {
-  animation: tend-fadein 0.5s ease forwards;
-  animation-delay: 2.7s;
-}
-.hero-schem.playing .flow-out-lines .out-line {
-  animation: tend-draw 0.7s ease forwards;
-  animation-delay: calc(3.0s + var(--i, 0) * 0.1s);
-}
-.hero-schem.playing .flow-agents .agent .ring,
-.hero-schem.playing .flow-agents .agent .dot {
-  animation: tend-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-  animation-delay: calc(3.3s + var(--i, 0) * 0.12s);
-}
-.hero-schem.playing .flow-agents .agent .label {
-  animation: tend-fadein 0.5s ease forwards;
-  animation-delay: calc(3.5s + var(--i, 0) * 0.12s);
-}
-.hero-schem.playing .flow-packets {
-  animation: tend-fadein 0.8s ease forwards;
-  animation-delay: 3.8s;
-}
-
-@keyframes tend-fadein { to { opacity: 1; } }
-@keyframes tend-pop {
-  0% { opacity: 0; transform: scale(0.4); }
-  100% { opacity: 1; transform: scale(1); }
-}
-@keyframes tend-draw { to { stroke-dashoffset: 0; } }
-@keyframes tend-ghost {
-  0%   { opacity: 0; transform: translate(0, 0); }
-  20%  { opacity: 0.4; transform: translate(0, 0); }
-  60%  { opacity: 0.4; transform: translate(0, 0); }
-  100% { opacity: 0; transform: translate(-4px, -4px); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero-schem .flow-tools .ghost,
-  .hero-schem .flow-tools .real,
-  .hero-schem .flow-in-lines .in-line,
-  .hero-schem .flow-core .core-ring,
-  .hero-schem .flow-core .core-pulse,
-  .hero-schem .flow-core .core-graph,
-  .hero-schem .flow-core .core-label,
-  .hero-schem .flow-out-lines .out-line,
-  .hero-schem .flow-agents .agent .dot,
-  .hero-schem .flow-agents .agent .ring,
-  .hero-schem .flow-agents .agent .label,
-  .hero-schem .flow-packets {
-    opacity: 1;
-    transform: none;
-    stroke-dashoffset: 0;
-    animation: none;
-  }
-}
-
-/* ---------- step-diagram animations ---------- */
-.step .diag-svg .d-rect-in,
-.step .diag-svg .d-node,
-.step .diag-svg .d-row,
-.step .diag-svg .d-dot,
-.step .diag-svg .d-grid { opacity: 0; }
-
-.step .diag-svg .d-rect-out,
-.step .diag-svg .d-hub,
-.step .diag-svg .d-pulse {
-  opacity: 0;
-  transform-box: fill-box;
-  transform-origin: center;
-  transform: scale(0.3);
-}
-
-.step .diag-svg .d-line { stroke-dasharray: 60; stroke-dashoffset: 60; }
-.step .diag-svg .d-edge { stroke-dasharray: 36; stroke-dashoffset: 36; }
-.step .diag-svg .d-axis { stroke-dasharray: 60; stroke-dashoffset: 60; }
-.step .diag-svg .d-spark { stroke-dasharray: 130; stroke-dashoffset: 130; }
-.step .diag-svg .d-fill {
-  transform-box: fill-box;
-  transform-origin: left center;
-  transform: scaleX(0);
-}
-
-.step.playing .diag-svg .d-rect-in,
-.step.playing .diag-svg .d-row {
-  animation: d-fade 0.4s ease forwards;
-  animation-delay: calc(var(--i, 0) * 0.1s);
-}
-.step.playing .diag-svg .d-node {
-  animation: d-fade 0.4s ease forwards;
-  animation-delay: calc(var(--i, 0) * 0.08s);
-}
-.step.playing .diag-svg .d-line {
-  animation: d-draw 0.5s ease forwards;
-  animation-delay: calc(0.4s + var(--i, 0) * 0.08s);
-}
-.step.playing .diag-svg .d-edge {
-  animation: d-draw 0.4s ease forwards;
-  animation-delay: calc(0.4s + var(--i, 0) * 0.1s);
-}
-.step.playing .diag-svg .d-rect-out,
-.step.playing .diag-svg .d-hub {
-  animation: d-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-  animation-delay: 0.9s;
-}
-.step.playing .diag-svg .d-dot {
-  animation: d-fade 0.3s ease forwards;
-  animation-delay: calc(0.3s + var(--i, 0) * 0.25s);
-}
-.step.playing .diag-svg .d-fill {
-  animation: d-fill 0.8s ease forwards;
-  animation-delay: calc(0.5s + var(--i, 0) * 0.25s);
-}
-.step.playing .diag-svg .d-axis {
-  animation: d-draw 0.4s ease forwards;
-}
-.step.playing .diag-svg .d-grid {
-  animation: d-fade 0.4s ease forwards;
-  animation-delay: calc(0.3s + var(--i, 0) * 0.1s);
-}
-.step.playing .diag-svg .d-spark {
-  animation: d-draw 1.2s ease forwards;
-  animation-delay: 0.6s;
-}
-.step.playing .diag-svg .d-pulse {
-  animation: d-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-  animation-delay: 1.7s;
-}
-
-@keyframes d-fade { to { opacity: 1; } }
-@keyframes d-draw { to { stroke-dashoffset: 0; } }
-@keyframes d-pop  { to { opacity: 1; transform: scale(1); } }
-@keyframes d-fill { to { transform: scaleX(1); } }
-
-@media (prefers-reduced-motion: reduce) {
-  .step .diag-svg .d-rect-in,
-  .step .diag-svg .d-node,
-  .step .diag-svg .d-row,
-  .step .diag-svg .d-dot,
-  .step .diag-svg .d-grid,
-  .step .diag-svg .d-rect-out,
-  .step .diag-svg .d-hub,
-  .step .diag-svg .d-pulse,
-  .step .diag-svg .d-line,
-  .step .diag-svg .d-edge,
-  .step .diag-svg .d-axis,
-  .step .diag-svg .d-spark,
-  .step .diag-svg .d-fill {
-    opacity: 1;
-    transform: none;
-    stroke-dashoffset: 0;
-    animation: none;
-  }
-}
-
-/* small screens */
-@media (max-width: 980px) {
-  .wrap { padding: 0 24px; }
-  .hero-grid, .what-grid, .faq-grid { grid-template-columns: 1fr; gap: 40px; }
-  .how-steps, .caps-grid, .metrics-grid, .foot-row { grid-template-columns: 1fr 1fr; }
-  .metric, .step, .cap { border-right: 1px solid var(--line) !important; }
-  .demo-frame { grid-template-columns: 1fr; }
-  .demo-col { border-right: none; border-bottom: 1px solid var(--line); }
-  .uc-tabs { grid-template-columns: 1fr; }
-  .ticker-row { grid-template-columns: 1fr 1fr; gap: 16px; }
-  .nav-links { display: none; }
-  .nav-right .nav-cta, .nav-right .nav-login { display: none; }
-  .nav-toggle { display: inline-flex; }
-  .nav.open .nav-drawer {
-    display: flex;
-    flex-direction: column;
-    background: rgba(10,11,13,0.96);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border-top: 1px solid var(--line);
-    padding: 4px 24px 20px;
-  }
-  .nav-drawer a:not(.nav-login) {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 15px;
-    color: var(--fg);
-    text-decoration: none;
-    padding: 16px 0;
-    border-bottom: 1px solid var(--line);
-    letter-spacing: 0.02em;
-  }
-  .nav-drawer .drawer-cta-row {
-    display: flex;
-    gap: 10px;
-    padding-top: 16px;
-  }
-  .nav-drawer .drawer-cta-row > * { flex: 1; justify-content: center; }
-
-  /* ontology demo: keep labels inside the pane */
-  .graph .col-header { font-size: 8.5px; letter-spacing: 0.04em; }
-  .graph .col-header .count { font-size: 9px; }
-  .graph .node-label {
-    font-size: 9px;
-    max-width: 110px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    padding: 2px 5px;
-  }
-  .graph-meta { font-size: 9px; }
-  .graph-meta.l {
-    max-width: 56%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-}
-@media (max-width: 520px) {
-  /* on phones, one meta line is plenty. Keep the live one */
-  .graph-meta.l { display: none; }
-  .graph .col-header { font-size: 7.5px; }
-}
-
-/* ---------- BEFORE / AFTER ---------- */
-.change { padding: 96px 0; border-top: 1px solid var(--line); }
-.change .change-head {
-  display: grid;
-  grid-template-columns: minmax(0, 520px) 1fr;
-  gap: 60px;
-  align-items: end;
-  margin-bottom: 48px;
-}
-.change .change-head h2 {
-  font-size: clamp(36px, 3.6vw, 56px);
-  font-weight: 300;
-  letter-spacing: -0.025em;
-  line-height: 1.05;
-  margin: 0;
-}
-.change .change-head h2 .serif { font-weight: 400; color: var(--accent); }
-.change .change-head p {
-  font-size: 16px;
-  color: var(--fg-dim);
-  line-height: 1.55;
-  margin: 0;
-  max-width: 460px;
-}
-.ba-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid var(--line); }
-.ba-col { padding: 32px 28px 36px; }
-.ba-col.before { border-right: 1px solid var(--line); background: var(--bg); }
-.ba-col.after { background: var(--bg-2); }
-.ba-label {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--fg-mute);
-  margin-bottom: 24px;
-  display: flex; justify-content: space-between; align-items: center;
-}
-.ba-col.after .ba-label { color: var(--accent); }
-.ba-label .tag {
-  font-size: 10px;
-  color: var(--fg-mute);
   letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  text-align: right;
+  align-self: end;
 }
-.ba-col.after .ba-label .tag { color: var(--accent); }
-.ba-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
-.ba-list li {
-  font-size: 16px;
-  line-height: 1.5;
-  color: var(--fg-dim);
-  padding-left: 22px;
-  position: relative;
+@media (max-width: 980px) {
+  .foot { padding: 64px 0 28px; }
+  .foot-hero { margin-bottom: 56px; }
+  .foot-hero .big-mark { width: 72px; height: 72px; }
+  .foot-cols { grid-template-columns: 1fr 1fr; gap: 24px; }
+  .foot-cols .brand-col { grid-column: 1 / -1; }
+  .foot-cols .copyright {
+    grid-column: 1 / -1;
+    text-align: left;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+  }
 }
-.ba-col.after .ba-list li { color: var(--fg); }
-.ba-list li::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 11px;
-  width: 12px;
-  height: 1px;
-  background: var(--fg-mute);
-}
-.ba-col.after .ba-list li::before { background: var(--accent); height: 1.5px; top: 10px; }
-
-@media (max-width: 720px) {
-  .change .change-head { grid-template-columns: 1fr; gap: 16px; align-items: start; }
-  .ba-grid { grid-template-columns: 1fr; }
-  .ba-col.before { border-right: none; border-bottom: 1px solid var(--line); }
-}
-
 </style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav class="nav">
+<!-- ─────────────── Reusable dot-cluster mark (14 dots, 2-3-4-3-2) ─────────────── -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="tend-mark" viewBox="0 0 24 24">
+      <circle cx="9"    cy="3"    r="1.6"/>
+      <circle cx="15"   cy="3"    r="1.6"/>
+      <circle cx="6"    cy="8"    r="1.6"/>
+      <circle cx="12"   cy="8"    r="1.6"/>
+      <circle cx="18"   cy="8"    r="1.6"/>
+      <circle cx="4.5"  cy="12.5" r="1.6"/>
+      <circle cx="9.5"  cy="12.5" r="1.6"/>
+      <circle cx="14.5" cy="12.5" r="1.6"/>
+      <circle cx="19.5" cy="12.5" r="1.6"/>
+      <circle cx="6"    cy="17"   r="1.6"/>
+      <circle cx="12"   cy="17"   r="1.6"/>
+      <circle cx="18"   cy="17"   r="1.6"/>
+      <circle cx="9"    cy="22"   r="1.6"/>
+      <circle cx="15"   cy="22"   r="1.6"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- ─────────────── Nav ─────────────── -->
+<header class="nav" id="nav">
   <div class="nav-inner">
-    <a class="brand" href="index.html">
-      <img src="images/tend-logo.png" alt="tend" />
+    <a href="/" class="brand" aria-label="Tend home">
+      <span class="mark" aria-hidden="true"><svg><use href="#tend-mark"/></svg></span>
+      <span>Tend</span>
     </a>
-    <div class="nav-links">
-      <a href="platform.html">Platform</a>
-      <a href="use-cases.html">Use cases</a>
-      <a href="about.html">About</a>
-    </div>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="/platform">Platform</a>
+      <a href="/pricing">Pricing</a>
+      <a href="/use-cases">Solutions</a>
+      <a href="/about">Resources</a>
+      <a href="/org">Company</a>
+    </nav>
     <div class="nav-right">
-      <button type="button" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}' class="nav-cta">Book a demo <span>→</span></button>
-      <a href="login.html" class="nav-login">Login <span>→</span></a>
-      <button type="button" class="nav-toggle" aria-controls="nav-drawer" aria-expanded="false" aria-label="Open menu">
-        <svg width="18" height="14" viewBox="0 0 18 14" aria-hidden="true"><g stroke="currentColor" stroke-width="1.5" stroke-linecap="square"><line x1="0" y1="2" x2="18" y2="2"/><line x1="0" y1="7" x2="18" y2="7"/><line x1="0" y1="12" x2="18" y2="12"/></g></svg>
+      <a class="btn btn-primary" href="/book">Book a call</a>
+      <a class="btn btn-outline" href="#how">See how it works</a>
+      <button class="nav-toggle" aria-label="Open menu" aria-expanded="false" id="navToggle">
+        <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 5h14M2 9h14M2 13h14"/></svg>
       </button>
     </div>
-  </div>
-  <div class="nav-drawer" id="nav-drawer">
-    <a href="platform.html">Platform</a>
-    <a href="use-cases.html">Use cases</a>
-    <a href="about.html">About</a>
-    <div class="drawer-cta-row">
-      <button type="button" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}' class="nav-cta">Book a demo <span>→</span></button>
-      <a href="login.html" class="nav-login">Login <span>→</span></a>
+    <div class="nav-drawer">
+      <a href="/platform">Platform</a>
+      <a href="/pricing">Pricing</a>
+      <a href="/use-cases">Solutions</a>
+      <a href="/about">Resources</a>
+      <a href="/org">Company</a>
+      <div class="drawer-ctas">
+        <a class="btn btn-primary" href="/book">Book a call</a>
+        <a class="btn btn-outline" href="#how">See how it works</a>
+      </div>
     </div>
   </div>
-</nav>
+</header>
 
-<!-- HERO -->
+<!-- ─────────────── Hero ─────────────── -->
 <section class="hero">
-  <video class="hero-video" autoplay muted loop playsinline webkit-playsinline x5-playsinline preload="auto" disableremoteplayback aria-hidden="true">
-    <source src="videos/WEB_TEND.mp4" type="video/mp4">
-    <source src="videos/WEB_TEND.mov" type="video/quicktime">
-  </video>
+  <div class="hero-inner">
+    <h1>The AI partner that knows your business better than you do.</h1>
+    <p>Introducing the AI operating layer for businesses run by humans. A system that runs in the background while the owner stays in the front.</p>
+  </div>
+  <div class="hero-spheres">
+    <img src="images/landing/hero-spheres.png" alt="" loading="eager" decoding="async" />
+  </div>
+</section>
+
+<!-- ─────────────── Cards ─────────────── -->
+<section class="cards">
   <div class="wrap">
-    <div class="hero-grid">
+    <div class="cards-grid">
+
+      <article class="feature-card">
+        <img class="bg" src="images/landing/card-individuals.jpg" alt="" loading="lazy" decoding="async" />
+        <div class="title">Tend for Individuals</div>
+        <div class="panel">
+          <div class="lead">For the operator running the business.</div>
+          <div class="body">Tend connects every tool you already use, learns how your business actually works, surfaces the decisions that need you, and runs the work that shouldn't. One operator. One layer. Already on your side.</div>
+          <div class="cta-row"><a class="btn btn-light" href="/book">Book a call</a></div>
+        </div>
+      </article>
+
+      <article class="feature-card">
+        <img class="bg" src="images/landing/card-business.png" alt="" loading="lazy" decoding="async" />
+        <div class="title">Tend for Business</div>
+        <div class="panel">
+          <div class="lead">For the team running the business.</div>
+          <div class="body">Everything in Tend, built for the people behind you. Shared decisions, shared agents, team oversight, and a single source of truth across the whole org. Built for the founder-led teams that have outgrown a stack of disconnected tools.</div>
+          <div class="cta-row"><a class="btn btn-light" href="/book">Book a call</a></div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────── Tagline ─────────────── -->
+<section class="tagline">
+  <div class="wrap">
+    <div class="tagline-grid">
+      <h2>Tend is the layer underneath your business that makes the next five years of growth feel inevitable.</h2>
+      <p>It reads across your tools, understands what's actually happening, and works on your behalf. Always on. Already reading.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────── Tend Dashboard ─────────────── -->
+<section class="dashboard">
+  <div class="wrap">
+    <div class="dashboard-head">
+      <span class="mark"><svg><use href="#tend-mark"/></svg></span>
+      <span>Tend Dashboard</span>
+    </div>
+    <div class="dashboard-panel">
+      <img src="images/landing/dashboard-mockup.png" alt="Tend dashboard preview showing connected systems and live agent activity." loading="lazy" decoding="async" />
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────── How it works ─────────────── -->
+<section class="how" id="how">
+  <div class="wrap">
+    <h2>How it works</h2>
+    <div class="steps">
+
+      <div class="step">
+        <div class="kicker">• Step 1</div>
+        <h3>It maps what you have.</h3>
+        <p>Tend connects to the tools you already run on. CRM, email, calendar, docs, accounting, ops, marketing. Every customer, every deal, every asset, every relationship becomes part of one map.</p>
+        <div class="step-art"><img src="images/landing/step-1-map.png" alt="" loading="lazy" decoding="async" /></div>
+      </div>
+
+      <div class="step">
+        <div class="kicker">•• Step 2</div>
+        <h3>It connects your links.</h3>
+        <p>Most software stores information in lists. Tend builds a map of how things actually relate. A customer connected to a deal, a calendar event, an invoice, a team lead, the property they almost bought last year. All at once.</p>
+        <div class="step-art"><img src="images/landing/step-2-connect.png" alt="" loading="lazy" decoding="async" /></div>
+      </div>
+
+      <div class="step">
+        <div class="kicker">••• Step 3</div>
+        <h3>It deploys the AI.</h3>
+        <p>Tend uses that map to run agents tuned to your business. Surfacing decisions. Drafting work. Modeling outcomes. Watching for the things that need a human. You spend twenty minutes. Tend keeps working.</p>
+        <div class="step-art"><img src="images/landing/step-3-deploy.png" alt="" loading="lazy" decoding="async" /></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────── Eclipse CTA ─────────────── -->
+<section class="eclipse">
+  <div class="wrap">
+    <div class="eclipse-card">
+      <img class="bg" src="images/landing/cta-eclipse.png" alt="" loading="lazy" decoding="async" />
+      <div class="content">
+        <h2>Tend is rewriting how businesses run.</h2>
+        <a class="btn btn-outline-light" href="/book">Book a call</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────── Intelligence Layer ─────────────── -->
+<section class="intel">
+  <div class="wrap">
+    <h2>The Intelligence Layer</h2>
+    <div class="intel-panel">
+      <img src="images/landing/intelligence-stack.png" alt="The Intelligence Layer: a stack of three planes — configured intelligence on top, persistent memory in the middle, operating layer at the base — surrounded by labels for connectors, jobs, files, frontier models, workflows, and approvals." loading="lazy" decoding="async" />
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────── This is the intelligence layer ─────────────── -->
+<section class="this-intel">
+  <div class="wrap">
+    <div class="this-intel-grid">
       <div>
-        <h1>
-          <span class="serif">Agentic systems</span> for the work<br/>
-          your team shouldn't have to do.
-        </h1>
-        <p class="hero-sub">
-          Agents can only operate when the data is clean. Tend cleans yours, so they actually do the work.
-        </p>
-        <div class="hero-ctas">
-          <a href="#change" class="btn">See what changes <span class="arr">↓</span></a>
+        <div class="icon-tile">
+          <span class="mark"><svg><use href="#tend-mark"/></svg></span>
+        </div>
+        <h2>This is the intelligence layer</h2>
+        <p>The map of your business that Tend reasons against every time it answers, drafts, decides, or moves on something.</p>
+        <a class="btn btn-primary" href="/book">Book a call</a>
+      </div>
+      <div class="pills">
+        <div class="pill">Your clients and every thread with them</div>
+        <div class="pill">Your services, your pricing, your terms</div>
+        <div class="pill">Your team and what each person owns</div>
+        <div class="pill">Your inbox and the conversations still open</div>
+        <div class="pill">Your calendar and what's coming up</div>
+        <div class="pill">Your numbers, pipeline, vendors</div>
+        <div class="pill">Your decisions and the reasoning behind them</div>
+        <div class="pill muted">Your voice and how you sound on a good day</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────── Ops tabs ─────────────── -->
+<section class="ops">
+  <div class="wrap">
+    <h2>What it looks like in your business</h2>
+    <div class="ops-grid">
+      <div class="ops-tabs" role="tablist">
+        <button class="ops-tab active" type="button" data-tab="revenue">Revenue Ops</button>
+        <button class="ops-tab" type="button" data-tab="finance">Finance Ops</button>
+        <button class="ops-tab" type="button" data-tab="support">Support Ops</button>
+        <button class="ops-tab" type="button" data-tab="supply">Supply Chain</button>
+        <button class="ops-tab" type="button" data-tab="people">People Ops</button>
+      </div>
+      <div class="ops-panel" id="opsPanel">
+        <h3 id="opsTitle">We deploy the AI</h3>
+        <p id="opsBody">Practical AI agents that follow your team's playbook, not a generic one. They chase the follow-ups, route the tickets, and reconcile the books. Every action goes back into your tools so the team sees what happened.</p>
+        <div class="ops-stats" id="opsStats">
+          <div class="ops-stat"><div class="v">3.2&times;</div><div class="k">faster follow-up</div></div>
+          <div class="ops-stat"><div class="v">&minus;18%</div><div class="k">win rate</div></div>
+          <div class="ops-stat"><div class="v">$400K</div><div class="k">renewals saved / qtr</div></div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- BEFORE / AFTER -->
-<section id="change" class="change">
+<!-- ─────────────── Tend Proof ─────────────── -->
+<section class="proof">
   <div class="wrap">
-    <div class="change-head">
-      <h2>What changes after <span class="serif">tend</span>.</h2>
-      <p>Same team. Same tools. New defaults. The first 30 days, this is what your operators feel.</p>
+    <h2>Tend Proof</h2>
+    <div class="proof-stats">
+      <div class="proof-stat">
+        <div class="v">3.2&times;</div>
+        <div class="k">more decisions made per week, per operator</div>
+      </div>
+      <div class="proof-stat">
+        <div class="v">&minus;61%</div>
+        <div class="k">reduction in time spent on work that shouldn't need a human</div>
+      </div>
+      <div class="proof-stat">
+        <div class="v">$2.8M</div>
+        <div class="k">average revenue activity unlocked per Tend Business deployment</div>
+      </div>
     </div>
-    <div class="ba-grid">
-      <div class="ba-col before">
-        <div class="ba-label"><span>Before tend</span><span class="tag">/ STATUS QUO</span></div>
-        <ul class="ba-list">
-          <li>Leads sit unanswered for hours, sometimes days.</li>
-          <li>The same customer lives in five different tools.</li>
-          <li>Follow-ups happen "when someone has time."</li>
-          <li>Reports come from manually stitched spreadsheets.</li>
-          <li>Renewals and churn risks surprise you at quarter-end.</li>
-          <li>Hiring is the answer every time volume goes up.</li>
-        </ul>
-      </div>
-      <div class="ba-col after">
-        <div class="ba-label"><span>After tend</span><span class="tag">/ NEW DEFAULT</span></div>
-        <ul class="ba-list">
-          <li>Every lead gets a personalized reply within minutes.</li>
-          <li>Every team works from the same up-to-date picture.</li>
-          <li>Follow-ups go out automatically, on a schedule you set.</li>
-          <li>Your dashboards write themselves and stay current.</li>
-          <li>You see renewal risk weeks before it matters.</li>
-          <li>Volume goes up, headcount doesn't.</li>
-        </ul>
-      </div>
+    <div class="proof-quote">
+      <blockquote>"We replaced a Zapier graveyard and two contractors. The team gets two hours a day back, and we caught $400K of renewal risk we would have missed last quarter."</blockquote>
+      <a class="btn btn-primary" href="/book">Book a call</a>
     </div>
   </div>
 </section>
 
-<!-- SCHEMATIC: what it looks like -->
-<section id="ontology" class="ontology-showcase">
-  <div class="wrap">
-    <div class="showcase-head">
-      <h2>Standardized data sets enable <span class="serif">agent workflows.</span></h2>
-      <p class="showcase-sub">Tend gives yours an <strong style="color:var(--fg);font-weight:500;">ontology</strong>: one live model of your business pulled from every tool you use.</p>
-    </div>
-      <div class="hero-schem" aria-hidden="true">
-        <span class="schem-label tl">FIG. 01 / TEND / DATA FLOW</span>
-        <span class="schem-label tr">● LIVE</span>
-        <span class="schem-label bl">t = continuous</span>
-        <span class="schem-label br">REV 04.2026</span>
-        <svg viewBox="0 0 440 440" preserveAspectRatio="xMidYMid meet" style="position:absolute;inset:0;width:100%;height:100%;">
-          <defs>
-            <radialGradient id="core-glow" cx="50%" cy="50%" r="50%">
-              <stop offset="0%"  stop-color="var(--accent)" stop-opacity="0.28"/>
-              <stop offset="70%" stop-color="var(--accent)" stop-opacity="0"/>
-            </radialGradient>
-          </defs>
-
-          <!-- background glow (always present) -->
-          <circle cx="220" cy="220" r="120" fill="url(#core-glow)"/>
-
-          <!-- orbit rings (always present) -->
-          <circle cx="220" cy="220" r="74" fill="none" stroke="rgba(236,231,222,0.12)" stroke-dasharray="2 3"/>
-          <circle cx="220" cy="220" r="150" fill="none" stroke="rgba(236,231,222,0.07)" stroke-dasharray="1 4"/>
-
-          <!-- TOOL BOXES: each with a duplicate ghost that fades out (visual cue for "messy data") -->
-          <g class="flow-tools">
-            <g class="tool" style="--delay:0s">
-              <rect class="ghost" x="28" y="70" width="72" height="28" fill="var(--bg-2)" stroke="rgba(236,231,222,0.18)"/>
-              <g class="real" transform="translate(60,80)">
-                <rect x="-36" y="-14" width="72" height="28" fill="var(--bg)" stroke="rgba(236,231,222,0.28)"/>
-                <text text-anchor="middle" y="4" font-family="IBM Plex Mono" font-size="10" fill="var(--fg)" letter-spacing="0.6">CRM</text>
-              </g>
-            </g>
-            <g class="tool" style="--delay:0.1s">
-              <rect class="ghost" x="348" y="70" width="72" height="28" fill="var(--bg-2)" stroke="rgba(236,231,222,0.18)"/>
-              <g class="real" transform="translate(380,80)">
-                <rect x="-36" y="-14" width="72" height="28" fill="var(--bg)" stroke="rgba(236,231,222,0.28)"/>
-                <text text-anchor="middle" y="4" font-family="IBM Plex Mono" font-size="10" fill="var(--fg)" letter-spacing="0.6">ERP</text>
-              </g>
-            </g>
-            <g class="tool" style="--delay:0.2s">
-              <rect class="ghost" x="8" y="210" width="72" height="28" fill="var(--bg-2)" stroke="rgba(236,231,222,0.18)"/>
-              <g class="real" transform="translate(40,220)">
-                <rect x="-36" y="-14" width="72" height="28" fill="var(--bg)" stroke="rgba(236,231,222,0.28)"/>
-                <text text-anchor="middle" y="4" font-family="IBM Plex Mono" font-size="10" fill="var(--fg)" letter-spacing="0.6">SUPPORT</text>
-              </g>
-            </g>
-            <g class="tool" style="--delay:0.3s">
-              <rect class="ghost" x="362" y="210" width="84" height="28" fill="var(--bg-2)" stroke="rgba(236,231,222,0.18)"/>
-              <g class="real" transform="translate(400,220)">
-                <rect x="-42" y="-14" width="84" height="28" fill="var(--bg)" stroke="rgba(236,231,222,0.28)"/>
-                <text text-anchor="middle" y="4" font-family="IBM Plex Mono" font-size="10" fill="var(--fg)" letter-spacing="0.6">WAREHOUSE</text>
-              </g>
-            </g>
-            <g class="tool" style="--delay:0.4s">
-              <rect class="ghost" x="28" y="350" width="72" height="28" fill="var(--bg-2)" stroke="rgba(236,231,222,0.18)"/>
-              <g class="real" transform="translate(60,360)">
-                <rect x="-36" y="-14" width="72" height="28" fill="var(--bg)" stroke="rgba(236,231,222,0.28)"/>
-                <text text-anchor="middle" y="4" font-family="IBM Plex Mono" font-size="10" fill="var(--fg)" letter-spacing="0.6">BILLING</text>
-              </g>
-            </g>
-            <g class="tool" style="--delay:0.5s">
-              <rect class="ghost" x="348" y="350" width="72" height="28" fill="var(--bg-2)" stroke="rgba(236,231,222,0.18)"/>
-              <g class="real" transform="translate(380,360)">
-                <rect x="-36" y="-14" width="72" height="28" fill="var(--bg)" stroke="rgba(236,231,222,0.28)"/>
-                <text text-anchor="middle" y="4" font-family="IBM Plex Mono" font-size="10" fill="var(--fg)" letter-spacing="0.6">HRIS</text>
-              </g>
-            </g>
-          </g>
-
-          <!-- lines: tools -> core (draw in during phase 2) -->
-          <g class="flow-in-lines" stroke="rgba(236,231,222,0.22)" stroke-width="1" fill="none">
-            <line class="in-line" x1="60"  y1="80"  x2="220" y2="220" style="--i:0"/>
-            <line class="in-line" x1="380" y1="80"  x2="220" y2="220" style="--i:1"/>
-            <line class="in-line" x1="40"  y1="220" x2="220" y2="220" style="--i:2"/>
-            <line class="in-line" x1="400" y1="220" x2="220" y2="220" style="--i:3"/>
-            <line class="in-line" x1="60"  y1="360" x2="220" y2="220" style="--i:4"/>
-            <line class="in-line" x1="380" y1="360" x2="220" y2="220" style="--i:5"/>
-          </g>
-
-          <!-- CORE: the ontology -->
-          <g class="flow-core">
-            <circle class="core-ring" cx="220" cy="220" r="40" fill="var(--bg)" stroke="var(--accent)" stroke-width="1.2"/>
-            <circle class="core-pulse" cx="220" cy="220" r="40" fill="none" stroke="var(--accent)" stroke-opacity="0.6">
-              <animate attributeName="r" values="40;48;40" dur="3.2s" repeatCount="indefinite"/>
-              <animate attributeName="stroke-opacity" values="0.6;0;0.6" dur="3.2s" repeatCount="indefinite"/>
-            </circle>
-            <!-- mini typed-graph inside core: Account, Deal, Contact, Renewal -->
-            <g class="core-graph">
-              <line x1="208" y1="208" x2="232" y2="208" stroke="var(--accent)" stroke-opacity="0.55" stroke-width="0.7"/>
-              <line x1="208" y1="208" x2="208" y2="232" stroke="var(--accent)" stroke-opacity="0.55" stroke-width="0.7"/>
-              <line x1="232" y1="208" x2="232" y2="232" stroke="var(--accent)" stroke-opacity="0.55" stroke-width="0.7"/>
-              <line x1="208" y1="232" x2="232" y2="232" stroke="var(--accent)" stroke-opacity="0.55" stroke-width="0.7"/>
-              <line x1="208" y1="208" x2="232" y2="232" stroke="var(--accent)" stroke-opacity="0.3" stroke-width="0.6"/>
-              <circle cx="208" cy="208" r="3" fill="var(--accent)"/>
-              <circle cx="232" cy="208" r="3" fill="var(--accent)"/>
-              <circle cx="208" cy="232" r="3" fill="var(--accent)"/>
-              <circle cx="232" cy="232" r="3" fill="var(--accent)"/>
-            </g>
-            <text class="core-label" x="220" y="270" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="var(--fg)" letter-spacing="1.5">ONTOLOGY</text>
-          </g>
-
-          <!-- lines: core -> agents -->
-          <g class="flow-out-lines" stroke="var(--accent)" stroke-opacity="0.55" stroke-width="1" fill="none">
-            <line class="out-line" x1="220" y1="220" x2="220" y2="146" style="--i:0"/>
-            <line class="out-line" x1="220" y1="220" x2="284" y2="257" style="--i:1"/>
-            <line class="out-line" x1="220" y1="220" x2="156" y2="257" style="--i:2"/>
-          </g>
-
-          <!-- AGENT NODES + labels -->
-          <g class="flow-agents">
-            <g class="agent" style="--i:0">
-              <circle class="ring" cx="220" cy="146" r="9" fill="var(--bg)" stroke="var(--accent)" stroke-width="1.2"/>
-              <circle class="dot" cx="220" cy="146" r="3.2" fill="var(--accent)"/>
-              <text class="label" x="220" y="128" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="var(--accent)" letter-spacing="0.6">AGENT · REVENUE</text>
-            </g>
-            <g class="agent" style="--i:1">
-              <circle class="ring" cx="284" cy="257" r="9" fill="var(--bg)" stroke="var(--accent)" stroke-width="1.2"/>
-              <circle class="dot" cx="284" cy="257" r="3.2" fill="var(--accent)"/>
-              <text class="label" x="296" y="275" text-anchor="start" font-family="IBM Plex Mono" font-size="9" fill="var(--accent)" letter-spacing="0.6">AGENT · OPS</text>
-            </g>
-            <g class="agent" style="--i:2">
-              <circle class="ring" cx="156" cy="257" r="9" fill="var(--bg)" stroke="var(--accent)" stroke-width="1.2"/>
-              <circle class="dot" cx="156" cy="257" r="3.2" fill="var(--accent)"/>
-              <text class="label" x="144" y="275" text-anchor="end" font-family="IBM Plex Mono" font-size="9" fill="var(--accent)" letter-spacing="0.6">AGENT · FINANCE</text>
-            </g>
-          </g>
-
-          <!-- FLOWING PACKETS (revealed after intro, then perpetual) -->
-          <g class="flow-packets">
-            <!-- tools -> core (data ingest) -->
-            <g class="packets-in">
-              <circle r="2.5" fill="var(--fg)">
-                <animateMotion dur="3.2s" repeatCount="indefinite" path="M60,80 L220,220"/>
-                <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.85;1" dur="3.2s" repeatCount="indefinite"/>
-              </circle>
-              <circle r="2.5" fill="var(--fg)">
-                <animateMotion dur="3.6s" begin="0.4s" repeatCount="indefinite" path="M380,80 L220,220"/>
-                <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.85;1" dur="3.6s" begin="0.4s" repeatCount="indefinite"/>
-              </circle>
-              <circle r="2.5" fill="var(--fg)">
-                <animateMotion dur="3.0s" begin="0.9s" repeatCount="indefinite" path="M40,220 L220,220"/>
-                <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.85;1" dur="3.0s" begin="0.9s" repeatCount="indefinite"/>
-              </circle>
-              <circle r="2.5" fill="var(--fg)">
-                <animateMotion dur="3.4s" begin="1.3s" repeatCount="indefinite" path="M400,220 L220,220"/>
-                <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.85;1" dur="3.4s" begin="1.3s" repeatCount="indefinite"/>
-              </circle>
-              <circle r="2.5" fill="var(--fg)">
-                <animateMotion dur="3.8s" begin="0.2s" repeatCount="indefinite" path="M60,360 L220,220"/>
-                <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.85;1" dur="3.8s" begin="0.2s" repeatCount="indefinite"/>
-              </circle>
-              <circle r="2.5" fill="var(--fg)">
-                <animateMotion dur="3.2s" begin="1.7s" repeatCount="indefinite" path="M380,360 L220,220"/>
-                <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.85;1" dur="3.2s" begin="1.7s" repeatCount="indefinite"/>
-              </circle>
-            </g>
-
-            <!-- core -> agents (agents pulling context) -->
-            <g class="packets-to-agents">
-              <circle r="2" fill="var(--accent)">
-                <animateMotion dur="1.6s" begin="0s" repeatCount="indefinite" path="M220,220 L220,146"/>
-                <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.85;1" dur="1.6s" begin="0s" repeatCount="indefinite"/>
-              </circle>
-              <circle r="2" fill="var(--accent)">
-                <animateMotion dur="1.8s" begin="0.5s" repeatCount="indefinite" path="M220,220 L284,257"/>
-                <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.85;1" dur="1.8s" begin="0.5s" repeatCount="indefinite"/>
-              </circle>
-              <circle r="2" fill="var(--accent)">
-                <animateMotion dur="1.7s" begin="1.0s" repeatCount="indefinite" path="M220,220 L156,257"/>
-                <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.85;1" dur="1.7s" begin="1.0s" repeatCount="indefinite"/>
-              </circle>
-            </g>
-
-            <!-- agents writeback -> tools (the work) -->
-            <g class="packets-writeback">
-              <circle r="2.2" fill="var(--accent)">
-                <animateMotion dur="3.4s" begin="2.2s" repeatCount="indefinite" path="M220,146 L220,220 L400,220"/>
-                <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.05;0.2;0.85;1" dur="3.4s" begin="2.2s" repeatCount="indefinite"/>
-              </circle>
-              <circle r="2.2" fill="var(--accent)">
-                <animateMotion dur="3.6s" begin="0.9s" repeatCount="indefinite" path="M284,257 L220,220 L60,80"/>
-                <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.05;0.2;0.85;1" dur="3.6s" begin="0.9s" repeatCount="indefinite"/>
-              </circle>
-              <circle r="2.2" fill="var(--accent)">
-                <animateMotion dur="3.2s" begin="1.7s" repeatCount="indefinite" path="M156,257 L220,220 L380,360"/>
-                <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.05;0.2;0.85;1" dur="3.2s" begin="1.7s" repeatCount="indefinite"/>
-              </circle>
-            </g>
-          </g>
-        </svg>
-      </div>
-  </div>
-</section>
-
-<!-- WHAT -->
-<section id="what" class="what">
-  <div class="wrap">
-    <div class="what-grid">
-      <div>
-        <p class="what-lead">
-          Three things change.<br/>
-          <span class="accent">All measurable.</span>
-        </p>
-      </div>
-      <div class="what-side">
-        <div class="kicker">→ THE BUSINESS CASE</div>
-        <p>
-          <strong style="color:var(--fg);font-weight:500;">Respond faster.</strong> Leads, tickets, and renewals get acted on in minutes, not days. Conversion goes up. Churn drops.
-        </p>
-        <p>
-          <strong style="color:var(--fg);font-weight:500;">Operate cleaner.</strong> One source of truth across every tool. No more "which dashboard is right?" or "who owns this?"
-        </p>
-        <p>
-          <strong style="color:var(--fg);font-weight:500;">Grow without adding headcount.</strong> AI handles the volume. Your team focuses on the work that actually needs them.
-        </p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- HOW -->
-<section id="how" class="how">
-  <div class="wrap">
-    <div class="how-steps">
-      <div class="step">
-        <div class="n">STEP 01 / AUDIT</div>
-        <h3>We map what you have.</h3>
-        <p>We look at every tool you use and find where time is leaking. You see exactly which work is repetitive, which follow-ups are getting dropped, and which work AI can take off your team's plate.</p>
-        <div class="diag" aria-hidden="true">
-          <svg width="80" height="60" viewBox="0 0 80 60" class="diag-svg diag-01">
-            <g stroke="currentColor" fill="none" stroke-width="1">
-              <rect class="d-rect-in" x="2" y="6"  width="14" height="10" style="--i:0"/>
-              <rect class="d-rect-in" x="2" y="25" width="14" height="10" style="--i:1"/>
-              <rect class="d-rect-in" x="2" y="44" width="14" height="10" style="--i:2"/>
-              <path class="d-line" d="M16,11 L64,30" style="--i:0"/>
-              <path class="d-line" d="M16,30 L64,30" style="--i:1"/>
-              <path class="d-line" d="M16,49 L64,30" style="--i:2"/>
-              <rect class="d-rect-out" x="64" y="24" width="14" height="12" fill="currentColor"/>
-            </g>
-          </svg>
-        </div>
-      </div>
-      <div class="step">
-        <div class="n">STEP 02 / CONNECT</div>
-        <h3>We connect your tools.</h3>
-        <p>We pull every customer, deal, and process into one clean picture. Duplicates merged, records joined across systems. No more spreadsheet stitching, no more "wait, which system has the right number?"</p>
-        <div class="diag" aria-hidden="true">
-          <svg width="80" height="60" viewBox="0 0 80 60" class="diag-svg diag-02">
-            <g stroke="currentColor" fill="none" stroke-width="1">
-              <line class="d-edge" x1="14" y1="19" x2="40" y2="34" style="--i:0"/>
-              <line class="d-edge" x1="66" y1="19" x2="40" y2="34" style="--i:1"/>
-              <line class="d-edge" x1="40" y1="44" x2="14" y2="50" style="--i:2"/>
-              <line class="d-edge" x1="40" y1="44" x2="66" y2="50" style="--i:3"/>
-              <circle class="d-node" cx="14" cy="14" r="5" style="--i:0"/>
-              <circle class="d-node" cx="66" cy="14" r="5" style="--i:1"/>
-              <circle class="d-node" cx="14" cy="52" r="4" style="--i:2"/>
-              <circle class="d-node" cx="66" cy="52" r="4" style="--i:3"/>
-              <circle class="d-hub" cx="40" cy="38" r="6" fill="currentColor"/>
-            </g>
-          </svg>
-        </div>
-      </div>
-      <div class="step">
-        <div class="n">STEP 03 / DEPLOY</div>
-        <h3>We deploy the AI.</h3>
-        <p>Practical AI agents that follow your team's playbook, not a generic one. They chase the follow-ups, route the tickets, and reconcile the books. Every action goes back into your tools so the team sees what happened.</p>
-        <div class="diag" aria-hidden="true">
-          <svg width="80" height="60" viewBox="0 0 80 60" class="diag-svg diag-03">
-            <rect class="d-row"  x="10" y="8"  width="60" height="10" stroke="currentColor" fill="none" stroke-width="1" style="--i:0"/>
-            <rect class="d-row"  x="10" y="24" width="60" height="10" stroke="currentColor" fill="none" stroke-width="1" style="--i:1"/>
-            <rect class="d-row"  x="10" y="40" width="60" height="10" stroke="currentColor" fill="none" stroke-width="1" style="--i:2"/>
-            <rect class="d-fill" x="11" y="9"  width="58" height="8" fill="currentColor" opacity="0.20" style="--i:0"/>
-            <rect class="d-fill" x="11" y="25" width="58" height="8" fill="currentColor" opacity="0.20" style="--i:1"/>
-            <rect class="d-fill" x="11" y="41" width="58" height="8" fill="currentColor" opacity="0.20" style="--i:2"/>
-            <circle class="d-dot" cx="18" cy="13" r="2" fill="currentColor" style="--i:0"/>
-            <circle class="d-dot" cx="18" cy="29" r="2" fill="currentColor" style="--i:1"/>
-            <circle class="d-dot" cx="18" cy="45" r="2" fill="currentColor" style="--i:2"/>
-          </svg>
-        </div>
-      </div>
-      <div class="step">
-        <div class="n">STEP 04 / MEASURE</div>
-        <h3>You see the results.</h3>
-        <p>Faster follow-ups, fewer dropped leads, less admin time, more revenue per employee. We track the numbers so you can show your board exactly what changed.</p>
-        <div class="diag" aria-hidden="true">
-          <svg width="80" height="60" viewBox="0 0 80 60" class="diag-svg diag-04">
-            <g stroke="currentColor" fill="none" stroke-width="1">
-              <line class="d-axis" x1="10" y1="6"  x2="10" y2="50"/>
-              <line class="d-axis" x1="10" y1="50" x2="74" y2="50"/>
-              <line class="d-grid" x1="10" y1="22" x2="74" y2="22" stroke-opacity="0.25" stroke-dasharray="2 2" style="--i:0"/>
-              <line class="d-grid" x1="10" y1="36" x2="74" y2="36" stroke-opacity="0.25" stroke-dasharray="2 2" style="--i:1"/>
-              <path class="d-spark" d="M12,44 L24,40 L34,32 L44,30 L54,22 L62,16 L72,10" stroke-width="1.4"/>
-              <circle class="d-pulse" cx="72" cy="10" r="2.4" fill="currentColor"/>
-            </g>
-          </svg>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ONTOLOGY DEMO -->
-<section id="demo" class="demo">
-  <div class="wrap">
-    <div class="sec-head">
-      <div>
-        <h2 style="font-size:clamp(36px,3.8vw,56px);font-weight:300;letter-spacing:-0.025em;line-height:1.04;margin:0;">
-          Click anything. <span class="serif" style="color:var(--accent)">See what's happening.</span>
-        </h2>
-      </div>
-      <div style="color:var(--fg-dim);font-size:15px;line-height:1.55;">
-        Every account, deal, contact, and playbook in one place. Click any item to see its history and the AI working on it. This is what your team logs into every morning.
-      </div>
-    </div>
-
-    <div class="demo-frame" id="demo-frame">
-      <!-- left: entity list -->
-      <div class="demo-col" id="entity-list">
-        <div class="col-label"><span>ENTITIES</span><span class="count" id="entity-count">12</span></div>
-        <!-- populated by JS -->
-      </div>
-
-      <!-- middle: graph -->
-      <div class="demo-col graph" id="graph-pane" style="padding:0;position:relative;">
-        <svg id="graph-svg" viewBox="0 0 800 560" preserveAspectRatio="none">
-          <g id="edges" stroke="rgba(236,231,222,0.22)" stroke-width="1" fill="none"></g>
-          <g id="nodes"></g>
-        </svg>
-        <div id="labels"></div>
-        <div class="graph-meta l">FIG. 02 / GRAPH VIEW / TYPED COLUMNS</div>
-        <div class="graph-meta r">● SYNCED 04:22:18</div>
-      </div>
-
-      <!-- right: detail -->
-      <div class="demo-col" id="detail-pane">
-        <div class="detail-head">SELECTED ENTITY</div>
-        <h3 class="detail-title" id="det-title"><span class="type" id="det-type"></span></h3>
-        <div id="det-props"></div>
-        <div class="automations">
-          <div class="kicker" id="det-auto-kicker">ACTIVE AUTOMATIONS</div>
-          <div id="det-automations"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- USE CASES -->
-<section id="uc" class="uc">
-  <div class="wrap">
-    <h2>What it looks like in <span class="serif">your business.</span></h2>
-
-    <div class="uc-tabs">
-      <div class="uc-list" id="uc-list">
-        <!-- populated -->
-      </div>
-      <div class="uc-panel" id="uc-panel">
-        <!-- populated -->
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- METRICS -->
-<section class="metrics">
-  <div class="wrap">
-    <div class="metrics-grid">
-      <div class="metric quote">
-        <blockquote>
-          <span class="serif">"</span>We replaced a Zapier graveyard and two contractors. The team gets two hours a day back, and we caught $400K of renewal risk we would have missed last quarter.<span class="serif">"</span>
-        </blockquote>
-        <div class="attr">HEAD OF REVOPS &nbsp;/&nbsp; SERIES C FINTECH</div>
-      </div>
-      <div class="metric">
-        <div class="v">3.2<span class="unit">×</span></div>
-        <div class="k">Faster lead follow-up</div>
-      </div>
-      <div class="metric">
-        <div class="v">−61<span class="unit">%</span></div>
-        <div class="k">Less time spent on admin</div>
-      </div>
-      <div class="metric">
-        <div class="v">$2.8<span class="unit">M</span></div>
-        <div class="k">Median annual ops cost saved</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- FAQ -->
-<section id="faq" class="faq">
+<!-- ─────────────── FAQ ─────────────── -->
+<section class="faq" id="faq">
   <div class="wrap">
     <div class="faq-grid">
       <div>
-        <h2>Plainly <span class="serif">asked.</span></h2>
-        <p class="intro">If you don't see your question here, book a working session. We'll sketch it against your real stack.</p>
+        <h2>Frequently asked questions</h2>
+        <p class="lede">If you don't see your question here, book a working session. We'll sketch it against your real stack.</p>
       </div>
-      <div class="qa" id="qa-list"></div>
-    </div>
-  </div>
-</section>
-
-<!-- FINAL CTA -->
-<section id="contact" class="final">
-  <div class="wrap">
-    <h2 style="margin-top:24px;">
-      Less chaos. <span class="serif">More revenue.</span> Same team.
-    </h2>
-    <div class="cta-row">
-      <button type="button" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}' class="btn primary">Book a 30-min demo <span class="arr">→</span></button>
-      <a href="use-cases.html" class="btn">See use cases</a>
-    </div>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer>
-  <div class="wrap">
-    <div class="foot-row">
-      <div class="col">
-        <div class="brand brand-sm" style="margin-bottom:14px;"><img src="images/tend-logo.png" alt="tend" /></div>
-        <div class="mono" style="color:var(--fg-mute);font-size:11px;letter-spacing:0.04em;line-height:1.6;">
-          hello@withtend.ai
+      <div class="qa-list">
+        <div class="qa-item open">
+          <button class="qa-q" aria-expanded="true">What can tend actually do for my business?<span class="sign">&minus;</span></button>
+          <div class="qa-a"><div class="qa-a-inner">Anything repetitive that crosses your tools. Most customers start with one or two: chasing renewals before they slip, drafting follow-ups for every new lead, routing tickets by tier and risk, reconciling invoices and contracts, or surfacing churn risk weeks early. We start narrow, prove ROI on the first one, then expand.</div></div>
+        </div>
+        <div class="qa-item">
+          <button class="qa-q" aria-expanded="false">Do we have to rip out our existing tools?<span class="sign">+</span></button>
+          <div class="qa-a"><div class="qa-a-inner">No. Tend connects to the tools you already use and runs alongside them. We integrate with your CRM, billing, helpdesk, and docs, and the work shows up where your team already lives.</div></div>
+        </div>
+        <div class="qa-item">
+          <button class="qa-q" aria-expanded="false">How long until we see value?<span class="sign">+</span></button>
+          <div class="qa-a"><div class="qa-a-inner">First agent live in two to three weeks. Most teams see measurable ROI inside the first month — usually time clawed back from work that shouldn't have needed a human in the first place.</div></div>
+        </div>
+        <div class="qa-item">
+          <button class="qa-q" aria-expanded="false">What about security and compliance?<span class="sign">+</span></button>
+          <div class="qa-a"><div class="qa-a-inner">SOC 2 Type II, encryption in transit and at rest, role-based access, and full audit logs. Data stays in your tenant; we don't train on your business.</div></div>
+        </div>
+        <div class="qa-item">
+          <button class="qa-q" aria-expanded="false">Where does the AI actually run? Can it go off the rails?<span class="sign">+</span></button>
+          <div class="qa-a"><div class="qa-a-inner">Agents run inside guardrails defined by your team — scoped permissions, approval gates for anything irreversible, and dry-runs for the first few weeks. Every action is logged and reversible.</div></div>
+        </div>
+        <div class="qa-item">
+          <button class="qa-q" aria-expanded="false">How is this priced?<span class="sign">+</span></button>
+          <div class="qa-a"><div class="qa-a-inner">Per-agent, per-seat, or per-business deployment depending on plan. We size to the work being done, not the size of your data.</div></div>
         </div>
       </div>
-      <div class="col">
-        <div class="h">Product</div>
-        <a href="platform.html">Platform</a>
-        <a href="use-cases.html">Use cases</a>
-      </div>
-      <div class="col">
-        <div class="h">Company</div>
-        <a href="about.html">About</a>
-        <a href="mailto:careers@withtend.ai">Careers</a>
-        <a href="mailto:hello@withtend.ai">Contact</a>
-      </div>
     </div>
-    <div class="foot-bottom">
-      <div>© 2026 tend, inc.</div>
+  </div>
+</section>
+
+<!-- ─────────────── Footer ─────────────── -->
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-hero">
+      <div class="big-mark" aria-hidden="true"><svg><use href="#tend-mark"/></svg></div>
+      <h3>Less chaos. More revenue. Same team.</h3>
+      <a class="btn btn-outline" href="/book">Book a demo</a>
+    </div>
+    <div class="foot-cols">
+      <a href="/" class="brand-col" aria-label="Tend home">
+        <span class="mark"><svg><use href="#tend-mark"/></svg></span>
+        <span>Tend</span>
+      </a>
+      <div class="col">
+        <h4>Product</h4>
+        <a href="/platform">Tend</a>
+        <a href="/use-cases">Use cases</a>
+      </div>
+      <div class="col">
+        <h4>Enterprise</h4>
+        <a href="/org">Teams</a>
+      </div>
+      <div class="col">
+        <h4>Security</h4>
+        <a href="/about">Trust Center</a>
+      </div>
+      <div class="col">
+        <h4>Company</h4>
+        <a href="/about">About</a>
+        <a href="/about">Careers</a>
+      </div>
+      <div class="col">
+        <h4>Book a demo</h4>
+        <a href="#faq">FAQ</a>
+        <a href="/about">Privacy Policy</a>
+      </div>
+      <div class="col">
+        <h4>Socials</h4>
+        <a href="https://instagram.com" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://linkedin.com" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+      <div class="copyright">&copy; 2025-2026 Tend, Inc. All Rights Reserved.</div>
     </div>
   </div>
 </footer>
 
-<!-- TWEAKS -->
-<div class="tweaks" id="tweaks">
-  <div class="th"><span>TWEAKS / WITHTEND.AI</span><span class="dot"></span></div>
-  <div class="tweak-row">
-    <div class="lbl">Accent variant</div>
-    <div class="variant-btns">
-      <button data-variant="A" class="active">A · Warm grey</button>
-      <button data-variant="B">B · Light grey</button>
-    </div>
-  </div>
-  <div style="font-size:10px;color:var(--fg-mute);letter-spacing:0.04em;margin-top:10px;line-height:1.5;">
-    Swaps the primary accent and a handful of motif details across the page.
-  </div>
-</div>
-
 <script>
-const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
-  "variant": "B"
-}/*EDITMODE-END*/;
+  // sticky nav background
+  const nav = document.getElementById('nav');
+  const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 8);
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
 
-/* ---------------- TWEAKS plumbing ---------------- */
-(function(){
-  const state = {...TWEAK_DEFAULTS};
-  const tweaks = document.getElementById('tweaks');
-
-  function apply() {
-    document.documentElement.setAttribute('data-variant', state.variant);
-    tweaks.querySelectorAll('.variant-btns button').forEach(b => {
-      b.classList.toggle('active', b.dataset.variant === state.variant);
+  // mobile drawer
+  const navToggle = document.getElementById('navToggle');
+  if (navToggle) {
+    navToggle.addEventListener('click', () => {
+      const open = nav.classList.toggle('open');
+      navToggle.setAttribute('aria-expanded', String(open));
     });
-  }
-  apply();
-
-  tweaks.querySelectorAll('.variant-btns button').forEach(b => {
-    b.addEventListener('click', () => {
-      state.variant = b.dataset.variant;
-      apply();
-      try { window.parent.postMessage({type: '__edit_mode_set_keys', edits: {variant: state.variant}}, '*'); } catch(e){}
-    });
-  });
-
-  window.addEventListener('message', (e) => {
-    const d = e.data || {};
-    if (d.type === '__activate_edit_mode') tweaks.classList.add('show');
-    else if (d.type === '__deactivate_edit_mode') tweaks.classList.remove('show');
-  });
-  try { window.parent.postMessage({type:'__edit_mode_available'}, '*'); } catch(e){}
-})();
-
-/* ---------------- ONTOLOGY DEMO ---------------- */
-const ENTITIES = [
-  { id:'acc-northwind',  type:'Account',  name:'Northwind Traders', tag:'ENT', props:{'ID':'acc_01HZ7','Tier':'Enterprise','ARR':'$1.24M','Health':'Green','Owner':'k.chen@','Region':'NA-East'}, automations:['Churn-watch (playbook: renewal-risk-v3)','Exec QBR scheduler','CSAT → NPS pipeline'] },
-  { id:'acc-globex',     type:'Account',  name:'Globex Logistics', tag:'ENT', props:{'ID':'acc_02FA9','Tier':'Mid-Market','ARR':'$428K','Health':'Yellow','Owner':'j.kim@','Region':'EMEA'}, automations:['Expansion signal detection','Invoice dunning (policy: strict)'] },
-  { id:'acc-vandelay',   type:'Account',  name:'Vandelay Industries', tag:'ENT', props:{'ID':'acc_11BB2','Tier':'SMB','ARR':'$84K','Health':'Red','Owner':'m.rios@','Region':'LATAM'}, automations:['Win-back sequence v2','Downgrade-guardrail'] },
-  { id:'deal-nw-q2',     type:'Deal',     name:'Northwind / Seat exp. Q2', tag:'DEA', props:{'ID':'deal_8841','Stage':'Commit','Value':'$312K','Close':'2026-05-18','Prob.':'82%','Rep':'k.chen@'}, automations:['Auto-summarize call to CRM','Finance approval flow'] },
-  { id:'deal-glx-pilot', type:'Deal',     name:'Globex / Pilot expansion', tag:'DEA', props:{'ID':'deal_9042','Stage':'Proposal','Value':'$120K','Close':'2026-06-30','Prob.':'46%','Rep':'j.kim@'}, automations:['Legal redline watcher','Security-review scheduler'] },
-  { id:'contact-ec',     type:'Contact',  name:'Elena Costa, CFO', tag:'PER', props:{'ID':'c_77104','Company':'Northwind','Role':'Decision-maker','Email':'e.costa@nw','Last touch':'3d ago'}, automations:['Exec-check-in cadence','Content routing (finance)'] },
-  { id:'play-renewal',   type:'Playbook', name:'Renewal risk v3', tag:'PLA', props:{'ID':'pb_ren_v3','Owner':'Ops','Triggers':'Health ↓ | Usage ↓','SLA':'24h','Runs':'142 / mo'}, automations:['Monitors 218 accounts','Escalates to CSMs','Writes notes to CRM'] },
-  { id:'play-expansion', type:'Playbook', name:'Expansion signal', tag:'PLA', props:{'ID':'pb_exp_v1','Owner':'RevOps','Triggers':'Feat. adopt. > .6','SLA':'48h','Runs':'38 / mo'}, automations:['Scores 340 accounts','Routes to AEs','Drafts exec email'] },
-  { id:'agent-csm',      type:'Agent',    name:'CSM copilot', tag:'AGT', props:{'ID':'ag_csm_prod','Model':'tend-reason-2','Scope':'All accounts','Guardrails':'Policy v7','Tickets / wk':'240'}, automations:['Reads account history','Drafts follow-ups','Opens Jira tickets'] },
-  { id:'agent-ar',       type:'Agent',    name:'AR collections', tag:'AGT', props:{'ID':'ag_ar_v2','Model':'tend-ops-1','Scope':'Invoices > 30d','Guardrails':'Finance v2','DSO Δ':'-6.2 days'}, automations:['Dunning cadence','Payment plan proposer','Writes to NetSuite'] },
-  { id:'sku-pro',        type:'Endpoint', name:'Salesforce (CRM)', tag:'INT', props:{'ID':'int_sfdc_prod','Host':'acme.my.salesforce.com','Auth':'OAuth2 · refresh','Last sync':'2m ago','Rows synced':'8.4M'}, automations:['Accounts · Contacts · Opportunities','Writes notes + tasks back','Delta sync every 5m'] },
-  { id:'sku-agents',     type:'Endpoint', name:'HubSpot (CRM)', tag:'INT', props:{'ID':'int_hs_prod','Host':'api-na1.hubapi.com','Auth':'OAuth2 · refresh','Last sync':'48s ago','Rows synced':'2.1M'}, automations:['Companies · Contacts · Deals','Lifecycle + stage sync back','Form submissions → lead events'] },
-];
-
-// graph layout. Columnar by type (contacts | accounts | deals | playbooks | agents | products)
-// viewBox 600 x 560. Y band 110 to 480, leaves room for column headers + guides.
-const COLS = {
-  'Contact':  { x: 100, label: 'Contacts'  },
-  'Account':  { x: 230, label: 'Accounts'  },
-  'Deal':     { x: 360, label: 'Deals'     },
-  'Playbook': { x: 490, label: 'Playbooks' },
-  'Agent':    { x: 620, label: 'Agents'    },
-  'Endpoint': { x: 730, label: 'Endpoints' },
-};
-const GRAPH_POS = {
-  'contact-ec':     {x: COLS.Contact.x,  y: 220},
-
-  'acc-northwind':  {x: COLS.Account.x,  y: 170},
-  'acc-globex':     {x: COLS.Account.x,  y: 280},
-  'acc-vandelay':   {x: COLS.Account.x,  y: 390},
-
-  'deal-nw-q2':     {x: COLS.Deal.x,     y: 200},
-  'deal-glx-pilot': {x: COLS.Deal.x,     y: 310},
-
-  'play-renewal':   {x: COLS.Playbook.x, y: 225},
-  'play-expansion': {x: COLS.Playbook.x, y: 345},
-
-  'agent-csm':      {x: COLS.Agent.x,    y: 235},
-  'agent-ar':       {x: COLS.Agent.x,    y: 355},
-
-  'sku-pro':        {x: COLS.Endpoint.x, y: 265},
-  'sku-agents':     {x: COLS.Endpoint.x, y: 385},
-};
-const EDGES = [
-  ['acc-northwind','contact-ec'],
-  ['acc-northwind','deal-nw-q2'],
-  ['acc-globex','deal-glx-pilot'],
-  ['acc-northwind','play-renewal'],
-  ['acc-globex','play-renewal'],
-  ['acc-vandelay','play-renewal'],
-  ['acc-northwind','play-expansion'],
-  ['acc-globex','play-expansion'],
-  ['play-renewal','agent-csm'],
-  ['play-expansion','agent-csm'],
-  ['deal-nw-q2','agent-ar'],
-  ['deal-glx-pilot','agent-ar'],
-  ['acc-northwind','sku-pro'],
-  ['acc-globex','sku-pro'],
-  ['acc-northwind','sku-agents'],
-  ['agent-csm','sku-agents'],
-];
-
-const TYPE_COLORS = {
-  'Account':'var(--accent)',
-  'Deal':'#ECE7DE',
-  'Contact':'#ECE7DE',
-  'Playbook':'#ECE7DE',
-  'Agent':'var(--accent)',
-  'Endpoint':'#ECE7DE',
-};
-
-(function initDemo(){
-  const list = document.getElementById('entity-list');
-  ENTITIES.forEach(e => {
-    const el = document.createElement('div');
-    el.className = 'entity';
-    el.dataset.id = e.id;
-    el.innerHTML = `<span>${e.name}</span><span class="tag">${e.tag}</span>`;
-    el.addEventListener('click', () => select(e.id));
-    list.appendChild(el);
-  });
-  document.getElementById('entity-count').textContent = ENTITIES.length;
-
-  // draw edges
-  const edgeG = document.getElementById('edges');
-  EDGES.forEach(([a,b]) => {
-    const pa = GRAPH_POS[a], pb = GRAPH_POS[b];
-    if (!pa || !pb) return;
-    const l = document.createElementNS('http://www.w3.org/2000/svg','line');
-    l.setAttribute('x1', pa.x); l.setAttribute('y1', pa.y);
-    l.setAttribute('x2', pb.x); l.setAttribute('y2', pb.y);
-    l.dataset.a = a; l.dataset.b = b;
-    edgeG.appendChild(l);
-  });
-
-  // nodes + labels
-  const nodeG = document.getElementById('nodes');
-  const labels = document.getElementById('labels');
-  const svg = document.getElementById('graph-svg');
-  // column headers
-  const typeCounts = {};
-  ENTITIES.forEach(e => { typeCounts[e.type] = (typeCounts[e.type]||0) + 1; });
-  Object.entries(COLS).forEach(([type, info]) => {
-    const h = document.createElement('div');
-    h.className = 'col-header';
-    h.dataset.type = type;
-    h.style.left = (info.x / 800 * 100) + '%';
-    h.innerHTML = info.label + '<span class="count">' + (typeCounts[type]||0) + '</span>';
-    labels.appendChild(h);
-    const g = document.createElement('div');
-    g.className = 'col-guide';
-    g.style.left = (info.x / 800 * 100) + '%';
-    labels.appendChild(g);
-  });
-
-  ENTITIES.forEach(e => {
-    const p = GRAPH_POS[e.id]; if (!p) return;
-    const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
-    c.setAttribute('cx', p.x); c.setAttribute('cy', p.y);
-    c.setAttribute('r', e.type === 'Account' || e.type === 'Agent' ? 6 : 4.5);
-    c.setAttribute('fill', TYPE_COLORS[e.type] || '#ECE7DE');
-    c.dataset.id = e.id;
-    c.style.cursor = 'pointer';
-    c.addEventListener('click', () => select(e.id));
-    c.addEventListener('mouseenter', () => select(e.id));
-    nodeG.appendChild(c);
-
-    const lbl = document.createElement('div');
-    lbl.className = 'node-label';
-    lbl.dataset.id = e.id;
-    lbl.textContent = e.name.length > 20 ? e.name.slice(0,20)+'…' : e.name;
-    // place label BELOW the node
-    lbl.style.left = (p.x / 800 * 100) + '%';
-    lbl.style.top  = ((p.y + 14) / 560 * 100) + '%';
-    labels.appendChild(lbl);
-  });
-
-  select('acc-northwind', {scroll: false});
-})();
-
-function select(id, opts) {
-  const e = ENTITIES.find(x => x.id === id);
-  if (!e) return;
-  const scroll = !opts || opts.scroll !== false;
-
-  // list highlight
-  document.querySelectorAll('#entity-list .entity').forEach(el => {
-    el.classList.toggle('active', el.dataset.id === id);
-    if (scroll && el.dataset.id === id) {
-      const list = document.getElementById('entity-list');
-      if (list) {
-        const top = el.offsetTop - list.offsetTop;
-        list.scrollTo({top, behavior: 'smooth'});
-      }
-    }
-  });
-
-  // detail
-  document.getElementById('det-title').childNodes[0].textContent = e.name + ' ';
-  document.getElementById('det-type').textContent = '/ ' + e.type.toLowerCase();
-  const props = document.getElementById('det-props');
-  props.innerHTML = '';
-  Object.entries(e.props).forEach(([k,v]) => {
-    const row = document.createElement('div');
-    row.className = 'prop-row';
-    row.innerHTML = `<span class="k">${k}</span><span class="v">${v}</span>`;
-    props.appendChild(row);
-  });
-  const aw = document.getElementById('det-automations');
-  aw.innerHTML = '';
-  e.automations.forEach(a => {
-    const row = document.createElement('div');
-    row.className = 'auto-item';
-    row.innerHTML = `<div class="bullet"></div><div>${a}</div>`;
-    aw.appendChild(row);
-  });
-
-  // connected set
-  const conn = new Set([id]);
-  EDGES.forEach(([a,b]) => { if (a===id) conn.add(b); else if (b===id) conn.add(a); });
-
-  // column counts: reflect the selected entity's neighborhood
-  const connCounts = {};
-  conn.forEach(cid => {
-    const ent = ENTITIES.find(x => x.id === cid);
-    if (ent) connCounts[ent.type] = (connCounts[ent.type] || 0) + 1;
-  });
-  document.querySelectorAll('#labels .col-header').forEach(h => {
-    const count = h.querySelector('.count');
-    if (count) count.textContent = connCounts[h.dataset.type] || 0;
-  });
-
-  // labels: selected = active, directly connected = neighbor, rest hidden
-  document.querySelectorAll('#labels .node-label').forEach(l => {
-    const isSel = l.dataset.id === id;
-    const isNbr = conn.has(l.dataset.id) && !isSel;
-    l.classList.toggle('active', isSel);
-    l.classList.toggle('neighbor', isNbr);
-    l.classList.toggle('dim', !isSel && !isNbr);
-  });
-
-  // edges
-  document.querySelectorAll('#edges line').forEach(l => {
-    const touches = l.dataset.a === id || l.dataset.b === id;
-    l.setAttribute('stroke', touches ? 'var(--accent)' : 'rgba(236,231,222,0.12)');
-    l.setAttribute('stroke-width', touches ? '1.2' : '1');
-  });
-
-  // nodes
-  document.querySelectorAll('#nodes circle').forEach(c => {
-    const isSel = c.dataset.id === id;
-    const connected = conn.has(c.dataset.id);
-    c.setAttribute('opacity', connected ? 1 : 0.3);
-    const type = ENTITIES.find(x=>x.id===c.dataset.id).type;
-    const baseR = type === 'Account' || type === 'Agent' ? 6 : 4.5;
-    c.setAttribute('r', isSel ? 8 : baseR);
-  });
-}
-
-/* ---------------- USE CASES ---------------- */
-const USE_CASES = [
-  { k:'REVENUE OPS', title:'Stop losing leads. Stop missing renewals.', copy:'Every account, contact, and deal in one place. AI drafts the follow-up, chases the renewal, and puts the next step in front of the right rep before the deal stalls. Your AEs spend their day selling, not chasing fields in Salesforce.', stats:[['3.2','×','Faster follow-up'], ['+18','%','Win rate'], ['$400K','','Renewals saved / qtr']] },
-  { k:'FINANCE OPS', title:'Close the books without the 3am Slack.', copy:'Invoices, contracts, payments, and usage reconciled into one ledger. AI flags the variances and files the exceptions before your controller wakes up. Month-end closes from 10 days to 4.', stats:[['−6.2','d','Faster close'], ['92','%','Auto-reconciled'], ['$2.8','M','Median saved']] },
-  { k:'SUPPORT OPS', title:'Tickets that route themselves.', copy:'Every ticket sees the customer\'s tier, deal size, history, and risk. AI drafts the response, escalates when it should, and gets the right human involved. Your support team handles 3x the volume with the same headcount.', stats:[['−41','%','First-touch time'], ['+22','pt','CSAT'], ['64','%','Auto-resolved']] },
-  { k:'SUPPLY CHAIN', title:'See trouble before it ships.', copy:'SKUs, shipments, vendors, and contracts in one picture. A late container becomes a rerouting decision the AI surfaces in your morning briefing, not a spreadsheet emergency at 11pm.', stats:[['−19','%','Stockouts'], ['1.7','×','Turn velocity'], ['18','hr','Avg response']] },
-  { k:'PEOPLE OPS', title:'Onboard faster. Offboard cleaner.', copy:'Roles, access, and tooling all live in one place. Provisioning, onboarding, and role changes become automations instead of tickets filed in three different systems. New hires productive in days, not weeks.', stats:[['−86','%','Onboarding delays'], ['100','%','Access audited'], ['3.4','d','To productive']] },
-];
-(function initUseCases(){
-  const list = document.getElementById('uc-list');
-  const panel = document.getElementById('uc-panel');
-  function render(i){
-    const uc = USE_CASES[i];
-    list.querySelectorAll('.uc-item').forEach((el, j) => el.classList.toggle('active', j===i));
-    panel.innerHTML = `
-      <div class="kicker">${uc.k}</div>
-      <h3>${uc.title}</h3>
-      <p>${uc.copy}</p>
-      <div class="uc-stats">
-        ${uc.stats.map(s => `<div class="uc-stat"><div class="v">${s[0]}<span class="unit">${s[1]}</span></div><div class="k">${s[2]}</div></div>`).join('')}
-      </div>
-    `;
-  }
-  USE_CASES.forEach((uc, i) => {
-    const el = document.createElement('div');
-    el.className = 'uc-item';
-    el.innerHTML = `<span>${uc.k.toLowerCase().replace('_',' ')}</span><span class="idx">${String(i+1).padStart(2,'0')} / 0${USE_CASES.length}</span>`;
-    el.addEventListener('click', () => render(i));
-    el.addEventListener('mouseenter', () => render(i));
-    list.appendChild(el);
-  });
-  render(0);
-})();
-
-/* ---------------- FAQ ---------------- */
-const FAQ = [
-  ['What can tend actually do for my business?', 'Anything repetitive that crosses your tools. Most customers start with one or two: chasing renewals before they slip, drafting follow-ups for every new lead, routing tickets by tier and risk, reconciling invoices and contracts, or surfacing churn risk weeks early. We start narrow, prove ROI on the first one, then expand.'],
-  ['Do we have to rip out our existing tools?', 'Never. Tend plugs into Salesforce, HubSpot, Zendesk, NetSuite, Stripe, your warehouse, and 170+ other sources. Your tools stay where they are. We sit on top and write back where you want us to.'],
-  ['How long until we see value?', 'Most customers see the first AI agent live within 4 weeks. Full rollout in 8 to 12 weeks. We start narrow with one use case where the ROI is obvious, then expand once your team trusts it.'],
-  ['What about security and compliance?', 'SOC 2 Type II, HIPAA, and GDPR. Permissions at the row and field level. Every AI action is logged, bounded, and reversible. Region-pinned deployments and bring-your-own-cloud available for regulated industries.'],
-  ['Where does the AI actually run? Can it go off the rails?', 'Inside tend, scoped to the same permissions your humans have. Every action is logged and reversible. You can pause any agent at any time, and dangerous actions (sending an external email, charging a card) require explicit human approval until you say otherwise.'],
-  ['How is this priced?', 'Based on the number of tools we plug into and the volume of work the AI handles, not per-seat. We start with a free audit of your most painful workflows and quote from there. Most customers see payback in the first quarter.'],
-];
-(function initFaq(){
-  const list = document.getElementById('qa-list');
-  FAQ.forEach(([q,a], i) => {
-    const item = document.createElement('div');
-    item.className = 'qa-item' + (i===0 ? ' open' : '');
-    item.innerHTML = `
-      <button class="qa-q"><span>${q}</span><span class="sign">+</span></button>
-      <div class="qa-a">${a}</div>
-    `;
-    item.querySelector('.qa-q').addEventListener('click', () => {
-      item.classList.toggle('open');
-    });
-    list.appendChild(item);
-  });
-})();
-</script>
-<!-- Schematic intro animation: play once when scrolled into view -->
-<script>
-  (function () {
-    var targets = [];
-    var schem = document.querySelector('#ontology .hero-schem');
-    if (schem) targets.push(schem);
-    document.querySelectorAll('.how-steps .step').forEach(function (s) { targets.push(s); });
-    if (!targets.length) return;
-
-    if (!('IntersectionObserver' in window)) {
-      targets.forEach(function (t) { t.classList.add('playing'); });
-      return;
-    }
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (e.isIntersecting) {
-          e.target.classList.add('playing');
-          io.unobserve(e.target);
-        }
+    nav.querySelectorAll('.nav-drawer a').forEach((a) => {
+      a.addEventListener('click', () => {
+        nav.classList.remove('open');
+        navToggle.setAttribute('aria-expanded', 'false');
       });
-    }, { threshold: 0.3 });
-    targets.forEach(function (t) { io.observe(t); });
-  })();
-</script>
-<!-- Hero video mobile autoplay kick -->
-<script>
-  (function () {
-    var v = document.querySelector('.hero-video');
-    if (!v) return;
-    v.muted = true;
-    v.defaultMuted = true;
-    v.setAttribute('muted', '');
-    v.setAttribute('playsinline', '');
-    v.removeAttribute('controls');
-    var kick = function () {
-      if (!v.paused) return;
-      try { v.muted = true; } catch (e) {}
-      var p = v.play();
-      if (p && typeof p.catch === 'function') p.catch(function () {});
-    };
-    kick();
-    v.addEventListener('loadedmetadata', kick);
-    v.addEventListener('canplay', kick);
-    v.addEventListener('pause', function () { setTimeout(kick, 50); });
-    document.addEventListener('visibilitychange', function () { if (!document.hidden) kick(); });
-    ['touchstart', 'touchend', 'click', 'scroll', 'pointerdown'].forEach(function (ev) {
-      window.addEventListener(ev, kick, { passive: true });
     });
-  })();
-</script>
-<!-- Mobile nav toggle -->
-<script>
-  (function () {
-    var btn = document.querySelector('.nav-toggle');
-    var nav = document.querySelector('.nav');
-    if (!btn || !nav) return;
-    function setOpen(open) {
-      nav.classList.toggle('open', open);
-      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-    }
-    btn.addEventListener('click', function () { setOpen(!nav.classList.contains('open')); });
-    nav.querySelectorAll('.nav-drawer a').forEach(function (a) {
-      a.addEventListener('click', function () { setOpen(false); });
+  }
+
+  // FAQ accordion
+  document.querySelectorAll('.qa-q').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const item = btn.closest('.qa-item');
+      const open = item.classList.toggle('open');
+      btn.setAttribute('aria-expanded', String(open));
+      btn.querySelector('.sign').innerHTML = open ? '&minus;' : '+';
     });
-  })();
+  });
+
+  // Ops tabs
+  const opsContent = {
+    revenue: {
+      title: 'We deploy the AI',
+      body: "Practical AI agents that follow your team's playbook, not a generic one. They chase the follow-ups, route the tickets, and reconcile the books. Every action goes back into your tools so the team sees what happened.",
+      stats: [
+        { v: '3.2&times;', k: 'faster follow-up' },
+        { v: '&minus;18%', k: 'win rate' },
+        { v: '$400K',     k: 'renewals saved / qtr' },
+      ],
+    },
+    finance: {
+      title: 'Finance, on time, every time',
+      body: 'Tend reconciles invoices, flags anomalies, drafts AR follow-ups, and keeps a clean ledger in your books — without an extra hire.',
+      stats: [
+        { v: '&minus;72%', k: 'close cycle time' },
+        { v: '99.4%',      k: 'reconciliation accuracy' },
+        { v: '$120K',      k: 'recovered AR / qtr' },
+      ],
+    },
+    support: {
+      title: 'Tier-zero support, always on',
+      body: 'Triage every ticket by urgency and account tier, draft replies your team can ship in one click, and escalate only the ones that need a human.',
+      stats: [
+        { v: '&minus;61%', k: 'first response time' },
+        { v: '4.7 / 5',    k: 'CSAT after handoff' },
+        { v: '38%',        k: 'tickets fully resolved' },
+      ],
+    },
+    supply: {
+      title: 'Supply chain that watches itself',
+      body: 'Forecast demand, surface low-stock SKUs before they go critical, reconcile shipments and exceptions, and draft the POs your buyer would have written anyway.',
+      stats: [
+        { v: '&minus;24%', k: 'stockouts' },
+        { v: '+18%',       k: 'on-time fulfillment' },
+        { v: '$220K',      k: 'working capital freed' },
+      ],
+    },
+    people: {
+      title: 'People ops, without the busywork',
+      body: 'Schedule the loops, draft the offer letters, surface the team signals that matter, and keep onboarding moving from offer to first commit.',
+      stats: [
+        { v: '&minus;54%', k: 'time-to-hire' },
+        { v: '92%',        k: 'onboarding completion, week 1' },
+        { v: '+11pt',      k: 'engagement score' },
+      ],
+    },
+  };
+  const opsTitle = document.getElementById('opsTitle');
+  const opsBody  = document.getElementById('opsBody');
+  const opsStats = document.getElementById('opsStats');
+  document.querySelectorAll('.ops-tab').forEach((tab) => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.ops-tab').forEach((t) => t.classList.remove('active'));
+      tab.classList.add('active');
+      const data = opsContent[tab.dataset.tab];
+      if (!data) return;
+      opsTitle.textContent = data.title;
+      opsBody.textContent  = data.body;
+      opsStats.innerHTML = data.stats.map((s) => `<div class="ops-stat"><div class="v">${s.v}</div><div class="k">${s.k}</div></div>`).join('');
+    });
+  });
 </script>
-<!-- Cal overlay init -->
-<script type="text/javascript">
-  (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if(typeof namespace === "string"){cal.ns[namespace] = cal.ns[namespace] || api;p(cal.ns[namespace], ar);p(cal, ["initNamespace", namespace]);} else p(cal, ar); return;} p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
-  Cal("init", "30min", {origin:"https://app.cal.com"});
-  Cal.ns["30min"]("ui", {"hideEventTypeDetails":false,"layout":"month_view"});
-</script>
+
 </body>
 </html>

@@ -9,3 +9,8 @@ Dockerfile
 .dockerignore
 *.md
 .git/
+
+# Design reference comps — large SVG mockups, not part of the served site.
+Frame 1.svg
+Mobile - Home.svg
+
