@@ -83,6 +83,17 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 @media (max-width: 980px) { .wrap { padding: 0 32px; } }
 @media (max-width: 520px) { .wrap { padding: 0 20px; } }
 
+/* Every major section fills the viewport and centers its content. */
+.section-fill {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+@media (max-width: 980px) {
+  .section-fill { min-height: 0; }
+}
+
 /* ─── Brand mark ───────────────────────────────────────────────── */
 .mark {
   display: inline-block;
@@ -245,7 +256,7 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
   position: relative;
   border-radius: 22px;
   overflow: hidden;
-  aspect-ratio: 720 / 410;
+  aspect-ratio: 719 / 903;
   background: #1a1a1a;
   isolation: isolate;
 }
@@ -257,30 +268,38 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 }
 .feature-card .title {
   position: absolute;
-  top: 36px; left: 0; right: 0;
+  top: 40px; left: 0; right: 0;
   text-align: center;
   color: #fff;
-  font-size: clamp(20px, 1.7vw, 26px);
+  font-size: clamp(22px, 1.9vw, 30px);
   font-weight: 500;
   letter-spacing: -0.015em;
   z-index: 2;
 }
+.feature-card::before {
+  content: '';
+  position: absolute;
+  left: 50%; top: 96px; bottom: 240px;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.30);
+  z-index: 2;
+  pointer-events: none;
+}
 .feature-card .panel {
   position: absolute;
-  left: 28px; right: 28px; bottom: 28px;
+  left: 32px; right: 32px; bottom: 32px;
   background: rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(18px) saturate(1.1);
   -webkit-backdrop-filter: blur(18px) saturate(1.1);
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 12px;
-  padding: 18px 22px;
+  padding: 22px 24px;
   display: flex; flex-direction: column; gap: 14px;
   z-index: 2;
 }
 .feature-card .panel .lead { color: rgba(255,255,255,0.92); font-size: 13px; font-weight: 500; }
 .feature-card .panel .body { color: rgba(255,255,255,0.78); font-size: 12.5px; line-height: 1.55; }
 .feature-card .panel .cta-row { display: flex; justify-content: flex-end; margin-top: 4px; }
-.feature-card .panel .btn-light { padding: 9px 14px; font-size: 11px; letter-spacing: 0.08em; }
 @media (max-width: 980px) {
   .cards { padding: 24px 0 40px; }
   .cards-grid { grid-template-columns: 1fr; gap: 16px; }
@@ -289,17 +308,17 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 }
 
 /* ─── Tagline two-up ───────────────────────────────────────────── */
-.tagline { padding: 60px 0 40px; }
+.tagline { padding: 24px 0 48px; }
 .tagline-grid {
   display: grid;
   grid-template-columns: 1.4fr 1fr;
   gap: 80px;
   align-items: start;
-  border-left: 1px solid var(--line-2);
-  padding-left: 28px;
 }
 .tagline h2 {
   margin: 0;
+  padding-left: 28px;
+  border-left: 1px solid var(--line-2);
   font-size: clamp(22px, 2.2vw, 30px);
   font-weight: 500;
   line-height: 1.18;
@@ -309,12 +328,14 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 }
 .tagline p {
   margin: 0;
+  padding-left: 28px;
+  border-left: 1px solid var(--line-2);
   color: var(--ink-mute);
   font-size: 14px; line-height: 1.55;
   max-width: 36ch;
 }
 @media (max-width: 980px) {
-  .tagline { padding: 32px 0 16px; }
+  .tagline { padding: 16px 0 16px; }
   .tagline-grid { grid-template-columns: 1fr; gap: 24px; }
   .tagline h2 { font-size: 22px; }
 }
@@ -322,31 +343,38 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 /* ─── Tend Dashboard band ──────────────────────────────────────── */
 .dashboard { padding: 60px 0 90px; }
 .dashboard-head {
-  display: flex; align-items: center; gap: 10px; justify-content: center;
-  font-size: 20px; font-weight: 500;
-  margin: 0 auto 28px;
-  letter-spacing: -0.015em;
+  display: flex; align-items: center; gap: 12px; justify-content: center;
+  font-size: clamp(28px, 3vw, 38px);
+  font-weight: 500;
+  margin: 0 auto 36px;
+  letter-spacing: -0.02em;
   width: fit-content;
 }
-.dashboard-head .mark { width: 22px; height: 22px; }
+.dashboard-head .mark { width: 0.7em; height: 0.7em; }
 .dashboard-panel {
   background: var(--panel-2);
   border-radius: 16px;
-  padding: 64px clamp(24px, 6vw, 96px);
-  display: flex; align-items: center; justify-content: center;
-  min-height: 420px;
+  overflow: hidden;
+  max-width: 980px;
+  margin: 0 auto;
+  aspect-ratio: 980 / 886;
 }
-.dashboard-panel img { max-width: min(420px, 100%); height: auto; }
+.dashboard-panel picture,
+.dashboard-panel img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 @media (max-width: 980px) {
   .dashboard { padding: 24px 0 48px; }
-  .dashboard-panel { padding: 32px 18px; min-height: 260px; }
-  .dashboard-panel img { max-width: 280px; }
+  .dashboard-head { margin-bottom: 24px; }
 }
 
 /* ─── How it works ─────────────────────────────────────────────── */
-.how { padding: 80px 0 100px; text-align: center; }
+.how { padding: 120px 0 140px; text-align: center; }
 .how h2 {
-  margin: 0 0 56px;
+  margin: 0 0 80px;
   font-size: clamp(28px, 3vw, 38px);
   font-weight: 500;
   letter-spacing: -0.02em;
@@ -354,15 +382,24 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 }
 .steps {
   display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 28px; text-align: left;
+  gap: 0; text-align: left;
+  align-items: stretch;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
 }
+.step {
+  padding: 32px 32px 40px;
+  border-right: 1px solid var(--line);
+  display: flex; flex-direction: column;
+}
+.step:last-child { border-right: none; }
 .step .kicker {
   font-family: 'ABC Favorit Mono', monospace;
   font-size: 11px;
   letter-spacing: 0.10em;
   text-transform: uppercase;
   color: var(--ink-mute);
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 .step h3 {
   margin: 0 0 14px;
@@ -373,19 +410,30 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
   line-height: 1.15;
 }
 .step p {
-  margin: 0 0 24px;
+  margin: 0 0 32px;
   color: var(--ink-mute);
   font-size: 14px;
   line-height: 1.55;
 }
 .step-art {
-  background: linear-gradient(155deg, rgba(135, 209, 188, 0.55) 0%, rgba(135, 209, 188, 0.22) 100%);
   border-radius: 16px;
   padding: 22px;
-  aspect-ratio: 1 / 0.78;
+  aspect-ratio: 440 / 459;
+  max-width: 440px;
+  margin: auto auto 0;
+  width: 100%;
   display: flex; align-items: center; justify-content: center;
   position: relative;
   overflow: hidden;
+}
+.step:nth-child(1) .step-art {
+  background: linear-gradient(155deg, rgba(13, 143, 159, 0.20) 0%, rgba(94, 209, 203, 0.20) 50%, rgba(76, 181, 168, 0.40) 100%);
+}
+.step:nth-child(2) .step-art {
+  background: linear-gradient(155deg, rgba(94, 209, 203, 0.20) 0%, rgba(76, 181, 168, 0.20) 50%, rgba(13, 143, 159, 0.35) 100%);
+}
+.step:nth-child(3) .step-art {
+  background: linear-gradient(155deg, rgba(76, 181, 168, 0.20) 0%, rgba(13, 143, 159, 0.20) 50%, rgba(94, 209, 203, 0.40) 100%);
 }
 .step-art::before, .step-art::after {
   content: '';
@@ -399,55 +447,58 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
   width: auto; height: auto; object-fit: contain;
 }
 @media (max-width: 980px) {
-  .how { padding: 40px 0 56px; }
+  .how { padding: 56px 0 64px; }
   .how h2 { margin-bottom: 32px; font-size: 26px; }
-  .steps { grid-template-columns: 1fr; gap: 32px; }
+  .steps { grid-template-columns: 1fr; gap: 0; border-top: none; border-bottom: none; }
+  .step { padding: 28px 0; border-right: none; border-bottom: 1px solid var(--line); }
+  .step:last-child { border-bottom: none; }
   .step h3 { font-size: 22px; }
 }
 
 /* ─── Eclipse CTA ──────────────────────────────────────────────── */
-.eclipse { padding: 0 0 80px; }
+.eclipse { padding: 40px 0 80px; }
 .eclipse-card {
   position: relative;
   border-radius: 22px;
   overflow: hidden;
-  aspect-ratio: 1568 / 540;
+  aspect-ratio: 1471 / 702;
   background: #0b0c0d;
-  display: flex; align-items: flex-end;
-  padding: 56px clamp(28px, 5vw, 64px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 64px;
 }
 .eclipse-card .bg {
   position: absolute; inset: 0;
   width: 100%; height: 100%;
-  object-fit: cover; object-position: center 30%;
+  object-fit: cover; object-position: center 35%;
   z-index: 0;
 }
 .eclipse-card::after {
   content: '';
   position: absolute; inset: 0;
-  background: linear-gradient(180deg, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0) 50%, rgba(0,0,0,0.42) 100%);
+  background: linear-gradient(180deg, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0.05) 45%, rgba(0,0,0,0.35) 100%);
   z-index: 1;
 }
 .eclipse-card .content {
   position: relative; z-index: 2;
-  display: flex; align-items: flex-end; justify-content: space-between; gap: 24px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 28px;
+  text-align: center;
   width: 100%;
-  flex-wrap: wrap;
 }
 .eclipse-card h2 {
   margin: 0;
-  font-size: clamp(28px, 4vw, 52px);
+  font-size: clamp(28px, 4.4vw, 56px);
   font-weight: 500;
   letter-spacing: -0.025em;
   line-height: 1.05;
   color: #fff;
-  max-width: 14ch;
+  max-width: 20ch;
+  text-wrap: balance;
 }
 @media (max-width: 980px) {
   .eclipse { padding-bottom: 48px; }
-  .eclipse-card { aspect-ratio: 360 / 280; padding: 28px; }
-  .eclipse-card h2 { font-size: 24px; }
-  .eclipse-card .content { flex-direction: column; align-items: flex-start; }
+  .eclipse-card { aspect-ratio: 360 / 320; padding: 32px; }
+  .eclipse-card h2 { font-size: 26px; }
 }
 
 /* ─── Intelligence Layer (big diagram) ─────────────────────────── */
@@ -459,13 +510,17 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
   letter-spacing: -0.02em;
 }
 .intel-panel {
-  background: var(--teal-tint);
-  border-radius: 18px;
-  padding: clamp(32px, 4vw, 72px) clamp(20px, 4vw, 48px);
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0;
   display: flex; align-items: center; justify-content: center;
   position: relative;
 }
-.intel-panel img { width: 100%; height: auto; max-width: 1280px; }
+.intel-panel picture, .intel-panel img {
+  width: 100%; height: auto; max-width: 1280px;
+  display: block;
+}
 
 /* ─── This is the intelligence layer ───────────────────────────── */
 .this-intel { padding: 60px 0 80px; }
@@ -499,7 +554,6 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
   display: flex; flex-direction: column; gap: 10px;
 }
 .pill {
-  background: var(--teal-soft);
   border-radius: 999px;
   padding: 14px 22px;
   font-family: 'ABC Favorit Mono', monospace;
@@ -508,7 +562,15 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
   text-transform: uppercase;
   color: var(--ink-2);
 }
-.pill.muted { background: rgba(20, 21, 15, 0.06); color: var(--ink-mute); }
+/* Gradient of teals deepening from top to bottom; the final pill is the muted bg color */
+.pills .pill:nth-child(1) { background: rgba(13, 62, 56, 0.20); }
+.pills .pill:nth-child(2) { background: rgba(30, 174, 169, 0.20); }
+.pills .pill:nth-child(3) { background: rgba(49, 177, 141, 0.20); }
+.pills .pill:nth-child(4) { background: rgba(62, 177, 160, 0.20); }
+.pills .pill:nth-child(5) { background: rgba(78, 199, 162, 0.20); }
+.pills .pill:nth-child(6) { background: rgba(85, 209, 188, 0.20); }
+.pills .pill:nth-child(7) { background: rgba(135, 209, 188, 0.20); }
+.pill.muted { background: #ECF3F1; color: var(--ink-mute); }
 @media (max-width: 980px) {
   .this-intel-grid { grid-template-columns: 1fr; gap: 32px; }
   .pill { padding: 12px 16px; font-size: 11px; }
@@ -633,48 +695,49 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 .proof-stat {
   background: var(--panel);
   border-radius: 18px;
-  padding: 64px 48px 36px;
+  padding: 80px 48px 56px;
   text-align: center;
-  min-height: 280px;
-  display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
-  gap: 22px;
+  aspect-ratio: 478 / 722;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 32px;
 }
 .proof-stat .v {
-  font-size: clamp(40px, 4vw, 56px);
+  font-size: clamp(48px, 5vw, 72px);
   font-weight: 500;
   letter-spacing: -0.025em;
   line-height: 1;
 }
 .proof-stat .k {
   color: var(--ink-mute);
-  font-size: 14px;
-  line-height: 1.45;
+  font-size: 15px;
+  line-height: 1.5;
   max-width: 30ch;
 }
 .proof-quote {
   background: var(--panel);
   border-radius: 18px;
-  padding: 48px clamp(28px, 4vw, 64px);
+  padding: 96px clamp(48px, 6vw, 96px);
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: 32px;
+  gap: 48px;
   align-items: center;
+  min-height: 360px;
 }
 .proof-quote blockquote {
   margin: 0;
-  font-size: clamp(20px, 2.1vw, 28px);
+  font-size: clamp(24px, 2.4vw, 36px);
   font-weight: 500;
   letter-spacing: -0.015em;
   line-height: 1.18;
   color: var(--ink);
-  max-width: 28ch;
+  max-width: 30ch;
 }
 @media (max-width: 980px) {
   .proof { padding: 24px 0 56px; }
   .proof-stats { grid-template-columns: 1fr; gap: 12px; margin-bottom: 16px; }
-  .proof-stat { padding: 36px 24px; min-height: 200px; }
-  .proof-quote { grid-template-columns: 1fr; padding: 28px 24px; gap: 20px; }
-  .proof-quote blockquote { font-size: 20px; }
+  .proof-stat { padding: 56px 24px; aspect-ratio: auto; min-height: 320px; }
+  .proof-quote { grid-template-columns: 1fr; padding: 36px 24px; gap: 24px; min-height: 0; }
+  .proof-quote blockquote { font-size: 22px; }
 }
 
 /* ─── FAQ ──────────────────────────────────────────────────────── */
@@ -872,7 +935,7 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 </header>
 
 <!-- ─────────────── Hero ─────────────── -->
-<section class="hero">
+<section class="section-fill hero">
   <div class="hero-inner">
     <h1>The AI partner that knows your business better than you do.</h1>
     <p>Introducing the AI operating layer for businesses run by humans. A system that runs in the background while the owner stays in the front.</p>
@@ -886,7 +949,7 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 </section>
 
 <!-- ─────────────── Cards ─────────────── -->
-<section class="cards">
+<section class="section-fill cards">
   <div class="wrap">
     <div class="cards-grid">
 
@@ -921,7 +984,7 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 </section>
 
 <!-- ─────────────── Tagline ─────────────── -->
-<section class="tagline">
+<section class="section-fill tagline">
   <div class="wrap">
     <div class="tagline-grid">
       <h2>Tend is the layer underneath your business that makes the next five years of growth feel inevitable.</h2>
@@ -931,7 +994,7 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 </section>
 
 <!-- ─────────────── Tend Dashboard ─────────────── -->
-<section class="dashboard">
+<section class="section-fill dashboard">
   <div class="wrap">
     <div class="dashboard-head">
       <span class="mark"><svg><use href="#tend-mark"/></svg></span>
@@ -947,7 +1010,7 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 </section>
 
 <!-- ─────────────── How it works ─────────────── -->
-<section class="how" id="how">
+<section class="section-fill how" id="how">
   <div class="wrap">
     <h2>How it works</h2>
     <div class="steps">
@@ -978,7 +1041,7 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 </section>
 
 <!-- ─────────────── Eclipse CTA ─────────────── -->
-<section class="eclipse">
+<section class="section-fill eclipse">
   <div class="wrap">
     <div class="eclipse-card">
       <picture>
@@ -994,7 +1057,7 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 </section>
 
 <!-- ─────────────── Intelligence Layer ─────────────── -->
-<section class="intel">
+<section class="section-fill intel">
   <div class="wrap">
     <h2>The Intelligence Layer</h2>
     <div class="intel-panel">
@@ -1007,7 +1070,7 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 </section>
 
 <!-- ─────────────── This is the intelligence layer ─────────────── -->
-<section class="this-intel">
+<section class="section-fill this-intel">
   <div class="wrap">
     <div class="this-intel-grid">
       <div>
@@ -1033,7 +1096,7 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 </section>
 
 <!-- ─────────────── Ops tabs ─────────────── -->
-<section class="ops">
+<section class="section-fill ops">
   <div class="wrap">
     <h2>What it looks like in your business</h2>
     <div class="ops-grid">
@@ -1066,7 +1129,7 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 </section>
 
 <!-- ─────────────── Tend Proof ─────────────── -->
-<section class="proof">
+<section class="section-fill proof">
   <div class="wrap">
     <h2>Tend Proof</h2>
     <div class="proof-stats">
@@ -1091,7 +1154,7 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 </section>
 
 <!-- ─────────────── FAQ ─────────────── -->
-<section class="faq" id="faq">
+<section class="section-fill faq" id="faq">
   <div class="wrap">
     <div class="faq-grid">
       <div>
