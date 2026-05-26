@@ -724,22 +724,15 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
   filter: blur(2px);
   transform: scale(1.05);
 }
-/* Drop real photos into project/images/landing/ at these paths to replace the
-   placeholder gradients. The url() loads first; if missing, the gradient shows. */
 .proof-stat[data-img="proof-1"]::before {
-  background:
-    url('images/landing/proof-1.jpg') center/cover no-repeat,
-    linear-gradient(160deg, #5b6f8a 0%, #3a4f72 35%, #6b5b7a 70%, #b59a8a 100%);
+  background: url('images/landing/proof-1.png') center/cover no-repeat;
 }
 .proof-stat[data-img="proof-2"]::before {
-  background:
-    url('images/landing/proof-2.jpg') center/cover no-repeat,
-    linear-gradient(180deg, #4f5a64 0%, #2a323b 50%, #1a1f24 100%);
+  background: url('images/landing/proof-2.png') center/cover no-repeat;
 }
 .proof-stat[data-img="proof-3"]::before {
-  background:
-    url('images/landing/proof-3.jpg') center/cover no-repeat,
-    linear-gradient(160deg, #6a7f93 0%, #b18a90 50%, #5b6f8a 100%);
+  background: url('images/landing/proof-3.png') center/cover no-repeat;
+  transform: scale(1.05) scaleX(-1);
 }
 .proof-stat::after {
   content: '';
