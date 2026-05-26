@@ -823,13 +823,12 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
     </a>
     <nav class="nav-links" aria-label="Primary">
       <a href="/platform">Platform</a>
-      <a href="/pricing">Pricing</a>
       <a href="/use-cases">Solutions</a>
       <a href="/about">Resources</a>
       <a href="/org">Company</a>
     </nav>
     <div class="nav-right">
-      <a class="btn btn-primary" href="/book">Book a call</a>
+      <button class="btn btn-primary" type="button" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}'>Book a call</button>
       <a class="btn btn-outline" href="#how">See how it works</a>
       <button class="nav-toggle" aria-label="Open menu" aria-expanded="false" id="navToggle">
         <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 5h14M2 9h14M2 13h14"/></svg>
@@ -837,12 +836,11 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
     </div>
     <div class="nav-drawer">
       <a href="/platform">Platform</a>
-      <a href="/pricing">Pricing</a>
       <a href="/use-cases">Solutions</a>
       <a href="/about">Resources</a>
       <a href="/org">Company</a>
       <div class="drawer-ctas">
-        <a class="btn btn-primary" href="/book">Book a call</a>
+        <button class="btn btn-primary" type="button" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}'>Book a call</button>
         <a class="btn btn-outline" href="#how">See how it works</a>
       </div>
     </div>
@@ -856,7 +854,10 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
     <p>Introducing the AI operating layer for businesses run by humans. A system that runs in the background while the owner stays in the front.</p>
   </div>
   <div class="hero-spheres">
-    <img src="images/landing/hero-spheres.png" alt="" loading="eager" decoding="async" />
+    <picture>
+      <source srcset="images/landing/hero-spheres.webp" type="image/webp" />
+      <img src="images/landing/hero-spheres.png" alt="" loading="eager" decoding="async" />
+    </picture>
   </div>
 </section>
 
@@ -866,22 +867,28 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
     <div class="cards-grid">
 
       <article class="feature-card">
-        <img class="bg" src="images/landing/card-individuals.jpg" alt="" loading="lazy" decoding="async" />
+        <picture>
+          <source srcset="images/landing/card-individuals.webp" type="image/webp" />
+          <img class="bg" src="images/landing/card-individuals.jpg" alt="" loading="lazy" decoding="async" />
+        </picture>
         <div class="title">Tend for Individuals</div>
         <div class="panel">
           <div class="lead">For the operator running the business.</div>
           <div class="body">Tend connects every tool you already use, learns how your business actually works, surfaces the decisions that need you, and runs the work that shouldn't. One operator. One layer. Already on your side.</div>
-          <div class="cta-row"><a class="btn btn-light" href="/book">Book a call</a></div>
+          <div class="cta-row"><button class="btn btn-light" type="button" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}'>Book a call</button></div>
         </div>
       </article>
 
       <article class="feature-card">
-        <img class="bg" src="images/landing/card-business.png" alt="" loading="lazy" decoding="async" />
+        <picture>
+          <source srcset="images/landing/card-business.webp" type="image/webp" />
+          <img class="bg" src="images/landing/card-business.png" alt="" loading="lazy" decoding="async" />
+        </picture>
         <div class="title">Tend for Business</div>
         <div class="panel">
           <div class="lead">For the team running the business.</div>
           <div class="body">Everything in Tend, built for the people behind you. Shared decisions, shared agents, team oversight, and a single source of truth across the whole org. Built for the founder-led teams that have outgrown a stack of disconnected tools.</div>
-          <div class="cta-row"><a class="btn btn-light" href="/book">Book a call</a></div>
+          <div class="cta-row"><button class="btn btn-light" type="button" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}'>Book a call</button></div>
         </div>
       </article>
 
@@ -907,7 +914,10 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
       <span>Tend Dashboard</span>
     </div>
     <div class="dashboard-panel">
-      <img src="images/landing/dashboard-mockup.png" alt="Tend dashboard preview showing connected systems and live agent activity." loading="lazy" decoding="async" />
+      <picture>
+        <source srcset="images/landing/dashboard-mockup.webp" type="image/webp" />
+        <img src="images/landing/dashboard-mockup.png" alt="Tend dashboard preview showing connected systems and live agent activity." loading="lazy" decoding="async" />
+      </picture>
     </div>
   </div>
 </section>
@@ -922,21 +932,21 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
         <div class="kicker">• Step 1</div>
         <h3>It maps what you have.</h3>
         <p>Tend connects to the tools you already run on. CRM, email, calendar, docs, accounting, ops, marketing. Every customer, every deal, every asset, every relationship becomes part of one map.</p>
-        <div class="step-art"><img src="images/landing/step-1-map.png" alt="" loading="lazy" decoding="async" /></div>
+        <div class="step-art"><picture><source srcset="images/landing/step-1-map.webp" type="image/webp" /><img src="images/landing/step-1-map.png" alt="" loading="lazy" decoding="async" /></picture></div>
       </div>
 
       <div class="step">
         <div class="kicker">•• Step 2</div>
         <h3>It connects your links.</h3>
         <p>Most software stores information in lists. Tend builds a map of how things actually relate. A customer connected to a deal, a calendar event, an invoice, a team lead, the property they almost bought last year. All at once.</p>
-        <div class="step-art"><img src="images/landing/step-2-connect.png" alt="" loading="lazy" decoding="async" /></div>
+        <div class="step-art"><picture><source srcset="images/landing/step-2-connect.webp" type="image/webp" /><img src="images/landing/step-2-connect.png" alt="" loading="lazy" decoding="async" /></picture></div>
       </div>
 
       <div class="step">
         <div class="kicker">••• Step 3</div>
         <h3>It deploys the AI.</h3>
         <p>Tend uses that map to run agents tuned to your business. Surfacing decisions. Drafting work. Modeling outcomes. Watching for the things that need a human. You spend twenty minutes. Tend keeps working.</p>
-        <div class="step-art"><img src="images/landing/step-3-deploy.png" alt="" loading="lazy" decoding="async" /></div>
+        <div class="step-art"><picture><source srcset="images/landing/step-3-deploy.webp" type="image/webp" /><img src="images/landing/step-3-deploy.png" alt="" loading="lazy" decoding="async" /></picture></div>
       </div>
 
     </div>
@@ -947,10 +957,13 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 <section class="eclipse">
   <div class="wrap">
     <div class="eclipse-card">
-      <img class="bg" src="images/landing/cta-eclipse.png" alt="" loading="lazy" decoding="async" />
+      <picture>
+        <source srcset="images/landing/cta-eclipse.webp" type="image/webp" />
+        <img class="bg" src="images/landing/cta-eclipse.png" alt="" loading="lazy" decoding="async" />
+      </picture>
       <div class="content">
         <h2>Tend is rewriting how businesses run.</h2>
-        <a class="btn btn-outline-light" href="/book">Book a call</a>
+        <button class="btn btn-outline-light" type="button" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}'>Book a call</button>
       </div>
     </div>
   </div>
@@ -961,7 +974,10 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
   <div class="wrap">
     <h2>The Intelligence Layer</h2>
     <div class="intel-panel">
-      <img src="images/landing/intelligence-stack.png" alt="The Intelligence Layer: a stack of three planes — configured intelligence on top, persistent memory in the middle, operating layer at the base — surrounded by labels for connectors, jobs, files, frontier models, workflows, and approvals." loading="lazy" decoding="async" />
+      <picture>
+        <source srcset="images/landing/intelligence-stack.webp" type="image/webp" />
+        <img src="images/landing/intelligence-stack.png" alt="The Intelligence Layer: a stack of three planes (configured intelligence on top, persistent memory in the middle, operating layer at the base) surrounded by labels for connectors, jobs, files, frontier models, workflows, and approvals." loading="lazy" decoding="async" />
+      </picture>
     </div>
   </div>
 </section>
@@ -976,7 +992,7 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
         </div>
         <h2>This is the intelligence layer</h2>
         <p>The map of your business that Tend reasons against every time it answers, drafts, decides, or moves on something.</p>
-        <a class="btn btn-primary" href="/book">Book a call</a>
+        <button class="btn btn-primary" type="button" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}'>Book a call</button>
       </div>
       <div class="pills">
         <div class="pill">Your clients and every thread with them</div>
@@ -1045,7 +1061,7 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
     </div>
     <div class="proof-quote">
       <blockquote>"We replaced a Zapier graveyard and two contractors. The team gets two hours a day back, and we caught $400K of renewal risk we would have missed last quarter."</blockquote>
-      <a class="btn btn-primary" href="/book">Book a call</a>
+      <button class="btn btn-primary" type="button" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}'>Book a call</button>
     </div>
   </div>
 </section>
@@ -1094,7 +1110,7 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
     <div class="foot-hero">
       <div class="big-mark" aria-hidden="true"><svg><use href="#tend-mark"/></svg></div>
       <h3>Less chaos. More revenue. Same team.</h3>
-      <a class="btn btn-outline" href="/book">Book a demo</a>
+      <button class="btn btn-outline" type="button" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}'>Book a demo</button>
     </div>
     <div class="foot-cols">
       <a href="/" class="brand-col" aria-label="Tend home">
@@ -1237,6 +1253,30 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
   document.querySelectorAll('.ops-dots .dot').forEach((dot) => {
     dot.addEventListener('click', () => selectOpsTab(dot.dataset.tab));
   });
+</script>
+
+<!-- Cal.com modal init: any element with data-cal-link opens the booking modal -->
+<script>
+  (function (C, A, L) {
+    let p = function (a, ar) { a.q.push(ar); };
+    let d = C.document;
+    C.Cal = C.Cal || function () {
+      let cal = C.Cal; let ar = arguments;
+      if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement('script')).src = A; cal.loaded = true; }
+      if (ar[0] === L) {
+        const api = function () { p(api, arguments); };
+        const namespace = ar[1]; api.q = api.q || [];
+        if (typeof namespace === 'string') {
+          cal.ns[namespace] = cal.ns[namespace] || api;
+          p(cal.ns[namespace], ar); p(cal, ['initNamespace', namespace]);
+        } else p(cal, ar);
+        return;
+      }
+      p(cal, ar);
+    };
+  })(window, 'https://app.cal.com/embed/embed.js', 'init');
+  Cal('init', '30min', { origin: 'https://app.cal.com' });
+  Cal.ns['30min']('ui', { hideEventTypeDetails: false, layout: 'month_view' });
 </script>
 
 </body>
