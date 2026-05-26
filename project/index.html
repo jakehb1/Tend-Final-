@@ -532,6 +532,7 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
   padding: 36px 40px;
   display: flex; flex-direction: column;
 }
+.ops-panel .kicker { display: none; }
 .ops-panel h3 {
   margin: 0 0 14px;
   font-size: 22px;
@@ -566,14 +567,28 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
   text-transform: uppercase;
   color: var(--ink-mute);
 }
+/* Mobile-only dot indicators (carousel UX) */
+.ops-dots { display: none; }
 @media (max-width: 980px) {
   .ops { padding: 24px 0 56px; }
   .ops-grid { grid-template-columns: 1fr; gap: 16px; }
-  .ops-tabs { flex-direction: row; overflow-x: auto; padding: 16px; gap: 8px; }
-  .ops-tab { white-space: nowrap; padding: 10px 14px; }
-  .ops-panel { padding: 24px 22px; }
-  .ops-stats { padding-top: 24px; gap: 16px; }
-  .ops-stat .v { font-size: 28px; }
+  .ops-tabs { display: none; }
+  .ops-panel { padding: 28px 22px; }
+  .ops-panel .kicker { display: block; margin-bottom: 18px; }
+  .ops-stats { padding-top: 24px; gap: 16px; grid-template-columns: repeat(3, 1fr); }
+  .ops-stat .v { font-size: 24px; }
+  .ops-stat .k { font-size: 10px; }
+  .ops-dots {
+    display: flex; justify-content: center; gap: 10px;
+    margin-top: 18px;
+  }
+  .ops-dots .dot {
+    width: 8px; height: 8px; border-radius: 999px;
+    background: rgba(20, 21, 15, 0.18);
+    border: none; padding: 0;
+    transition: background 0.18s;
+  }
+  .ops-dots .dot.active { background: var(--ink); }
 }
 
 /* ─── Tend Proof ───────────────────────────────────────────────── */
@@ -990,6 +1005,7 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
         <button class="ops-tab" type="button" data-tab="people">People Ops</button>
       </div>
       <div class="ops-panel" id="opsPanel">
+        <div class="kicker" id="opsKicker">Revenue Ops</div>
         <h3 id="opsTitle">We deploy the AI</h3>
         <p id="opsBody">Practical AI agents that follow your team's playbook, not a generic one. They chase the follow-ups, route the tickets, and reconcile the books. Every action goes back into your tools so the team sees what happened.</p>
         <div class="ops-stats" id="opsStats">
@@ -998,6 +1014,13 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
           <div class="ops-stat"><div class="v">$400K</div><div class="k">renewals saved / qtr</div></div>
         </div>
       </div>
+    </div>
+    <div class="ops-dots" id="opsDots" role="tablist" aria-label="Ops use cases">
+      <button class="dot active" type="button" data-tab="revenue" aria-label="Revenue Ops"></button>
+      <button class="dot" type="button" data-tab="finance" aria-label="Finance Ops"></button>
+      <button class="dot" type="button" data-tab="support" aria-label="Support Ops"></button>
+      <button class="dot" type="button" data-tab="supply"  aria-label="Supply Chain"></button>
+      <button class="dot" type="button" data-tab="people"  aria-label="People Ops"></button>
     </div>
   </div>
 </section>
@@ -1191,19 +1214,28 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
       ],
     },
   };
+  const opsKicker = document.getElementById('opsKicker');
   const opsTitle = document.getElementById('opsTitle');
   const opsBody  = document.getElementById('opsBody');
   const opsStats = document.getElementById('opsStats');
+  const opsLabels = { revenue: 'Revenue Ops', finance: 'Finance Ops', support: 'Support Ops', supply: 'Supply Chain', people: 'People Ops' };
+
+  function selectOpsTab(key) {
+    const data = opsContent[key];
+    if (!data) return;
+    document.querySelectorAll('.ops-tab').forEach((t) => t.classList.toggle('active', t.dataset.tab === key));
+    document.querySelectorAll('.ops-dots .dot').forEach((d) => d.classList.toggle('active', d.dataset.tab === key));
+    opsKicker.textContent = opsLabels[key] || '';
+    opsTitle.textContent  = data.title;
+    opsBody.textContent   = data.body;
+    opsStats.innerHTML = data.stats.map((s) => `<div class="ops-stat"><div class="v">${s.v}</div><div class="k">${s.k}</div></div>`).join('');
+  }
+
   document.querySelectorAll('.ops-tab').forEach((tab) => {
-    tab.addEventListener('click', () => {
-      document.querySelectorAll('.ops-tab').forEach((t) => t.classList.remove('active'));
-      tab.classList.add('active');
-      const data = opsContent[tab.dataset.tab];
-      if (!data) return;
-      opsTitle.textContent = data.title;
-      opsBody.textContent  = data.body;
-      opsStats.innerHTML = data.stats.map((s) => `<div class="ops-stat"><div class="v">${s.v}</div><div class="k">${s.k}</div></div>`).join('');
-    });
+    tab.addEventListener('click', () => selectOpsTab(tab.dataset.tab));
+  });
+  document.querySelectorAll('.ops-dots .dot').forEach((dot) => {
+    dot.addEventListener('click', () => selectOpsTab(dot.dataset.tab));
   });
 </script>
 
