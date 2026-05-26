@@ -233,12 +233,19 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 .hero-spheres {
   margin-top: 16px;
   width: 100%;
-  display: block;
+  display: flex;
+  justify-content: center;
 }
+.hero-spheres picture,
 .hero-spheres img {
-  width: 100%; height: auto;
+  width: 75%;
+  max-width: 1100px;
+  height: auto;
   display: block;
   background: transparent;
+}
+@media (max-width: 980px) {
+  .hero-spheres picture, .hero-spheres img { width: 100%; max-width: 380px; }
 }
 @media (max-width: 980px) {
   .hero { padding-top: 32px; }
@@ -248,22 +255,24 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 }
 
 /* ─── Cards row (Individuals / Business) ───────────────────────── */
-.cards { padding: 56px 0 80px; }
+.cards { padding: 24px 0; }
+.cards > .wrap { padding-left: 0; padding-right: 0; max-width: none; }
 .cards-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
   gap: 24px;
+  justify-content: center;
+  padding: 0 24px;
 }
 .feature-card {
   position: relative;
   border-radius: 22px;
   overflow: hidden;
   aspect-ratio: 719 / 903;
-  max-height: 78svh;
+  height: min(903px, calc(100svh - 144px));
+  width: auto;
   background: #1a1a1a;
   isolation: isolate;
 }
-.cards-grid { justify-content: center; }
 .feature-card .bg {
   position: absolute; inset: 0;
   width: 100%; height: 100%;
