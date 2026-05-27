@@ -236,12 +236,30 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
   margin-top: 64px;
   width: 100%;
   display: block;
+  position: relative;
 }
 .hero-spheres picture,
 .hero-spheres img {
   animation: tend-orbs 9s ease-in-out infinite alternate;
   transform-origin: 50% 60%;
   will-change: transform;
+}
+/* Floating dust between the orbs. Sized + positioned so the SVG sits over the
+   gap in the source image; tinted to match the existing baked-in specks. */
+.hero-spheres .hero-dust {
+  position: absolute;
+  /* Sits over the particle cluster in the source image (the gap between the
+     left orb and the centre orb). */
+  left: 32%;
+  top: 70%;
+  width: 13%;
+  height: 22%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  opacity: 0.95;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-spheres .hero-dust { display: none; }
 }
 @keyframes tend-orbs {
   0%   { transform: translate3d(0, 0,    0) scale(1);    }
@@ -1108,6 +1126,26 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
       <source srcset="images/landing/hero-spheres.webp" type="image/webp" />
       <img src="images/landing/hero-spheres.png" alt="" loading="eager" decoding="async" />
     </picture>
+    <!-- ambient floating particles overlaid in the gap between the orbs -->
+    <svg class="hero-dust" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <g fill="#2A8C76">
+        <circle cx="98"  cy="86"  r="1.6"><animateTransform attributeName="transform" type="translate" values="0 0; 2 -4; -2 3; 0 0"  dur="6.4s" repeatCount="indefinite"/></circle>
+        <circle cx="102" cy="92"  r="1.3"><animateTransform attributeName="transform" type="translate" values="0 0; -3 -3; 2 2; 0 0"  dur="7.1s" repeatCount="indefinite" begin="-1.2s"/></circle>
+        <circle cx="96"  cy="100" r="1.7"><animateTransform attributeName="transform" type="translate" values="0 0; 3 4; -2 -3; 0 0"  dur="8.0s" repeatCount="indefinite" begin="-2.4s"/></circle>
+        <circle cx="105" cy="105" r="1.1"><animateTransform attributeName="transform" type="translate" values="0 0; -2 -4; 3 2; 0 0"  dur="7.6s" repeatCount="indefinite" begin="-0.8s"/></circle>
+        <circle cx="93"  cy="108" r="1.5"><animateTransform attributeName="transform" type="translate" values="0 0; 2 3; -3 -4; 0 0"  dur="9.2s" repeatCount="indefinite" begin="-3.0s"/></circle>
+        <circle cx="100" cy="112" r="1.3"><animateTransform attributeName="transform" type="translate" values="0 0; -3 -2; 2 4; 0 0"  dur="6.8s" repeatCount="indefinite" begin="-1.7s"/></circle>
+        <circle cx="108" cy="96"  r="1.0"><animateTransform attributeName="transform" type="translate" values="0 0; 2 -3; -3 3; 0 0"  dur="7.8s" repeatCount="indefinite" begin="-2.1s"/></circle>
+        <circle cx="91"  cy="94"  r="1.4"><animateTransform attributeName="transform" type="translate" values="0 0; -3 3; 2 -2; 0 0"  dur="8.4s" repeatCount="indefinite" begin="-3.3s"/></circle>
+        <circle cx="99"  cy="118" r="1.5"><animateTransform attributeName="transform" type="translate" values="0 0; 3 -3; -2 2; 0 0"  dur="6.0s" repeatCount="indefinite" begin="-0.4s"/></circle>
+        <circle cx="103" cy="82"  r="1.0"><animateTransform attributeName="transform" type="translate" values="0 0; -2 4; 2 -3; 0 0"  dur="7.4s" repeatCount="indefinite" begin="-2.6s"/></circle>
+        <circle cx="95"  cy="115" r="1.4"><animateTransform attributeName="transform" type="translate" values="0 0; 3 2; -2 -4; 0 0"  dur="8.6s" repeatCount="indefinite" begin="-1.4s"/></circle>
+        <circle cx="106" cy="100" r="1.3"><animateTransform attributeName="transform" type="translate" values="0 0; -2 -2; 3 3; 0 0"  dur="6.6s" repeatCount="indefinite" begin="-3.5s"/></circle>
+        <circle cx="100" cy="78"  r="0.9"><animateTransform attributeName="transform" type="translate" values="0 0; 2 3; -2 -3; 0 0"  dur="9.0s" repeatCount="indefinite" begin="-0.7s"/></circle>
+        <circle cx="92"  cy="103" r="1.2"><animateTransform attributeName="transform" type="translate" values="0 0; -3 2; 3 -2; 0 0"  dur="8.2s" repeatCount="indefinite" begin="-2.9s"/></circle>
+        <circle cx="109" cy="111" r="1.1"><animateTransform attributeName="transform" type="translate" values="0 0; 2 -4; -3 3; 0 0"  dur="7.2s" repeatCount="indefinite" begin="-1.9s"/></circle>
+      </g>
+    </svg>
   </div>
 </section>
 
