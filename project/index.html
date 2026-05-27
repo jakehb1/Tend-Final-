@@ -375,12 +375,13 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
 }
 .dashboard-head .mark { width: 0.7em; height: 0.7em; }
 .dashboard-panel {
-  background: var(--panel-2);
+  background: var(--bg);
   border-radius: 16px;
   overflow: hidden;
-  max-width: 560px;
+  max-width: 1280px;
   margin: 0 auto;
-  aspect-ratio: 980 / 886;
+  aspect-ratio: 2400 / 1140;
+  box-shadow: 0 24px 60px -28px rgba(20, 21, 15, 0.18), 0 0 0 1px var(--line);
 }
 .dashboard-panel picture,
 .dashboard-panel img {
@@ -1127,7 +1128,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
     <div class="dashboard-panel">
       <picture>
         <source srcset="images/landing/dashboard-mockup.webp" type="image/webp" />
-        <img src="images/landing/dashboard-mockup.png" alt="Tend dashboard preview showing connected systems and live agent activity." loading="lazy" decoding="async" />
+        <img src="images/landing/dashboard-mockup.png" width="2400" height="1140" alt="Tend dashboard: daily orientation with operating snapshot, pending approvals, and live sessions." loading="lazy" decoding="async" />
       </picture>
     </div>
   </div>
