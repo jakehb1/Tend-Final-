@@ -237,6 +237,20 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
   width: 100%;
   display: block;
 }
+.hero-spheres picture,
+.hero-spheres img {
+  animation: tend-orbs 9s ease-in-out infinite alternate;
+  transform-origin: 50% 60%;
+  will-change: transform;
+}
+@keyframes tend-orbs {
+  0%   { transform: translate3d(0, 0,    0) scale(1);    }
+  50%  { transform: translate3d(0, -10px, 0) scale(1.012); }
+  100% { transform: translate3d(0, 4px,  0) scale(0.996); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-spheres picture, .hero-spheres img { animation: none; }
+}
 .hero-spheres img {
   width: 100%; height: auto;
   display: block;
@@ -375,36 +389,60 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
 }
 .dashboard-head .mark { width: 0.7em; height: 0.7em; }
 .dashboard-panel {
-  background: var(--bg);
+  background: #0E100C;
   border-radius: 16px;
   overflow: hidden;
-  max-width: 1280px;
+  max-width: 940px;
   margin: 0 auto;
-  aspect-ratio: 2400 / 1140;
-  box-shadow: 0 24px 60px -28px rgba(20, 21, 15, 0.18), 0 0 0 1px var(--line);
+  aspect-ratio: 940 / 720;
+  box-shadow: 0 24px 60px -28px rgba(20, 21, 15, 0.35), 0 0 0 1px var(--line-2);
 }
-.dashboard-panel picture,
-.dashboard-panel img {
-  display: block;
+.dashboard-panel .ontology {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  display: block;
+}
+/* Ontology animations */
+.dashboard-panel .live-dot {
+  transform-origin: 846px 43px;
+  animation: tend-live 1.8s ease-in-out infinite;
+}
+.dashboard-panel .hub-pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: tend-pulse 2.8s ease-out infinite;
+}
+.dashboard-panel .modules .mod rect {
+  animation: tend-mod-glow 4.8s ease-in-out infinite;
+}
+.dashboard-panel .modules .mod[data-i="1"] rect { animation-delay: 0.4s; }
+.dashboard-panel .modules .mod[data-i="2"] rect { animation-delay: 0.8s; }
+.dashboard-panel .modules .mod[data-i="3"] rect { animation-delay: 1.2s; }
+.dashboard-panel .modules .mod[data-i="4"] rect { animation-delay: 1.6s; }
+.dashboard-panel .modules .mod[data-i="5"] rect { animation-delay: 2.0s; }
+@keyframes tend-live {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.45; transform: scale(0.75); }
+}
+@keyframes tend-pulse {
+  0%   { transform: scale(0.85); opacity: 0.85; }
+  100% { transform: scale(1.6);  opacity: 0; }
+}
+@keyframes tend-mod-glow {
+  0%, 70%, 100% { stroke: rgba(255, 255, 255, 0.55); }
+  78%, 84%      { stroke: #87D1BC; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-panel .live-dot,
+  .dashboard-panel .hub-pulse,
+  .dashboard-panel .modules .mod rect,
+  .dashboard-panel .packets circle { animation: none; }
+  .dashboard-panel .packets { display: none; }
 }
 @media (max-width: 980px) {
   .dashboard { padding: 24px 0 48px; }
   .dashboard-head { margin-bottom: 24px; }
-  .dashboard-panel {
-    background: transparent;
-    border-radius: 0;
-    overflow: visible;
-    aspect-ratio: auto;
-    max-width: 100%;
-  }
-  .dashboard-panel picture, .dashboard-panel img {
-    width: 100%; height: auto;
-    border-radius: 14px;
-    object-fit: contain;
-  }
+  .dashboard-panel { max-width: 100%; }
 }
 
 /* ─── How it works ─────────────────────────────────────────────── */
@@ -1126,10 +1164,114 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
       <span>Tend Dashboard</span>
     </div>
     <div class="dashboard-panel">
-      <picture>
-        <source srcset="images/landing/dashboard-mockup.webp" type="image/webp" />
-        <img src="images/landing/dashboard-mockup.png" width="2400" height="1140" alt="Tend dashboard: daily orientation with operating snapshot, pending approvals, and live sessions." loading="lazy" decoding="async" />
-      </picture>
+      <svg class="ontology" viewBox="0 0 940 720" role="img" aria-label="Tend data flow: a central ontology hub linking CRM, ERP, Warehouse, HRIS, Billing, Support through revenue / ops / finance agents." xmlns="http://www.w3.org/2000/svg">
+        <!-- Grid background -->
+        <defs>
+          <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M40 0H0V40" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+          </pattern>
+          <radialGradient id="hubGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="rgba(135,209,188,0.55)"/>
+            <stop offset="60%" stop-color="rgba(135,209,188,0.10)"/>
+            <stop offset="100%" stop-color="rgba(135,209,188,0)"/>
+          </radialGradient>
+        </defs>
+        <rect width="940" height="720" fill="#0E100C"/>
+        <rect width="940" height="720" fill="url(#grid)"/>
+
+        <!-- Header chrome -->
+        <g font-family="ABC Favorit Mono, ui-monospace, monospace" font-size="13" fill="rgba(255,255,255,0.45)">
+          <rect x="28" y="28" width="216" height="30" rx="2" fill="none" stroke="rgba(255,255,255,0.18)"/>
+          <text x="40" y="48" letter-spacing="0.08em">FIG. 01 / TEND / DATA FLOW</text>
+          <rect x="828" y="28" width="84" height="30" rx="2" fill="none" stroke="rgba(255,255,255,0.18)"/>
+          <circle class="live-dot" cx="846" cy="43" r="4" fill="#87D1BC"/>
+          <text x="860" y="48" letter-spacing="0.08em">LIVE</text>
+        </g>
+
+        <!-- Connection lines (drawn first so nodes sit on top) -->
+        <g class="links" stroke="rgba(255,255,255,0.18)" stroke-width="1" fill="none">
+          <!-- Hub at center (470, 360). Lines to 6 outer modules + 3 agents. -->
+          <path d="M470 360 L150 130"/>  <!-- CRM (top-left) -->
+          <path d="M470 360 L790 130"/>  <!-- ERP (top-right) -->
+          <path d="M470 360 L100 360"/>  <!-- SUPPORT (left) -->
+          <path d="M470 360 L840 360"/>  <!-- WAREHOUSE (right) -->
+          <path d="M470 360 L150 590"/>  <!-- BILLING (bottom-left) -->
+          <path d="M470 360 L790 590"/>  <!-- HRIS (bottom-right) -->
+          <!-- agent waypoints (closer to hub) -->
+          <path d="M470 360 L470 220"/>  <!-- AGENT · REVENUE -->
+          <path d="M470 360 L330 470"/>  <!-- AGENT · FINANCE -->
+          <path d="M470 360 L610 470"/>  <!-- AGENT · OPS -->
+        </g>
+
+        <!-- Outer module boxes -->
+        <g class="modules" font-family="ABC Favorit Mono, ui-monospace, monospace" font-size="14" fill="#fff">
+          <g class="mod" data-i="0">
+            <rect x="78" y="110" width="144" height="40" rx="2" fill="#0E100C" stroke="rgba(255,255,255,0.55)"/>
+            <text x="150" y="135" text-anchor="middle" letter-spacing="0.08em">CRM</text>
+          </g>
+          <g class="mod" data-i="1">
+            <rect x="718" y="110" width="144" height="40" rx="2" fill="#0E100C" stroke="rgba(255,255,255,0.55)"/>
+            <text x="790" y="135" text-anchor="middle" letter-spacing="0.08em">ERP</text>
+          </g>
+          <g class="mod" data-i="2">
+            <rect x="28" y="340" width="144" height="40" rx="2" fill="#0E100C" stroke="rgba(255,255,255,0.55)"/>
+            <text x="100" y="365" text-anchor="middle" letter-spacing="0.08em">SUPPORT</text>
+          </g>
+          <g class="mod" data-i="3">
+            <rect x="768" y="340" width="144" height="40" rx="2" fill="#0E100C" stroke="rgba(255,255,255,0.55)"/>
+            <text x="840" y="365" text-anchor="middle" letter-spacing="0.08em">WAREHOUSE</text>
+          </g>
+          <g class="mod" data-i="4">
+            <rect x="78" y="570" width="144" height="40" rx="2" fill="#0E100C" stroke="rgba(255,255,255,0.55)"/>
+            <text x="150" y="595" text-anchor="middle" letter-spacing="0.08em">BILLING</text>
+          </g>
+          <g class="mod" data-i="5">
+            <rect x="718" y="570" width="144" height="40" rx="2" fill="#0E100C" stroke="rgba(255,255,255,0.55)"/>
+            <text x="790" y="595" text-anchor="middle" letter-spacing="0.08em">HRIS</text>
+          </g>
+        </g>
+
+        <!-- Agent waypoint markers -->
+        <g class="agents" font-family="ABC Favorit Mono, ui-monospace, monospace" font-size="11" fill="rgba(255,255,255,0.55)" letter-spacing="0.06em">
+          <circle cx="470" cy="220" r="6" fill="#0E100C" stroke="rgba(255,255,255,0.55)" stroke-width="1.2"/>
+          <text x="470" y="206" text-anchor="middle">AGENT · REVENUE</text>
+          <circle cx="330" cy="470" r="6" fill="#0E100C" stroke="rgba(255,255,255,0.55)" stroke-width="1.2"/>
+          <text x="330" y="494" text-anchor="middle">AGENT · FINANCE</text>
+          <circle cx="610" cy="470" r="6" fill="#0E100C" stroke="rgba(255,255,255,0.55)" stroke-width="1.2"/>
+          <text x="610" y="494" text-anchor="middle">AGENT · OPS</text>
+        </g>
+
+        <!-- Central hub -->
+        <g class="hub" transform="translate(470 360)">
+          <circle r="120" fill="url(#hubGlow)"/>
+          <circle class="hub-pulse" r="76" fill="none" stroke="rgba(135,209,188,0.45)" stroke-width="1"/>
+          <circle r="56" fill="#0E100C" stroke="rgba(255,255,255,0.65)" stroke-width="1.2"/>
+          <!-- inner gem -->
+          <g stroke="rgba(255,255,255,0.85)" stroke-width="1" fill="none">
+            <path d="M-18 -8 L0 -22 L18 -8 L0 6 Z"/>
+            <path d="M-18 -8 L0 6 L0 22"/>
+            <path d="M18 -8 L0 6"/>
+          </g>
+          <text font-family="ABC Favorit Mono, ui-monospace, monospace" font-size="11" letter-spacing="0.08em"
+                fill="rgba(255,255,255,0.65)" text-anchor="middle" y="42">ONTOLOGY</text>
+        </g>
+
+        <!-- Animated data packets traveling outward from the hub along each link -->
+        <g class="packets" fill="#87D1BC" transform="translate(470 360)">
+          <circle r="3.5"><animateMotion dur="2.6s" repeatCount="indefinite"          path="M0 0 L-320 -230"/></circle>
+          <circle r="3.5"><animateMotion dur="2.6s" repeatCount="indefinite" begin="0.4s" path="M0 0 L320 -230"/></circle>
+          <circle r="3.5"><animateMotion dur="2.6s" repeatCount="indefinite" begin="0.8s" path="M0 0 L-370 0"/></circle>
+          <circle r="3.5"><animateMotion dur="2.6s" repeatCount="indefinite" begin="1.2s" path="M0 0 L370 0"/></circle>
+          <circle r="3.5"><animateMotion dur="2.6s" repeatCount="indefinite" begin="1.6s" path="M0 0 L-320 230"/></circle>
+          <circle r="3.5"><animateMotion dur="2.6s" repeatCount="indefinite" begin="2.0s" path="M0 0 L320 230"/></circle>
+        </g>
+
+        <!-- Footer chrome -->
+        <g font-family="ABC Favorit Mono, ui-monospace, monospace" font-size="12" fill="rgba(255,255,255,0.45)" letter-spacing="0.08em">
+          <text x="40" y="690">T = CONTINUOUS</text>
+          <text x="900" y="690" text-anchor="end">REV 04.2026</text>
+        </g>
+      </svg>
     </div>
   </div>
 </section>
