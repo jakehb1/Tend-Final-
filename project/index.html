@@ -243,12 +243,17 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
   background: transparent;
 }
 @media (max-width: 980px) {
-  .hero { padding-top: 24px; }
+  .hero { padding-top: 16px; }
   .hero h1 { font-size: 32px; }
   .hero p { font-size: 14px; max-width: 300px; }
-  .hero-spheres { margin-top: 24px; }
+  /* Spheres image has whitespace; scale it up + overflow:hidden so the orbs read large. */
+  .hero-spheres { margin-top: 8px; padding: 0; overflow: hidden; }
   .hero-spheres picture,
-  .hero-spheres img { width: 100%; max-width: 360px; margin: 0 auto; }
+  .hero-spheres img {
+    width: 150%; max-width: 150%;
+    margin-left: -25%;
+    display: block;
+  }
 }
 
 /* ─── Cards row (Individuals / Business) ───────────────────────── */
@@ -281,13 +286,22 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
   font-weight: 500;
   letter-spacing: -0.015em;
   z-index: 2;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.55);
+}
+/* Top vignette so the title stays legible against busy backgrounds (halftone, etc.) */
+.feature-card::before {
+  content: '';
+  position: absolute; left: 0; right: 0; top: 0; height: 40%;
+  background: linear-gradient(180deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0) 100%);
+  z-index: 1;
+  pointer-events: none;
 }
 .feature-card .panel {
   position: absolute;
   left: 24px; right: 24px; bottom: 24px;
-  background: rgba(20, 22, 18, 0.42);
-  backdrop-filter: blur(20px) saturate(1.1);
-  -webkit-backdrop-filter: blur(20px) saturate(1.1);
+  background: rgba(14, 16, 12, 0.62);
+  backdrop-filter: blur(22px) saturate(1.1);
+  -webkit-backdrop-filter: blur(22px) saturate(1.1);
   border: 1px solid rgba(255, 255, 255, 0.10);
   border-radius: 12px;
   padding: 20px 24px;
@@ -378,6 +392,18 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
 @media (max-width: 980px) {
   .dashboard { padding: 24px 0 48px; }
   .dashboard-head { margin-bottom: 24px; }
+  .dashboard-panel {
+    background: transparent;
+    border-radius: 0;
+    overflow: visible;
+    aspect-ratio: auto;
+    max-width: 100%;
+  }
+  .dashboard-panel picture, .dashboard-panel img {
+    width: 100%; height: auto;
+    border-radius: 14px;
+    object-fit: contain;
+  }
 }
 
 /* ─── How it works ─────────────────────────────────────────────── */
@@ -671,15 +697,74 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
 }
 /* Mobile-only dot indicators (carousel UX) */
 .ops-dots { display: none; }
+.ops-slider { display: none; }
 @media (max-width: 980px) {
   .ops { padding: 24px 0 56px; }
   .ops-grid { grid-template-columns: 1fr; gap: 16px; }
   .ops-tabs { display: none; }
-  .ops-panel { padding: 28px 22px; }
-  .ops-panel .kicker { display: block; margin-bottom: 18px; }
-  .ops-stats { padding-top: 24px; gap: 16px; grid-template-columns: repeat(3, 1fr); }
-  .ops-stat .v { font-size: 24px; }
-  .ops-stat .k { font-size: 10px; }
+  .ops-panel { display: none; }
+  /* True horizontal slider: each .ops-slide is a full-width panel that snaps on scroll */
+  .ops-slider {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    padding: 4px 24px;
+    margin: 0 -24px;
+    scrollbar-width: none;
+  }
+  .ops-slider::-webkit-scrollbar { display: none; }
+  .ops-slide {
+    flex: 0 0 calc(100% - 16px);
+    scroll-snap-align: center;
+    background: var(--panel);
+    border-radius: 18px;
+    padding: 28px 22px;
+    display: flex; flex-direction: column;
+  }
+  .ops-slide .kicker {
+    font-family: 'ABC Favorit Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 18px;
+  }
+  .ops-slide h3 {
+    margin: 0 0 12px;
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+  }
+  .ops-slide p {
+    margin: 0 0 24px;
+    color: var(--ink-mute);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .ops-slide .stats {
+    margin-top: auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  .ops-slide .stat .v {
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    color: var(--ink);
+  }
+  .ops-slide .stat .k {
+    margin-top: 6px;
+    font-family: 'ABC Favorit Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+  }
   .ops-dots {
     display: flex; justify-content: center; gap: 10px;
     margin-top: 18px;
@@ -944,10 +1029,10 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
       <span>Tend</span>
     </a>
     <nav class="nav-links" aria-label="Primary">
-      <a href="#platform">Platform</a>
-      <a href="#solutions">Solutions</a>
-      <a href="#resources">Resources</a>
-      <a href="#company">Company</a>
+      <a href="platform.html">Platform</a>
+      <a href="use-cases.html">Solutions</a>
+      <a href="about.html">Resources</a>
+      <a href="org.html">Company</a>
     </nav>
     <div class="nav-right">
       <button class="btn btn-primary" type="button" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}'>Book a call</button>
@@ -957,10 +1042,14 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
       </button>
     </div>
     <div class="nav-drawer">
-      <a href="#platform">Platform</a>
-      <a href="#solutions">Solutions</a>
-      <a href="#resources">Resources</a>
-      <a href="#company">Company</a>
+      <a href="platform.html">Platform</a>
+      <a href="use-cases.html">Solutions</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="data-layer.html">Data layer</a>
+      <a href="about.html">Resources</a>
+      <a href="org.html">Company</a>
+      <a href="login.html">Log in</a>
+      <a href="app.html">Open the app</a>
       <div class="drawer-ctas">
         <button class="btn btn-primary" type="button" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}'>Book a call</button>
         <a class="btn btn-outline" href="#how">See how it works</a>
@@ -1152,6 +1241,8 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
           <div class="ops-stat"><div class="v">$400K</div><div class="k">renewals saved / qtr</div></div>
         </div>
       </div>
+      <!-- Mobile carousel: panels render side-by-side, snap-scroll horizontally -->
+      <div class="ops-slider" id="opsSlider" aria-label="Ops use cases carousel"></div>
     </div>
     <div class="ops-dots" id="opsDots" role="tablist" aria-label="Ops use cases">
       <button class="dot active" type="button" data-tab="revenue" aria-label="Revenue Ops"></button>
@@ -1333,17 +1424,39 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
   const opsTitle = document.getElementById('opsTitle');
   const opsBody  = document.getElementById('opsBody');
   const opsStats = document.getElementById('opsStats');
+  const opsSlider = document.getElementById('opsSlider');
   const opsLabels = { revenue: 'Revenue Ops', finance: 'Finance Ops', support: 'Support Ops', supply: 'Supply Chain', people: 'People Ops' };
+  const opsOrder = ['revenue', 'finance', 'support', 'supply', 'people'];
 
-  function selectOpsTab(key) {
+  // Build the mobile slider once with every slide pre-rendered so it can scroll-snap
+  if (opsSlider) {
+    opsSlider.innerHTML = opsOrder.map((key) => {
+      const d = opsContent[key];
+      const stats = d.stats.map((s) => `<div class="stat"><div class="v">${s.v}</div><div class="k">${s.k}</div></div>`).join('');
+      return `<article class="ops-slide" data-tab="${key}">
+        <div class="kicker">${opsLabels[key]}</div>
+        <h3>${d.title}</h3>
+        <p>${d.body}</p>
+        <div class="stats">${stats}</div>
+      </article>`;
+    }).join('');
+  }
+
+  function selectOpsTab(key, opts = {}) {
     const data = opsContent[key];
     if (!data) return;
     document.querySelectorAll('.ops-tab').forEach((t) => t.classList.toggle('active', t.dataset.tab === key));
     document.querySelectorAll('.ops-dots .dot').forEach((d) => d.classList.toggle('active', d.dataset.tab === key));
+    // Update the desktop panel (hidden on mobile)
     opsKicker.textContent = opsLabels[key] || '';
     opsTitle.textContent  = data.title;
     opsBody.textContent   = data.body;
     opsStats.innerHTML = data.stats.map((s) => `<div class="ops-stat"><div class="v">${s.v}</div><div class="k">${s.k}</div></div>`).join('');
+    // Snap the mobile slider to the matching slide
+    if (opsSlider && !opts.fromScroll) {
+      const slide = opsSlider.querySelector(`.ops-slide[data-tab="${key}"]`);
+      if (slide) slide.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
   }
 
   document.querySelectorAll('.ops-tab').forEach((tab) => {
@@ -1352,6 +1465,24 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
   document.querySelectorAll('.ops-dots .dot').forEach((dot) => {
     dot.addEventListener('click', () => selectOpsTab(dot.dataset.tab));
   });
+  // Sync dots when the user swipes the mobile slider
+  if (opsSlider) {
+    let scrollTick;
+    opsSlider.addEventListener('scroll', () => {
+      clearTimeout(scrollTick);
+      scrollTick = setTimeout(() => {
+        const slides = [...opsSlider.querySelectorAll('.ops-slide')];
+        const center = opsSlider.scrollLeft + opsSlider.clientWidth / 2;
+        let nearest = slides[0], best = Infinity;
+        slides.forEach((s) => {
+          const mid = s.offsetLeft + s.offsetWidth / 2;
+          const d = Math.abs(mid - center);
+          if (d < best) { best = d; nearest = s; }
+        });
+        if (nearest && nearest.dataset.tab) selectOpsTab(nearest.dataset.tab, { fromScroll: true });
+      }, 80);
+    }, { passive: true });
+  }
 </script>
 
 <!-- Cal.com modal init: any element with data-cal-link opens the booking modal -->
