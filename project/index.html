@@ -248,15 +248,14 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
    gap in the source image; tinted to match the existing baked-in specks. */
 .hero-spheres .hero-dust {
   position: absolute;
-  /* Sits over the particle cluster in the source image (the gap between the
-     left orb and the centre orb). */
-  left: 32%;
-  top: 70%;
-  width: 13%;
-  height: 22%;
-  transform: translate(-50%, -50%);
+  /* Spans the full hero band so particles drift through both gaps and the
+     spaces above/below the orbs. */
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
-  opacity: 0.95;
+  opacity: 0.85;
 }
 @media (prefers-reduced-motion: reduce) {
   .hero-spheres .hero-dust { display: none; }
@@ -1127,23 +1126,41 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
       <img src="images/landing/hero-spheres.png" alt="" loading="eager" decoding="async" />
     </picture>
     <!-- ambient floating particles overlaid in the gap between the orbs -->
-    <svg class="hero-dust" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <svg class="hero-dust" viewBox="0 0 1000 400" preserveAspectRatio="none" aria-hidden="true">
       <g fill="#2A8C76">
-        <circle cx="98"  cy="86"  r="1.6"><animateTransform attributeName="transform" type="translate" values="0 0; 6 -10; -7 8; 4 -5; 0 0"  dur="3.2s" repeatCount="indefinite"/></circle>
-        <circle cx="102" cy="92"  r="1.3"><animateTransform attributeName="transform" type="translate" values="0 0; -8 -7; 6 9; -5 4; 0 0"  dur="3.6s" repeatCount="indefinite" begin="-0.6s"/></circle>
-        <circle cx="96"  cy="100" r="1.7"><animateTransform attributeName="transform" type="translate" values="0 0; 9 11; -6 -8; 4 6; 0 0"  dur="4.1s" repeatCount="indefinite" begin="-1.2s"/></circle>
-        <circle cx="105" cy="105" r="1.1"><animateTransform attributeName="transform" type="translate" values="0 0; -7 -11; 8 6; -4 -3; 0 0"  dur="3.8s" repeatCount="indefinite" begin="-0.4s"/></circle>
-        <circle cx="93"  cy="108" r="1.5"><animateTransform attributeName="transform" type="translate" values="0 0; 7 9; -8 -10; 5 4; 0 0"  dur="4.6s" repeatCount="indefinite" begin="-1.5s"/></circle>
-        <circle cx="100" cy="112" r="1.3"><animateTransform attributeName="transform" type="translate" values="0 0; -9 -6; 7 11; -4 5; 0 0"  dur="3.4s" repeatCount="indefinite" begin="-0.9s"/></circle>
-        <circle cx="108" cy="96"  r="1.0"><animateTransform attributeName="transform" type="translate" values="0 0; 8 -9; -10 8; 5 -4; 0 0"  dur="3.9s" repeatCount="indefinite" begin="-1.0s"/></circle>
-        <circle cx="91"  cy="94"  r="1.4"><animateTransform attributeName="transform" type="translate" values="0 0; -10 9; 7 -7; -5 6; 0 0"  dur="4.2s" repeatCount="indefinite" begin="-1.7s"/></circle>
-        <circle cx="99"  cy="118" r="1.5"><animateTransform attributeName="transform" type="translate" values="0 0; 9 -8; -7 7; 4 -6; 0 0"  dur="3.0s" repeatCount="indefinite" begin="-0.2s"/></circle>
-        <circle cx="103" cy="82"  r="1.0"><animateTransform attributeName="transform" type="translate" values="0 0; -7 11; 8 -10; -5 5; 0 0"  dur="3.7s" repeatCount="indefinite" begin="-1.3s"/></circle>
-        <circle cx="95"  cy="115" r="1.4"><animateTransform attributeName="transform" type="translate" values="0 0; 10 6; -8 -11; 6 5; 0 0"  dur="4.3s" repeatCount="indefinite" begin="-0.7s"/></circle>
-        <circle cx="106" cy="100" r="1.3"><animateTransform attributeName="transform" type="translate" values="0 0; -8 -8; 9 9; -4 -5; 0 0"  dur="3.3s" repeatCount="indefinite" begin="-1.8s"/></circle>
-        <circle cx="100" cy="78"  r="0.9"><animateTransform attributeName="transform" type="translate" values="0 0; 7 9; -7 -8; 4 4; 0 0"  dur="4.5s" repeatCount="indefinite" begin="-0.3s"/></circle>
-        <circle cx="92"  cy="103" r="1.2"><animateTransform attributeName="transform" type="translate" values="0 0; -9 7; 8 -7; -5 4; 0 0"  dur="4.1s" repeatCount="indefinite" begin="-1.4s"/></circle>
-        <circle cx="109" cy="111" r="1.1"><animateTransform attributeName="transform" type="translate" values="0 0; 8 -11; -9 8; 5 -4; 0 0"  dur="3.6s" repeatCount="indefinite" begin="-0.9s"/></circle>
+        <!-- Left gap (between orb 1 and orb 2) -->
+        <circle cx="305" cy="180" r="1.8"><animateTransform attributeName="transform" type="translate" values="0 0; 14 -22; -16 18; 9 -8; 0 0"  dur="3.4s" repeatCount="indefinite"/></circle>
+        <circle cx="320" cy="210" r="1.4"><animateTransform attributeName="transform" type="translate" values="0 0; -18 -16; 14 20; -10 8; 0 0"  dur="3.8s" repeatCount="indefinite" begin="-0.6s"/></circle>
+        <circle cx="298" cy="240" r="1.9"><animateTransform attributeName="transform" type="translate" values="0 0; 20 24; -14 -18; 8 12; 0 0"  dur="4.2s" repeatCount="indefinite" begin="-1.2s"/></circle>
+        <circle cx="335" cy="260" r="1.2"><animateTransform attributeName="transform" type="translate" values="0 0; -16 -24; 18 14; -8 -6; 0 0"  dur="3.6s" repeatCount="indefinite" begin="-0.4s"/></circle>
+        <circle cx="285" cy="270" r="1.6"><animateTransform attributeName="transform" type="translate" values="0 0; 16 20; -18 -22; 10 8; 0 0"  dur="4.5s" repeatCount="indefinite" begin="-1.5s"/></circle>
+        <circle cx="318" cy="295" r="1.4"><animateTransform attributeName="transform" type="translate" values="0 0; -20 -14; 16 22; -8 10; 0 0"  dur="3.2s" repeatCount="indefinite" begin="-0.9s"/></circle>
+        <circle cx="312" cy="155" r="1.0"><animateTransform attributeName="transform" type="translate" values="0 0; 18 -20; -22 16; 10 -8; 0 0"  dur="3.9s" repeatCount="indefinite" begin="-1.0s"/></circle>
+        <circle cx="278" cy="200" r="1.5"><animateTransform attributeName="transform" type="translate" values="0 0; -22 18; 16 -16; -10 12; 0 0"  dur="4.4s" repeatCount="indefinite" begin="-1.7s"/></circle>
+
+        <!-- Right gap (between orb 2 and orb 3) -->
+        <circle cx="635" cy="170" r="1.5"><animateTransform attributeName="transform" type="translate" values="0 0; 20 -18; -16 14; 8 -10; 0 0"  dur="3.0s" repeatCount="indefinite" begin="-0.2s"/></circle>
+        <circle cx="660" cy="205" r="1.1"><animateTransform attributeName="transform" type="translate" values="0 0; -14 22; 18 -18; -10 10; 0 0"  dur="3.7s" repeatCount="indefinite" begin="-1.3s"/></circle>
+        <circle cx="650" cy="240" r="1.4"><animateTransform attributeName="transform" type="translate" values="0 0; 22 12; -16 -22; 12 10; 0 0"  dur="4.3s" repeatCount="indefinite" begin="-0.7s"/></circle>
+        <circle cx="620" cy="265" r="1.3"><animateTransform attributeName="transform" type="translate" values="0 0; -16 -16; 20 18; -8 -10; 0 0"  dur="3.5s" repeatCount="indefinite" begin="-1.8s"/></circle>
+        <circle cx="675" cy="285" r="1.7"><animateTransform attributeName="transform" type="translate" values="0 0; 14 18; -14 -16; 8 8; 0 0"  dur="4.5s" repeatCount="indefinite" begin="-0.3s"/></circle>
+        <circle cx="645" cy="135" r="0.9"><animateTransform attributeName="transform" type="translate" values="0 0; -18 14; 16 -14; -10 8; 0 0"  dur="4.1s" repeatCount="indefinite" begin="-1.4s"/></circle>
+        <circle cx="685" cy="225" r="1.2"><animateTransform attributeName="transform" type="translate" values="0 0; 16 -22; -18 16; 10 -8; 0 0"  dur="3.6s" repeatCount="indefinite" begin="-0.9s"/></circle>
+        <circle cx="615" cy="320" r="1.1"><animateTransform attributeName="transform" type="translate" values="0 0; 22 -16; -14 18; 8 -10; 0 0"  dur="3.8s" repeatCount="indefinite" begin="-2.0s"/></circle>
+
+        <!-- Scatter above the orbs -->
+        <circle cx="200" cy="60"  r="0.8"><animateTransform attributeName="transform" type="translate" values="0 0; 25 -10; -20 15; 10 -5; 0 0" dur="5.2s" repeatCount="indefinite" begin="-2.5s"/></circle>
+        <circle cx="500" cy="40"  r="0.9"><animateTransform attributeName="transform" type="translate" values="0 0; -28 18; 22 -12; -10 8; 0 0" dur="5.6s" repeatCount="indefinite" begin="-3.0s"/></circle>
+        <circle cx="780" cy="70"  r="0.9"><animateTransform attributeName="transform" type="translate" values="0 0; 24 -16; -20 14; 12 -8; 0 0" dur="5.4s" repeatCount="indefinite" begin="-1.8s"/></circle>
+        <circle cx="380" cy="90"  r="0.7"><animateTransform attributeName="transform" type="translate" values="0 0; -22 14; 18 -16; -10 8; 0 0" dur="6.0s" repeatCount="indefinite" begin="-2.2s"/></circle>
+        <circle cx="580" cy="55"  r="0.8"><animateTransform attributeName="transform" type="translate" values="0 0; 18 22; -16 -14; 10 -6; 0 0" dur="5.8s" repeatCount="indefinite" begin="-0.8s"/></circle>
+
+        <!-- Scatter below the orbs -->
+        <circle cx="180" cy="360" r="0.9"><animateTransform attributeName="transform" type="translate" values="0 0; -20 -14; 22 16; -10 -8; 0 0" dur="5.4s" repeatCount="indefinite" begin="-1.6s"/></circle>
+        <circle cx="430" cy="380" r="0.8"><animateTransform attributeName="transform" type="translate" values="0 0; 22 -18; -18 14; 10 -10; 0 0" dur="5.2s" repeatCount="indefinite" begin="-3.4s"/></circle>
+        <circle cx="720" cy="370" r="0.9"><animateTransform attributeName="transform" type="translate" values="0 0; -24 16; 20 -14; -8 10; 0 0" dur="5.6s" repeatCount="indefinite" begin="-2.7s"/></circle>
+        <circle cx="850" cy="350" r="0.7"><animateTransform attributeName="transform" type="translate" values="0 0; 18 -22; -16 18; 8 -10; 0 0" dur="6.0s" repeatCount="indefinite" begin="-1.1s"/></circle>
+        <circle cx="120" cy="320" r="0.8"><animateTransform attributeName="transform" type="translate" values="0 0; 24 -10; -20 14; 12 -8; 0 0" dur="5.8s" repeatCount="indefinite" begin="-3.0s"/></circle>
       </g>
     </svg>
   </div>
