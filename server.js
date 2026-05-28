@@ -64,6 +64,49 @@ const MIME = {
   '.txt': 'text/plain; charset=utf-8',
 };
 
+const TRACKING_HEAD_TAGS = `
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-FM18D1E3YB"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-FM18D1E3YB');
+</script>
+<!-- Meta Pixel Code -->
+<script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '1577161653585270');
+  fbq('track', 'PageView');
+</script>`;
+
+const TRACKING_BODY_TAGS = `
+<!-- Meta Pixel Code -->
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1577161653585270&ev=PageView&noscript=1" /></noscript>`;
+
+function injectTrackingTags(html) {
+  if (html.includes('G-FM18D1E3YB') || html.includes('1577161653585270')) return html;
+
+  let next = html;
+  if (next.includes('</head>')) {
+    next = next.replace('</head>', `${TRACKING_HEAD_TAGS}\n</head>`);
+  } else {
+    next = `${TRACKING_HEAD_TAGS}\n${next}`;
+  }
+
+  if (/<body\b[^>]*>/i.test(next)) {
+    next = next.replace(/(<body\b[^>]*>)/i, `$1\n${TRACKING_BODY_TAGS}`);
+  }
+  return next;
+}
+
 // Load system prompt from demo config if available, else fall back to built-in default.
 const SYSTEM_PROMPT = (demoConfig && demoConfig.systemPrompt)
   ? demoConfig.systemPrompt
@@ -601,6 +644,18 @@ function serveStatic(req, res) {
       'Cache-Control': cacheControl,
     });
     fs.createReadStream(filePath, { start, end }).pipe(res);
+    return;
+  }
+
+  if (ext === '.html') {
+    const html = injectTrackingTags(fs.readFileSync(filePath, 'utf8'));
+    res.writeHead(200, {
+      'Content-Type': contentType,
+      'Content-Length': Buffer.byteLength(html),
+      'Accept-Ranges': 'bytes',
+      'Cache-Control': cacheControl,
+    });
+    res.end(html);
     return;
   }
 
