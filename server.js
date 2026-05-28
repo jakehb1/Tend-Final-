@@ -172,6 +172,7 @@ function clearSessionCookie(res) {
 }
 
 const HUBSPOT_SERVICE_KEY = process.env.HUBSPOT_SERVICE_KEY || process.env.HUBSPOT_PRIVATE_APP_TOKEN || process.env.HUBSPOT_ACCESS_TOKEN;
+const HUBSPOT_FREE_TRIAL_EVENT_NAME = process.env.HUBSPOT_FREE_TRIAL_EVENT_NAME || 'free_trial_signup';
 
 async function hubSpotRequest(method, endpoint, body) {
   if (!HUBSPOT_SERVICE_KEY) return null;
@@ -231,6 +232,32 @@ async function syncHubSpotContact(email, details = {}) {
   }
 }
 
+async function sendHubSpotEvent(eventName, email, properties = {}) {
+  if (!HUBSPOT_SERVICE_KEY) {
+    console.warn('hubspot: HUBSPOT_SERVICE_KEY not set; skipping event sync.');
+    return;
+  }
+  if (!eventName) {
+    console.warn('hubspot: event name not set; skipping event sync.');
+    return;
+  }
+
+  try {
+    const event = await hubSpotRequest('POST', '/events/v3/send', {
+      eventName,
+      email,
+      properties,
+    });
+    if (!event?.ok) {
+      console.warn('hubspot: event sync failed', eventName, event?.status, event?.data?.message || event?.data?.raw || 'unknown error');
+      return;
+    }
+    console.log('hubspot: event synced', eventName, email);
+  } catch (e) {
+    console.warn('hubspot: event sync failed', e.message);
+  }
+}
+
 async function userFromRequest(req) {
   const cookies = parseCookies(req.headers.cookie);
   const token = cookies[COOKIE_NAME];
@@ -258,6 +285,7 @@ async function handleSignup(req, res) {
   const normalized = String(email).trim().toLowerCase();
   if (!pool) {
     await syncHubSpotContact(normalized, { firstName, lastName });
+    await sendHubSpotEvent(HUBSPOT_FREE_TRIAL_EVENT_NAME, normalized);
     setSessionCookie(res, signToken(normalized, true));
     return send(res, 200, { user: { id: 0, email: normalized } });
   }
@@ -268,6 +296,7 @@ async function handleSignup(req, res) {
       [normalized, hash]
     );
     await syncHubSpotContact(normalized, { firstName, lastName });
+    await sendHubSpotEvent(HUBSPOT_FREE_TRIAL_EVENT_NAME, normalized);
     setSessionCookie(res, signToken(rows[0].id));
     send(res, 200, { user: rows[0] });
   } catch (e) {
