@@ -216,7 +216,7 @@ function clearSessionCookie(res) {
 
 const HUBSPOT_SERVICE_KEY = process.env.HUBSPOT_SERVICE_KEY || process.env.HUBSPOT_PRIVATE_APP_TOKEN || process.env.HUBSPOT_ACCESS_TOKEN;
 const HUBSPOT_FREE_TRIAL_EVENT_NAME = process.env.HUBSPOT_FREE_TRIAL_EVENT_NAME || 'free_trial_signup';
-const HUBSPOT_DEMO_BOOKED_EVENT_NAME = process.env.HUBSPOT_DEMO_BOOKED_EVENT_NAME || 'demo_booked';
+const HUBSPOT_DEMO_BOOKED_EVENT_NAME = process.env.HUBSPOT_DEMO_BOOKED_EVENT_NAME || '';
 const CAL_WEBHOOK_SECRET = process.env.CAL_WEBHOOK_SECRET || process.env.CALCOM_WEBHOOK_SECRET || '';
 
 async function hubSpotRequest(method, endpoint, body) {
