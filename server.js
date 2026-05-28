@@ -719,8 +719,7 @@ function serveBookingPage(res) {
 
 function rewriteBookingLinks(html) {
   return html
-    .replace(/<button([^>]*?)data-cal-link="[^"]+"([^>]*)>/g, '<a$1href="/book.html"$2>')
-    .replace(/<\/button>/g, '</a>')
+    .replace(/<button([^>]*)data-cal-link="[^"]+"([^>]*)>([\s\S]*?)<\/button>/g, '<a$1href="/book.html"$2>$3</a>')
     .replace(/https:\/\/cal\.com\/withtend\/demo/g, '/book.html')
     .replace(/https:\/\/cal\.com\/kyros-sync\/30min/g, '/book.html');
 }
