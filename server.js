@@ -199,7 +199,10 @@ async function syncHubSpotContact(email, details = {}) {
     return;
   }
 
-  const properties = { email };
+  const properties = {
+    email,
+    lifecyclestage: 'customer',
+  };
   if (details.firstName) properties.firstname = String(details.firstName).trim();
   if (details.lastName) properties.lastname = String(details.lastName).trim();
 
