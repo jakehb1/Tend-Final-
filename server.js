@@ -386,12 +386,14 @@ async function handleCalBookingWebhook(req, res) {
   }
 
   const contactId = await syncHubSpotContact(booking.email, booking, 'lead');
-  await sendHubSpotEvent(HUBSPOT_DEMO_BOOKED_EVENT_NAME, booking.email, {
-    title: booking.title,
-    startTime: booking.startTime,
-    endTime: booking.endTime,
-    bookingId: booking.bookingId,
-  });
+  if (HUBSPOT_DEMO_BOOKED_EVENT_NAME) {
+    await sendHubSpotEvent(HUBSPOT_DEMO_BOOKED_EVENT_NAME, booking.email, {
+      title: booking.title,
+      startTime: booking.startTime,
+      endTime: booking.endTime,
+      bookingId: booking.bookingId,
+    });
+  }
   await createHubSpotNote(contactId, [
     'Demo booked via Cal.com',
     booking.title ? 'Call: ' + booking.title : '',
