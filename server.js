@@ -171,6 +171,66 @@ function clearSessionCookie(res) {
   res.setHeader('Set-Cookie', `${COOKIE_NAME}=; ${flags.join('; ')}`);
 }
 
+const HUBSPOT_SERVICE_KEY = process.env.HUBSPOT_SERVICE_KEY || process.env.HUBSPOT_PRIVATE_APP_TOKEN || process.env.HUBSPOT_ACCESS_TOKEN;
+
+async function hubSpotRequest(method, endpoint, body) {
+  if (!HUBSPOT_SERVICE_KEY) return null;
+  const response = await fetch(`https://api.hubapi.com${endpoint}`, {
+    method,
+    headers: {
+      Authorization: `Bearer ${HUBSPOT_SERVICE_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+
+  const text = await response.text();
+  let data = null;
+  if (text) {
+    try { data = JSON.parse(text); } catch { data = { raw: text }; }
+  }
+  return { ok: response.ok, status: response.status, data };
+}
+
+async function syncHubSpotContact(email, details = {}) {
+  if (!HUBSPOT_SERVICE_KEY) {
+    console.warn('hubspot: HUBSPOT_SERVICE_KEY not set; skipping contact sync.');
+    return;
+  }
+
+  const properties = { email };
+  if (details.firstName) properties.firstname = String(details.firstName).trim();
+  if (details.lastName) properties.lastname = String(details.lastName).trim();
+
+  try {
+    const create = await hubSpotRequest('POST', '/crm/v3/objects/contacts', { properties });
+    if (create?.ok) return;
+
+    if (create?.status !== 409) {
+      console.warn('hubspot: contact create failed', create?.status, create?.data?.message || create?.data?.raw || 'unknown error');
+      return;
+    }
+
+    const search = await hubSpotRequest('POST', '/crm/v3/objects/contacts/search', {
+      filterGroups: [{ filters: [{ propertyName: 'email', operator: 'EQ', value: email }] }],
+      properties: ['email'],
+      limit: 1,
+    });
+    const existingId = search?.data?.results?.[0]?.id;
+    if (!existingId) {
+      console.warn('hubspot: duplicate contact found but lookup returned no id');
+      return;
+    }
+
+    const update = await hubSpotRequest('PATCH', `/crm/v3/objects/contacts/${existingId}`, { properties });
+    if (!update?.ok) {
+      console.warn('hubspot: contact update failed', update?.status, update?.data?.message || update?.data?.raw || 'unknown error');
+    }
+  } catch (e) {
+    console.warn('hubspot: contact sync failed', e.message);
+  }
+}
+
 async function userFromRequest(req) {
   const cookies = parseCookies(req.headers.cookie);
   const token = cookies[COOKIE_NAME];
@@ -190,13 +250,14 @@ async function userFromRequest(req) {
 // ─── Auth endpoints ───────────────────────────────────────────────────────
 
 async function handleSignup(req, res) {
-  const { email, password } = await readJson(req);
+  const { email, password, firstName, lastName } = await readJson(req);
   if (!email || !password) return send(res, 400, { error: 'email and password are required' });
   if (typeof password !== 'string' || password.length < 6) {
     return send(res, 400, { error: 'password must be at least 6 characters' });
   }
   const normalized = String(email).trim().toLowerCase();
   if (!pool) {
+    await syncHubSpotContact(normalized, { firstName, lastName });
     setSessionCookie(res, signToken(normalized, true));
     return send(res, 200, { user: { id: 0, email: normalized } });
   }
@@ -206,6 +267,7 @@ async function handleSignup(req, res) {
       'INSERT INTO users (email, password_hash) VALUES ($1, $2) RETURNING id, email, created_at',
       [normalized, hash]
     );
+    await syncHubSpotContact(normalized, { firstName, lastName });
     setSessionCookie(res, signToken(rows[0].id));
     send(res, 200, { user: rows[0] });
   } catch (e) {
