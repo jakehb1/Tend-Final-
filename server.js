@@ -216,6 +216,8 @@ function clearSessionCookie(res) {
 
 const HUBSPOT_SERVICE_KEY = process.env.HUBSPOT_SERVICE_KEY || process.env.HUBSPOT_PRIVATE_APP_TOKEN || process.env.HUBSPOT_ACCESS_TOKEN;
 const HUBSPOT_FREE_TRIAL_EVENT_NAME = process.env.HUBSPOT_FREE_TRIAL_EVENT_NAME || 'free_trial_signup';
+const HUBSPOT_DEMO_BOOKED_EVENT_NAME = process.env.HUBSPOT_DEMO_BOOKED_EVENT_NAME || 'demo_booked';
+const CAL_WEBHOOK_SECRET = process.env.CAL_WEBHOOK_SECRET || process.env.CALCOM_WEBHOOK_SECRET || '';
 
 async function hubSpotRequest(method, endpoint, body) {
   if (!HUBSPOT_SERVICE_KEY) return null;
@@ -253,11 +255,11 @@ async function syncHubSpotContact(email, details = {}, lifecycleStage = 'custome
 
   try {
     const create = await hubSpotRequest('POST', '/crm/v3/objects/contacts', { properties });
-    if (create?.ok) return;
+    if (create?.ok) return create.data?.id || null;
 
     if (create?.status !== 409) {
       console.warn('hubspot: contact create failed', create?.status, create?.data?.message || create?.data?.raw || 'unknown error');
-      return;
+      return null;
     }
 
     const search = await hubSpotRequest('POST', '/crm/v3/objects/contacts/search', {
@@ -268,15 +270,43 @@ async function syncHubSpotContact(email, details = {}, lifecycleStage = 'custome
     const existingId = search?.data?.results?.[0]?.id;
     if (!existingId) {
       console.warn('hubspot: duplicate contact found but lookup returned no id');
-      return;
+      return null;
     }
 
     const update = await hubSpotRequest('PATCH', `/crm/v3/objects/contacts/${existingId}`, { properties });
     if (!update?.ok) {
       console.warn('hubspot: contact update failed', update?.status, update?.data?.message || update?.data?.raw || 'unknown error');
+      return null;
     }
+    return existingId;
   } catch (e) {
     console.warn('hubspot: contact sync failed', e.message);
+    return null;
+  }
+}
+
+async function createHubSpotNote(contactId, body) {
+  if (!HUBSPOT_SERVICE_KEY || !contactId || !body) return;
+
+  try {
+    const note = await hubSpotRequest('POST', '/crm/v3/objects/notes', {
+      properties: {
+        hs_timestamp: new Date().toISOString(),
+        hs_note_body: body,
+      },
+      associations: [{
+        to: { id: contactId },
+        types: [{
+          associationCategory: 'HUBSPOT_DEFINED',
+          associationTypeId: 202,
+        }],
+      }],
+    });
+    if (!note?.ok) {
+      console.warn('hubspot: note sync failed', note?.status, note?.data?.message || note?.data?.raw || 'unknown error');
+    }
+  } catch (e) {
+    console.warn('hubspot: note sync failed', e.message);
   }
 }
 
@@ -304,6 +334,74 @@ async function sendHubSpotEvent(eventName, email, properties = {}) {
   } catch (e) {
     console.warn('hubspot: event sync failed', e.message);
   }
+}
+
+function verifyCalWebhook(req) {
+  if (!CAL_WEBHOOK_SECRET) return true;
+
+  const url = new URL(req.url, 'http://localhost');
+  const provided = req.headers['x-cal-secret']
+    || req.headers['x-webhook-secret']
+    || req.headers['cal-webhook-secret']
+    || url.searchParams.get('secret');
+  return provided === CAL_WEBHOOK_SECRET;
+}
+
+function extractCalBooking(payload) {
+  const event = payload?.payload || payload || {};
+  const attendee = Array.isArray(event.attendees) ? event.attendees[0] : null;
+  const responses = event.responses || event.bookingFieldsResponses || {};
+  const email = String(attendee?.email || event.email || responses.email?.value || responses.email || '').trim().toLowerCase();
+  const fullName = String(attendee?.name || event.name || responses.name?.value || responses.name || '').trim();
+  const [firstName, ...lastParts] = fullName.split(/\s+/).filter(Boolean);
+  const company = responses.company?.value || responses.company || responses.companyName?.value || responses.companyName || '';
+  const website = responses.website?.value || responses.website || responses.companyWebsite?.value || responses.companyWebsite || '';
+
+  return {
+    email,
+    firstName,
+    lastName: lastParts.join(' '),
+    company,
+    website,
+    title: event.title || event.eventType?.title || 'Demo call',
+    startTime: event.startTime || event.start || event.start_time || '',
+    endTime: event.endTime || event.end || event.end_time || '',
+    bookingId: event.uid || event.id || event.bookingId || '',
+  };
+}
+
+async function handleCalBookingWebhook(req, res) {
+  if (!verifyCalWebhook(req)) return send(res, 401, { error: 'invalid webhook secret' });
+
+  const body = await readJson(req);
+  const trigger = String(body.triggerEvent || body.event || body.type || '').toLowerCase();
+  if (trigger && !trigger.includes('booking') && !trigger.includes('created')) {
+    return send(res, 200, { ok: true, ignored: true });
+  }
+
+  const booking = extractCalBooking(body);
+  if (!/^\S+@\S+\.\S+$/.test(booking.email)) {
+    console.warn('cal: booking webhook missing valid attendee email');
+    return send(res, 400, { error: 'valid attendee email is required' });
+  }
+
+  const contactId = await syncHubSpotContact(booking.email, booking, 'lead');
+  await sendHubSpotEvent(HUBSPOT_DEMO_BOOKED_EVENT_NAME, booking.email, {
+    title: booking.title,
+    startTime: booking.startTime,
+    endTime: booking.endTime,
+    bookingId: booking.bookingId,
+  });
+  await createHubSpotNote(contactId, [
+    'Demo booked via Cal.com',
+    booking.title ? 'Call: ' + booking.title : '',
+    booking.startTime ? 'Start: ' + booking.startTime : '',
+    booking.endTime ? 'End: ' + booking.endTime : '',
+    booking.bookingId ? 'Booking ID: ' + booking.bookingId : '',
+  ].filter(Boolean).join('<br>'));
+
+  console.log('hubspot: cal booking synced', booking.email, booking.startTime || 'no start time');
+  send(res, 200, { ok: true });
 }
 
 async function handleBookCallLead(req, res) {
@@ -575,6 +673,7 @@ async function handleApi(req, res) {
   if (url === '/api/auth/logout' && req.method === 'POST') return handleLogout(res);
   if (url === '/api/auth/me'     && req.method === 'GET')  return handleMe(req, res);
   if (url === '/api/book-call-lead' && req.method === 'POST') return handleBookCallLead(req, res);
+  if ((url === '/api/cal-booking-webhook' || url === '/api/webhooks/cal') && req.method === 'POST') return handleCalBookingWebhook(req, res);
 
   // Returns client config + system prompt (for the context panel in app.html)
   if (url === '/api/config' && req.method === 'GET') {
