@@ -236,7 +236,7 @@ async function hubSpotRequest(method, endpoint, body) {
   return { ok: response.ok, status: response.status, data };
 }
 
-async function syncHubSpotContact(email, details = {}) {
+async function syncHubSpotContact(email, details = {}, lifecycleStage = 'customer') {
   if (!HUBSPOT_SERVICE_KEY) {
     console.warn('hubspot: HUBSPOT_SERVICE_KEY not set; skipping contact sync.');
     return;
@@ -244,10 +244,12 @@ async function syncHubSpotContact(email, details = {}) {
 
   const properties = {
     email,
-    lifecyclestage: 'customer',
+    lifecyclestage: lifecycleStage,
   };
   if (details.firstName) properties.firstname = String(details.firstName).trim();
   if (details.lastName) properties.lastname = String(details.lastName).trim();
+  if (details.company) properties.company = String(details.company).trim();
+  if (details.website) properties.website = String(details.website).trim();
 
   try {
     const create = await hubSpotRequest('POST', '/crm/v3/objects/contacts', { properties });
@@ -302,6 +304,24 @@ async function sendHubSpotEvent(eventName, email, properties = {}) {
   } catch (e) {
     console.warn('hubspot: event sync failed', e.message);
   }
+}
+
+async function handleBookCallLead(req, res) {
+  const { firstName, lastName, email, companyName, companyWebsite, aiGoal } = await readJson(req);
+  const normalized = String(email || '').trim().toLowerCase();
+  const required = [firstName, normalized, companyName, aiGoal].every((value) => String(value || '').trim());
+  if (!required) return send(res, 400, { error: 'first name, work email, company name, and AI improvement goal are required' });
+  if (!/^\S+@\S+\.\S+$/.test(normalized)) return send(res, 400, { error: 'valid work email is required' });
+
+  await syncHubSpotContact(normalized, {
+    firstName,
+    lastName,
+    company: companyName,
+    website: companyWebsite,
+  }, 'lead');
+
+  console.log('hubspot: pre-call lead synced', normalized, String(companyName || '').trim(), String(aiGoal || '').trim().slice(0, 160));
+  send(res, 200, { ok: true });
 }
 
 async function userFromRequest(req) {
@@ -554,6 +574,7 @@ async function handleApi(req, res) {
   if (url === '/api/auth/login'  && req.method === 'POST') return handleLogin(req, res);
   if (url === '/api/auth/logout' && req.method === 'POST') return handleLogout(res);
   if (url === '/api/auth/me'     && req.method === 'GET')  return handleMe(req, res);
+  if (url === '/api/book-call-lead' && req.method === 'POST') return handleBookCallLead(req, res);
 
   // Returns client config + system prompt (for the context panel in app.html)
   if (url === '/api/config' && req.method === 'GET') {
@@ -594,6 +615,115 @@ async function handleApi(req, res) {
   send(res, 404, { error: 'not found' });
 }
 
+function escapeHtml(value) {
+  return String(value || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function bookingPageHtml() {
+  const calUrl = 'https://cal.com/withtend/demo';
+  return `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Book a call | Tend</title>
+<style>
+  :root { color-scheme: dark; --bg:#0f0f10; --panel:#171719; --text:#f4f1ea; --muted:#a8a29a; --line:#2b2927; --accent:#e7d8bd; }
+  * { box-sizing: border-box; }
+  body { margin:0; min-height:100vh; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background:var(--bg); color:var(--text); }
+  main { min-height:100vh; display:grid; place-items:center; padding:40px 18px; }
+  .wrap { width:min(920px, 100%); display:grid; grid-template-columns:0.9fr 1.1fr; gap:28px; align-items:start; }
+  .intro { padding:22px 0; }
+  a.logo { color:var(--text); text-decoration:none; font-weight:700; letter-spacing:0; font-size:22px; }
+  h1 { margin:60px 0 18px; font-size:clamp(34px, 5vw, 58px); line-height:0.98; letter-spacing:0; }
+  p { color:var(--muted); line-height:1.6; font-size:16px; margin:0; }
+  .form-card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:22px; box-shadow:0 20px 60px rgba(0,0,0,.28); }
+  form { display:grid; gap:14px; }
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  label { display:grid; gap:7px; color:var(--muted); font-size:13px; }
+  input, textarea { width:100%; border:1px solid #35322e; border-radius:6px; background:#101011; color:var(--text); padding:12px 12px; font:inherit; outline:none; }
+  textarea { min-height:118px; resize:vertical; }
+  input:focus, textarea:focus { border-color:var(--accent); }
+  button { border:0; border-radius:6px; background:var(--accent); color:#14110c; padding:13px 16px; font-weight:700; font:inherit; cursor:pointer; }
+  button[disabled] { opacity:.65; cursor:wait; }
+  .status { min-height:20px; color:var(--muted); font-size:13px; }
+  @media (max-width: 760px) { .wrap { grid-template-columns:1fr; } h1 { margin-top:34px; } .grid { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<main>
+  <div class="wrap">
+    <section class="intro">
+      <a class="logo" href="/">tend</a>
+      <h1>Tell us what you want AI to fix.</h1>
+      <p>Share a little context first. Then we will send you straight to the calendar so the call starts with the useful stuff already clear.</p>
+    </section>
+    <section class="form-card">
+      <form id="bookForm">
+        <div class="grid">
+          <label>First name <input name="firstName" autocomplete="given-name" required /></label>
+          <label>Last name <input name="lastName" autocomplete="family-name" /></label>
+        </div>
+        <label>Work email <input name="email" type="email" autocomplete="email" required /></label>
+        <label>Company name <input name="companyName" autocomplete="organization" required /></label>
+        <label>Company website <input name="companyWebsite" type="url" inputmode="url" placeholder="https://" /></label>
+        <label>What are you looking to improve with AI? <textarea name="aiGoal" required></textarea></label>
+        <button type="submit">Continue to calendar</button>
+        <div class="status" id="status" aria-live="polite"></div>
+      </form>
+    </section>
+  </div>
+</main>
+<script>
+  const form = document.getElementById('bookForm');
+  const status = document.getElementById('status');
+  const calUrl = '${calUrl}';
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const button = form.querySelector('button');
+    const data = Object.fromEntries(new FormData(form).entries());
+    button.disabled = true;
+    status.textContent = 'Saving your details...';
+    try {
+      await fetch('/api/book-call-lead', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) });
+    } catch (error) {
+      console.warn(error);
+    }
+    const params = new URLSearchParams();
+    params.set('name', [data.firstName, data.lastName].filter(Boolean).join(' '));
+    params.set('email', data.email || '');
+    params.set('company', data.companyName || '');
+    params.set('website', data.companyWebsite || '');
+    params.set('notes', data.aiGoal || '');
+    window.location.href = calUrl + '?' + params.toString();
+  });
+</script>
+</body>
+</html>`;
+}
+
+function serveBookingPage(res) {
+  const html = injectTrackingTags(bookingPageHtml());
+  res.writeHead(200, {
+    'Content-Type': 'text/html; charset=utf-8',
+    'Content-Length': Buffer.byteLength(html),
+    'Cache-Control': 'no-cache',
+  });
+  res.end(html);
+}
+
+function rewriteBookingLinks(html) {
+  return html
+    .replace(/<button([^>]*?)data-cal-link="[^"]+"([^>]*)>/g, '<a$1href="/book.html"$2>')
+    .replace(/<\/button>/g, '</a>')
+    .replace(/https:\/\/cal\.com\/withtend\/demo/g, '/book.html')
+    .replace(/https:\/\/cal\.com\/kyros-sync\/30min/g, '/book.html');
+}
 // ─── Static file serving ──────────────────────────────────────────────────
 
 function resolveFile(urlPath) {
@@ -614,6 +744,9 @@ function resolveFile(urlPath) {
 }
 
 function serveStatic(req, res) {
+  const requestPath = (req.url || '/').split('?')[0];
+  if (requestPath === '/book.html' || requestPath === '/book') return serveBookingPage(res);
+
   const filePath = resolveFile(req.url || '/');
   if (!filePath || !fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) {
     res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
@@ -648,7 +781,7 @@ function serveStatic(req, res) {
   }
 
   if (ext === '.html') {
-    const html = injectTrackingTags(fs.readFileSync(filePath, 'utf8'));
+    const html = injectTrackingTags(rewriteBookingLinks(fs.readFileSync(filePath, 'utf8')));
     res.writeHead(200, {
       'Content-Type': contentType,
       'Content-Length': Buffer.byteLength(html),
