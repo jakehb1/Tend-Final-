@@ -854,6 +854,27 @@ footer {
   .nav-links { display: none; }
 }
 </style>
+
+<!-- Launch analytics: GA4 + Meta Pixel -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-FM18D1E3YB"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){ dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-FM18D1E3YB');
+</script>
+<script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '1577161653585270');
+  fbq('track', 'PageView');
+</script>
 </head>
 <body>
 
@@ -870,7 +891,7 @@ footer {
       <a href="docs/index.html">Docs</a>
       <a href="about.html">About</a>
     </div>
-    <a href="#contact" class="nav-cta">Book a demo <span>→</span></a>
+    <a href="#contact" class="nav-cta" data-track-booking data-cta-location="nav">Book a demo <span>→</span></a>
   </div>
 </nav>
 
@@ -890,7 +911,7 @@ footer {
           One living ontology for your whole business. Agents act on it. Operators trust it.
         </p>
         <div class="hero-ctas">
-          <a href="#contact" class="btn primary">Book a demo <span class="arr">→</span></a>
+          <a href="#contact" class="btn primary" data-track-booking data-cta-location="hero">Book a demo <span class="arr">→</span></a>
           <a href="#demo" class="btn">See the ontology <span class="arr">↓</span></a>
         </div>
       </div>
@@ -1296,7 +1317,7 @@ footer {
       Point agents at the <span class="serif">same truth</span> your team already argues about.
     </h2>
     <div class="cta-row">
-      <a href="#" class="btn primary">Book a demo <span class="arr">→</span></a>
+      <a href="#contact" class="btn primary" data-track-booking data-cta-location="final_cta">Book a demo <span class="arr">→</span></a>
       <a href="#" class="btn">Read the architecture brief</a>
     </div>
   </div>
@@ -1650,6 +1671,76 @@ const FAQ = [
   });
 })();
 </script>
+
+<script>
+/* Launch conversion tracking: CTA intent, Cal.com handoff, external exits. */
+(function initLaunchTracking(){
+  const internalHosts = new Set([window.location.hostname, 'withtend.ai', 'www.withtend.ai']);
+
+  function eventParams(link, extra = {}) {
+    const url = new URL(link.getAttribute('href') || '#', window.location.href);
+    return {
+      page: window.location.pathname || '/',
+      cta_location: link.dataset.ctaLocation || inferLocation(link),
+      button_text: (link.textContent || '').trim().replace(/\s+/g, ' '),
+      destination: url.href,
+      ...extra
+    };
+  }
+
+  function inferLocation(link) {
+    if (link.closest('.nav')) return 'nav';
+    if (link.closest('.hero')) return 'hero';
+    if (link.closest('#contact')) return 'contact';
+    if (link.closest('footer')) return 'footer';
+    return 'page';
+  }
+
+  function isBookingCta(link) {
+    const text = (link.textContent || '').toLowerCase();
+    return link.hasAttribute('data-track-booking') || /book\s+(a\s+)?(demo|call)/.test(text);
+  }
+
+  function isExternal(url) {
+    return url.protocol.startsWith('http') && !internalHosts.has(url.hostname);
+  }
+
+  function isCalDestination(url) {
+    return /(^|\.)cal\.com$/.test(url.hostname) || /(^|\.)calendly\.com$/.test(url.hostname);
+  }
+
+  function track(name, params) {
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ event: name, ...params });
+    if (typeof window.gtag === 'function') window.gtag('event', name, params);
+    if (typeof window.fbq === 'function') window.fbq('trackCustom', name, params);
+  }
+
+  document.addEventListener('click', function(e) {
+    const link = e.target.closest('a[href]');
+    if (!link) return;
+
+    const url = new URL(link.getAttribute('href'), window.location.href);
+    const booking = isBookingCta(link);
+    const external = isExternal(url);
+    const cal = isCalDestination(url);
+
+    if (booking) {
+      track('book_a_call_click', eventParams(link, {
+        opens_external: external,
+        booking_provider: cal ? 'calcom' : 'site'
+      }));
+    }
+
+    if (external) {
+      const params = eventParams(link, { outbound_domain: url.hostname });
+      track('outbound_click', params);
+      if (cal || booking) track('calcom_handoff', params);
+    }
+  }, { capture: true });
+})();
+</script>
+
 <!-- Start of HubSpot Embed Code -->
 <script type="text/javascript" id="hs-script-loader" async defer src="//js-na2.hs-scripts.com/246121597.js"></script>
 <!-- End of HubSpot Embed Code -->
