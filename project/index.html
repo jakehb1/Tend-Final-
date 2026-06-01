@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>Tend — The AI partner that knows your business better than you do.</title>
-<meta name="description" content="Tend watches your tools, surfaces what matters, and runs the work on your behalf — follow-ups, renewals, dispatching, the next move. Configured once. Tended continuously. Every action shows its reasoning before it acts." />
+<title>Tend. The AI partner that knows your business better than you do.</title>
+<meta name="description" content="Tend watches your tools, surfaces what matters, and runs the work on your behalf: follow-ups, renewals, dispatching, the next move. Configured once. Tended continuously. Every action shows its reasoning before it acts." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <style>
@@ -245,9 +245,13 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
 .hero-spheres picture,
 .hero-spheres img {
   animation: tend-orbs 5.5s ease-in-out infinite alternate;
+  animation-play-state: paused;
   transform-origin: 50% 60%;
   will-change: transform;
 }
+/* Float kicks in only after the visitor starts scrolling */
+html.has-scrolled .hero-spheres picture,
+html.has-scrolled .hero-spheres img { animation-play-state: running; }
 @keyframes tend-orbs {
   0%   { transform: translate3d(0, 0,    0) scale(1);    }
   50%  { transform: translate3d(0, -22px, 0) scale(1.025); }
@@ -529,7 +533,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
   font-size: clamp(22px, 2vw, 30px);
   font-weight: 500;
   letter-spacing: -0.015em;
-  z-index: 2;
+  z-index: 3;
   text-shadow: 0 2px 12px rgba(0, 0, 0, 0.55);
 }
 /* Top vignette so the title stays legible against busy backgrounds (halftone, etc.) */
@@ -543,20 +547,31 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
 .feature-card .panel {
   position: absolute;
   left: 24px; right: 24px; bottom: 24px;
+  max-height: calc(100% - 110px); /* never cover the title at top */
   background: rgba(14, 16, 12, 0.62);
   backdrop-filter: blur(22px) saturate(1.1);
   -webkit-backdrop-filter: blur(22px) saturate(1.1);
   border: 1px solid rgba(255, 255, 255, 0.10);
   border-radius: 12px;
-  padding: 20px 24px;
+  padding: 18px 22px;
   display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 16px 24px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px 18px;
   align-items: end;
   z-index: 2;
+  overflow: hidden;
 }
 .feature-card .panel .lead { color: #fff; font-size: 15px; font-weight: 500; letter-spacing: -0.005em; grid-column: 1 / -1; }
-.feature-card .panel .body { color: rgba(255,255,255,0.85); font-size: 13.5px; line-height: 1.5; grid-column: 1; }
+.feature-card .panel .body {
+  color: rgba(255,255,255,0.85);
+  font-size: 13.5px;
+  line-height: 1.5;
+  grid-column: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
 .feature-card .panel .unlock {
   grid-column: 1 / -1;
   color: #87D1BC;
@@ -1350,7 +1365,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
 <section class="section-fill hero" id="top">
   <div class="hero-inner">
     <h1>The AI partner that knows your business better than you do.</h1>
-    <p>Tend watches your tools, surfaces what matters, and runs the work on your behalf &mdash; follow-ups, renewals, dispatching, the next move. Configured once. Tended continuously. Every action shows its reasoning before it acts.</p>
+    <p>Tend watches your tools, surfaces what matters, and runs the work on your behalf: follow-ups, renewals, dispatching, the next move. Configured once. Tended continuously. Every action shows its reasoning before it acts.</p>
   </div>
   <div class="hero-spheres">
     <picture>
@@ -1376,8 +1391,8 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
         </div>
         <div class="pb-phase pb-email">
           <div class="pb-kicker">Draft &middot; to: sarah@acme.com</div>
-          <div class="pb-subject">Re: Q3 renewal &mdash; quick check-in</div>
-          <p class="pb-body">Hey Sarah &mdash; circling back on the renewal. Want to make sure we get this in front of you before the touch window closes. Few options for next week if it's easier than email.</p>
+          <div class="pb-subject">Re: Q3 renewal, quick check-in</div>
+          <p class="pb-body">Hey Sarah, circling back on the renewal. Want to make sure we get this in front of you before the touch window closes. Few options for next week if it's easier than email.</p>
         </div>
         <button class="pb-approve" type="button" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}'>Approve</button>
       </div>
@@ -1400,18 +1415,6 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
   </div>
 </section>
 
-<!-- ─────────────── Founder Bottleneck (ICP anchor) ─────────────── -->
-<section class="section-fill founder-bottleneck" id="bottleneck">
-  <div class="wrap">
-    <div class="fb-inner">
-      <div class="fb-eyebrow">Built for the founder bottleneck.</div>
-      <h2>You built it by doing everything yourself. That&rsquo;s now the ceiling.</h2>
-      <p>$500K&ndash;$5M in revenue. 2&ndash;15 on the team. Six to twelve tools active. Every decision still flows through you. You&rsquo;ve tried ChatGPT, Zapier, a VA, the COO you couldn&rsquo;t afford &mdash; and none of it actually runs anything. Tend does.</p>
-      <button class="btn btn-primary" type="button" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}'>This is me &mdash; book a call</button>
-    </div>
-  </div>
-</section>
-
 <!-- ─────────────── Cards ─────────────── -->
 <section class="section-fill cards">
   <div class="wrap">
@@ -1426,7 +1429,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
         <div class="panel">
           <div class="lead">For the operator running the business.</div>
           <div class="body">Tend connects every tool you already use, learns how your business actually works, surfaces the decisions that need you, and runs the work that shouldn't. One operator. One layer. Already on your side.</div>
-          <div class="unlock"><strong>Unlocks:</strong> first agent live in your stack inside a week &mdash; chasing the renewals you'd otherwise miss.</div>
+          <div class="unlock"><strong>Unlocks:</strong> first agent live in your stack inside a week, chasing the renewals you'd otherwise miss.</div>
           <div class="cta-row"><button class="btn btn-light" type="button" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}'>Start with you &rarr; Book a call</button></div>
         </div>
       </article>
@@ -1639,6 +1642,18 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
   </div>
 </section>
 
+<!-- ─────────────── Founder Bottleneck (ICP anchor) ─────────────── -->
+<section class="section-fill founder-bottleneck" id="bottleneck">
+  <div class="wrap">
+    <div class="fb-inner">
+      <div class="fb-eyebrow">Built for the founder bottleneck.</div>
+      <h2>You built it by doing everything yourself. That&rsquo;s now the ceiling.</h2>
+      <p>$500K&ndash;$5M in revenue. 2&ndash;15 on the team. Six to twelve tools active. Every decision still flows through you. You&rsquo;ve tried ChatGPT, Zapier, a VA, the COO you couldn&rsquo;t afford, and none of it actually runs anything. Tend does.</p>
+      <button class="btn btn-primary" type="button" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}'>This is me. Book a call.</button>
+    </div>
+  </div>
+</section>
+
 <!-- ─────────────── This is the intelligence layer ─────────────── -->
 <section class="section-fill this-intel">
   <div class="wrap">
@@ -1795,6 +1810,10 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
   function applyScroll() {
     const y = window.scrollY;
     nav.classList.toggle('scrolled', y > 8);
+    // First-scroll flag wakes up the orb float animation
+    if (y > 4 && !document.documentElement.classList.contains('has-scrolled')) {
+      document.documentElement.classList.add('has-scrolled');
+    }
     if (heroSpheres && !reduceMotion) {
       // Parallax: orbs drift downward (relative to natural flow) so they
       // appear to lag behind the page as you scroll. Capped so they don't
@@ -1917,7 +1936,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
     },
     finance: {
       title: 'Finance, on time, every time',
-      body: 'Tend reconciles invoices, flags anomalies, drafts AR follow-ups, and keeps a clean ledger in your books — without an extra hire.',
+      body: 'Tend reconciles invoices, flags anomalies, drafts AR follow-ups, and keeps a clean ledger in your books, without an extra hire.',
       stats: [
         { v: '&minus;72%', k: 'close cycle time' },
         { v: '99.4%',      k: 'reconciliation accuracy' },
