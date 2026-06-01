@@ -237,6 +237,10 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
   width: 100%;
   display: block;
   position: relative;
+  /* Scroll parallax: JS updates --orbs-drift on scroll. Keeps the inner
+     <img> free to run its own float animation. */
+  transform: translate3d(0, var(--orbs-drift, 0px), 0);
+  will-change: transform;
 }
 .hero-spheres picture,
 .hero-spheres img {
@@ -1485,11 +1489,31 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
 </footer>
 
 <script>
-  // sticky nav background
+  // sticky nav background + hero orb parallax on the same scroll listener
   const nav = document.getElementById('nav');
-  const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 8);
+  const heroSpheres = document.querySelector('.hero-spheres');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let ticking = false;
+  function applyScroll() {
+    const y = window.scrollY;
+    nav.classList.toggle('scrolled', y > 8);
+    if (heroSpheres && !reduceMotion) {
+      // Parallax: orbs drift downward (relative to natural flow) so they
+      // appear to lag behind the page as you scroll. Capped so they don't
+      // wander forever once the hero is far off-screen.
+      const drift = Math.min(y * 0.35, 320);
+      heroSpheres.style.setProperty('--orbs-drift', drift + 'px');
+    }
+    ticking = false;
+  }
+  const onScroll = () => {
+    if (!ticking) {
+      requestAnimationFrame(applyScroll);
+      ticking = true;
+    }
+  };
   window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
+  applyScroll();
 
   // mobile drawer
   const navToggle = document.getElementById('navToggle');
