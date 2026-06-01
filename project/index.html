@@ -242,24 +242,6 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
   transform: translate3d(0, var(--orbs-drift, 0px), 0);
   will-change: transform;
 }
-.hero-spheres picture,
-.hero-spheres img {
-  animation: tend-orbs 5.5s ease-in-out infinite alternate;
-  animation-play-state: paused;
-  transform-origin: 50% 60%;
-  will-change: transform;
-}
-/* Float kicks in only after the visitor starts scrolling */
-html.has-scrolled .hero-spheres picture,
-html.has-scrolled .hero-spheres img { animation-play-state: running; }
-@keyframes tend-orbs {
-  0%   { transform: translate3d(0, 0,    0) scale(1);    }
-  50%  { transform: translate3d(0, -22px, 0) scale(1.025); }
-  100% { transform: translate3d(0, 10px,  0) scale(0.99); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .hero-spheres picture, .hero-spheres img { animation: none; }
-}
 .hero-spheres img {
   width: 100%; height: auto;
   display: block;
@@ -1812,10 +1794,6 @@ html.has-scrolled .hero-spheres img { animation-play-state: running; }
   function applyScroll() {
     const y = window.scrollY;
     nav.classList.toggle('scrolled', y > 8);
-    // First-scroll flag wakes up the orb float animation
-    if (y > 4 && !document.documentElement.classList.contains('has-scrolled')) {
-      document.documentElement.classList.add('has-scrolled');
-    }
     if (heroSpheres && !reduceMotion) {
       // Parallax: orbs drift downward (relative to natural flow) so they
       // appear to lag behind the page as you scroll. Capped so they don't
