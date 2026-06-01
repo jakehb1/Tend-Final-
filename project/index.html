@@ -262,7 +262,8 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
 }
 
 /* ─── Proof beat (Tend doesn't just act) ───────────────────────── */
-.proof-beat { padding: 24px 0 32px; }
+.proof-beat { padding: 140px 0 64px; }
+@media (max-width: 980px) { .proof-beat { padding: 64px 0 40px; } }
 .proof-beat .pb-head {
   text-align: center;
   margin: 0 auto 36px;
@@ -424,7 +425,6 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
 }
 
 @media (max-width: 980px) {
-  .proof-beat { padding: 16px 0 32px; }
   .proof-beat .pb-stage {
     grid-template-columns: 1fr;
     padding: 22px;
@@ -1866,11 +1866,11 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
     function runOnce() {
       clearTimers();
       setPhase(1);
-      timers.push(setTimeout(() => setPhase(2), 3000));   // 0:03 draft
-      timers.push(setTimeout(() => setPhase(3), 7000));   // 0:07 why
-      timers.push(setTimeout(() => setPhase(4), 11000));  // 0:11 approve
-      timers.push(setTimeout(() => setPhase(5), 13000));  // 0:13 counter
-      timers.push(setTimeout(() => runOnce(), 17000));    // 0:17 loop (2s hold)
+      timers.push(setTimeout(() => setPhase(2), 1400));   // draft
+      timers.push(setTimeout(() => setPhase(3), 3000));   // why panel
+      timers.push(setTimeout(() => setPhase(4), 5200));   // approve
+      timers.push(setTimeout(() => setPhase(5), 6200));   // counter
+      timers.push(setTimeout(() => runOnce(), 8200));     // loop (~2s hold)
     }
     function stop() { clearTimers(); }
 
