@@ -583,9 +583,9 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
 }
 
 /* ─── Intelligence Layer (big diagram) ─────────────────────────── */
-.intel { padding: 24px 0; text-align: center; }
+.intel { padding: 16px 0 24px; text-align: center; }
 .intel h2 {
-  margin: 0 0 20px;
+  margin: 0 0 16px;
   font-size: clamp(28px, 3vw, 38px);
   font-weight: 500;
   letter-spacing: -0.02em;
@@ -599,10 +599,11 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
   position: relative;
 }
 .intel-panel picture, .intel-panel img {
-  width: auto; height: auto;
-  max-width: 100%;
-  max-height: calc(100svh - 220px);
+  width: 100%; height: auto;
+  max-width: 1100px;
+  max-height: calc(100svh - 130px);
   display: block;
+  object-fit: contain;
 }
 @media (max-width: 980px) {
   .intel-panel picture, .intel-panel img { max-height: none; max-width: 100%; width: 100%; height: auto; }
