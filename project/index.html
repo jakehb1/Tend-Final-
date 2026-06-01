@@ -841,9 +841,12 @@ html.has-scrolled .hero-spheres img { animation-play-state: running; }
 }
 
 /* ─── Intelligence Layer (big diagram) ─────────────────────────── */
-.intel { padding: 16px 0 24px; text-align: center; }
+/* Intentionally NOT .section-fill: the diagram needs to render at its
+   natural size for the labels to be readable, which would clip inside
+   100svh. The section grows past one screen and that's the point. */
+.intel { padding: 80px 0 96px; text-align: center; }
 .intel h2 {
-  margin: 0 0 16px;
+  margin: 0 0 36px;
   font-size: clamp(28px, 3vw, 38px);
   font-weight: 500;
   letter-spacing: -0.02em;
@@ -858,13 +861,12 @@ html.has-scrolled .hero-spheres img { animation-play-state: running; }
 }
 .intel-panel picture, .intel-panel img {
   width: 100%; height: auto;
-  max-width: 1100px;
-  max-height: calc(100svh - 130px);
+  max-width: 1568px;
   display: block;
-  object-fit: contain;
 }
 @media (max-width: 980px) {
-  .intel-panel picture, .intel-panel img { max-height: none; max-width: 100%; width: 100%; height: auto; }
+  .intel { padding: 32px 0; }
+  .intel-panel picture, .intel-panel img { max-width: 100%; width: 100%; height: auto; }
 }
 
 /* ─── This is the intelligence layer ───────────────────────────── */
@@ -1630,7 +1632,7 @@ html.has-scrolled .hero-spheres img { animation-play-state: running; }
 </section>
 
 <!-- ─────────────── Intelligence Layer ─────────────── -->
-<section class="section-fill intel" id="platform">
+<section class="intel" id="platform">
   <div class="wrap">
     <h2>The Intelligence Layer</h2>
     <div class="intel-panel">
