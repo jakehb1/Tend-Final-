@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>Tend — The AI partner that knows your business better than you do.</title>
-<meta name="description" content="The AI operating layer for businesses run by humans. Tend reads across your tools, surfaces decisions, and runs the work that shouldn't need a human." />
+<meta name="description" content="Tend watches your tools, surfaces what matters, and runs the work on your behalf — follow-ups, renewals, dispatching, the next move. Configured once. Tended continuously. Every action shows its reasoning before it acts." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <style>
@@ -275,6 +275,217 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
   }
 }
 
+/* ─── Proof beat (Tend doesn't just act) ───────────────────────── */
+.proof-beat { padding: 24px 0 32px; }
+.proof-beat .pb-head {
+  text-align: center;
+  margin: 0 auto 36px;
+  max-width: 720px;
+}
+.proof-beat .pb-head h2 {
+  margin: 0 0 14px;
+  font-size: clamp(28px, 3.2vw, 42px);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 1.08;
+  text-wrap: balance;
+}
+.proof-beat .pb-head p {
+  margin: 0 auto;
+  color: var(--ink-mute);
+  font-size: 15px;
+  line-height: 1.55;
+  max-width: 56ch;
+}
+.proof-beat .pb-stage {
+  position: relative;
+  background: var(--panel);
+  border-radius: 18px;
+  padding: 36px;
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 32px;
+  align-items: start;
+  min-height: 360px;
+}
+.pb-card {
+  position: relative;
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  padding: 24px 26px;
+  min-height: 260px;
+  box-shadow: 0 10px 30px -16px rgba(20, 21, 15, 0.12);
+}
+.pb-card .pb-phase {
+  position: absolute;
+  inset: 24px 26px;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.pb-card .pb-phase.is-active { opacity: 1; }
+.pb-kicker {
+  font-family: 'ABC Favorit Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-bottom: 14px;
+}
+.pb-signal .pb-title {
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  margin: 0 0 8px;
+}
+.pb-signal .pb-meta {
+  color: var(--ink-mute);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.pb-signal .pb-meta strong { color: var(--ink); font-weight: 500; }
+.pb-email .pb-subject {
+  font-weight: 500;
+  font-size: 16px;
+  margin: 0 0 12px;
+  letter-spacing: -0.005em;
+}
+.pb-email .pb-body {
+  color: var(--ink-2);
+  font-size: 14px;
+  line-height: 1.55;
+  margin: 0;
+}
+.pb-card .pb-approve {
+  position: absolute;
+  right: 24px;
+  bottom: 18px;
+  background: var(--ink);
+  color: #fff;
+  font-family: 'ABC Favorit Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 9px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--ink);
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.3s ease, transform 0.3s ease, background 0.15s ease;
+}
+.pb-card.is-email .pb-approve { opacity: 1; transform: translateY(0); }
+.pb-card.is-pressed .pb-approve { background: #4FB39A; border-color: #4FB39A; transform: scale(0.96); }
+
+.pb-why {
+  position: relative;
+  background: #0E100C;
+  color: #fff;
+  border-radius: 14px;
+  padding: 22px 24px;
+  align-self: stretch;
+  opacity: 0;
+  transform: translateX(20px);
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+.pb-why.is-open { opacity: 1; transform: translateX(0); }
+.pb-why-head {
+  font-family: 'ABC Favorit Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.55);
+  margin-bottom: 16px;
+}
+.pb-reasons {
+  margin: 0;
+  padding-left: 22px;
+  color: rgba(255,255,255,0.86);
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+.pb-reasons li { margin: 0 0 12px; }
+.pb-reasons li:last-child { margin-bottom: 0; }
+.pb-reasons li b { color: #fff; font-weight: 500; }
+
+.pb-counter {
+  grid-column: 1 / -1;
+  display: flex; align-items: baseline; gap: 14px;
+  padding-top: 6px;
+  border-top: 1px solid var(--line);
+  font-family: 'ABC Favorit Mono', monospace;
+}
+.pb-counter-label {
+  font-size: 11px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+.pb-counter-value {
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+}
+.pb-counter-value .pb-num { display: inline-block; min-width: 3.5ch; transition: opacity 0.35s ease; }
+.pb-counter.is-ticked .pb-num.from { opacity: 0; display: none; }
+.pb-counter.is-ticked .pb-num.to { opacity: 1; color: #2A8C76; }
+.pb-counter .pb-num.to { opacity: 0; }
+.pb-counter .pb-num.from { opacity: 1; }
+
+.proof-beat .pb-cta {
+  text-align: center;
+  margin-top: 28px;
+}
+
+@media (max-width: 980px) {
+  .proof-beat { padding: 16px 0 32px; }
+  .proof-beat .pb-stage {
+    grid-template-columns: 1fr;
+    padding: 22px;
+    gap: 18px;
+  }
+  .pb-card { min-height: 220px; padding: 20px 22px; }
+  .pb-card .pb-phase { inset: 20px 22px; }
+  .pb-why { transform: translateY(20px); }
+  .pb-why.is-open { transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pb-card .pb-phase, .pb-card .pb-approve, .pb-why, .pb-counter-value .pb-num { transition: none; }
+}
+
+/* ─── Founder Bottleneck ICP anchor ─────────────────────────────── */
+.founder-bottleneck { padding: 24px 0 32px; }
+.founder-bottleneck .fb-inner {
+  text-align: center;
+  max-width: 760px;
+  margin: 0 auto;
+}
+.founder-bottleneck .fb-eyebrow {
+  font-family: 'ABC Favorit Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-bottom: 18px;
+}
+.founder-bottleneck h2 {
+  margin: 0 0 22px;
+  font-size: clamp(30px, 3.6vw, 48px);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  text-wrap: balance;
+}
+.founder-bottleneck p {
+  margin: 0 0 32px;
+  color: var(--ink-mute);
+  font-size: clamp(15px, 1.2vw, 17px);
+  line-height: 1.55;
+  max-width: 58ch;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 /* ─── Cards row (Individuals / Business) ───────────────────────── */
 .cards { padding: 24px 0; }
 .cards-grid {
@@ -289,6 +500,20 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
   aspect-ratio: 720 / 420;
   background: #1a1a1a;
   isolation: isolate;
+  /* Scroll-in: cards start lifted off-axis, settle when .reveal applied */
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease;
+}
+.feature-card.reveal { opacity: 1; transform: translateY(0); }
+.feature-card.reveal:nth-child(2) { transition-delay: 0.08s; }
+.feature-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 24px 60px -28px rgba(20, 21, 15, 0.45);
+}
+@media (prefers-reduced-motion: reduce) {
+  .feature-card { opacity: 1; transform: none; transition: none; }
+  .feature-card:hover { transform: none; }
 }
 .feature-card .bg {
   position: absolute; inset: 0;
@@ -332,6 +557,24 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
 }
 .feature-card .panel .lead { color: #fff; font-size: 15px; font-weight: 500; letter-spacing: -0.005em; grid-column: 1 / -1; }
 .feature-card .panel .body { color: rgba(255,255,255,0.85); font-size: 13.5px; line-height: 1.5; grid-column: 1; }
+.feature-card .panel .unlock {
+  grid-column: 1 / -1;
+  color: #87D1BC;
+  font-size: 12.5px;
+  line-height: 1.45;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, opacity 0.25s ease, margin 0.35s ease;
+  margin-top: 0;
+}
+.feature-card .panel .unlock strong { font-weight: 500; color: #fff; }
+.feature-card:hover .panel .unlock,
+.feature-card:focus-within .panel .unlock {
+  max-height: 80px;
+  opacity: 1;
+  margin-top: -4px;
+}
 .feature-card .panel .cta-row { display: flex; justify-content: flex-end; grid-column: 2; align-self: end; }
 @media (max-width: 980px) {
   .cards { padding: 16px 0 24px; }
@@ -1107,7 +1350,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
 <section class="section-fill hero" id="top">
   <div class="hero-inner">
     <h1>The AI partner that knows your business better than you do.</h1>
-    <p>Introducing the AI operating layer for businesses run by humans. A system that runs in the background while the owner stays in the front.</p>
+    <p>Tend watches your tools, surfaces what matters, and runs the work on your behalf &mdash; follow-ups, renewals, dispatching, the next move. Configured once. Tended continuously. Every action shows its reasoning before it acts.</p>
   </div>
   <div class="hero-spheres">
     <picture>
@@ -1117,12 +1360,64 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
   </div>
 </section>
 
+<!-- ─────────────── Proof beat: Tend doesn't just act. It shows you why. ─────────────── -->
+<section class="section-fill proof-beat" id="why">
+  <div class="wrap">
+    <div class="pb-head">
+      <h2>Tend doesn&rsquo;t just act. It shows you why.</h2>
+      <p>Every move Tend makes traces back to the signals it saw and the reasoning it followed. You decide what gets approved. You see the logic behind every recommendation.</p>
+    </div>
+    <div class="pb-stage" id="pbStage">
+      <div class="pb-card" id="pbCard">
+        <div class="pb-phase pb-signal is-active">
+          <div class="pb-kicker">Signal landed &middot; 09:42</div>
+          <div class="pb-title">Acme renewal at risk</div>
+          <div class="pb-meta">no reply in <strong>14 days</strong> &middot; <strong>$400K ARR</strong></div>
+        </div>
+        <div class="pb-phase pb-email">
+          <div class="pb-kicker">Draft &middot; to: sarah@acme.com</div>
+          <div class="pb-subject">Re: Q3 renewal &mdash; quick check-in</div>
+          <p class="pb-body">Hey Sarah &mdash; circling back on the renewal. Want to make sure we get this in front of you before the touch window closes. Few options for next week if it's easier than email.</p>
+        </div>
+        <button class="pb-approve" type="button" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}'>Approve</button>
+      </div>
+      <aside class="pb-why" id="pbWhy">
+        <div class="pb-why-head">Why this draft, why now?</div>
+        <ol class="pb-reasons">
+          <li><b>Last touch Apr 11.</b> Historical 18-day no-reply pattern = 73% lost.</li>
+          <li><b>Stakeholder Sarah</b> switched from email to Slack in March. Re-routing channel.</li>
+          <li><b>Renewal date June 15.</b> Touch window closes in 17 days.</li>
+        </ol>
+      </aside>
+      <div class="pb-counter" id="pbCounter">
+        <span class="pb-counter-label">Protected this quarter</span>
+        <span class="pb-counter-value"><span class="pb-num from">$0</span><span class="pb-num to">$400K</span></span>
+      </div>
+    </div>
+    <div class="pb-cta">
+      <button class="btn btn-primary" type="button" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}'>Want this running for you? &rarr; Book a call</button>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────── Founder Bottleneck (ICP anchor) ─────────────── -->
+<section class="section-fill founder-bottleneck" id="bottleneck">
+  <div class="wrap">
+    <div class="fb-inner">
+      <div class="fb-eyebrow">Built for the founder bottleneck.</div>
+      <h2>You built it by doing everything yourself. That&rsquo;s now the ceiling.</h2>
+      <p>$500K&ndash;$5M in revenue. 2&ndash;15 on the team. Six to twelve tools active. Every decision still flows through you. You&rsquo;ve tried ChatGPT, Zapier, a VA, the COO you couldn&rsquo;t afford &mdash; and none of it actually runs anything. Tend does.</p>
+      <button class="btn btn-primary" type="button" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}'>This is me &mdash; book a call</button>
+    </div>
+  </div>
+</section>
+
 <!-- ─────────────── Cards ─────────────── -->
 <section class="section-fill cards">
   <div class="wrap">
     <div class="cards-grid">
 
-      <article class="feature-card">
+      <article class="feature-card" data-tier="individuals">
         <picture>
           <source srcset="images/landing/card-individuals.webp" type="image/webp" />
           <img class="bg" src="images/landing/card-individuals.jpg" alt="" loading="lazy" decoding="async" />
@@ -1131,11 +1426,12 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
         <div class="panel">
           <div class="lead">For the operator running the business.</div>
           <div class="body">Tend connects every tool you already use, learns how your business actually works, surfaces the decisions that need you, and runs the work that shouldn't. One operator. One layer. Already on your side.</div>
-          <div class="cta-row"><button class="btn btn-light" type="button" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}'>Book a call</button></div>
+          <div class="unlock"><strong>Unlocks:</strong> first agent live in your stack inside a week &mdash; chasing the renewals you'd otherwise miss.</div>
+          <div class="cta-row"><button class="btn btn-light" type="button" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}'>Start with you &rarr; Book a call</button></div>
         </div>
       </article>
 
-      <article class="feature-card">
+      <article class="feature-card" data-tier="business">
         <picture>
           <source srcset="images/landing/card-business.webp" type="image/webp" />
           <img class="bg" src="images/landing/card-business.png" alt="" loading="lazy" decoding="async" />
@@ -1144,7 +1440,8 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
         <div class="panel">
           <div class="lead">For the team running the business.</div>
           <div class="body">Everything in Tend, built for the people behind you. Shared decisions, shared agents, team oversight, and a single source of truth across the whole org. Built for the founder-led teams that have outgrown a stack of disconnected tools.</div>
-          <div class="cta-row"><button class="btn btn-light" type="button" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}'>Book a call</button></div>
+          <div class="unlock"><strong>Unlocks:</strong> shared agents, approvals routed to the right owner, audit trail your team can actually read.</div>
+          <div class="cta-row"><button class="btn btn-light" type="button" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}'>Deploy it on your team &rarr; Book a call</button></div>
         </div>
       </article>
 
@@ -1530,6 +1827,72 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
       });
     });
   }
+
+  // Scroll-reveal: add .reveal to feature cards when they enter the viewport
+  if ('IntersectionObserver' in window) {
+    const cardObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('reveal');
+          cardObserver.unobserve(entry.target);
+        }
+      });
+    }, { rootMargin: '0px 0px -10% 0px', threshold: 0.15 });
+    document.querySelectorAll('.feature-card').forEach((c) => cardObserver.observe(c));
+  } else {
+    document.querySelectorAll('.feature-card').forEach((c) => c.classList.add('reveal'));
+  }
+
+  // Proof beat animation: a 15s timeline driven by JS so each phase can be
+  // restarted on scroll-into-view and paused on tab blur.
+  (function () {
+    const stage = document.getElementById('pbStage');
+    if (!stage) return;
+    const card = document.getElementById('pbCard');
+    const why = document.getElementById('pbWhy');
+    const counter = document.getElementById('pbCounter');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function setPhase(p) {
+      card.classList.toggle('is-email', p >= 2);
+      card.classList.toggle('is-pressed', p === 4);
+      card.querySelectorAll('.pb-phase').forEach((el) => el.classList.remove('is-active'));
+      card.querySelector(p >= 2 ? '.pb-email' : '.pb-signal').classList.add('is-active');
+      why.classList.toggle('is-open', p >= 3);
+      counter.classList.toggle('is-ticked', p >= 5);
+    }
+
+    let timers = [];
+    function clearTimers() { timers.forEach(clearTimeout); timers = []; }
+    function runOnce() {
+      clearTimers();
+      setPhase(1);
+      timers.push(setTimeout(() => setPhase(2), 3000));   // 0:03 draft
+      timers.push(setTimeout(() => setPhase(3), 7000));   // 0:07 why
+      timers.push(setTimeout(() => setPhase(4), 11000));  // 0:11 approve
+      timers.push(setTimeout(() => setPhase(5), 13000));  // 0:13 counter
+      timers.push(setTimeout(() => runOnce(), 17000));    // 0:17 loop (2s hold)
+    }
+    function stop() { clearTimers(); }
+
+    if (reduceMotion) {
+      // Show the final, fully-explained state for users who opted out of motion.
+      setPhase(5);
+      return;
+    }
+
+    let started = false;
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          if (!started) { started = true; runOnce(); }
+        } else {
+          stop(); started = false;
+        }
+      });
+    }, { threshold: 0.4 });
+    obs.observe(stage);
+  })();
 
   // FAQ accordion
   document.querySelectorAll('.qa-q').forEach((btn) => {
