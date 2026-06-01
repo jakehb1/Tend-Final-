@@ -33,6 +33,7 @@ else            console.log('config: no demo config found, using built-in fallba
 
 const PORT = process.env.PORT || 3000;
 const ROOT = path.join(__dirname, 'project');
+const BOOKING_MEETING_URL = 'https://meetings-na2.hubspot.com/nate-yoder';
 const COOKIE_NAME = 'tend.session';
 const COOKIE_MAX_AGE = 30 * 24 * 60 * 60;
 const IS_PRODUCTION = !!(process.env.RAILWAY_ENVIRONMENT || process.env.NODE_ENV === 'production');
@@ -726,7 +727,7 @@ function escapeHtml(value) {
 }
 
 function bookingPageHtml() {
-  const calUrl = 'https://cal.com/withtend/demo';
+  const meetingUrl = BOOKING_MEETING_URL;
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -762,7 +763,7 @@ function bookingPageHtml() {
     <section class="intro">
       <a class="logo" href="/">tend</a>
       <h1>Tell us what you want AI to fix.</h1>
-      <p>Share a little context first. Then we will send you straight to the calendar so the call starts with the useful stuff already clear.</p>
+      <p>Share a little context first. Then we will send you straight to the meeting scheduler so the call starts with the useful stuff already clear.</p>
     </section>
     <section class="form-card">
       <form id="bookForm">
@@ -774,7 +775,7 @@ function bookingPageHtml() {
         <label>Company name <input name="companyName" autocomplete="organization" required /></label>
         <label>Company website <input name="companyWebsite" type="url" inputmode="url" placeholder="https://" /></label>
         <label>What are you looking to improve with AI? <textarea name="aiGoal" required></textarea></label>
-        <button type="submit">Continue to calendar</button>
+        <button type="submit">Continue to scheduler</button>
         <div class="status" id="status" aria-live="polite"></div>
       </form>
     </section>
@@ -783,7 +784,7 @@ function bookingPageHtml() {
 <script>
   const form = document.getElementById('bookForm');
   const status = document.getElementById('status');
-  const calUrl = '${calUrl}';
+  const meetingUrl = '${meetingUrl}';
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
     const button = form.querySelector('button');
@@ -796,12 +797,13 @@ function bookingPageHtml() {
       console.warn(error);
     }
     const params = new URLSearchParams();
-    params.set('name', [data.firstName, data.lastName].filter(Boolean).join(' '));
+    params.set('firstname', data.firstName || '');
+    params.set('lastname', data.lastName || '');
     params.set('email', data.email || '');
     params.set('company', data.companyName || '');
     params.set('website', data.companyWebsite || '');
-    params.set('notes', data.aiGoal || '');
-    window.location.href = calUrl + '?' + params.toString();
+    params.set('message', data.aiGoal || '');
+    window.location.href = meetingUrl + '?' + params.toString();
   });
 </script>
 </body>
@@ -822,7 +824,14 @@ function rewriteBookingLinks(html) {
   return html
     .replace(/<button([^>]*)data-cal-link="[^"]+"([^>]*)>([\s\S]*?)<\/button>/g, '<a$1href="/book.html"$2>$3</a>')
     .replace(/https:\/\/cal\.com\/withtend\/demo/g, '/book.html')
-    .replace(/https:\/\/cal\.com\/kyros-sync\/30min/g, '/book.html');
+    .replace(/https:\/\/cal\.com\/kyros-sync\/30min/g, '/book.html')
+    .replace(/\sdata-cal-link="[^"]*"/g, '')
+    .replace(/\sdata-cal-namespace="[^"]*"/g, '')
+    .replace(/\sdata-cal-config='[^']*'/g, '')
+    .replace(/<a([^>]*)\stype="button"([^>]*)>/g, '<a$1$2>')
+    .replace(/\n?<!-- Cal\.com modal init:[\s\S]*?<\/script>\n?/g, '\n')
+    .replace(/\n?<!-- Cal overlay init -->\s*/g, '\n')
+    .replace(/\n?<script(?:\s+type="text\/javascript")?>\s*\(function \(C, A, L\)[\s\S]*?app\.cal\.com\/embed\/embed\.js[\s\S]*?<\/script>\n?/g, '\n');
 }
 // ─── Static file serving ──────────────────────────────────────────────────
 
