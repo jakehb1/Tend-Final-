@@ -347,6 +347,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
   position: absolute;
   right: 24px;
   bottom: 18px;
+  appearance: none;
   background: var(--ink);
   color: #fff;
   font-family: 'ABC Favorit Mono', monospace;
@@ -356,6 +357,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
   padding: 9px 16px;
   border-radius: 8px;
   border: 1px solid var(--ink);
+  cursor: default;
   opacity: 0;
   transform: translateY(4px);
   transition: opacity 0.3s ease, transform 0.3s ease, background 0.15s ease;
@@ -1378,7 +1380,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
           <div class="pb-subject">Re: Q3 renewal, quick check-in</div>
           <p class="pb-body">Hey Sarah, circling back on the renewal. Want to make sure we get this in front of you before the touch window closes. Few options for next week if it's easier than email.</p>
         </div>
-        <a class="pb-approve" href="https://cal.com/kyros-sync/30min" target="_blank" rel="noopener" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}'>Approve</a>
+        <button class="pb-approve" type="button" tabindex="-1" aria-hidden="true">Approve</button>
       </div>
       <aside class="pb-why" id="pbWhy">
         <div class="pb-why-head">Why this draft, why now?</div>
