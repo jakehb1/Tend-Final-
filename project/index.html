@@ -1377,9 +1377,8 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
   </div>
   <div class="hero-spheres">
     <video class="hero-orbs-video" autoplay muted loop playsinline preload="auto"
-           poster="images/landing/hero-spheres.png" aria-hidden="true"
-           data-src-mobile="videos/tend-orbs-mobile.mp4"
-           data-src-desktop="videos/tend-orbs-desktop.mp4">
+           poster="images/landing/hero-spheres.png" aria-hidden="true">
+      <source src="videos/tend-orbs.mp4" type="video/mp4" />
       <img src="images/landing/hero-spheres.png" alt="" />
     </video>
   </div>
@@ -1818,17 +1817,10 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
 
-  // Hero video: pick the right variant for the current viewport so we
-  // never ship the 1.7 MB desktop file to a phone. <source media> is
-  // unreliable on <video>, so we set src in JS at startup.
+  // Belt-and-braces autoplay nudge: some mobile browsers (older iOS,
+  // low-power mode) need an explicit play() after metadata loads even
+  // though the element has autoplay+muted+playsinline.
   document.querySelectorAll('.hero-orbs-video').forEach((v) => {
-    const pickSrc = () => (matchMedia('(max-width: 980px)').matches
-      ? v.dataset.srcMobile
-      : v.dataset.srcDesktop);
-    if (v.currentSrc.indexOf(pickSrc()) === -1) {
-      v.src = pickSrc();
-      v.load();
-    }
     const tryPlay = () => v.play().catch(() => {});
     tryPlay();
     v.addEventListener('loadedmetadata', tryPlay, { once: true });
