@@ -258,10 +258,6 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
   width: 100%;
   display: block;
   position: relative;
-  /* Scroll parallax: JS updates --orbs-drift on scroll. Keeps the inner
-     <img> free to run its own float animation. */
-  transform: translate3d(0, var(--orbs-drift, 0px), 0);
-  will-change: transform;
 }
 .hero-spheres img,
 .hero-spheres video {
@@ -273,13 +269,13 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
   .hero { padding-top: 16px; }
   .hero h1 { font-size: 32px; }
   .hero p { font-size: 14px; max-width: 300px; }
-  /* Source asset has whitespace around the orbs; scale up + clip so the orbs read large. */
-  .hero-spheres { margin-top: 8px; padding: 0; overflow: hidden; }
+  .hero-spheres { margin-top: 8px; padding: 0; }
   .hero-spheres picture,
   .hero-spheres img,
   .hero-spheres video {
-    width: 150%; max-width: 150%;
-    margin-left: -25%;
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
     display: block;
   }
 }
@@ -1381,8 +1377,9 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
   </div>
   <div class="hero-spheres">
     <video class="hero-orbs-video" autoplay muted loop playsinline preload="auto"
-           poster="images/landing/hero-spheres.png" aria-hidden="true">
-      <source src="videos/tend-orbs.mp4" type="video/mp4" />
+           poster="images/landing/hero-spheres.png" aria-hidden="true"
+           data-src-mobile="videos/tend-orbs-mobile.mp4"
+           data-src-desktop="videos/tend-orbs-desktop.mp4">
       <img src="images/landing/hero-spheres.png" alt="" />
     </video>
   </div>
@@ -1815,31 +1812,28 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
 </footer>
 
 <script>
-  // sticky nav background + hero orb parallax on the same scroll listener
+  // sticky nav background
   const nav = document.getElementById('nav');
-  const heroSpheres = document.querySelector('.hero-spheres');
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let ticking = false;
-  function applyScroll() {
-    const y = window.scrollY;
-    nav.classList.toggle('scrolled', y > 8);
-    if (heroSpheres && !reduceMotion) {
-      // Parallax: orbs drift downward (relative to natural flow) so they
-      // appear to lag behind the page as you scroll. Capped so they don't
-      // wander forever once the hero is far off-screen.
-      const drift = Math.min(y * 0.35, 320);
-      heroSpheres.style.setProperty('--orbs-drift', drift + 'px');
-    }
-    ticking = false;
-  }
-  const onScroll = () => {
-    if (!ticking) {
-      requestAnimationFrame(applyScroll);
-      ticking = true;
-    }
-  };
+  const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 8);
   window.addEventListener('scroll', onScroll, { passive: true });
-  applyScroll();
+  onScroll();
+
+  // Hero video: pick the right variant for the current viewport so we
+  // never ship the 1.7 MB desktop file to a phone. <source media> is
+  // unreliable on <video>, so we set src in JS at startup.
+  document.querySelectorAll('.hero-orbs-video').forEach((v) => {
+    const pickSrc = () => (matchMedia('(max-width: 980px)').matches
+      ? v.dataset.srcMobile
+      : v.dataset.srcDesktop);
+    if (v.currentSrc.indexOf(pickSrc()) === -1) {
+      v.src = pickSrc();
+      v.load();
+    }
+    const tryPlay = () => v.play().catch(() => {});
+    tryPlay();
+    v.addEventListener('loadedmetadata', tryPlay, { once: true });
+    v.addEventListener('canplay', tryPlay, { once: true });
+  });
 
   // mobile drawer
   const navToggle = document.getElementById('navToggle');
