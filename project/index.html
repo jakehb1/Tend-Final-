@@ -263,7 +263,8 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
   transform: translate3d(0, var(--orbs-drift, 0px), 0);
   will-change: transform;
 }
-.hero-spheres img {
+.hero-spheres img,
+.hero-spheres video {
   width: 100%; height: auto;
   display: block;
   background: transparent;
@@ -272,10 +273,11 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
   .hero { padding-top: 16px; }
   .hero h1 { font-size: 32px; }
   .hero p { font-size: 14px; max-width: 300px; }
-  /* Spheres image has whitespace; scale it up + overflow:hidden so the orbs read large. */
+  /* Source asset has whitespace around the orbs; scale up + clip so the orbs read large. */
   .hero-spheres { margin-top: 8px; padding: 0; overflow: hidden; }
   .hero-spheres picture,
-  .hero-spheres img {
+  .hero-spheres img,
+  .hero-spheres video {
     width: 150%; max-width: 150%;
     margin-left: -25%;
     display: block;
@@ -1378,10 +1380,11 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
     <p>Tend watches your tools, surfaces what matters, and runs the work on your behalf: follow-ups, renewals, dispatching, the next move. Configured once. Tended continuously. Every action shows its reasoning before it acts.</p>
   </div>
   <div class="hero-spheres">
-    <picture>
-      <source srcset="images/landing/hero-spheres.webp" type="image/webp" />
-      <img src="images/landing/hero-spheres.png" alt="" loading="eager" decoding="async" />
-    </picture>
+    <video class="hero-orbs-video" autoplay muted loop playsinline preload="auto"
+           poster="images/landing/hero-spheres.png" aria-hidden="true">
+      <source src="videos/tend-orbs.mp4" type="video/mp4" />
+      <img src="images/landing/hero-spheres.png" alt="" />
+    </video>
   </div>
 </section>
 
