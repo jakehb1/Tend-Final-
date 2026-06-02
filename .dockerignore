@@ -14,7 +14,9 @@ cli
 tend
 docs
 
-# Big media assets stay out of the image
+# Big WIP assets stay out of the image
 project/debug
 project/uploads
-project/videos
+# Keep the hero video; drop only the unused legacy masters
+project/videos/WEB_TEND.mov
+project/videos/WEB_TEND.mp4
