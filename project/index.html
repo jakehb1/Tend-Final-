@@ -314,18 +314,43 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
   align-items: start;
   min-height: 360px;
 }
-.pb-card {
+/* Browser-window chrome: a 28px title bar with three traffic-light dots
+   on both .pb-card and .pb-why so each panel reads as an app screenshot. */
+.pb-card,
+.pb-why {
   position: relative;
-  background: #fff;
   border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 18px 44px -22px rgba(20, 21, 15, 0.22), 0 1px 0 rgba(20, 21, 15, 0.04);
+}
+.pb-card::before,
+.pb-why::before {
+  content: '';
+  position: absolute; left: 0; right: 0; top: 0; height: 28px;
+  background: rgba(20, 21, 15, 0.035);
+  border-bottom: 1px solid var(--line);
+  pointer-events: none;
+}
+.pb-card::after,
+.pb-why::after {
+  content: '';
+  position: absolute; left: 14px; top: 10px;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #FF5F57;
+  box-shadow:
+    14px 0 0 #FEBC2E,
+    28px 0 0 #28C840;
+  pointer-events: none;
+}
+.pb-card {
+  background: #fff;
   border: 1px solid var(--line);
-  padding: 24px 26px;
-  min-height: 260px;
-  box-shadow: 0 10px 30px -16px rgba(20, 21, 15, 0.12);
+  padding: 50px 26px 24px;
+  min-height: 290px;
 }
 .pb-card .pb-phase {
   position: absolute;
-  inset: 24px 26px;
+  inset: 50px 26px 24px;
   opacity: 0;
   transition: opacity 0.4s ease;
 }
@@ -385,15 +410,18 @@ html { scroll-behavior: smooth; scroll-padding-top: 80px; }
 .pb-card.is-pressed .pb-approve { background: #4FB39A; border-color: #4FB39A; transform: scale(0.96); }
 
 .pb-why {
-  position: relative;
   background: #0E100C;
   color: #fff;
-  border-radius: 14px;
-  padding: 22px 24px;
+  padding: 50px 24px 24px;
   align-self: stretch;
   opacity: 0;
   transform: translateX(20px);
   transition: opacity 0.45s ease, transform 0.45s ease;
+}
+/* Why panel runs dark, so the title bar dots get a darker chrome too */
+.pb-why::before {
+  background: rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 .pb-why.is-open { opacity: 1; transform: translateX(0); }
 .pb-why-head {
