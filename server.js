@@ -33,7 +33,7 @@ else            console.log('config: no demo config found, using built-in fallba
 
 const PORT = process.env.PORT || 3000;
 const ROOT = path.join(__dirname, 'project');
-const BOOKING_MEETING_URL = 'https://meetings-na2.hubspot.com/nate-yoder';
+const BOOKING_MEETING_URL = 'https://cal.com/withtend/demo';
 const COOKIE_NAME = 'tend.session';
 const COOKIE_MAX_AGE = 30 * 24 * 60 * 60;
 const IS_PRODUCTION = !!(process.env.RAILWAY_ENVIRONMENT || process.env.NODE_ENV === 'production');
