@@ -73,8 +73,14 @@ const TRACKING_HEAD_TAGS = `
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-FM18D1E3YB');
-  if (window.location.href.includes('SuccessBookingPage=true')) {
-    gtag('event', 'book_a_demo');
+  const bookingSuccessParams = new URLSearchParams(window.location.search);
+  const hasBookingSuccess = Array.from(bookingSuccessParams.entries()).some(([key, value]) => (
+    key.toLowerCase() === 'successbookingpage' && value.toLowerCase() === 'true'
+  ));
+  if (hasBookingSuccess || window.location.href.includes('SuccessBookingPage=true')) {
+    gtag('event', 'book_a_demo', {
+      debug_mode: true
+    });
   }
 </script>
 <!-- Meta Pixel Code -->
