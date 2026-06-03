@@ -73,6 +73,9 @@ const TRACKING_HEAD_TAGS = `
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-FM18D1E3YB');
+  if (window.location.href.includes('SuccessBookingPage=true')) {
+    gtag('event', 'book_a_demo');
+  }
 </script>
 <!-- Meta Pixel Code -->
 <script>
