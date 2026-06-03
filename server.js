@@ -34,6 +34,7 @@ else            console.log('config: no demo config found, using built-in fallba
 const PORT = process.env.PORT || 3000;
 const ROOT = path.join(__dirname, 'project');
 const BOOKING_MEETING_URL = 'https://cal.com/withtend/demo';
+const BOOKING_DEFAULT_GUESTS = ['nate@kyrosglobal.com'];
 const COOKIE_NAME = 'tend.session';
 const COOKIE_MAX_AGE = 30 * 24 * 60 * 60;
 const IS_PRODUCTION = !!(process.env.RAILWAY_ENVIRONMENT || process.env.NODE_ENV === 'production');
@@ -728,6 +729,7 @@ function escapeHtml(value) {
 
 function bookingPageHtml() {
   const meetingUrl = BOOKING_MEETING_URL;
+  const defaultGuests = JSON.stringify(BOOKING_DEFAULT_GUESTS);
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -786,6 +788,7 @@ function bookingPageHtml() {
   const status = document.getElementById('status');
   const websiteInput = form.elements.companyWebsite;
   const meetingUrl = '${meetingUrl}';
+  const defaultGuests = ${defaultGuests};
 
   function normalizeWebsiteUrl(value) {
     const trimmed = String(value || '').trim();
@@ -871,6 +874,7 @@ function bookingPageHtml() {
     params.set('company', data.companyName || '');
     params.set('website', data.companyWebsite || '');
     params.set('message', data.aiGoal || '');
+    defaultGuests.forEach((email) => params.append('guests', email));
     window.location.href = meetingUrl + '?' + params.toString();
   });
 </script>
