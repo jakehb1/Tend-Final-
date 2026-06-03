@@ -776,7 +776,7 @@ function bookingPageHtml() {
         </div>
         <label>Work email <input name="email" type="email" autocomplete="email" required /></label>
         <label>Company name <input name="companyName" autocomplete="organization" required /></label>
-        <label>Company website <input name="companyWebsite" type="url" inputmode="url" placeholder="https://" /></label>
+        <label>Company website <input name="companyWebsite" type="text" inputmode="url" autocomplete="url" placeholder="company.com" /></label>
         <label>What are you looking to improve with AI? <textarea name="aiGoal" required></textarea></label>
         <button type="submit">Continue to scheduler</button>
         <div class="status" id="status" aria-live="polite"></div>
@@ -787,11 +787,51 @@ function bookingPageHtml() {
 <script>
   const form = document.getElementById('bookForm');
   const status = document.getElementById('status');
+  const websiteInput = form.elements.companyWebsite;
   const meetingUrl = '${meetingUrl}';
+
+  function normalizeWebsiteUrl(value) {
+    const trimmed = String(value || '').trim();
+    if (!trimmed) return '';
+    if (/[,\\s]/.test(trimmed)) return null;
+
+    const candidate = /^[a-z][a-z0-9+.-]*:\\/\\//i.test(trimmed)
+      ? trimmed
+      : 'https://' + trimmed;
+
+    let parsed;
+    try {
+      parsed = new URL(candidate);
+    } catch {
+      return null;
+    }
+
+    const hostname = parsed.hostname;
+    const labels = hostname.split('.');
+    const hasValidHost = /^https?:$/.test(parsed.protocol)
+      && labels.length > 1
+      && !hostname.includes('..')
+      && labels.every((label) => /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/i.test(label));
+
+    return hasValidHost ? parsed.href : null;
+  }
+
+  websiteInput.addEventListener('input', () => {
+    if (status.textContent === 'Please enter a valid website URL.') status.textContent = '';
+  });
+
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
     const button = form.querySelector('button');
     const data = Object.fromEntries(new FormData(form).entries());
+    const normalizedWebsite = normalizeWebsiteUrl(data.companyWebsite);
+    if (normalizedWebsite === null) {
+      status.textContent = 'Please enter a valid website URL.';
+      websiteInput.focus();
+      return;
+    }
+    data.companyWebsite = normalizedWebsite;
+    websiteInput.value = normalizedWebsite;
     button.disabled = true;
     status.textContent = 'Saving your details...';
     try {
