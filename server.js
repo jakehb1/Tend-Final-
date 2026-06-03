@@ -831,10 +831,11 @@ function bookingPageHtml() {
       };
       window.gtag('event', 'book_a_demo', {
         debug_mode: true,
+        transport_type: 'beacon',
         event_callback: finish,
-        event_timeout: 700
+        event_timeout: 1500
       });
-      setTimeout(finish, 800);
+      setTimeout(finish, 1800);
     });
   }
 
