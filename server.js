@@ -73,15 +73,6 @@ const TRACKING_HEAD_TAGS = `
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-FM18D1E3YB');
-  const bookingSuccessParams = new URLSearchParams(window.location.search);
-  const hasBookingSuccess = Array.from(bookingSuccessParams.entries()).some(([key, value]) => (
-    key.toLowerCase() === 'successbookingpage' && value.toLowerCase() === 'true'
-  ));
-  if (hasBookingSuccess || window.location.href.includes('SuccessBookingPage=true')) {
-    gtag('event', 'book_a_demo', {
-      debug_mode: true
-    });
-  }
 </script>
 <!-- Meta Pixel Code -->
 <script>
@@ -826,6 +817,27 @@ function bookingPageHtml() {
     if (status.textContent === 'Please enter a valid website URL.') status.textContent = '';
   });
 
+  function trackBookingFormCompleted() {
+    return new Promise((resolve) => {
+      if (typeof window.gtag !== 'function') {
+        resolve();
+        return;
+      }
+      let settled = false;
+      const finish = () => {
+        if (settled) return;
+        settled = true;
+        resolve();
+      };
+      window.gtag('event', 'book_a_demo', {
+        debug_mode: true,
+        event_callback: finish,
+        event_timeout: 700
+      });
+      setTimeout(finish, 800);
+    });
+  }
+
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
     const button = form.querySelector('button');
@@ -841,10 +853,16 @@ function bookingPageHtml() {
     button.disabled = true;
     status.textContent = 'Saving your details...';
     try {
-      await fetch('/api/book-call-lead', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) });
+      const leadResponse = await fetch('/api/book-call-lead', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) });
+      if (!leadResponse.ok) throw new Error('lead submission failed');
     } catch (error) {
       console.warn(error);
+      status.textContent = 'Something went wrong. Please try again.';
+      button.disabled = false;
+      return;
     }
+    status.textContent = 'Opening scheduler...';
+    await trackBookingFormCompleted();
     const params = new URLSearchParams();
     params.set('firstname', data.firstName || '');
     params.set('lastname', data.lastName || '');
