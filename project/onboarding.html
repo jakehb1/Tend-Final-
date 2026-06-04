@@ -264,7 +264,7 @@ body {
 </header>
 
 <main class="ob-main">
-  <h1 class="ob-greet">Morning, <span class="serif" id="ob-name">there</span>.</h1>
+  <h1 class="ob-greet">Set up your <span class="serif">Tend workspace</span>.</h1>
   <p class="ob-greet-sub">Three quick questions to set up your view.</p>
 
   <div class="ob-progress" aria-hidden="true">
@@ -404,23 +404,6 @@ body {
   var ampm = hr < 12 ? 'AM' : 'PM';
   document.getElementById('ob-date').textContent =
     DAYS[d.getDay()] + ' · ' + MON[d.getMonth()] + ' ' + d.getDate() + ' · ' + hh + ':' + mm + ' ' + ampm;
-
-  // Greeting prefix based on hour
-  var greetEl = document.querySelector('.ob-greet');
-  var prefix = hr < 12 ? 'Morning' : (hr < 18 ? 'Afternoon' : 'Evening');
-  greetEl.firstChild.textContent = prefix + ', ';
-
-  // Name from /api/auth/me
-  fetch('/api/auth/me', { credentials: 'same-origin' })
-    .then(function (r) { return r.ok ? r.json() : null; })
-    .then(function (data) {
-      if (!data || !data.user || !data.user.email) return;
-      var local = data.user.email.split('@')[0].split(/[.\-_]/)[0];
-      if (!local) return;
-      var nm = local.charAt(0).toUpperCase() + local.slice(1).toLowerCase();
-      document.getElementById('ob-name').textContent = nm;
-    })
-    .catch(function () {});
 
   var stepLabel = document.getElementById('ob-step-label');
   var dots = document.querySelectorAll('.ob-progress .dot');

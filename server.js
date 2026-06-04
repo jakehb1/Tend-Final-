@@ -33,11 +33,305 @@ else            console.log('config: no demo config found, using built-in fallba
 
 const PORT = process.env.PORT || 3000;
 const ROOT = path.join(__dirname, 'project');
+const SITE_ORIGIN = 'https://www.withtend.ai';
 const BOOKING_MEETING_URL = 'https://cal.com/team/withtend/demo';
 const BOOKING_DEFAULT_GUESTS = [];
 const COOKIE_NAME = 'tend.session';
 const COOKIE_MAX_AGE = 30 * 24 * 60 * 60;
 const IS_PRODUCTION = !!(process.env.RAILWAY_ENVIRONMENT || process.env.NODE_ENV === 'production');
+
+const SEO_DEFAULT_IMAGE = `${SITE_ORIGIN}/images/landing/dashboard-mockup.webp`;
+const SEO_ORGANIZATION_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Tend',
+  url: SITE_ORIGIN,
+  logo: `${SITE_ORIGIN}/images/tend-logo.png`,
+  description: 'Tend builds AI business partners that connect to company tools, surface what matters, and run operational work with approval gates and audit trails.',
+};
+
+const SEO_SOFTWARE_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Tend',
+  applicationCategory: 'BusinessApplication',
+  operatingSystem: 'Web',
+  url: SITE_ORIGIN,
+  description: 'An AI operating layer for teams that connects to business tools, understands company context, and runs repetitive operational workflows.',
+};
+
+const SEO_PRODUCT_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name: 'Tend',
+  brand: {
+    '@type': 'Brand',
+    name: 'Tend',
+  },
+  category: 'AI business operations software',
+  url: SITE_ORIGIN,
+  description: 'Tend is an AI business partner for teams that need to automate repetitive operational workflows across existing tools.',
+};
+
+const SEO_FAQ_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'What can Tend actually do for my business?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Tend runs repetitive work that crosses business tools, such as renewal follow-ups, lead follow-ups, ticket routing, invoice and contract reconciliation, and churn-risk surfacing.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Do we have to rip out our existing tools?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'No. Tend connects to the tools a team already uses, including CRM, billing, helpdesk, and documentation systems.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How long until we see value?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Most teams start with a narrow workflow, put the first agent live in two to three weeks, and measure ROI during the first month.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What about security and compliance?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Tend uses encryption in transit and at rest, role-based access, audit logs, scoped permissions, approval gates, and tenant-level data boundaries.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Where does the AI actually run?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Tend agents run inside guardrails defined by the customer team, with scoped permissions, reversible actions, dry runs, and logged reasoning.',
+      },
+    },
+  ],
+};
+
+const SEO_PAGES = {
+  '/': {
+    title: 'Tend | AI Business Partner for Ops, Revenue, and Support Teams',
+    description: 'Tend connects to your business tools, surfaces what matters, and runs operational workflows like follow-ups, renewals, routing, reconciliation, and approvals.',
+    priority: '1.0',
+    changefreq: 'weekly',
+    schemas: ['organization', 'website', 'software', 'faq'],
+  },
+  '/platform': {
+    title: 'Tend Platform | Data Layer and AI Agents for Business Operations',
+    description: 'See how Tend combines a business data layer, governed agent workflows, approvals, and audit trails so teams can automate operational work safely.',
+    priority: '0.9',
+    changefreq: 'weekly',
+    schemas: ['organization', 'software'],
+  },
+  '/use-cases': {
+    title: 'Tend Use Cases | AI Agents for Repetitive Business Work',
+    description: 'Explore Tend use cases for revenue operations, customer support, renewals, dispatch, finance workflows, and business follow-ups across your existing tools.',
+    priority: '0.8',
+    changefreq: 'weekly',
+    schemas: ['organization', 'software'],
+  },
+  '/about': {
+    title: 'About Tend | Building the Data Layer and Agents for Modern Work',
+    description: 'Learn how Tend is building a business data layer and AI agents that help companies understand context, coordinate work, and act with human oversight.',
+    priority: '0.7',
+    changefreq: 'monthly',
+    schemas: ['organization'],
+  },
+  '/book': {
+    title: 'Book a Tend Demo | Map AI Agents to Your Business Workflows',
+    description: 'Book a Tend demo to map where AI agents can reduce repetitive work across your CRM, helpdesk, billing, docs, and operational systems.',
+    priority: '0.9',
+    changefreq: 'weekly',
+    schemas: ['organization', 'software'],
+  },
+  '/book.html': {
+    canonicalPath: '/book',
+    title: 'Book a Tend Demo | Map AI Agents to Your Business Workflows',
+    description: 'Book a Tend demo to map where AI agents can reduce repetitive work across your CRM, helpdesk, billing, docs, and operational systems.',
+    noSitemap: true,
+    schemas: ['organization', 'software'],
+  },
+  '/connect': {
+    title: 'Connect Your Tools to Tend | CRM, Billing, Helpdesk, and Docs',
+    description: 'Connect Tend to the business systems your team already uses so agents can understand context and run workflows across tools.',
+    priority: '0.6',
+    changefreq: 'monthly',
+    schemas: ['organization', 'software'],
+  },
+  '/data-layer': {
+    title: 'Tend Data Layer | Business Context for AI Agents',
+    description: 'Tend creates a business data layer that gives AI agents structured context across customers, orders, tickets, invoices, documents, and workflows.',
+    priority: '0.6',
+    changefreq: 'monthly',
+    schemas: ['organization', 'software'],
+  },
+  '/docs': {
+    title: 'Tend Docs | Guides for the Tend Data Layer and Agent Platform',
+    description: 'Read Tend documentation for agents, connectors, entities, workflows, governance, APIs, the CLI, and implementation patterns.',
+    priority: '0.7',
+    changefreq: 'weekly',
+    schemas: ['organization', 'breadcrumb'],
+  },
+  '/docs/index': {
+    canonicalPath: '/docs',
+    title: 'Tend Docs | Guides for the Tend Data Layer and Agent Platform',
+    description: 'Read Tend documentation for agents, connectors, entities, workflows, governance, APIs, the CLI, and implementation patterns.',
+    noSitemap: true,
+    schemas: ['organization', 'breadcrumb'],
+  },
+  '/docs/agents': {
+    title: 'Tend Agents | Typed and Governed AI Workflows',
+    description: 'Learn how Tend agents are typed, bounded, governed, and connected to business workflows with approvals and auditability.',
+    priority: '0.55',
+    changefreq: 'monthly',
+    schemas: ['organization', 'breadcrumb'],
+  },
+  '/docs/api': {
+    title: 'Tend API Reference | Build with the Tend Platform',
+    description: 'Reference Tend API concepts for integrating agents, entities, workflows, connectors, policies, and operational data.',
+    priority: '0.55',
+    changefreq: 'monthly',
+    schemas: ['organization', 'breadcrumb'],
+  },
+  '/docs/cli': {
+    title: 'Tend CLI | Command Line Tools for Tend Workspaces',
+    description: 'Use the Tend CLI to manage projects, render workspace assets, and support local development for Tend implementations.',
+    priority: '0.5',
+    changefreq: 'monthly',
+    schemas: ['organization', 'breadcrumb'],
+  },
+  '/docs/connectors': {
+    title: 'Tend Connectors | Ingest Business Data from Existing Tools',
+    description: 'Understand how Tend connectors ingest and normalize data from business systems so agents can operate with context.',
+    priority: '0.55',
+    changefreq: 'monthly',
+    schemas: ['organization', 'breadcrumb'],
+  },
+  '/docs/entities': {
+    title: 'Tend Entities and Types | Structured Business Context',
+    description: 'Learn how Tend models customers, orders, tickets, invoices, documents, and other operational entities for AI agents.',
+    priority: '0.5',
+    changefreq: 'monthly',
+    schemas: ['organization', 'breadcrumb'],
+  },
+  '/docs/getting-started': {
+    title: 'Getting Started with Tend | Configure Your First AI Agent Workflow',
+    description: 'Start with Tend by connecting tools, mapping business context, defining policies, and launching the first governed agent workflow.',
+    priority: '0.6',
+    changefreq: 'monthly',
+    schemas: ['organization', 'breadcrumb'],
+  },
+  '/docs/limits': {
+    title: 'Tend Limits and SLAs | Platform Boundaries and Reliability',
+    description: 'Review Tend platform limits, reliability expectations, operational boundaries, and service-level patterns for agent workflows.',
+    priority: '0.45',
+    changefreq: 'monthly',
+    schemas: ['organization', 'breadcrumb'],
+  },
+  '/docs/mental-model': {
+    title: 'Tend Mental Model | How the Data Layer and Agents Work Together',
+    description: 'Understand the Tend mental model for business context, connectors, entities, governed agents, workflows, and human oversight.',
+    priority: '0.55',
+    changefreq: 'monthly',
+    schemas: ['organization', 'breadcrumb'],
+  },
+  '/docs/ontology': {
+    title: 'Tend Ontology | Shared Business Language for AI Agents',
+    description: 'Learn how the Tend ontology gives agents a shared language for business entities, relationships, policies, and workflows.',
+    priority: '0.5',
+    changefreq: 'monthly',
+    schemas: ['organization', 'breadcrumb'],
+  },
+  '/docs/policy': {
+    title: 'Tend Policy and Governance | Approval Gates for AI Agents',
+    description: 'See how Tend uses scoped permissions, policy controls, approval gates, audit trails, and governance for business AI agents.',
+    priority: '0.55',
+    changefreq: 'monthly',
+    schemas: ['organization', 'breadcrumb'],
+  },
+  '/docs/resolution': {
+    title: 'Tend Entity Resolution | Match Business Records Across Tools',
+    description: 'Learn how Tend resolves entities across CRM, billing, support, documents, and other systems to give agents reliable context.',
+    priority: '0.5',
+    changefreq: 'monthly',
+    schemas: ['organization', 'breadcrumb'],
+  },
+  '/docs/sdk': {
+    title: 'Tend SDK Reference | Build Tend Agents and Integrations',
+    description: 'Use the Tend SDK reference to build integrations, define entities, configure agents, and connect workflows to business systems.',
+    priority: '0.5',
+    changefreq: 'monthly',
+    schemas: ['organization', 'breadcrumb'],
+  },
+  '/docs/workflows': {
+    title: 'Tend Workflows | Sagas, Retries, and Governed Agent Actions',
+    description: 'Understand Tend workflows for multi-step business processes, retries, approvals, reversibility, and agent execution.',
+    priority: '0.55',
+    changefreq: 'monthly',
+    schemas: ['organization', 'breadcrumb'],
+  },
+  '/docs/changelog': {
+    title: 'Tend Changelog | Platform Updates and Product Notes',
+    description: 'Track Tend platform updates, documentation changes, product notes, and improvements to agents, workflows, and connectors.',
+    priority: '0.35',
+    changefreq: 'monthly',
+    schemas: ['organization', 'breadcrumb'],
+  },
+  '/app': {
+    title: 'Tend Workspace | AI Business Partner Demo',
+    description: 'Tend workspace demo for AI-assisted business operations, conversations, and workflow execution.',
+    robots: 'noindex,nofollow',
+    noSitemap: true,
+    schemas: ['organization', 'software'],
+  },
+  '/dashboard': {
+    title: 'Tend Dashboard | AI Business Operations Demo',
+    description: 'Tend dashboard demo showing operational signals, priorities, and business workflow context.',
+    robots: 'noindex,nofollow',
+    noSitemap: true,
+    schemas: ['organization', 'software'],
+  },
+  '/login': {
+    title: 'Sign in to Tend',
+    description: 'Sign in to the Tend workspace.',
+    robots: 'noindex,nofollow',
+    noSitemap: true,
+    schemas: ['organization'],
+  },
+  '/onboarding': {
+    title: 'Tend Onboarding',
+    description: 'Onboarding flow for Tend workspaces.',
+    robots: 'noindex,nofollow',
+    noSitemap: true,
+    schemas: ['organization'],
+  },
+  '/org': {
+    title: 'Tend Organization Demo',
+    description: 'Vertical organization demo for Tend AI business partners.',
+    robots: 'noindex,nofollow',
+    noSitemap: true,
+    schemas: ['organization', 'software'],
+  },
+  '/org-light': {
+    title: 'Tend Organization Demo',
+    description: 'Light organization demo for Tend AI business partners.',
+    robots: 'noindex,nofollow',
+    noSitemap: true,
+    schemas: ['organization', 'software'],
+  },
+};
 
 if (!process.env.SESSION_SECRET) {
   console.warn('warning: SESSION_SECRET not set. Using an ephemeral key; existing sessions break on restart.');
@@ -107,6 +401,157 @@ function injectTrackingTags(html) {
     next = next.replace(/(<body\b[^>]*>)/i, `$1\n${TRACKING_BODY_TAGS}`);
   }
   return next;
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function normalizeSeoPath(requestPath) {
+  let routePath = decodeURIComponent((requestPath || '/').split('?')[0].split('#')[0]);
+  if (routePath !== '/' && routePath.endsWith('/')) routePath = routePath.slice(0, -1);
+  if (routePath.endsWith('.html')) routePath = routePath.slice(0, -5);
+  if (routePath === '/index') routePath = '/';
+  if (routePath === '/docs/index') routePath = '/docs';
+  return routePath || '/';
+}
+
+function getSeoConfig(requestPath) {
+  const routePath = normalizeSeoPath(requestPath);
+  return SEO_PAGES[routePath] || SEO_PAGES[`${routePath}.html`] || null;
+}
+
+function schemaForPage(config, routePath) {
+  const schemaKeys = config.schemas || [];
+  const schemas = [];
+  if (schemaKeys.includes('organization')) schemas.push(SEO_ORGANIZATION_SCHEMA);
+  if (schemaKeys.includes('website')) {
+    schemas.push({
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: 'Tend',
+      url: SITE_ORIGIN,
+    });
+  }
+  if (schemaKeys.includes('software')) schemas.push(SEO_SOFTWARE_SCHEMA, SEO_PRODUCT_SCHEMA);
+  if (schemaKeys.includes('faq')) schemas.push(SEO_FAQ_SCHEMA);
+  if (schemaKeys.includes('breadcrumb')) {
+    const parts = routePath.split('/').filter(Boolean);
+    schemas.push({
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Home',
+          item: SITE_ORIGIN,
+        },
+        ...parts.map((part, index) => ({
+          '@type': 'ListItem',
+          position: index + 2,
+          name: part
+            .split('-')
+            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' '),
+          item: `${SITE_ORIGIN}/${parts.slice(0, index + 1).join('/')}`,
+        })),
+      ],
+    });
+  }
+  return schemas;
+}
+
+function seoHeadTags(config, routePath) {
+  const canonicalPath = config.canonicalPath || routePath;
+  const canonicalUrl = `${SITE_ORIGIN}${canonicalPath === '/' ? '/' : canonicalPath}`;
+  const title = escapeHtml(config.title);
+  const description = escapeHtml(config.description);
+  const image = escapeHtml(config.image || SEO_DEFAULT_IMAGE);
+  const robots = config.robots || 'index,follow';
+  const schemas = schemaForPage(config, canonicalPath);
+
+  return [
+    `<title>${title}</title>`,
+    `<meta name="description" content="${description}" />`,
+    `<meta name="robots" content="${escapeHtml(robots)}" />`,
+    `<link rel="canonical" href="${escapeHtml(canonicalUrl)}" />`,
+    `<meta property="og:type" content="website" />`,
+    `<meta property="og:site_name" content="Tend" />`,
+    `<meta property="og:title" content="${title}" />`,
+    `<meta property="og:description" content="${description}" />`,
+    `<meta property="og:url" content="${escapeHtml(canonicalUrl)}" />`,
+    `<meta property="og:image" content="${image}" />`,
+    `<meta name="twitter:card" content="summary_large_image" />`,
+    `<meta name="twitter:title" content="${title}" />`,
+    `<meta name="twitter:description" content="${description}" />`,
+    `<meta name="twitter:image" content="${image}" />`,
+    ...schemas.map((schema) => `<script type="application/ld+json">${JSON.stringify(schema)}</script>`),
+  ].join('\n');
+}
+
+function injectSeoTags(html, requestPath) {
+  const routePath = normalizeSeoPath(requestPath);
+  const config = getSeoConfig(requestPath);
+  if (!config || !html.includes('</head>')) return html;
+
+  const tags = seoHeadTags(config, routePath);
+  return html
+    .replace(/<title[^>]*>[\s\S]*?<\/title>\s*/i, '')
+    .replace(/<meta\s+[^>]*(?:name|property)=["'](?:description|robots|og:type|og:site_name|og:title|og:description|og:url|og:image|twitter:card|twitter:title|twitter:description|twitter:image)["'][^>]*>\s*/gi, '')
+    .replace(/<link\s+[^>]*rel=["']canonical["'][^>]*>\s*/gi, '')
+    .replace(/<script\s+type=["']application\/ld\+json["'][\s\S]*?<\/script>\s*/gi, '')
+    .replace('</head>', `${tags}\n</head>`);
+}
+
+function serveText(res, body, contentType = 'text/plain; charset=utf-8') {
+  res.writeHead(200, {
+    'Content-Type': contentType,
+    'Content-Length': Buffer.byteLength(body),
+    'Cache-Control': 'no-cache',
+  });
+  res.end(body);
+}
+
+function serveRobots(res) {
+  const body = [
+    'User-agent: *',
+    'Allow: /',
+    'Disallow: /app',
+    'Disallow: /dashboard',
+    'Disallow: /login',
+    'Disallow: /onboarding',
+    'Disallow: /org',
+    'Disallow: /org-light',
+    '',
+    `Sitemap: ${SITE_ORIGIN}/sitemap.xml`,
+    '',
+  ].join('\n');
+  serveText(res, body);
+}
+
+function serveSitemap(res) {
+  const now = new Date().toISOString().slice(0, 10);
+  const urls = Object.entries(SEO_PAGES)
+    .filter(([, config]) => !config.noSitemap && !config.robots)
+    .map(([routePath, config]) => {
+      const loc = `${SITE_ORIGIN}${routePath === '/' ? '/' : routePath}`;
+      return [
+        '  <url>',
+        `    <loc>${escapeHtml(loc)}</loc>`,
+        `    <lastmod>${now}</lastmod>`,
+        `    <changefreq>${config.changefreq || 'monthly'}</changefreq>`,
+        `    <priority>${config.priority || '0.5'}</priority>`,
+        '  </url>',
+      ].join('\n');
+    })
+    .join('\n');
+  const body = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`;
+  serveText(res, body, 'application/xml; charset=utf-8');
 }
 
 // Load system prompt from demo config if available, else fall back to built-in default.
@@ -883,7 +1328,7 @@ function bookingPageHtml() {
 }
 
 function serveBookingPage(res) {
-  const html = injectTrackingTags(bookingPageHtml());
+  const html = injectTrackingTags(injectSeoTags(bookingPageHtml(), '/book'));
   res.writeHead(200, {
     'Content-Type': 'text/html; charset=utf-8',
     'Content-Length': Buffer.byteLength(html),
@@ -926,6 +1371,8 @@ function resolveFile(urlPath) {
 
 function serveStatic(req, res) {
   const requestPath = (req.url || '/').split('?')[0];
+  if (requestPath === '/robots.txt') return serveRobots(res);
+  if (requestPath === '/sitemap.xml') return serveSitemap(res);
   if (requestPath === '/book.html' || requestPath === '/book') return serveBookingPage(res);
 
   const filePath = resolveFile(req.url || '/');
@@ -962,7 +1409,7 @@ function serveStatic(req, res) {
   }
 
   if (ext === '.html') {
-    const html = injectTrackingTags(rewriteBookingLinks(fs.readFileSync(filePath, 'utf8')));
+    const html = injectTrackingTags(injectSeoTags(rewriteBookingLinks(fs.readFileSync(filePath, 'utf8')), requestPath));
     res.writeHead(200, {
       'Content-Type': contentType,
       'Content-Length': Buffer.byteLength(html),
