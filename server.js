@@ -1265,6 +1265,100 @@ function bookingPageHtml() {
     if (status.textContent === 'Please enter a valid website URL.') status.textContent = '';
   });
 
+  function getStoredAttribution() {
+    try {
+      return JSON.parse(window.sessionStorage.getItem('tend_attribution') || '{}') || {};
+    } catch {
+      return {};
+    }
+  }
+
+  function setStoredAttribution(attribution) {
+    try {
+      window.sessionStorage.setItem('tend_attribution', JSON.stringify(attribution));
+    } catch {}
+  }
+
+  function inferAttributionSource(urlParams, referrer) {
+    const utmSource = String(urlParams.get('utm_source') || '').trim();
+    const utmMedium = String(urlParams.get('utm_medium') || '').trim();
+    if (utmSource || utmMedium) {
+      return {
+        source: utmSource || '(not set)',
+        medium: utmMedium || '(not set)',
+      };
+    }
+
+    if (urlParams.get('gclid') || urlParams.get('gbraid') || urlParams.get('wbraid')) {
+      return { source: 'google', medium: 'cpc' };
+    }
+    if (urlParams.get('fbclid')) {
+      return { source: 'facebook', medium: 'paid_social' };
+    }
+    if (urlParams.get('li_fat_id')) {
+      return { source: 'linkedin', medium: 'paid_social' };
+    }
+
+    if (referrer) {
+      try {
+        const referrerUrl = new URL(referrer);
+        const source = referrerUrl.hostname.replace(/^www\\./, '');
+        const searchHosts = ['google.', 'bing.', 'yahoo.', 'duckduckgo.', 'ecosia.'];
+        const socialHosts = ['linkedin.', 'facebook.', 'instagram.', 'x.com', 'twitter.', 't.co'];
+        const medium = searchHosts.some((host) => source.includes(host))
+          ? 'organic'
+          : (socialHosts.some((host) => source.includes(host)) ? 'social' : 'referral');
+        return { source, medium };
+      } catch {}
+    }
+
+    return { source: '(direct)', medium: '(none)' };
+  }
+
+  function captureAttribution() {
+    const params = new URLSearchParams(window.location.search);
+    const existing = getStoredAttribution();
+    const hasNewAttribution = [
+      'utm_source',
+      'utm_medium',
+      'utm_campaign',
+      'utm_content',
+      'utm_term',
+      'gclid',
+      'gbraid',
+      'wbraid',
+      'fbclid',
+      'li_fat_id'
+    ].some((key) => params.has(key));
+
+    if (existing.session_source && !hasNewAttribution) return existing;
+
+    const referrer = document.referrer || existing.referrer || '';
+    const inferred = inferAttributionSource(params, referrer);
+    const attribution = {
+      utm_source: String(params.get('utm_source') || existing.utm_source || inferred.source || '').trim(),
+      utm_medium: String(params.get('utm_medium') || existing.utm_medium || inferred.medium || '').trim(),
+      utm_campaign: String(params.get('utm_campaign') || existing.utm_campaign || '').trim(),
+      utm_content: String(params.get('utm_content') || existing.utm_content || '').trim(),
+      utm_term: String(params.get('utm_term') || existing.utm_term || '').trim(),
+      gclid: String(params.get('gclid') || existing.gclid || '').trim(),
+      gbraid: String(params.get('gbraid') || existing.gbraid || '').trim(),
+      wbraid: String(params.get('wbraid') || existing.wbraid || '').trim(),
+      fbclid: String(params.get('fbclid') || existing.fbclid || '').trim(),
+      li_fat_id: String(params.get('li_fat_id') || existing.li_fat_id || '').trim(),
+      referrer,
+      landing_page: existing.landing_page || window.location.href,
+      session_source: inferred.source,
+      session_medium: inferred.medium,
+      session_source_medium: inferred.source + ' / ' + inferred.medium
+    };
+
+    setStoredAttribution(attribution);
+    return attribution;
+  }
+
+  const bookingAttribution = captureAttribution();
+
   function trackBookingFormCompleted() {
     return new Promise((resolve) => {
       if (typeof window.gtag !== 'function') {
@@ -1278,6 +1372,7 @@ function bookingPageHtml() {
         resolve();
       };
       window.gtag('event', 'book_a_demo', {
+        ...bookingAttribution,
         debug_mode: true,
         transport_type: 'beacon',
         event_callback: finish,
