@@ -1201,7 +1201,12 @@ function bookingPageHtml() {
   button { border:0; border-radius:6px; background:var(--accent); color:#14110c; padding:13px 16px; font-weight:700; font:inherit; cursor:pointer; }
   button[disabled] { opacity:.65; cursor:wait; }
   .status { min-height:20px; color:var(--muted); font-size:13px; }
-  @media (max-width: 760px) { .wrap { grid-template-columns:1fr; } h1 { margin-top:34px; } .grid { grid-template-columns:1fr; } }
+  .wrap.hidden { display:none; }
+  .scheduler { display:none; width:min(1080px, 100%); }
+  .scheduler.active { display:block; }
+  .scheduler h2 { margin:26px 0 18px; font-size:clamp(26px, 4vw, 40px); line-height:1.05; letter-spacing:0; }
+  #cal-inline { width:100%; min-height:640px; background:var(--panel); border:1px solid var(--line); border-radius:8px; overflow:hidden; }
+  @media (max-width: 760px) { .wrap { grid-template-columns:1fr; } h1 { margin-top:34px; } .grid { grid-template-columns:1fr; } #cal-inline { min-height:540px; } }
 </style>
 </head>
 <body>
@@ -1227,8 +1232,41 @@ function bookingPageHtml() {
       </form>
     </section>
   </div>
+  <section class="scheduler" id="schedulerView">
+    <a class="logo" href="/">tend</a>
+    <h2>Pick a time that works for you.</h2>
+    <div id="cal-inline"></div>
+    <div class="status" id="schedulerStatus" aria-live="polite"></div>
+  </section>
 </main>
 <script>
+  (function (C, A, L) {
+    let p = function (a, ar) { a.q.push(ar); };
+    let d = C.document;
+    C.Cal = C.Cal || function () {
+      let cal = C.Cal;
+      let ar = arguments;
+      if (!cal.loaded) {
+        cal.ns = {};
+        cal.q = cal.q || [];
+        d.head.appendChild(d.createElement('script')).src = A;
+        cal.loaded = true;
+      }
+      if (ar[0] === L) {
+        const api = function () { p(api, arguments); };
+        const namespace = ar[1];
+        api.q = api.q || [];
+        if (typeof namespace === 'string') {
+          cal.ns[namespace] = cal.ns[namespace] || api;
+          p(cal.ns[namespace], ar);
+          p(cal, ['initNamespace', namespace]);
+        } else p(cal, ar);
+        return;
+      }
+      p(cal, ar);
+    };
+  })(window, 'https://app.cal.com/embed/embed.js', 'init');
+
   const form = document.getElementById('bookForm');
   const status = document.getElementById('status');
   const websiteInput = form.elements.companyWebsite;
@@ -1415,8 +1453,50 @@ function bookingPageHtml() {
     params.set('website', data.companyWebsite || '');
     params.set('message', data.aiGoal || '');
     defaultGuests.forEach((email) => params.append('guests', email));
-    window.location.href = meetingUrl + '?' + params.toString();
+    openInlineScheduler(params);
   });
+
+  function fallbackToCalRedirect(params) {
+    window.location.href = meetingUrl + '?' + params.toString();
+  }
+
+  function openInlineScheduler(params) {
+    const calLink = meetingUrl.replace('https://cal.com/', '');
+    const config = { theme: 'dark' };
+    params.forEach((value, key) => {
+      if (!value) return;
+      if (key === 'guests') {
+        config.guests = config.guests || [];
+        config.guests.push(value);
+        return;
+      }
+      config[key] = value;
+    });
+    try {
+      Cal('init', 'demo', { origin: 'https://app.cal.com' });
+      Cal.ns.demo('ui', {
+        theme: 'dark',
+        hideEventTypeDetails: false,
+        layout: 'month_view',
+        styles: { branding: { brandColor: '#e7d8bd' } }
+      });
+      Cal.ns.demo('inline', {
+        elementOrSelector: '#cal-inline',
+        calLink: calLink,
+        config: config
+      });
+    } catch (error) {
+      console.warn(error);
+      fallbackToCalRedirect(params);
+      return;
+    }
+    document.querySelector('.wrap').classList.add('hidden');
+    document.getElementById('schedulerView').classList.add('active');
+    window.scrollTo({ top: 0 });
+    setTimeout(() => {
+      if (!document.querySelector('#cal-inline iframe')) fallbackToCalRedirect(params);
+    }, 6000);
+  }
 </script>
 </body>
 </html>`;
