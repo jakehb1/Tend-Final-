@@ -1396,6 +1396,7 @@ function bookingPageHtml() {
   }
 
   const bookingAttribution = captureAttribution();
+  let metaBookingSuccessTracked = false;
 
   function trackBookingFormCompleted() {
     return new Promise((resolve) => {
@@ -1418,6 +1419,29 @@ function bookingPageHtml() {
       });
       setTimeout(finish, 1800);
     });
+  }
+
+  function trackMetaBookingSuccess(event) {
+    if (metaBookingSuccessTracked) return;
+    metaBookingSuccessTracked = true;
+
+    const successUrl = new URL(window.location.href);
+    successUrl.searchParams.set('isSuccessBookingPage', 'true');
+    window.history.replaceState(window.history.state, '', successUrl.toString());
+
+    const metaParams = {
+      content_name: 'Tend Demo Booking',
+      content_category: 'demo_booking',
+      booking_provider: 'calcom',
+      page_path: window.location.pathname,
+      event_id: event?.detail?.data?.uid || event?.detail?.data?.id || ''
+    };
+
+    if (typeof window.fbq === 'function') {
+      window.fbq('track', 'PageView');
+      window.fbq('track', 'Schedule', metaParams);
+      window.fbq('trackCustom', 'book_a_demo', metaParams);
+    }
   }
 
   form.addEventListener('submit', async (event) => {
@@ -1484,6 +1508,14 @@ function bookingPageHtml() {
         elementOrSelector: '#cal-inline',
         calLink: calLink,
         config: config
+      });
+      Cal.ns.demo('on', {
+        action: 'bookingSuccessfulV2',
+        callback: trackMetaBookingSuccess
+      });
+      Cal.ns.demo('on', {
+        action: 'bookingSuccessful',
+        callback: trackMetaBookingSuccess
       });
     } catch (error) {
       console.warn(error);
