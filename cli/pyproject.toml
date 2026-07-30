@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tend-sdk"
+version = "0.1.0"
+description = "tend CLI. Local sandbox for the tend ontology platform"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "tend" }]
+keywords = ["cli", "ontology", "agents"]
+
+[project.scripts]
+tend = "tend.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

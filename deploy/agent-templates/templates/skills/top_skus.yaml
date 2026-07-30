@@ -1,0 +1,41 @@
+name: top_skus
+description: |
+  Return the best-selling SKUs over a window. Call when the user asks
+  things like "what's selling this week", "top products by revenue",
+  "which SKUs drove the most units", or any best/worst SKU ranking.
+
+inputs:
+  window:
+    type: string
+    description: |
+      "today", "this-week" (default), "last-7-days", "last-30-days",
+      "month-to-date", "quarter-to-date".
+    default: "this-week"
+  metric:
+    type: string
+    description: |
+      "revenue" (default) or "units".
+    default: "revenue"
+  limit:
+    type: integer
+    default: 10
+    maximum: 100
+
+call:
+  http:
+    method: GET
+    url: "${BRIDGE_URL}/api/data/${TENANT_USER}/orders/top-skus"
+    params:
+      window: "{{window}}"
+      metric: "{{metric}}"
+      limit: "{{limit}}"
+  response:
+    select: records
+    format: json
+
+example:
+  user: "What was the best-selling SKU last week?"
+  call:
+    window: "last-7-days"
+    metric: "revenue"
+    limit: 1

@@ -1,0 +1,17 @@
+[phases.setup]
+nixPkgs = ["nodejs_20"]
+
+[phases.install]
+cmds = ["npm install --omit=dev"]
+
+[phases.build]
+cmds = ["echo 'static site, nothing to build'"]
+
+[start]
+cmd = "node server.js"
+
+# Pin language detection. The repo also contains Python and a separate
+# Node service under bridge/ for the optional VPS backend; we don't want
+# Nixpacks to pick those up when building the Railway frontend.
+[variables]
+NIXPACKS_NODE_VERSION = "20"

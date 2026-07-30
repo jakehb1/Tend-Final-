@@ -1,0 +1,22 @@
+.git
+.gitignore
+node_modules
+npm-debug.log*
+.env
+.env.local
+*.log
+.DS_Store
+
+# Side projects not used by the main server
+bridge
+deploy
+cli
+tend
+docs
+
+# Big WIP assets stay out of the image
+project/debug
+project/uploads
+# Keep the hero video; drop only the unused legacy masters
+project/videos/WEB_TEND.mov
+project/videos/WEB_TEND.mp4

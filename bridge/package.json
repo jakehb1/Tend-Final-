@@ -1,0 +1,14 @@
+{
+  "name": "tend-bridge",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Small Node service that bridges tend's frontend, Nango, and OpenClaw.",
+  "main": "bridge.js",
+  "scripts": {
+    "start": "node bridge.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "tend-final",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Tend marketing site and product surface. Node server with static frontend, Claude chat API, and Postgres-backed auth + conversation persistence.",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.11.5"
+  }
+}

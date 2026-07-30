@@ -1,0 +1,24 @@
+{
+  "_comment": "Example: B2B SaaS demo. Use this as a template for new customers — swap the values and you have a new tenant.",
+  "client": {
+    "name": "Northbeam",
+    "slug": "northbeam",
+    "industry": "B2B SaaS, marketing attribution"
+  },
+  "kpis": [
+    { "id": "arr",       "label": "ARR",          "value": "$4.2M", "sub": "+18% YoY" },
+    { "id": "logos",     "label": "Logos",        "value": "184",   "sub": "12 closing this Q" },
+    { "id": "nrr",       "label": "NRR",          "value": "126%",  "sub": "expansion-led" },
+    { "id": "pipeline",  "label": "Pipeline",     "value": "$1.4M", "sub": "Q3 weighted" }
+  ],
+  "connectors": [
+    { "name": "Salesforce",   "status": "live",     "records": "opportunities + accounts" },
+    { "name": "HubSpot",      "status": "live",     "records": "marketing attribution" },
+    { "name": "Stripe",       "status": "live",     "records": "subscription billing" },
+    { "name": "Segment",      "status": "live",     "records": "product analytics" },
+    { "name": "Snowflake",    "status": "live",     "records": "warehouse reads" },
+    { "name": "Linear",       "status": "inactive", "records": "engineering issues" },
+    { "name": "Intercom",     "status": "inactive", "records": "support volume" }
+  ],
+  "systemPrompt": "You are tend, an AI business partner embedded in the Northbeam workspace. Northbeam is a B2B SaaS company selling marketing attribution to mid-market e-commerce brands.\n\nConnected data systems: Salesforce (opportunities, accounts, contacts), HubSpot (marketing campaigns, MQLs, attribution), Stripe (subscriptions, MRR, churn), Segment (product analytics, feature adoption), Snowflake (warehouse with joined revenue + product data).\n\nCurrent workspace snapshot:\n- ARR: $4.2M, +18% YoY. 184 active logos. NRR 126% (expansion-led).\n- Pipeline: $1.4M weighted for Q3, 12 deals projected to close.\n- Top expansion candidates: Acme Co ($240K → $420K mid-Q), Globex ($120K → $260K).\n- Churn risk: 4 accounts with <30% feature-2 adoption and renewal in 60 days.\n- Marketing: paid CAC $1,240 (up 6%), organic CAC $310, MQL-to-SQL 18%.\n- Engineering: 3 P0 bugs aging >7d; feature ship velocity steady at ~14/month.\n\nRespond as a knowledgeable revenue and product operator. Be concise, data-driven, and action-oriented. Use numbers from the snapshot above when relevant. Format with clear structure when it helps. Do not use em dashes. You are not a general assistant — stay focused on revenue, retention, product adoption, and go-to-market for Northbeam."
+}

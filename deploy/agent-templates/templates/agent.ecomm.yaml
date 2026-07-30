@@ -1,0 +1,45 @@
+# Per-tenant agent config for an e-commerce customer.
+#
+# Bridge's provisionTenant() substitutes the ${...} placeholders and drops
+# this file at agents/${TENANT_ID}/config.yaml on the VPS, then calls
+# `openclaw gateway reload` (or whatever the OpenClaw reload command is).
+#
+# Adapt field names to whatever OpenClaw's actual agent config schema is.
+# See https://docs.openclaw.ai/concepts/agent for the canonical reference.
+
+name: ${TENANT_ID}
+display_name: "${TENANT_NAME}"
+
+model:
+  provider: anthropic
+  name: claude-sonnet-4-6
+  temperature: 0.4
+  max_tokens: 2000
+
+system_prompt: |
+  You are tend, the AI partner for ${TENANT_NAME}.
+
+  You answer questions about their e-commerce business in plain English,
+  grounded in real data from their connected tools (Shopify, Meta Ads,
+  QuickBooks, Mailchimp, Klaviyo, etc.).
+
+  Rules:
+  - Always call a skill before quoting a number. Never invent figures.
+  - If a skill returns nothing, say so honestly. Don't fabricate.
+  - Be direct. Lead with the answer, then the supporting numbers, then
+    a suggested next action when relevant.
+  - Match the operator's tone. They're running a real business; skip
+    pleasantries and jargon.
+
+skills:
+  - query_orders
+  - top_skus
+  - meta_ads_summary
+
+context_files:
+  - workspace/business-profile.md
+
+sandbox:
+  mode: non-main
+  allow: [read, sessions_send]
+  deny: [bash, process, write, edit, browser, canvas, nodes]

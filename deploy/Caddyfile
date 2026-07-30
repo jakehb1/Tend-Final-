@@ -1,0 +1,35 @@
+# tend reverse proxy. Caddy auto-issues Let's Encrypt certs as long as
+# the domains' A records point at this VPS.
+
+# Main app (frontend + chat). This is what end users see.
+{$APP_DOMAIN} {
+	encode zstd gzip
+
+	reverse_proxy app:3000 {
+		header_up Host {host}
+		header_up X-Real-IP {remote}
+		# Disable buffering for SSE chat streams
+		flush_interval -1
+	}
+}
+
+# Bridge API (connector OAuth, sync webhooks). Optional — only needed
+# when wiring live data sources.
+{$API_DOMAIN} {
+	encode zstd gzip
+
+	# CORS preflight handled by the bridge itself; we just pass through.
+	reverse_proxy bridge:8000 {
+		header_up Host {host}
+		header_up X-Real-IP {remote}
+	}
+}
+
+{$NANGO_DOMAIN} {
+	encode zstd gzip
+	# Nango has its own auth (dashboard username/password from env).
+	reverse_proxy nango-server:3003 {
+		header_up Host {host}
+		header_up X-Real-IP {remote}
+	}
+}
