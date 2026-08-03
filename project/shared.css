@@ -3,6 +3,31 @@
    Kept small on purpose. The homepage has its own inlined styles.
 --------------------------------------------------------------------------- */
 @font-face {
+  font-family: 'ABC Favorit';
+  src: url('fonts/ABC%20Favorit/ABCFavorit-Light-Trial.woff2') format('woff2'),
+       url('fonts/ABC%20Favorit/ABCFavorit-Light-Trial.woff') format('woff');
+  font-weight: 300; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'ABC Favorit';
+  src: url('fonts/ABC%20Favorit/ABCFavorit-Regular-Trial.woff2') format('woff2'),
+       url('fonts/ABC%20Favorit/ABCFavorit-Regular-Trial.woff') format('woff');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'ABC Favorit';
+  src: url('fonts/ABC%20Favorit/ABCFavorit-Medium-Trial.woff2') format('woff2'),
+       url('fonts/ABC%20Favorit/ABCFavorit-Medium-Trial.woff') format('woff');
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'ABC Favorit';
+  src: url('fonts/ABC%20Favorit/ABCFavorit-Bold-Trial.woff2') format('woff2'),
+       url('fonts/ABC%20Favorit/ABCFavorit-Bold-Trial.woff') format('woff');
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+@font-face {
+
   font-family: 'FH Lecturis Rounded';
   src: url('fonts/FHLecturisRoundedTest-Regular.otf') format('opentype');
   font-weight: 400;
@@ -121,7 +146,7 @@ h1, h2, h3, h4, h5, h6 {
 .wrap-narrow { max-width: 1120px; margin: 0 auto; padding: 0 40px; }
 .hair { height: 1px; background: var(--line); width: 100%; }
 .meta {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'ABC Favorit Mono', 'IBM Plex Mono', ui-monospace, monospace;
   font-size: 11px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -144,24 +169,26 @@ h1, h2, h3, h4, h5, h6 {
   max-width: 1440px; margin: 0 auto;
 }
 .brand {
-  display: inline-flex; align-items: center;
+  display: inline-flex; align-items: center; gap: 10px;
   text-decoration: none;
   color: var(--fg);
-  line-height: 0;
+  font-weight: 500; font-size: 20px; letter-spacing: -0.02em;
+  line-height: 1;
 }
+.brand .mark { width: 22px !important; height: 22px !important; }
 .brand img { height: 22px !important; width: auto !important; max-width: 140px !important; display: block; }
 .brand.brand-sm img { height: 20px !important; max-width: 130px !important; }
-.nav-links { display: flex; gap: 28px; font-size: 13px; }
+.nav-links { display: flex; gap: 38px; font-size: 15px; }
 .nav-links a {
   color: var(--fg-dim);
   text-decoration: none;
-  font-family: 'IBM Plex Mono', monospace;
-  letter-spacing: 0.02em;
+  font-family: 'ABC Favorit', 'Inter', system-ui, sans-serif;
+  letter-spacing: -0.005em;
 }
 .nav-links a:hover, .nav-links a.active { color: var(--fg); }
 .nav-links a.active { color: var(--accent); }
 .nav-cta {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'ABC Favorit Mono', 'IBM Plex Mono', ui-monospace, monospace;
   font-size: 13px;
   color: var(--bg);
   background: var(--fg);
@@ -176,11 +203,11 @@ h1, h2, h3, h4, h5, h6 {
   appearance: none;
 }
 button.nav-cta, button.btn { font: inherit; }
-button.nav-cta { font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: normal; }
+button.nav-cta { font-family: 'ABC Favorit Mono', 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; line-height: normal; }
 .nav-cta:hover { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
 .nav-right { display: inline-flex; align-items: center; gap: 10px; }
 .nav-login {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'ABC Favorit Mono', 'IBM Plex Mono', ui-monospace, monospace;
   font-size: 13px;
   color: var(--fg);
   background: var(--bg-3);
@@ -197,18 +224,27 @@ button.nav-cta { font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-
 
 /* ---------- buttons ---------- */
 .btn {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 13px;
-  letter-spacing: 0.02em;
-  padding: 13px 20px;
+  font-family: 'ABC Favorit Mono', 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 12px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  padding: 12px 18px;
+  border-radius: 8px;
   text-decoration: none;
   border: 1px solid var(--line-2);
   color: var(--fg);
-  display: inline-flex; align-items: center; gap: 10px;
-  transition: all 0.18s;
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  transition: background 0.18s, color 0.18s, border-color 0.18s, transform 0.18s;
   cursor: pointer;
   background: transparent;
+  white-space: nowrap;
+  text-align: center;
+  max-width: 100%;
 }
+.btn-primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn-primary:hover { background: #000; }
+.btn-outline { background: transparent; color: var(--fg); border-color: var(--line-2); }
+.btn-outline:hover { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
 .btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
 .btn.primary:hover { filter: brightness(1.08); transform: translateY(-1px); }
 .btn:hover { border-color: var(--fg-dim); }
@@ -222,7 +258,7 @@ button.nav-cta { font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-
   position: relative;
 }
 .page-head .kicker {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'ABC Favorit Mono', 'IBM Plex Mono', ui-monospace, monospace;
   font-size: 11px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -284,7 +320,7 @@ footer {
   margin-bottom: 24px;
 }
 .foot-row .col .h {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'ABC Favorit Mono', 'IBM Plex Mono', ui-monospace, monospace;
   font-size: 11px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -301,7 +337,7 @@ footer {
 .foot-row .col a:hover { color: var(--fg); }
 .foot-bottom {
   display: flex; justify-content: space-between; align-items: center;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'ABC Favorit Mono', 'IBM Plex Mono', ui-monospace, monospace;
   font-size: 11px;
   letter-spacing: 0.05em;
 }
@@ -339,7 +375,7 @@ footer {
     padding: 4px 24px 20px;
   }
   .nav-drawer a:not(.nav-login) {
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: 'ABC Favorit Mono', 'IBM Plex Mono', ui-monospace, monospace;
     font-size: 15px;
     color: var(--fg);
     text-decoration: none;
@@ -359,4 +395,27 @@ footer {
   }
   .foot-row { grid-template-columns: 1fr 1fr; }
   .page-head { padding: 120px 0 56px; }
+}
+
+
+/* ---------- homepage-pattern footer (story pages) ---------- */
+.foot { background: var(--mint); padding: 100px 0 36px; margin-top: 80px; border-top: none; }
+.foot-hero { text-align: center; margin-bottom: 96px; }
+.foot-hero .big-mark { width: 132px; height: 132px; margin: 0 auto 32px; display: block; object-fit: contain; }
+.foot-hero h3 { margin: 0 0 22px; font-size: clamp(20px, 1.8vw, 24px); font-weight: 500; letter-spacing: -0.015em; color: var(--fg); }
+.foot-cols { display: grid; grid-template-columns: auto 1fr auto; gap: 48px; align-items: center; padding-bottom: 24px; }
+.foot-cols .col { display: flex; flex-direction: column; }
+.foot-cols .col h4 { margin: 0 0 10px; font-size: 13px; font-weight: 600; color: var(--fg); }
+.foot-cols .col a { display: block; font-size: 13px; color: var(--fg-dim); padding: 4px 0; text-decoration: none; }
+.foot-cols .col a:hover { color: var(--fg); text-decoration: underline; }
+.foot-cols .socials { flex-direction: row; gap: 24px; align-items: center; justify-self: center; }
+.foot-cols .socials h4 { margin: 0; }
+.foot-cols .socials a { padding: 0; }
+.foot-cols .brand-col { display: inline-flex; align-items: center; gap: 8px; font-size: 20px; font-weight: 500; letter-spacing: -0.02em; color: var(--fg); text-decoration: none; }
+.foot-cols .brand-col .mark { width: 18px; height: 18px; }
+.foot-cols .copyright { font-family: 'ABC Favorit Mono', monospace; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--fg-mute); text-align: right; }
+@media (max-width: 980px) {
+  .nav-right .btn { display: none; }
+  .foot-cols { grid-template-columns: 1fr; gap: 28px; justify-items: center; }
+  .foot-cols .copyright { text-align: center; padding-top: 16px; border-top: 1px solid var(--line); width: 100%; }
 }

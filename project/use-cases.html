@@ -31,7 +31,7 @@
 .uc-cell:nth-child(3n) { border-right: none; }
 .uc-cell:nth-last-child(-n+3) { border-bottom: none; }
 .uc-cell .tag {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'ABC Favorit Mono', 'IBM Plex Mono', ui-monospace, monospace;
   font-size: 11px;
   letter-spacing: 0.06em;
   color: var(--fg-mute);
@@ -52,7 +52,7 @@
 }
 .uc-cell .arrow {
   margin-top: auto;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'ABC Favorit Mono', 'IBM Plex Mono', ui-monospace, monospace;
   font-size: 11px;
   color: var(--accent);
   letter-spacing: 0.05em;
@@ -67,20 +67,20 @@
   margin-top: 56px;
 }
 .case-meta { padding: 40px; border-right: 1px solid var(--line); display: flex; flex-direction: column; }
-.case-meta .tag { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; color: var(--accent); margin-bottom: 24px; }
+.case-meta .tag { font-family: 'ABC Favorit Mono', 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.06em; color: var(--accent); margin-bottom: 24px; }
 .case-meta h3 { font-size: 28px; font-weight: 300; letter-spacing: -0.02em; margin: 0 0 16px; line-height: 1.1; }
 .case-meta blockquote { margin: 24px 0 0; font-size: 16px; color: var(--fg-dim); line-height: 1.5; font-weight: 300; }
-.case-meta .attr { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--fg-mute); letter-spacing: 0.04em; margin-top: 16px; }
+.case-meta .attr { font-family: 'ABC Favorit Mono', 'IBM Plex Mono', ui-monospace, monospace; font-size: 11px; color: var(--fg-mute); letter-spacing: 0.04em; margin-top: 16px; }
 .case-nums { padding: 40px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px; align-content: start; }
 .case-num .v { font-size: 56px; font-weight: 300; letter-spacing: -0.035em; line-height: 0.95; }
 .case-num .v .unit { color: var(--accent); font-size: 22px; margin-left: 2px; }
-.case-num .k { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--fg-mute); margin-top: 10px; }
+.case-num .k { font-family: 'ABC Favorit Mono', 'IBM Plex Mono', ui-monospace, monospace; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--fg-mute); margin-top: 10px; }
 
 /* stack table */
 .stack {
   border: 1px solid var(--line);
   margin-top: 24px;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: 'ABC Favorit Mono', 'IBM Plex Mono', ui-monospace, monospace;
   font-size: 12.5px;
 }
 .stack .row {
@@ -114,24 +114,32 @@
 
 <nav class="nav">
   <div class="nav-inner">
-    <a class="brand" href="index.html"><img src="images/tend-logo.png" alt="tend" /></a>
+    <a class="brand" href="index.html" aria-label="Tend home">
+      <img class="mark" src="images/tend-mark.png" alt="" aria-hidden="true" />
+      <span>Tend</span>
+    </a>
     <div class="nav-links">
       <a href="platform.html">Platform</a>
-      <a href="use-cases.html" class="active">Use cases</a>
-      <a href="about.html">About</a>
+      <a href="use-cases.html">Solutions</a>
+      <a href="about.html">Resources</a>
+      <a href="org.html">Company</a>
     </div>
     <div class="nav-right">
-      <button type="button" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}' class="nav-cta">Book a demo <span>→</span></button>      <button type="button" class="nav-toggle" aria-controls="nav-drawer" aria-expanded="false" aria-label="Open menu">
+      <a class="btn btn-primary" href="https://cal.com/kyros-sync/30min" target="_blank" rel="noopener" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}'>Book a call</a>
+      <a class="btn btn-outline" href="index.html#how">See how it works</a>
+      <button type="button" class="nav-toggle" aria-controls="nav-drawer" aria-expanded="false" aria-label="Open menu">
         <svg width="18" height="14" viewBox="0 0 18 14" aria-hidden="true"><g stroke="currentColor" stroke-width="1.5" stroke-linecap="square"><line x1="0" y1="2" x2="18" y2="2"/><line x1="0" y1="7" x2="18" y2="7"/><line x1="0" y1="12" x2="18" y2="12"/></g></svg>
       </button>
     </div>
   </div>
   <div class="nav-drawer" id="nav-drawer">
     <a href="platform.html">Platform</a>
-    <a href="use-cases.html" class="active">Use cases</a>
-    <a href="about.html">About</a>
+    <a href="use-cases.html">Solutions</a>
+    <a href="about.html">Resources</a>
+    <a href="org.html">Company</a>
     <div class="drawer-cta-row">
-      <button type="button" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}' class="nav-cta">Book a demo <span>→</span></button>    </div>
+      <a class="btn btn-primary" href="https://cal.com/kyros-sync/30min" target="_blank" rel="noopener" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}'>Book a call</a>
+    </div>
   </div>
 </nav>
 
@@ -315,28 +323,25 @@
   </div>
 </section>
 
-<footer>
+<footer class="foot" id="company">
   <div class="wrap">
-    <div class="foot-row">
-      <div class="col">
-        <a class="brand brand-sm" href="index.html"><img src="images/tend-logo.png" alt="tend" /></a>
-        <div class="mono" style="color:var(--fg-mute);font-size:11px;letter-spacing:0.04em;line-height:1.6;margin-top:14px;">
-          hello@withtend.ai
-        </div>
-      </div>
-      <div class="col">
-        <div class="h">Product</div>
-        <a href="platform.html">Platform</a>
-        <a href="use-cases.html">Use cases</a>
-      </div>
-      <div class="col">
-        <div class="h">Company</div>
-        <a href="about.html">About</a>
-        <a href="mailto:careers@withtend.ai">Careers</a>
-        <a href="mailto:hello@withtend.ai">Contact</a>
-      </div>
+    <div class="foot-hero">
+      <img class="big-mark" src="images/tend-mark.png" alt="" aria-hidden="true" />
+      <h3>Less chaos. More revenue. Same team.</h3>
+      <a class="btn btn-outline" href="https://cal.com/kyros-sync/30min" target="_blank" rel="noopener" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}'>Book a demo</a>
     </div>
-    <div class="foot-bottom"><div>© 2026 tend, inc.</div></div>
+    <div class="foot-cols">
+      <a href="index.html" class="brand-col" aria-label="Tend home">
+        <img class="mark" src="images/tend-mark.png" alt="" />
+        <span>Tend</span>
+      </a>
+      <div class="col socials">
+        <h4>Socials</h4>
+        <a href="https://instagram.com" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://linkedin.com" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+      <div class="copyright">&copy; 2025-2026 Tend, Inc. All Rights Reserved.</div>
+    </div>
   </div>
 </footer>
 <!-- Mobile nav toggle -->
