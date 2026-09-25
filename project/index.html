@@ -1,2089 +1,278 @@
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>Tend: AI transformation, built in practice</title>
-<meta name="description" content="Tend turns AI into measurable business transformation: strategy through implementation, with our own platform and delivery teams." />
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<style>
-@font-face {
-  font-family: 'ABC Favorit';
-  src: url('fonts/ABC Favorit/ABCFavorit-Light-Trial.woff2') format('woff2'),
-       url('fonts/ABC Favorit/ABCFavorit-Light-Trial.woff') format('woff');
-  font-weight: 300; font-style: normal; font-display: swap;
-}
-@font-face {
-  font-family: 'ABC Favorit';
-  src: url('fonts/ABC Favorit/ABCFavorit-Regular-Trial.woff2') format('woff2'),
-       url('fonts/ABC Favorit/ABCFavorit-Regular-Trial.woff') format('woff');
-  font-weight: 400; font-style: normal; font-display: swap;
-}
-@font-face {
-  font-family: 'ABC Favorit';
-  src: url('fonts/ABC Favorit/ABCFavorit-Medium-Trial.woff2') format('woff2'),
-       url('fonts/ABC Favorit/ABCFavorit-Medium-Trial.woff') format('woff');
-  font-weight: 500; font-style: normal; font-display: swap;
-}
-@font-face {
-  font-family: 'ABC Favorit';
-  src: url('fonts/ABC Favorit/ABCFavorit-Bold-Trial.woff2') format('woff2'),
-       url('fonts/ABC Favorit/ABCFavorit-Bold-Trial.woff') format('woff');
-  font-weight: 700; font-style: normal; font-display: swap;
-}
-@font-face {
-  font-family: 'ABC Favorit Mono';
-  src: url('fonts/ABC Favorit Mono/ABCFavoritMono-Regular-Trial.woff2') format('woff2');
-  font-weight: 400; font-style: normal; font-display: swap;
-}
-@font-face {
-  font-family: 'ABC Favorit Mono';
-  src: url('fonts/ABC Favorit Mono/ABCFavoritMono-Medium-Trial.woff2') format('woff2');
-  font-weight: 500; font-style: normal; font-display: swap;
-}
-
-:root {
-  --bg:         #F5F5F2;
-  --panel:      #ECECE9;
-  --panel-2:   #E4E4E0;
-  --ink:        #14150F;
-  --ink-2:      #2A2B26;
-  --ink-mute:   #6B6C66;
-  --ink-faint:  #9B9C95;
-  --line:       rgba(20, 21, 15, 0.10);
-  --line-2:     rgba(20, 21, 15, 0.18);
-  --teal:       #87D1BC;
-  --teal-soft:  rgba(135, 209, 188, 0.22);
-  --teal-tint:  #DFEEEA;
-  --paper:      #FFFFFF;
-}
-* { box-sizing: border-box; }
-html, body {
-  margin: 0; padding: 0; background: var(--bg); color: var(--ink);
-  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
-  overflow-x: hidden;
-  max-width: 100vw;
-}
-body {
-  font-family: 'ABC Favorit', 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 1.5;
-  overflow-x: hidden;
-}
-.mono {
-  font-family: 'ABC Favorit Mono', 'IBM Plex Mono', ui-monospace, monospace;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-a { color: inherit; text-decoration: none; }
-img { display: block; max-width: 100%; }
-button { font: inherit; cursor: pointer; background: none; border: none; color: inherit; padding: 0; }
-
-.wrap { max-width: 1568px; margin: 0 auto; padding: 0 80px; }
-@media (max-width: 980px) { .wrap { padding: 0 32px; } }
-@media (max-width: 520px) { .wrap { padding: 0 20px; } }
-
-/* Every major section fills the viewport and centers its content. */
-.section-fill {
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 24px 0;
-}
-.section-fill > .wrap { width: 100%; align-self: stretch; }
-@media (max-width: 980px) {
-  .section-fill { min-height: 0; padding: 12px 0; }
-}
-
-/* ─── Brand mark ───────────────────────────────────────────────── */
-.mark {
-  display: inline-block;
-  width: 1em; height: 1em;
-  vertical-align: -0.12em;
-  flex: 0 0 auto;
-  object-fit: contain;
-}
-.mark svg { width: 100%; height: 100%; display: block; }
-
-html { scroll-behavior: smooth; scroll-padding-top: 80px; }
-
-/* ─── Buttons ──────────────────────────────────────────────────── */
-.btn {
-  display: inline-flex; align-items: center; justify-content: center;
-  font-family: 'ABC Favorit Mono', 'IBM Plex Mono', ui-monospace, monospace;
-  font-size: 12px;
-  letter-spacing: 0.10em;
-  text-transform: uppercase;
-  padding: 12px 18px;
-  border-radius: 8px;
-  border: 1px solid transparent;
-  transition: background 0.18s, color 0.18s, border-color 0.18s, transform 0.18s;
-  white-space: nowrap;
-  cursor: pointer;
-  text-align: center;
-  max-width: 100%;
-}
-.btn-primary { background: var(--ink); color: #fff; border-color: var(--ink); }
-.btn-primary:hover { background: #000; }
-
-/* Mobile button rules: keep tap targets readable, never wider than viewport. */
-@media (max-width: 980px) {
-  .btn { padding: 12px 16px; font-size: 11px; letter-spacing: 0.08em; white-space: normal; line-height: 1.25; }
-  /* Section-level CTAs (centered under a paragraph) go full-width on phones */
-  .pb-cta .btn,
-  .founder-bottleneck .btn,
-  .proof-quote .btn,
-  .eclipse-card .btn,
-  .this-intel .btn,
-  .foot-hero .btn { width: 100%; max-width: 360px; }
-  /* In-card CTAs (.btn-light) take the full glass-panel width, centered */
-  .feature-card .panel .cta-row { display: block; width: 100%; }
-  .feature-card .panel .btn-light { width: 100%; max-width: none; }
-  /* Approve button inside the proof-beat animation stays compact */
-  .pb-card .pb-approve { padding: 9px 14px; font-size: 11px; }
-}
-.btn-outline { background: transparent; color: var(--ink); border-color: var(--line-2); }
-.btn-outline:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
-.btn-outline-light { background: transparent; color: #fff; border-color: rgba(255,255,255,0.65); }
-.btn-outline-light:hover { background: #fff; color: var(--ink); }
-.btn-light { background: #fff; color: var(--ink); border-color: #fff; }
-.btn-light:hover { background: rgba(255,255,255,0.85); }
-
-/* ─── Nav ──────────────────────────────────────────────────────── */
-.nav {
-  position: sticky; top: 0; z-index: 50;
-  background: var(--bg);
-  border-bottom: 1px solid transparent;
-  transition: border-color 0.2s, background 0.2s;
-}
-.nav.scrolled {
-  background: rgba(245, 245, 242, 0.88);
-  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-  border-color: var(--line);
-}
-.nav-inner {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  height: 72px;
-  max-width: 1568px;
-  margin: 0 auto;
-  padding: 0 80px;
-  gap: 24px;
-}
-.brand {
-  display: inline-flex; align-items: center; gap: 10px;
-  font-weight: 500; font-size: 22px; letter-spacing: -0.02em;
-  color: var(--ink);
-}
-.brand .mark { width: 22px; height: 22px; }
-.nav-links {
-  display: inline-flex; align-items: center; gap: 38px;
-  font-size: 15px;
-  color: var(--ink-2);
-}
-.nav-links a:hover { color: var(--ink); }
-.nav-right { display: inline-flex; align-items: center; gap: 10px; justify-content: flex-end; }
-.nav-toggle {
-  display: none; width: 40px; height: 40px;
-  align-items: center; justify-content: center;
-  border: 1px solid var(--line-2); border-radius: 8px; background: transparent;
-}
-.nav-toggle svg { width: 18px; height: 18px; }
-.nav-drawer { display: none; }
-
-@media (max-width: 980px) {
-  .nav-inner { padding: 0 32px; grid-template-columns: 1fr auto; height: 64px; }
-  .nav-links { display: none; }
-  .nav-right .btn { display: none; }
-  .nav-toggle { display: inline-flex; }
-  .nav.open .nav-drawer {
-    display: flex; flex-direction: column;
-    position: absolute; top: 64px; left: 0; right: 0;
-    background: var(--bg);
-    border-top: 1px solid var(--line);
-    padding: 12px 32px 24px;
-    gap: 4px;
-  }
-  .nav.open .nav-drawer a:not(.btn) {
-    padding: 14px 0;
-    border-bottom: 1px solid var(--line);
-    font-size: 17px;
-    color: var(--ink);
-  }
-  .nav.open .nav-drawer .drawer-ctas {
-    display: flex; gap: 8px; padding-top: 16px;
-  }
-  .nav.open .nav-drawer .drawer-ctas .btn { flex: 1; }
-}
-@media (max-width: 520px) {
-  .nav-inner { padding: 0 20px; }
-}
-
-/* ─── Hero ─────────────────────────────────────────────────────── */
-.hero {
-  padding: 64px 0 0;
-  position: relative;
-  overflow: hidden;
-}
-.hero-inner {
-  text-align: left;
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 0 20px;
-  position: relative;
-  z-index: 2;
-}
-.hero h1 {
-  font-size: clamp(32px, 4.2vw, 56px);
-  font-weight: 500;
-  line-height: 1.08;
-  letter-spacing: -0.025em;
-  margin: 0 0 24px;
-  color: var(--ink);
-  text-wrap: balance;
-}
-.hero p {
-  font-size: clamp(14px, 1.1vw, 15.5px);
-  color: var(--ink-mute);
-  max-width: 480px;
-  margin: 0 auto;
-  line-height: 1.55;
-}
-.hero-spheres {
-  margin-top: 64px;
-  width: 100%;
-  display: block;
-  position: relative;
-}
-.hero-spheres img,
-.hero-spheres video {
-  width: 100%; height: auto;
-  display: block;
-  background: transparent;
-}
-@media (max-width: 980px) {
-  .hero { padding-top: 16px; }
-  .hero h1 { font-size: 32px; }
-  .hero p { font-size: 14px; max-width: 300px; }
-  .hero-spheres { margin-top: 8px; padding: 0; }
-  .hero-spheres picture,
-  .hero-spheres img,
-  .hero-spheres video {
-    width: 100%;
-    max-width: 100%;
-    margin-left: 0;
-    display: block;
-  }
-}
-
-/* ─── Proof beat (Tend doesn't just act) ───────────────────────── */
-.proof-beat { padding: 140px 0 64px; }
-@media (max-width: 980px) { .proof-beat { padding: 64px 0 40px; } }
-.proof-beat .pb-head {
-  text-align: center;
-  margin: 0 auto 36px;
-  max-width: 720px;
-}
-.proof-beat .pb-head h2 {
-  margin: 0 0 14px;
-  font-size: clamp(28px, 3.2vw, 42px);
-  font-weight: 500;
-  letter-spacing: -0.025em;
-  line-height: 1.08;
-  text-wrap: balance;
-}
-.proof-beat .pb-head p {
-  margin: 0 auto;
-  color: var(--ink-mute);
-  font-size: 15px;
-  line-height: 1.55;
-  max-width: 56ch;
-}
-.proof-beat .pb-stage {
-  position: relative;
-  background: var(--panel);
-  border-radius: 18px;
-  padding: 36px;
-  display: grid;
-  grid-template-columns: 1fr 360px;
-  gap: 32px;
-  align-items: start;
-  min-height: 360px;
-}
-/* Browser-window chrome: a 28px title bar with three traffic-light dots
-   on both .pb-card and .pb-why so each panel reads as an app screenshot. */
-.pb-card,
-.pb-why {
-  position: relative;
-  border-radius: 14px;
-  overflow: hidden;
-  box-shadow: 0 18px 44px -22px rgba(20, 21, 15, 0.22), 0 1px 0 rgba(20, 21, 15, 0.04);
-}
-.pb-card::before,
-.pb-why::before {
-  content: '';
-  position: absolute; left: 0; right: 0; top: 0; height: 28px;
-  background: rgba(20, 21, 15, 0.035);
-  border-bottom: 1px solid var(--line);
-  pointer-events: none;
-}
-.pb-card::after,
-.pb-why::after {
-  content: '';
-  position: absolute; left: 14px; top: 10px;
-  width: 8px; height: 8px; border-radius: 50%;
-  background: #FF5F57;
-  box-shadow:
-    14px 0 0 #FEBC2E,
-    28px 0 0 #28C840;
-  pointer-events: none;
-}
-.pb-card {
-  background: #fff;
-  border: 1px solid var(--line);
-  padding: 50px 26px 24px;
-  min-height: 290px;
-}
-.pb-card .pb-phase {
-  position: absolute;
-  inset: 50px 26px 24px;
-  opacity: 0;
-  transition: opacity 0.4s ease;
-}
-.pb-card .pb-phase.is-active { opacity: 1; }
-.pb-kicker {
-  font-family: 'ABC Favorit Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.10em;
-  text-transform: uppercase;
-  color: var(--ink-mute);
-  margin-bottom: 14px;
-}
-.pb-signal .pb-title {
-  font-size: 22px;
-  font-weight: 500;
-  letter-spacing: -0.015em;
-  margin: 0 0 8px;
-}
-.pb-signal .pb-meta {
-  color: var(--ink-mute);
-  font-size: 14px;
-  line-height: 1.5;
-}
-.pb-signal .pb-meta strong { color: var(--ink); font-weight: 500; }
-.pb-email .pb-subject {
-  font-weight: 500;
-  font-size: 16px;
-  margin: 0 0 12px;
-  letter-spacing: -0.005em;
-}
-.pb-email .pb-body {
-  color: var(--ink-2);
-  font-size: 14px;
-  line-height: 1.55;
-  margin: 0;
-}
-.pb-card .pb-approve {
-  position: absolute;
-  right: 24px;
-  bottom: 18px;
-  appearance: none;
-  background: var(--ink);
-  color: #fff;
-  font-family: 'ABC Favorit Mono', monospace;
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding: 9px 16px;
-  border-radius: 8px;
-  border: 1px solid var(--ink);
-  cursor: default;
-  opacity: 0;
-  transform: translateY(4px);
-  transition: opacity 0.3s ease, transform 0.3s ease, background 0.15s ease;
-}
-.pb-card.is-email .pb-approve { opacity: 1; transform: translateY(0); }
-.pb-card.is-pressed .pb-approve { background: #4FB39A; border-color: #4FB39A; transform: scale(0.96); }
-
-.pb-why {
-  background: #0E100C;
-  color: #fff;
-  padding: 50px 24px 24px;
-  align-self: stretch;
-  opacity: 0;
-  transform: translateX(20px);
-  transition: opacity 0.45s ease, transform 0.45s ease;
-}
-/* Why panel runs dark, so the title bar dots get a darker chrome too */
-.pb-why::before {
-  background: rgba(255, 255, 255, 0.06);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-.pb-why.is-open { opacity: 1; transform: translateX(0); }
-.pb-why-head {
-  font-family: 'ABC Favorit Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.10em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.55);
-  margin-bottom: 16px;
-}
-.pb-reasons {
-  margin: 0;
-  padding-left: 22px;
-  color: rgba(255,255,255,0.86);
-  font-size: 13.5px;
-  line-height: 1.55;
-}
-.pb-reasons li { margin: 0 0 12px; }
-.pb-reasons li:last-child { margin-bottom: 0; }
-.pb-reasons li b { color: #fff; font-weight: 500; }
-
-.pb-counter {
-  grid-column: 1 / -1;
-  display: flex; align-items: baseline; gap: 14px;
-  padding-top: 6px;
-  border-top: 1px solid var(--line);
-  font-family: 'ABC Favorit Mono', monospace;
-}
-.pb-counter-label {
-  font-size: 11px;
-  letter-spacing: 0.10em;
-  text-transform: uppercase;
-  color: var(--ink-mute);
-}
-.pb-counter-value {
-  font-size: 22px;
-  font-weight: 500;
-  letter-spacing: -0.015em;
-  color: var(--ink);
-}
-.pb-counter-value .pb-num { display: inline-block; min-width: 3.5ch; transition: opacity 0.35s ease; }
-.pb-counter.is-ticked .pb-num.from { opacity: 0; display: none; }
-.pb-counter.is-ticked .pb-num.to { opacity: 1; color: #2A8C76; }
-.pb-counter .pb-num.to { opacity: 0; }
-.pb-counter .pb-num.from { opacity: 1; }
-
-.proof-beat .pb-cta {
-  text-align: center;
-  margin-top: 28px;
-}
-
-@media (max-width: 980px) {
-  .proof-beat .pb-stage {
-    grid-template-columns: 1fr;
-    padding: 22px;
-    gap: 18px;
-  }
-  .pb-card { min-height: 220px; padding: 20px 22px; }
-  .pb-card .pb-phase { inset: 20px 22px; }
-  .pb-why { transform: translateY(20px); }
-  .pb-why.is-open { transform: translateY(0); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .pb-card .pb-phase, .pb-card .pb-approve, .pb-why, .pb-counter-value .pb-num { transition: none; }
-}
-
-/* ─── Founder Bottleneck ICP anchor ─────────────────────────────── */
-.founder-bottleneck { padding: 24px 0 32px; }
-.founder-bottleneck .fb-inner {
-  text-align: center;
-  max-width: 760px;
-  margin: 0 auto;
-}
-.founder-bottleneck .fb-eyebrow {
-  font-family: 'ABC Favorit Mono', monospace;
-  font-size: 12px;
-  letter-spacing: 0.10em;
-  text-transform: uppercase;
-  color: var(--ink-mute);
-  margin-bottom: 18px;
-}
-.founder-bottleneck h2 {
-  margin: 0 0 22px;
-  font-size: clamp(30px, 3.6vw, 48px);
-  font-weight: 500;
-  letter-spacing: -0.025em;
-  line-height: 1.05;
-  text-wrap: balance;
-}
-.founder-bottleneck p {
-  margin: 0 0 32px;
-  color: var(--ink-mute);
-  font-size: clamp(15px, 1.2vw, 17px);
-  line-height: 1.55;
-  max-width: 58ch;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-/* ─── Cards row (Individuals / Business) ───────────────────────── */
-.cards { padding: 24px 0; }
-.cards-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-}
-.feature-card {
-  position: relative;
-  border-radius: 22px;
-  overflow: hidden;
-  aspect-ratio: 720 / 420;
-  background: #1a1a1a;
-  isolation: isolate;
-  /* Scroll-in: cards start lifted off-axis, settle when .reveal applied */
-  opacity: 0;
-  transform: translateY(28px);
-  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease;
-}
-.feature-card.reveal { opacity: 1; transform: translateY(0); }
-.feature-card.reveal:nth-child(2) { transition-delay: 0.08s; }
-.feature-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 24px 60px -28px rgba(20, 21, 15, 0.45);
-}
-@media (prefers-reduced-motion: reduce) {
-  .feature-card { opacity: 1; transform: none; transition: none; }
-  .feature-card:hover { transform: none; }
-}
-.feature-card .bg {
-  position: absolute; inset: 0;
-  width: 100%; height: 100%;
-  object-fit: cover;
-  z-index: 0;
-}
-.feature-card .title {
-  position: absolute;
-  top: 36px; left: 0; right: 0;
-  text-align: center;
-  color: #fff;
-  font-size: clamp(22px, 2vw, 30px);
-  font-weight: 500;
-  letter-spacing: -0.015em;
-  z-index: 3;
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.55);
-}
-/* Top vignette so the title stays legible against busy backgrounds (halftone, etc.) */
-.feature-card::before {
-  content: '';
-  position: absolute; left: 0; right: 0; top: 0; height: 40%;
-  background: linear-gradient(180deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0) 100%);
-  z-index: 1;
-  pointer-events: none;
-}
-.feature-card .panel {
-  position: absolute;
-  left: 24px; right: 24px; bottom: 24px;
-  max-height: calc(100% - 110px); /* never cover the title at top */
-  background: rgba(14, 16, 12, 0.62);
-  backdrop-filter: blur(22px) saturate(1.1);
-  -webkit-backdrop-filter: blur(22px) saturate(1.1);
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  border-radius: 12px;
-  padding: 18px 22px;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 12px 18px;
-  align-items: end;
-  z-index: 2;
-  overflow: hidden;
-}
-.feature-card .panel .lead { color: #fff; font-size: 15px; font-weight: 500; letter-spacing: -0.005em; grid-column: 1 / -1; }
-.feature-card .panel .body {
-  color: rgba(255,255,255,0.85);
-  font-size: 13.5px;
-  line-height: 1.5;
-  grid-column: 1;
-  display: -webkit-box;
-  -webkit-line-clamp: 4;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-.feature-card .panel .unlock {
-  grid-column: 1 / -1;
-  color: #87D1BC;
-  font-size: 12.5px;
-  line-height: 1.45;
-  max-height: 0;
-  opacity: 0;
-  overflow: hidden;
-  transition: max-height 0.35s ease, opacity 0.25s ease, margin 0.35s ease;
-  margin-top: 0;
-}
-.feature-card .panel .unlock strong { font-weight: 500; color: #fff; }
-.feature-card:hover .panel .unlock,
-.feature-card:focus-within .panel .unlock {
-  max-height: 80px;
-  opacity: 1;
-  margin-top: -4px;
-}
-.feature-card .panel .cta-row { display: flex; justify-content: flex-end; grid-column: 2; align-self: end; }
-@media (max-width: 980px) {
-  .cards { padding: 16px 0 24px; }
-  .cards-grid { grid-template-columns: 1fr; gap: 14px; }
-  .feature-card { aspect-ratio: 360 / 360; }
-  .feature-card .title { top: 22px; font-size: 22px; }
-  .feature-card .panel {
-    left: 14px; right: 14px; bottom: 14px;
-    padding: 14px 16px;
-    grid-template-columns: 1fr;
-    gap: 10px;
-  }
-  .feature-card .panel .lead { font-size: 13px; }
-  .feature-card .panel .body { font-size: 12.5px; grid-column: 1; }
-  .feature-card .panel .cta-row { grid-column: 1; justify-content: flex-start; }
-}
-
-/* ─── Tagline two-up ───────────────────────────────────────────── */
-.tagline { padding: 8px 0 32px; }
-.tagline-grid {
-  display: grid;
-  grid-template-columns: 1.4fr 1fr;
-  gap: 80px;
-  align-items: start;
-}
-.tagline h2 {
-  margin: 0;
-  padding-left: 28px;
-  border-left: 1px solid var(--line-2);
-  font-size: clamp(22px, 2.2vw, 30px);
-  font-weight: 500;
-  line-height: 1.18;
-  letter-spacing: -0.018em;
-  color: var(--ink);
-  max-width: 22ch;
-}
-.tagline p {
-  margin: 0;
-  padding-left: 28px;
-  border-left: 1px solid var(--line-2);
-  color: var(--ink-mute);
-  font-size: 14px; line-height: 1.55;
-  max-width: 36ch;
-}
-@media (max-width: 980px) {
-  .tagline { padding: 16px 0 16px; }
-  .tagline-grid { grid-template-columns: 1fr; gap: 24px; }
-  .tagline h2 { font-size: 22px; }
-}
-
-/* ─── Tend Dashboard band ──────────────────────────────────────── */
-.dashboard { padding: 60px 0 90px; }
-.dashboard-head {
-  display: flex; align-items: center; gap: 12px; justify-content: center;
-  font-size: clamp(28px, 3vw, 38px);
-  font-weight: 500;
-  margin: 0 auto 36px;
-  letter-spacing: -0.02em;
-  width: fit-content;
-}
-.dashboard-head .mark { width: 0.7em; height: 0.7em; }
-.dashboard-panel {
-  background: #0E100C;
-  border-radius: 16px;
-  overflow: hidden;
-  max-width: 940px;
-  margin: 0 auto;
-  aspect-ratio: 940 / 720;
-  box-shadow: 0 24px 60px -28px rgba(20, 21, 15, 0.35), 0 0 0 1px var(--line-2);
-}
-.dashboard-panel .ontology {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-/* Ontology animations */
-.dashboard-panel .live-dot {
-  transform-origin: 846px 43px;
-  animation: tend-live 1.8s ease-in-out infinite;
-}
-.dashboard-panel .hub-pulse {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: tend-pulse 2.8s ease-out infinite;
-}
-.dashboard-panel .modules .mod rect {
-  animation: tend-mod-glow 4.8s ease-in-out infinite;
-}
-.dashboard-panel .modules .mod[data-i="1"] rect { animation-delay: 0.4s; }
-.dashboard-panel .modules .mod[data-i="2"] rect { animation-delay: 0.8s; }
-.dashboard-panel .modules .mod[data-i="3"] rect { animation-delay: 1.2s; }
-.dashboard-panel .modules .mod[data-i="4"] rect { animation-delay: 1.6s; }
-.dashboard-panel .modules .mod[data-i="5"] rect { animation-delay: 2.0s; }
-@keyframes tend-live {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50%      { opacity: 0.45; transform: scale(0.75); }
-}
-@keyframes tend-pulse {
-  0%   { transform: scale(0.85); opacity: 0.85; }
-  100% { transform: scale(1.6);  opacity: 0; }
-}
-@keyframes tend-mod-glow {
-  0%, 70%, 100% { stroke: rgba(255, 255, 255, 0.55); }
-  78%, 84%      { stroke: #87D1BC; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .dashboard-panel .live-dot,
-  .dashboard-panel .hub-pulse,
-  .dashboard-panel .modules .mod rect,
-  .dashboard-panel .packets circle { animation: none; }
-  .dashboard-panel .packets { display: none; }
-}
-@media (max-width: 980px) {
-  .dashboard { padding: 24px 0 48px; }
-  .dashboard-head { margin-bottom: 24px; }
-  .dashboard-panel { max-width: 100%; }
-}
-
-/* ─── How it works ─────────────────────────────────────────────── */
-.how { padding: 40px 0; text-align: center; }
-.how h2 {
-  margin: 0 0 40px;
-  font-size: clamp(28px, 3vw, 38px);
-  font-weight: 500;
-  letter-spacing: -0.02em;
-  color: var(--ink);
-}
-.steps {
-  display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 0; text-align: left;
-  align-items: stretch;
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-}
-.step {
-  padding: 32px 32px 40px;
-  border-right: 1px solid var(--line);
-  display: flex; flex-direction: column;
-}
-.step:last-child { border-right: none; }
-.step .kicker {
-  font-family: 'ABC Favorit Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.10em;
-  text-transform: uppercase;
-  color: var(--ink-mute);
-  margin-bottom: 16px;
-}
-.step h3 {
-  margin: 0 0 14px;
-  font-size: 24px;
-  font-weight: 500;
-  letter-spacing: -0.015em;
-  color: var(--ink);
-  line-height: 1.15;
-}
-.step p {
-  margin: 0 0 32px;
-  color: var(--ink-mute);
-  font-size: 14px;
-  line-height: 1.55;
-}
-.step-art {
-  border-radius: 16px;
-  padding: 22px;
-  aspect-ratio: 440 / 459;
-  max-width: 440px;
-  max-height: 44svh;
-  margin: auto auto 0;
-  width: 100%;
-  display: flex; align-items: center; justify-content: center;
-  position: relative;
-  overflow: hidden;
-}
-.step:nth-child(1) .step-art {
-  background: linear-gradient(155deg, rgba(13, 143, 159, 0.20) 0%, rgba(94, 209, 203, 0.20) 50%, rgba(76, 181, 168, 0.40) 100%);
-}
-.step:nth-child(2) .step-art {
-  background: linear-gradient(155deg, rgba(94, 209, 203, 0.20) 0%, rgba(76, 181, 168, 0.20) 50%, rgba(13, 143, 159, 0.35) 100%);
-}
-.step:nth-child(3) .step-art {
-  background: linear-gradient(155deg, rgba(76, 181, 168, 0.20) 0%, rgba(13, 143, 159, 0.20) 50%, rgba(94, 209, 203, 0.40) 100%);
-}
-.step-art::before, .step-art::after {
-  content: '';
-  position: absolute;
-  width: 14px; height: 14px;
-}
-.step-art::before { top: 18px; left: 18px; border-left: 1px solid var(--ink); border-top: 1px solid var(--ink); }
-.step-art::after  { bottom: 18px; right: 18px; border-right: 1px solid var(--ink); border-bottom: 1px solid var(--ink); }
-.step-art img {
-  max-width: 88%; max-height: 88%;
-  width: auto; height: auto; object-fit: contain;
-}
-@media (max-width: 980px) {
-  .how { padding: 24px 0 32px; }
-  .how h2 { margin-bottom: 24px; font-size: 26px; }
-  .steps { grid-template-columns: 1fr; gap: 0; border-top: none; border-bottom: none; }
-  .step { padding: 20px 0 24px; border-right: none; border-bottom: 1px solid var(--line); }
-  .step:last-child { border-bottom: none; }
-  .step h3 { font-size: 22px; }
-  .step-art { aspect-ratio: 440 / 300; max-width: 100%; max-height: none; padding: 16px; }
-}
-
-/* ─── Eclipse CTA ──────────────────────────────────────────────── */
-.eclipse { padding: 40px 0 80px; }
-.eclipse-card {
-  position: relative;
-  border-radius: 22px;
-  overflow: hidden;
-  aspect-ratio: 1471 / 702;
-  background: #0b0c0d;
-  display: flex; align-items: center; justify-content: center;
-  padding: 64px;
-}
-.eclipse-card .bg {
-  position: absolute; inset: 0;
-  width: 100%; height: 100%;
-  object-fit: cover; object-position: center 35%;
-  z-index: 0;
-}
-.eclipse-card::after {
-  content: '';
-  position: absolute; inset: 0;
-  background: linear-gradient(180deg, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0.05) 45%, rgba(0,0,0,0.35) 100%);
-  z-index: 1;
-}
-.eclipse-card .content {
-  position: relative; z-index: 2;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 28px;
-  text-align: center;
-  width: 100%;
-}
-.eclipse-card h2 {
-  margin: 0;
-  font-size: clamp(28px, 4.4vw, 56px);
-  font-weight: 500;
-  letter-spacing: -0.025em;
-  line-height: 1.05;
-  color: #fff;
-  max-width: 20ch;
-  text-wrap: balance;
-}
-@media (max-width: 980px) {
-  .eclipse { padding-bottom: 48px; }
-  .eclipse-card { aspect-ratio: 360 / 320; padding: 32px; }
-  .eclipse-card h2 { font-size: 26px; }
-}
-
-/* ─── Intelligence Layer (big diagram) ─────────────────────────── */
-/* Intentionally NOT .section-fill: the diagram needs to render at its
-   natural size for the labels to be readable, which would clip inside
-   100svh. The section grows past one screen and that's the point. */
-.intel { padding: 80px 0 96px; text-align: center; }
-.intel h2 {
-  margin: 0 0 36px;
-  font-size: clamp(28px, 3vw, 38px);
-  font-weight: 500;
-  letter-spacing: -0.02em;
-}
-.intel-panel {
-  background: transparent;
-  border: none;
-  outline: none;
-  padding: 0;
-  display: flex; align-items: center; justify-content: center;
-  position: relative;
-}
-.intel-panel picture, .intel-panel img {
-  width: 100%; height: auto;
-  max-width: 1568px;
-  display: block;
-}
-@media (max-width: 980px) {
-  .intel { padding: 32px 0; }
-  .intel-panel picture, .intel-panel img { max-width: 100%; width: 100%; height: auto; }
-}
-
-/* ─── This is the intelligence layer ───────────────────────────── */
-.this-intel { padding: 60px 0 80px; }
-.this-intel-grid {
-  display: grid;
-  grid-template-columns: 1fr 1.1fr;
-  gap: 80px;
-  align-items: start;
-}
-.this-intel .icon-tile {
-  width: 56px; height: 56px;
-  background: var(--teal-soft);
-  border-radius: 12px;
-  display: inline-flex; align-items: center; justify-content: center;
-  margin-bottom: 18px;
-}
-.this-intel .icon-tile .mark { width: 24px; height: 24px; }
-.this-intel h2 {
-  margin: 0 0 16px;
-  font-size: clamp(24px, 2.5vw, 32px);
-  font-weight: 500;
-  letter-spacing: -0.02em;
-}
-.this-intel p {
-  margin: 0 0 28px;
-  color: var(--ink-mute);
-  max-width: 36ch;
-  font-size: 15px; line-height: 1.55;
-}
-.pills {
-  display: flex; flex-direction: column; gap: 10px;
-}
-.pill {
-  border-radius: 999px;
-  padding: 14px 22px;
-  font-family: 'ABC Favorit Mono', monospace;
-  font-size: 12.5px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ink-2);
-}
-/* Gradient of teals deepening from top to bottom; the final pill is the muted bg color */
-.pills .pill:nth-child(1) { background: rgba(13, 62, 56, 0.20); }
-.pills .pill:nth-child(2) { background: rgba(30, 174, 169, 0.20); }
-.pills .pill:nth-child(3) { background: rgba(49, 177, 141, 0.20); }
-.pills .pill:nth-child(4) { background: rgba(62, 177, 160, 0.20); }
-.pills .pill:nth-child(5) { background: rgba(78, 199, 162, 0.20); }
-.pills .pill:nth-child(6) { background: rgba(85, 209, 188, 0.20); }
-.pills .pill:nth-child(7) { background: rgba(135, 209, 188, 0.20); }
-.pill.muted { background: #ECF3F1; color: var(--ink-mute); }
-@media (max-width: 980px) {
-  .this-intel-grid { grid-template-columns: 1fr; gap: 32px; }
-  .pill { padding: 12px 16px; font-size: 11px; }
-}
-
-/* ─── Ops tabs ─────────────────────────────────────────────────── */
-.ops { padding: 40px 0 80px; }
-.ops h2 {
-  text-align: center;
-  font-size: clamp(28px, 3vw, 38px);
-  font-weight: 500;
-  letter-spacing: -0.02em;
-  margin: 0 0 48px;
-}
-.ops-grid {
-  display: grid;
-  grid-template-columns: 360px 1fr;
-  gap: 24px;
-  align-items: stretch;
-}
-.ops-tabs {
-  background: var(--panel);
-  border-radius: 18px;
-  padding: 28px 24px;
-  display: flex; flex-direction: column;
-  gap: 6px;
-}
-.ops-tab {
-  text-align: left;
-  font-family: 'ABC Favorit Mono', monospace;
-  font-size: 12.5px;
-  letter-spacing: 0.10em;
-  text-transform: uppercase;
-  color: var(--ink-mute);
-  padding: 18px 16px;
-  border-radius: 10px;
-  border: 1px solid transparent;
-  transition: color 0.15s, background 0.15s, border-color 0.15s;
-}
-.ops-tab:hover { color: var(--ink); }
-.ops-tab.active { background: #fff; border-color: var(--line-2); color: var(--ink); }
-.ops-panel {
-  background: var(--panel);
-  border-radius: 18px;
-  padding: 36px 40px;
-  display: flex; flex-direction: column;
-}
-.ops-panel .kicker { display: none; }
-.ops-panel h3 {
-  margin: 0 0 14px;
-  font-size: 22px;
-  font-weight: 500;
-  letter-spacing: -0.015em;
-}
-.ops-panel p {
-  margin: 0;
-  color: var(--ink-mute);
-  font-size: 15px; line-height: 1.55;
-  max-width: 56ch;
-}
-.ops-stats {
-  margin-top: auto;
-  padding-top: 36px;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-}
-.ops-stat .v {
-  font-size: clamp(32px, 3vw, 42px);
-  font-weight: 500;
-  letter-spacing: -0.02em;
-  line-height: 1;
-  color: var(--ink);
-}
-.ops-stat .k {
-  margin-top: 8px;
-  font-family: 'ABC Favorit Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.10em;
-  text-transform: uppercase;
-  color: var(--ink-mute);
-}
-/* Mobile-only dot indicators (carousel UX) */
-.ops-dots { display: none; }
-.ops-slider { display: none; }
-@media (max-width: 980px) {
-  .ops { padding: 24px 0 56px; }
-  .ops-grid { grid-template-columns: 1fr; gap: 16px; }
-  .ops-tabs { display: none; }
-  .ops-panel { display: none; }
-  /* True horizontal slider: each .ops-slide is a full-width panel that snaps on scroll */
-  .ops-slider {
-    display: flex;
-    gap: 12px;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    scroll-behavior: smooth;
-    /* Break out to the wrap padding edge exactly (mobile wrap is 32px) so
-       slides feel edge-to-edge but the page never overflows horizontally. */
-    padding: 4px 32px;
-    margin: 0 -32px;
-    scrollbar-width: none;
-    max-width: 100vw;
-  }
-  .ops-slider::-webkit-scrollbar { display: none; }
-  .ops-slide {
-    flex: 0 0 calc(100% - 16px);
-    scroll-snap-align: center;
-    background: var(--panel);
-    border-radius: 18px;
-    padding: 28px 22px;
-    display: flex; flex-direction: column;
-  }
-  .ops-slide .kicker {
-    font-family: 'ABC Favorit Mono', monospace;
-    font-size: 12px;
-    letter-spacing: 0.10em;
-    text-transform: uppercase;
-    color: var(--ink-mute);
-    margin-bottom: 18px;
-  }
-  .ops-slide h3 {
-    margin: 0 0 12px;
-    font-size: 22px;
-    font-weight: 500;
-    letter-spacing: -0.015em;
-  }
-  .ops-slide p {
-    margin: 0 0 24px;
-    color: var(--ink-mute);
-    font-size: 14px;
-    line-height: 1.5;
-  }
-  .ops-slide .stats {
-    margin-top: auto;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-  }
-  .ops-slide .stat .v {
-    font-size: 22px;
-    font-weight: 500;
-    letter-spacing: -0.02em;
-    line-height: 1;
-    color: var(--ink);
-  }
-  .ops-slide .stat .k {
-    margin-top: 6px;
-    font-family: 'ABC Favorit Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--ink-mute);
-  }
-  .ops-dots {
-    display: flex; justify-content: center; gap: 10px;
-    margin-top: 18px;
-  }
-  .ops-dots .dot {
-    width: 8px; height: 8px; border-radius: 999px;
-    background: rgba(20, 21, 15, 0.18);
-    border: none; padding: 0;
-    transition: background 0.18s;
-  }
-  .ops-dots .dot.active { background: var(--ink); }
-}
-
-/* ─── Tend Proof ───────────────────────────────────────────────── */
-.proof { padding: 32px 0; }
-.proof h2 {
-  text-align: center;
-  font-size: clamp(28px, 3vw, 38px);
-  font-weight: 500;
-  letter-spacing: -0.02em;
-  margin: 0 0 32px;
-}
-.proof-stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
-  margin-bottom: 18px;
-}
-.proof-stat {
-  position: relative;
-  border-radius: 18px;
-  overflow: hidden;
-  padding: 36px 28px;
-  text-align: center;
-  aspect-ratio: 478 / 722;
-  max-height: 58svh;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 16px;
-  color: #fff;
-  isolation: isolate;
-  background: #1a1a1a;
-}
-.proof-stat::before {
-  content: '';
-  position: absolute; inset: 0; z-index: -1;
-  background-size: cover; background-position: center;
-  filter: blur(2px);
-  transform: scale(1.05);
-}
-.proof-stat[data-img="proof-1"]::before {
-  background: url('images/landing/proof-1.png') center/cover no-repeat;
-}
-.proof-stat[data-img="proof-2"]::before {
-  background: url('images/landing/proof-2.png') center/cover no-repeat;
-}
-.proof-stat[data-img="proof-3"]::before {
-  background: url('images/landing/proof-3.png') center/cover no-repeat;
-  transform: scale(1.05) scaleX(-1);
-}
-.proof-stat::after {
-  content: '';
-  position: absolute; inset: 0; z-index: -1;
-  background: radial-gradient(ellipse at center, rgba(0,0,0,0) 0%, rgba(0,0,0,0.25) 70%, rgba(0,0,0,0.45) 100%);
-}
-.proof-stat .v {
-  font-size: clamp(40px, 4vw, 64px);
-  font-weight: 500;
-  letter-spacing: -0.025em;
-  line-height: 1;
-  color: #fff;
-}
-.proof-stat .k {
-  color: rgba(255, 255, 255, 0.88);
-  font-size: 14px;
-  line-height: 1.5;
-  max-width: 28ch;
-}
-.proof-quote {
-  background: var(--panel);
-  border-radius: 18px;
-  padding: 32px clamp(32px, 4vw, 56px);
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 32px;
-  align-items: center;
-}
-.proof-quote blockquote {
-  margin: 0;
-  font-size: clamp(16px, 1.4vw, 20px);
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  line-height: 1.35;
-  color: var(--ink);
-  max-width: 50ch;
-}
-@media (max-width: 980px) {
-  .proof { padding: 24px 0 56px; }
-  .proof-stats { grid-template-columns: 1fr; gap: 12px; margin-bottom: 16px; }
-  .proof-stat { padding: 56px 24px; aspect-ratio: auto; min-height: 320px; }
-  .proof-quote { grid-template-columns: 1fr; padding: 36px 24px; gap: 24px; min-height: 0; }
-  .proof-quote blockquote { font-size: 22px; }
-}
-
-/* ─── FAQ ──────────────────────────────────────────────────────── */
-.faq { padding: 40px 0 80px; }
-.faq-grid {
-  display: grid;
-  grid-template-columns: 1fr 1.6fr;
-  gap: 80px;
-  align-items: start;
-}
-.faq h2 {
-  margin: 0 0 18px;
-  font-size: clamp(28px, 3vw, 40px);
-  font-weight: 500;
-  letter-spacing: -0.02em;
-  line-height: 1.05;
-}
-.faq .lede {
-  margin: 0;
-  color: var(--ink-mute);
-  font-size: 14px; line-height: 1.55;
-  max-width: 30ch;
-}
-.qa-list { display: flex; flex-direction: column; gap: 10px; }
-.qa-item {
-  background: var(--panel);
-  border-radius: 12px;
-  overflow: hidden;
-  transition: background 0.18s;
-}
-.qa-q {
-  width: 100%;
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 24px;
-  padding: 22px 28px;
-  text-align: left;
-  font-size: 15px;
-  color: var(--ink);
-  font-weight: 500;
-}
-.qa-q .sign {
-  font-family: 'ABC Favorit Mono', monospace;
-  font-size: 18px;
-  color: var(--ink-mute);
-  transition: transform 0.2s;
-  flex: 0 0 auto;
-}
-.qa-a {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.28s ease;
-  padding: 0 28px;
-}
-.qa-a-inner {
-  color: var(--ink-mute);
-  font-size: 14px;
-  line-height: 1.55;
-  padding-bottom: 22px;
-  max-width: 70ch;
-}
-.qa-item.open .qa-a { max-height: 360px; }
-@media (max-width: 980px) {
-  .faq { padding: 24px 0 56px; }
-  .faq-grid { grid-template-columns: 1fr; gap: 24px; }
-  .qa-q { padding: 18px 20px; font-size: 14px; }
-  .qa-a { padding: 0 20px; }
-}
-
-/* ─── Footer ───────────────────────────────────────────────────── */
-.foot {
-  background: var(--teal-tint);
-  padding: 100px 0 36px;
-}
-.foot-hero {
-  text-align: center;
-  margin-bottom: 96px;
-}
-.foot-hero .big-mark {
-  width: 132px; height: 132px;
-  margin: 0 auto 32px;
-  display: block;
-  object-fit: contain;
-}
-.foot-hero h3 {
-  margin: 0 0 22px;
-  font-size: clamp(20px, 1.8vw, 24px);
-  font-weight: 500;
-  letter-spacing: -0.015em;
-  color: var(--ink);
-}
-.foot-cols {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: 48px;
-  align-items: center;
-  padding-bottom: 24px;
-}
-.foot-cols .col { display: flex; flex-direction: column; }
-.foot-cols .col h4 {
-  margin: 0 0 10px;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--ink);
-}
-.foot-cols .col a {
-  display: block;
-  font-size: 13px;
-  color: var(--ink-2);
-  padding: 4px 0;
-}
-.foot-cols .col a:hover { color: var(--ink); text-decoration: underline; }
-.foot-cols .socials {
-  flex-direction: row;
-  gap: 24px;
-  align-items: center;
-  justify-self: center;
-}
-.foot-cols .socials h4 { margin: 0; }
-.foot-cols .socials a { padding: 0; }
-.foot-cols .brand-col {
-  display: inline-flex; align-items: center; gap: 8px;
-  font-size: 20px; font-weight: 500; letter-spacing: -0.02em;
-}
-.foot-cols .brand-col .mark { width: 18px; height: 18px; }
-.foot-cols .copyright {
-  font-family: 'ABC Favorit Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ink-mute);
-  text-align: right;
-}
-@media (max-width: 980px) {
-  .foot { padding: 64px 0 28px; }
-  .foot-hero { margin-bottom: 56px; }
-  .foot-hero .big-mark { width: 72px; height: 72px; }
-  .foot-cols {
-    grid-template-columns: 1fr;
-    gap: 20px;
-    justify-items: center;
-    text-align: center;
-  }
-  .foot-cols .socials { justify-self: center; }
-  .foot-cols .copyright {
-    text-align: center;
-    padding-top: 16px;
-    border-top: 1px solid var(--line);
-    width: 100%;
-  }
-}
-</style>
-</head>
-<body>
-
-
-<!-- ─────────────── Nav ─────────────── -->
-<header class="nav" id="nav">
-  <div class="nav-inner">
-    <a href="#top" class="brand" aria-label="Tend home">
-      <img class="mark" src="images/tend-mark.png" alt="" aria-hidden="true" />
-      <span>Tend</span>
-    </a>
-    <nav class="nav-links" aria-label="Primary">
-      <a href="platform.html">Platform</a>
-      <a href="use-cases.html">Solutions</a>
-      <a href="about.html">Resources</a>
-      <a href="org.html">Company</a>
-    </nav>
-    <div class="nav-right">
-      <a class="btn btn-primary" href="https://cal.com/kyros-sync/30min" target="_blank" rel="noopener" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}'>Book a call</a>
-      <a class="btn btn-outline" href="#how">See how it works</a>
-      <button class="nav-toggle" aria-label="Open menu" aria-expanded="false" id="navToggle">
-        <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 5h14M2 9h14M2 13h14"/></svg>
-      </button>
-    </div>
-    <div class="nav-drawer">
-      <a href="platform.html">Platform</a>
-      <a href="use-cases.html">Solutions</a>
-      <a href="dashboard.html">Dashboard</a>
-      <a href="data-layer.html">Data layer</a>
-      <a href="about.html">Resources</a>
-      <a href="org.html">Company</a>
-      <div class="drawer-ctas">
-        <a class="btn btn-primary" href="https://cal.com/kyros-sync/30min" target="_blank" rel="noopener" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}'>Book a call</a>
-        <a class="btn btn-outline" href="#how">See how it works</a>
-      </div>
-    </div>
-  </div>
-</header>
-
-<!-- ─────────────── Hero ─────────────── -->
-<section class="section-fill hero" id="top">
-  <div class="hero-inner">
-    <h1>AI transformation, built in practice.</h1>
-    <p>Tend turns AI into measurable growth, profitability, and operating leverage, from strategy through implementation. Built by operators. Delivered by builders.</p>
-  </div>
-  <div class="hero-spheres">
-    <video class="hero-orbs-video"
-           autoplay muted loop playsinline
-           preload="auto" disablepictureinpicture disableremoteplayback
-           poster="images/landing/hero-spheres.png" aria-hidden="true">
-      <source src="videos/tend-orbs.mp4" type="video/mp4" />
-    </video>
-  </div>
-</section>
-
-<!-- ─────────────── Proof beat: Tend doesn't just act. It shows you why. ─────────────── -->
-<section class="section-fill proof-beat" id="why">
-  <div class="wrap">
-    <div class="pb-head">
-      <h2>Tend doesn&rsquo;t just act. It shows you why.</h2>
-      <p>Every move Tend makes traces back to the signals it saw and the reasoning it followed. You decide what gets approved. You see the logic behind every recommendation.</p>
-    </div>
-    <div class="pb-stage" id="pbStage">
-      <div class="pb-card" id="pbCard">
-        <div class="pb-phase pb-signal is-active">
-          <div class="pb-kicker">Signal landed &middot; 09:42</div>
-          <div class="pb-title">Acme renewal at risk</div>
-          <div class="pb-meta">no reply in <strong>14 days</strong> &middot; <strong>$400K ARR</strong></div>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tend | Shared context for AI execution</title>
+    <meta
+      name="description"
+      content="Tend connects business data, relationships, and rules into shared context so AI agents can reason and execute across complex workflows."
+    />
+    <link rel="preconnect" href="https://www.withtend.ai" crossorigin />
+    <link href="/home.css" rel="stylesheet" />
+    <link href="/execution-map.css" rel="stylesheet" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="header">
+      <a class="wordmark" href="/" aria-label="Tend home"
+        ><img src="/images/tend-mark.png" width="24" height="24" alt="">Tend</a
+      >
+      <nav aria-label="Main navigation">
+        <a href="#a-lighter-day">Capabilities</a
+        ><a href="#how-it-works">How it works</a
+        ><a class="nav-book" href="/book"
+          >Book a call <span aria-hidden="true">↗</span></a
+        >
+      </nav>
+    </header>
+    <main id="main">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow">
+            <span class="tiny-spark" aria-hidden="true">✳</span> THE CONTEXT LAYER FOR AI AGENTS
+          </p>
+          <h1 id="hero-title">Shared context.<br /><em>AI execution.</em></h1>
+          <p class="intro">
+            Tend connects your business data, relationships, and rules into shared
+            context. AI agents use that context to reason and execute across
+            systems, teams, and complex workflows.
+          </p>
+          <a class="pill" href="/book"
+            >Discuss your deployment <span aria-hidden="true">↗</span></a
+          >
+          <p class="hero-note">
+            Multiple agents. Shared context. Defined controls.
+          </p>
         </div>
-        <div class="pb-phase pb-email">
-          <div class="pb-kicker">Draft &middot; to: sarah@acme.com</div>
-          <div class="pb-subject">Re: Q3 renewal, quick check-in</div>
-          <p class="pb-body">Hey Sarah, circling back on the renewal. Want to make sure we get this in front of you before the touch window closes. Few options for next week if it's easier than email.</p>
+        <div class="execution-map" aria-label="Illustrative order-to-cash workflow">
+          <div class="map-heading"><span>SYSTEMS → SHARED CONTEXT → AGENTS</span><span class="map-example">ILLUSTRATIVE MODEL</span></div>
+          <div class="map-sources"><div><span>CRM</span><strong>Accounts &amp; orders</strong></div><div><span>ERP</span><strong>Stock &amp; fulfillment</strong></div><div><span>FINANCE</span><strong>Terms &amp; credit</strong></div></div>
+          <div class="map-connector" aria-hidden="true"><i></i><i></i><i></i></div>
+          <div class="context-layer"><span class="layer-index">TEND / SHARED BUSINESS CONTEXT</span><h2>The context every agent works from.</h2><p>Entities, relationships, current state, and business rules.</p><div class="entity-chain"><span>Customer</span><b>↔</b><span>Order</span><b>↔</b><span>Inventory</span><b>↔</b><span>Invoice</span></div><div class="context-dimensions"><span>Source history</span><span>Permissions</span><span>Decision context</span></div></div>
+          <div class="map-link" aria-hidden="true"></div>
+          <div class="agent-fan" aria-label="Agents operating from shared context"><div><span class="agent-indicator"></span><strong>Operations agent</strong><small>Inventory &amp; fulfillment</small></div><div><span class="agent-indicator"></span><strong>Finance agent</strong><small>Credit &amp; invoicing</small></div><div><span class="agent-indicator"></span><strong>Revenue agent</strong><small>Accounts &amp; commitments</small></div></div>
+          <div class="map-link" aria-hidden="true"></div>
+          <div class="workflow-layer" id="workflow-example">
+            <div class="workflow-heading"><span class="layer-index">EXECUTION ACROSS SHARED CONTEXT</span><span>ORDER → CASH</span></div>
+            <div class="execution-branches"><div class="execution-node" data-node="inventory"><span class="node-light"></span><strong>Check inventory</strong><small>ERP · availability</small></div><div class="execution-node" data-node="credit"><span class="node-light"></span><strong>Evaluate credit</strong><small>Finance · policy</small></div></div>
+            <div class="branch-join" aria-hidden="true"></div>
+            <div class="approval-node" data-node="approval"><span class="gate-icon">◇</span><div><strong>Exception → human approval</strong><small>Credit limit exceeded · finance owner</small></div><span class="gate-status">GATED</span></div>
+            <div class="map-link" aria-hidden="true"></div>
+            <div class="execution-branches"><div class="execution-node" data-node="fulfill"><span class="node-light"></span><strong>Release fulfillment</strong><small>ERP · write back</small></div><div class="execution-node" data-node="invoice"><span class="node-light"></span><strong>Create invoice</strong><small>Finance · write back</small></div></div>
+          </div>
+          <div class="map-controls"><button id="workflow-run" type="button">Trace the workflow <span aria-hidden="true">↗</span></button><p id="workflow-status" role="status">Illustrative sequence. No systems connected.</p></div>
         </div>
-        <button class="pb-approve" type="button" tabindex="-1" aria-hidden="true">Approve</button>
-      </div>
-      <aside class="pb-why" id="pbWhy">
-        <div class="pb-why-head">Why this draft, why now?</div>
-        <ol class="pb-reasons">
-          <li><b>Last touch Apr 11.</b> Historical 18-day no-reply pattern = 73% lost.</li>
-          <li><b>Stakeholder Sarah</b> switched from email to Slack in March. Re-routing channel.</li>
-          <li><b>Renewal date June 15.</b> Touch window closes in 17 days.</li>
+        <div class="hero-footer">
+          <span>CONTEXT → DECISION → ACTION</span
+          ><a href="#a-lighter-day"
+            >Explore the capabilities <span aria-hidden="true">↓</span></a
+          ><span class="footer-flower" aria-hidden="true">✳</span>
+        </div>
+      </section>
+
+      <section class="lighter section-wrap" id="a-lighter-day">
+        <div class="section-intro">
+          <p class="eyebrow">A SHARED UNDERSTANDING OF YOUR BUSINESS</p>
+          <h2>
+            Give every agent<br /><em>the same business context.</em>
+          </h2>
+          <p>
+            Customer records, orders, and invoices live in different systems.
+            Tend connects them so agents can understand their relationships,
+            current status, and the rules that govern each action.
+          </p>
+        </div>
+        <div class="editorial-rows">
+          <article class="editorial-row">
+            <span class="row-number">01</span>
+            <h3>Connected entities.<br />Shared meaning.</h3>
+            <div>
+              <p>
+                Link customers, orders, assets, and commitments across systems.
+                Give agents consistent definitions and a clear view of how records relate.
+              </p>
+              <span class="row-caption">ENTITIES &amp; RELATIONSHIPS</span>
+            </div>
+            <svg class="line-art" viewBox="0 0 120 90" aria-hidden="true">
+              <path d="M5 62C40 62 3 5 37 20S54 92 76 47S112 26 115 17" />
+              <circle cx="6" cy="62" r="4" />
+              <circle cx="115" cy="17" r="4" />
+            </svg>
+          </article>
+          <article class="editorial-row">
+            <span class="row-number">02</span>
+            <h3>Current state.<br />Informed actions.</h3>
+            <div>
+              <p>
+                Include workflow status, dependencies, and prior decisions in
+                the context agents use. Each agent can see what is complete,
+                what is pending, and what must happen next.
+              </p>
+              <span class="row-caption">STATE &amp; DECISION CONTEXT</span>
+            </div>
+            <svg class="line-art" viewBox="0 0 120 90" aria-hidden="true">
+              <path
+                d="M12 18L48 54L105 12M22 42L48 68L112 24M32 66L48 82L115 41"
+              />
+            </svg>
+          </article>
+          <article class="editorial-row">
+            <span class="row-number">03</span>
+            <h3>Defined permissions.<br />Controlled execution.</h3>
+            <div>
+              <p>
+                Define what agents can access, which actions they can take,
+                and when they need approval. Apply those rules across the systems
+                involved in each workflow.
+              </p>
+              <span class="row-caption">CLEAR CONTEXT &amp; YOUR APPROVAL</span>
+            </div>
+            <svg class="line-art" viewBox="0 0 120 90" aria-hidden="true">
+              <ellipse
+                cx="60"
+                cy="45"
+                rx="43"
+                ry="24"
+                transform="rotate(-25 60 45)"
+              />
+              <ellipse
+                cx="60"
+                cy="45"
+                rx="43"
+                ry="24"
+                transform="rotate(25 60 45)"
+              />
+              <circle cx="60" cy="45" r="7" />
+            </svg>
+          </article>
+        </div>
+      </section>
+
+      <section class="breathing-room">
+        <span class="big-asterisk" aria-hidden="true">✳</span>
+        <p class="eyebrow">FROM SIGNAL TO EXECUTION</p>
+        <h2>Shared understanding.<br /><em>Coordinated agents.</em></h2>
+        <p>
+          Give agents a common view of the business,<br />wherever they need to act.
+        </p>
+        <span class="handwritten">Business rules travel with the context.</span>
+      </section>
+
+      <section class="how section-wrap" id="how-it-works">
+        <div class="how-heading">
+          <p class="eyebrow">IMPLEMENTATION</p>
+          <h2>Connect the context.<br /><em>Put agents to work.</em></h2>
+          <p>
+            Choose a workflow, define the result, and establish the context
+            and controls agents need to execute it.
+          </p>
+          <a class="text-link" href="/book"
+            >Scope your deployment <span aria-hidden="true">↗</span></a
+          >
+        </div>
+        <ol class="steps">
+          <li>
+            <span>01</span>
+            <div>
+              <h3>Define the process.</h3>
+              <p>
+                Map the work, its system dependencies, and its decision points.
+                Agree on how to measure success.
+              </p>
+            </div>
+          </li>
+          <li>
+            <span>02</span>
+            <div>
+              <h3>Connect systems and rules.</h3>
+              <p>
+                Connect the relevant data and define its relationships.
+                Set the permissions and approval rules for each agent.
+              </p>
+            </div>
+          </li>
+          <li>
+            <span>03</span>
+            <div>
+              <h3>Validate, deploy, and refine.</h3>
+              <p>
+                Check results against your criteria, refine the workflow,
+                and expand once it performs as expected.
+              </p>
+            </div>
+          </li>
         </ol>
-      </aside>
-      <div class="pb-counter" id="pbCounter">
-        <span class="pb-counter-label">Protected this quarter</span>
-        <span class="pb-counter-value"><span class="pb-num from">$0</span><span class="pb-num to">$400K</span></span>
-      </div>
-    </div>
-    <div class="pb-cta">
-      <a class="btn btn-primary" href="https://cal.com/kyros-sync/30min" target="_blank" rel="noopener" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}'>Want this running for you? &rarr; Book a call</a>
-    </div>
-  </div>
-</section>
+      </section>
 
-<!-- ─────────────── Cards ─────────────── -->
-<section class="section-fill cards">
-  <div class="wrap">
-    <div class="cards-grid">
-
-      <article class="feature-card" data-tier="individuals">
-        <picture>
-          <source srcset="images/landing/card-individuals.webp" type="image/webp" />
-          <img class="bg" src="images/landing/card-individuals.jpg" alt="" loading="lazy" decoding="async" />
-        </picture>
-        <div class="title">Tend for Individuals</div>
-        <div class="panel">
-          <div class="lead">For the operator running the business.</div>
-          <div class="body">Tend connects every tool you already use, learns how your business actually works, surfaces the decisions that need you, and runs the work that shouldn't. One operator. One layer. Already on your side.</div>
-          <div class="unlock"><strong>Unlocks:</strong> first agent live in your stack inside a week, chasing the renewals you'd otherwise miss.</div>
-          <div class="cta-row"><a class="btn btn-light" href="https://cal.com/kyros-sync/30min" target="_blank" rel="noopener" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}'>Start with you &rarr; Book a call</a></div>
+      <section class="questions section-wrap">
+        <div>
+          <p class="eyebrow">BEFORE WE GET STARTED</p>
+          <h2>Integration.<br /><em>Control. Deployment.</em></h2>
         </div>
-      </article>
-
-      <article class="feature-card" data-tier="business">
-        <picture>
-          <source srcset="images/landing/card-business.webp" type="image/webp" />
-          <img class="bg" src="images/landing/card-business.png" alt="" loading="lazy" decoding="async" />
-        </picture>
-        <div class="title">Tend for Business</div>
-        <div class="panel">
-          <div class="lead">For the team running the business.</div>
-          <div class="body">Everything in Tend, built for the people behind you. Shared decisions, shared agents, team oversight, and a single source of truth across the whole org. Built for the founder-led teams that have outgrown a stack of disconnected tools.</div>
-          <div class="unlock"><strong>Unlocks:</strong> shared agents, approvals routed to the right owner, audit trail your team can actually read.</div>
-          <div class="cta-row"><a class="btn btn-light" href="https://cal.com/kyros-sync/30min" target="_blank" rel="noopener" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}'>Deploy it on your team &rarr; Book a call</a></div>
+        <div class="faq-list">
+          <details>
+            <summary>
+              Do I need to change my tools?<span aria-hidden="true">+</span>
+            </summary>
+            <p>
+              Start with your existing tools. We identify the connections your
+              workflow needs and confirm support before implementation.
+            </p>
+          </details>
+          <details>
+            <summary>
+              How much control do I keep?<span aria-hidden="true">+</span>
+            </summary>
+            <p>
+              You define what agents can access and execute. We agree on which
+              actions require approval and which can run automatically.
+            </p>
+          </details>
+          <details>
+            <summary>
+              What makes a good first workflow?<span aria-hidden="true">+</span>
+            </summary>
+            <p>
+              Choose a process that depends on data and decisions across systems.
+              Order fulfillment, credit reviews, and account renewals are useful
+              starting points.
+            </p>
+          </details>
+          <details>
+            <summary>
+              What happens on the first call?<span aria-hidden="true">+</span>
+            </summary>
+            <p>
+              We review one workflow, the systems it uses, and the decisions it
+              requires. Then we outline the context, integrations, and controls
+              needed for deployment.
+            </p>
+          </details>
         </div>
-      </article>
+      </section>
 
-    </div>
-  </div>
-</section>
-
-<!-- ─────────────── Tagline ─────────────── -->
-<section class="tagline">
-  <div class="wrap">
-    <div class="tagline-grid">
-      <h2>Bring us one constraint limiting growth.</h2>
-      <p>One revenue bottleneck. One process that can’t scale. In the first working session we define the result, the constraint, and what has to be built. Start with one result. Transform from there.</p>
-    </div>
-  </div>
-</section>
-
-<!-- ─────────────── Tend Dashboard ─────────────── -->
-<section class="section-fill dashboard">
-  <div class="wrap">
-    <div class="dashboard-head">
-      <img class="mark" src="images/tend-mark.png" alt="" />
-      <span>Tend Dashboard</span>
-    </div>
-    <div class="dashboard-panel">
-      <svg class="ontology" viewBox="0 0 940 720" role="img" aria-label="Tend data flow: a central ontology hub linking CRM, ERP, Warehouse, HRIS, Billing, Support through revenue / ops / finance agents." xmlns="http://www.w3.org/2000/svg">
-        <!-- Grid background -->
-        <defs>
-          <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-            <path d="M40 0H0V40" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
-          </pattern>
-          <radialGradient id="hubGlow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="rgba(135,209,188,0.55)"/>
-            <stop offset="60%" stop-color="rgba(135,209,188,0.10)"/>
-            <stop offset="100%" stop-color="rgba(135,209,188,0)"/>
-          </radialGradient>
-        </defs>
-        <rect width="940" height="720" fill="#0E100C"/>
-        <rect width="940" height="720" fill="url(#grid)"/>
-
-        <!-- Header chrome -->
-        <g font-family="ABC Favorit Mono, ui-monospace, monospace" font-size="13" fill="rgba(255,255,255,0.45)">
-          <rect x="28" y="28" width="216" height="30" rx="2" fill="none" stroke="rgba(255,255,255,0.18)"/>
-          <text x="40" y="48" letter-spacing="0.08em">FIG. 01 / TEND / DATA FLOW</text>
-          <rect x="828" y="28" width="84" height="30" rx="2" fill="none" stroke="rgba(255,255,255,0.18)"/>
-          <circle class="live-dot" cx="846" cy="43" r="4" fill="#87D1BC"/>
-          <text x="860" y="48" letter-spacing="0.08em">LIVE</text>
-        </g>
-
-        <!-- Connection lines (drawn first so nodes sit on top) -->
-        <g class="links" stroke="rgba(255,255,255,0.18)" stroke-width="1" fill="none">
-          <!-- Hub at center (470, 360). Lines to 6 outer modules + 3 agents. -->
-          <path d="M470 360 L150 130"/>  <!-- CRM (top-left) -->
-          <path d="M470 360 L790 130"/>  <!-- ERP (top-right) -->
-          <path d="M470 360 L100 360"/>  <!-- SUPPORT (left) -->
-          <path d="M470 360 L840 360"/>  <!-- WAREHOUSE (right) -->
-          <path d="M470 360 L150 590"/>  <!-- BILLING (bottom-left) -->
-          <path d="M470 360 L790 590"/>  <!-- HRIS (bottom-right) -->
-          <!-- agent waypoints (closer to hub) -->
-          <path d="M470 360 L470 220"/>  <!-- AGENT · REVENUE -->
-          <path d="M470 360 L330 470"/>  <!-- AGENT · FINANCE -->
-          <path d="M470 360 L610 470"/>  <!-- AGENT · OPS -->
-        </g>
-
-        <!-- Outer module boxes -->
-        <g class="modules" font-family="ABC Favorit Mono, ui-monospace, monospace" font-size="14" fill="#fff">
-          <g class="mod" data-i="0">
-            <rect x="78" y="110" width="144" height="40" rx="2" fill="#0E100C" stroke="rgba(255,255,255,0.55)"/>
-            <text x="150" y="135" text-anchor="middle" letter-spacing="0.08em">CRM</text>
-          </g>
-          <g class="mod" data-i="1">
-            <rect x="718" y="110" width="144" height="40" rx="2" fill="#0E100C" stroke="rgba(255,255,255,0.55)"/>
-            <text x="790" y="135" text-anchor="middle" letter-spacing="0.08em">ERP</text>
-          </g>
-          <g class="mod" data-i="2">
-            <rect x="28" y="340" width="144" height="40" rx="2" fill="#0E100C" stroke="rgba(255,255,255,0.55)"/>
-            <text x="100" y="365" text-anchor="middle" letter-spacing="0.08em">SUPPORT</text>
-          </g>
-          <g class="mod" data-i="3">
-            <rect x="768" y="340" width="144" height="40" rx="2" fill="#0E100C" stroke="rgba(255,255,255,0.55)"/>
-            <text x="840" y="365" text-anchor="middle" letter-spacing="0.08em">WAREHOUSE</text>
-          </g>
-          <g class="mod" data-i="4">
-            <rect x="78" y="570" width="144" height="40" rx="2" fill="#0E100C" stroke="rgba(255,255,255,0.55)"/>
-            <text x="150" y="595" text-anchor="middle" letter-spacing="0.08em">BILLING</text>
-          </g>
-          <g class="mod" data-i="5">
-            <rect x="718" y="570" width="144" height="40" rx="2" fill="#0E100C" stroke="rgba(255,255,255,0.55)"/>
-            <text x="790" y="595" text-anchor="middle" letter-spacing="0.08em">HRIS</text>
-          </g>
-        </g>
-
-        <!-- Agent waypoint markers -->
-        <g class="agents" font-family="ABC Favorit Mono, ui-monospace, monospace" font-size="11" fill="rgba(255,255,255,0.55)" letter-spacing="0.06em">
-          <circle cx="470" cy="220" r="6" fill="#0E100C" stroke="rgba(255,255,255,0.55)" stroke-width="1.2"/>
-          <text x="470" y="206" text-anchor="middle">AGENT · REVENUE</text>
-          <circle cx="330" cy="470" r="6" fill="#0E100C" stroke="rgba(255,255,255,0.55)" stroke-width="1.2"/>
-          <text x="330" y="494" text-anchor="middle">AGENT · FINANCE</text>
-          <circle cx="610" cy="470" r="6" fill="#0E100C" stroke="rgba(255,255,255,0.55)" stroke-width="1.2"/>
-          <text x="610" y="494" text-anchor="middle">AGENT · OPS</text>
-        </g>
-
-        <!-- Central hub -->
-        <g class="hub" transform="translate(470 360)">
-          <circle r="120" fill="url(#hubGlow)"/>
-          <circle class="hub-pulse" r="76" fill="none" stroke="rgba(135,209,188,0.45)" stroke-width="1"/>
-          <circle r="56" fill="#0E100C" stroke="rgba(255,255,255,0.65)" stroke-width="1.2"/>
-          <!-- inner gem -->
-          <g stroke="rgba(255,255,255,0.85)" stroke-width="1" fill="none">
-            <path d="M-18 -8 L0 -22 L18 -8 L0 6 Z"/>
-            <path d="M-18 -8 L0 6 L0 22"/>
-            <path d="M18 -8 L0 6"/>
-          </g>
-          <text font-family="ABC Favorit Mono, ui-monospace, monospace" font-size="11" letter-spacing="0.08em"
-                fill="rgba(255,255,255,0.65)" text-anchor="middle" y="42">ONTOLOGY</text>
-        </g>
-
-        <!-- Animated data packets traveling outward from the hub along each link -->
-        <g class="packets" fill="#87D1BC" transform="translate(470 360)">
-          <circle r="3.5"><animateMotion dur="2.6s" repeatCount="indefinite"          path="M0 0 L-320 -230"/></circle>
-          <circle r="3.5"><animateMotion dur="2.6s" repeatCount="indefinite" begin="0.4s" path="M0 0 L320 -230"/></circle>
-          <circle r="3.5"><animateMotion dur="2.6s" repeatCount="indefinite" begin="0.8s" path="M0 0 L-370 0"/></circle>
-          <circle r="3.5"><animateMotion dur="2.6s" repeatCount="indefinite" begin="1.2s" path="M0 0 L370 0"/></circle>
-          <circle r="3.5"><animateMotion dur="2.6s" repeatCount="indefinite" begin="1.6s" path="M0 0 L-320 230"/></circle>
-          <circle r="3.5"><animateMotion dur="2.6s" repeatCount="indefinite" begin="2.0s" path="M0 0 L320 230"/></circle>
-        </g>
-
-        <!-- Footer chrome -->
-        <g font-family="ABC Favorit Mono, ui-monospace, monospace" font-size="12" fill="rgba(255,255,255,0.45)" letter-spacing="0.08em">
-          <text x="40" y="690">T = CONTINUOUS</text>
-          <text x="900" y="690" text-anchor="end">REV 04.2026</text>
-        </g>
-      </svg>
-    </div>
-  </div>
-</section>
-
-<!-- ─────────────── How it works ─────────────── -->
-<section class="section-fill how" id="how">
-  <div class="wrap">
-    <h2>How it works</h2>
-    <div class="steps">
-
-      <div class="step">
-        <div class="kicker">• Step 1</div>
-        <h3>It maps what you have.</h3>
-        <p>Tend connects to the tools you already run on. CRM, email, calendar, docs, accounting, ops, marketing. Every customer, every deal, every asset, every relationship becomes part of one map.</p>
-        <div class="step-art"><picture><source srcset="images/landing/step-1-map.webp" type="image/webp" /><img src="images/landing/step-1-map.png" alt="" loading="lazy" decoding="async" /></picture></div>
-      </div>
-
-      <div class="step">
-        <div class="kicker">•• Step 2</div>
-        <h3>It connects your links.</h3>
-        <p>Most software stores information in lists. Tend builds a map of how things actually relate. A customer connected to a deal, a calendar event, an invoice, a team lead, the property they almost bought last year. All at once.</p>
-        <div class="step-art"><picture><source srcset="images/landing/step-2-connect.webp" type="image/webp" /><img src="images/landing/step-2-connect.png" alt="" loading="lazy" decoding="async" /></picture></div>
-      </div>
-
-      <div class="step">
-        <div class="kicker">••• Step 3</div>
-        <h3>It deploys the AI.</h3>
-        <p>Tend uses that map to run agents tuned to your business. Surfacing decisions. Drafting work. Modeling outcomes. Watching for the things that need a human. You spend twenty minutes. Tend keeps working.</p>
-        <div class="step-art"><picture><source srcset="images/landing/step-3-deploy.webp" type="image/webp" /><img src="images/landing/step-3-deploy.png" alt="" loading="lazy" decoding="async" /></picture></div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- ─────────────── Eclipse CTA ─────────────── -->
-<section class="section-fill eclipse">
-  <div class="wrap">
-    <div class="eclipse-card">
-      <picture>
-        <source srcset="images/landing/cta-eclipse.webp" type="image/webp" />
-        <img class="bg" src="images/landing/cta-eclipse.png" alt="" loading="lazy" decoding="async" />
-      </picture>
-      <div class="content">
-        <h2>Tend is rewriting how businesses run.</h2>
-        <a class="btn btn-outline-light" href="https://cal.com/kyros-sync/30min" target="_blank" rel="noopener" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}'>Book a call</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ─────────────── Intelligence Layer ─────────────── -->
-<section class="intel" id="platform">
-  <div class="wrap">
-    <h2>The Intelligence Layer</h2>
-    <div class="intel-panel">
-      <picture>
-        <source srcset="images/landing/intelligence-stack.webp" type="image/webp" />
-        <img src="images/landing/intelligence-stack.png" width="2900" height="3280" alt="The Intelligence Layer: a stack of three planes (configured intelligence on top, persistent memory in the middle, operating layer at the base) surrounded by labels for connectors, jobs, files, frontier models, workflows, and approvals." loading="lazy" decoding="async" />
-      </picture>
-    </div>
-  </div>
-</section>
-
-<!-- ─────────────── Founder Bottleneck (ICP anchor) ─────────────── -->
-<section class="section-fill founder-bottleneck" id="bottleneck">
-  <div class="wrap">
-    <div class="fb-inner">
-      <div class="fb-eyebrow">Built for the founder bottleneck.</div>
-      <h2>You built it by doing everything yourself. That&rsquo;s now the ceiling.</h2>
-      <p>$500K&ndash;$5M in revenue. 2&ndash;15 on the team. Six to twelve tools active. Every decision still flows through you. You&rsquo;ve tried ChatGPT, Zapier, a VA, the COO you couldn&rsquo;t afford, and none of it actually runs anything. Tend does.</p>
-      <a class="btn btn-primary" href="https://cal.com/kyros-sync/30min" target="_blank" rel="noopener" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}'>This is me. Book a call.</a>
-    </div>
-  </div>
-</section>
-
-<!-- ─────────────── This is the intelligence layer ─────────────── -->
-<section class="section-fill this-intel">
-  <div class="wrap">
-    <div class="this-intel-grid">
-      <div>
-        <div class="icon-tile">
-          <img class="mark" src="images/tend-mark.png" alt="" />
-        </div>
-        <h2>This is the intelligence layer</h2>
-        <p>The map of your business that Tend reasons against every time it answers, drafts, decides, or moves on something.</p>
-        <a class="btn btn-primary" href="https://cal.com/kyros-sync/30min" target="_blank" rel="noopener" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}'>Book a call</a>
-      </div>
-      <div class="pills">
-        <div class="pill">Your clients and every thread with them</div>
-        <div class="pill">Your services, your pricing, your terms</div>
-        <div class="pill">Your team and what each person owns</div>
-        <div class="pill">Your inbox and the conversations still open</div>
-        <div class="pill">Your calendar and what's coming up</div>
-        <div class="pill">Your numbers, pipeline, vendors</div>
-        <div class="pill">Your decisions and the reasoning behind them</div>
-        <div class="pill muted">Your voice and how you sound on a good day</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ─────────────── Ops tabs ─────────────── -->
-<section class="section-fill ops" id="solutions">
-  <div class="wrap">
-    <h2>What it looks like in your business</h2>
-    <div class="ops-grid">
-      <div class="ops-tabs" role="tablist">
-        <button class="ops-tab active" type="button" data-tab="revenue">Revenue Ops</button>
-        <button class="ops-tab" type="button" data-tab="finance">Finance Ops</button>
-        <button class="ops-tab" type="button" data-tab="support">Support Ops</button>
-        <button class="ops-tab" type="button" data-tab="supply">Supply Chain</button>
-        <button class="ops-tab" type="button" data-tab="people">People Ops</button>
-      </div>
-      <div class="ops-panel" id="opsPanel">
-        <div class="kicker" id="opsKicker">Revenue Ops</div>
-        <h3 id="opsTitle">We deploy the AI</h3>
-        <p id="opsBody">Practical AI agents that follow your team's playbook, not a generic one. They chase the follow-ups, route the tickets, and reconcile the books. Every action goes back into your tools so the team sees what happened.</p>
-        <div class="ops-stats" id="opsStats">
-          <div class="ops-stat"><div class="v">3.2&times;</div><div class="k">faster follow-up</div></div>
-          <div class="ops-stat"><div class="v">&minus;18%</div><div class="k">win rate</div></div>
-          <div class="ops-stat"><div class="v">$400K</div><div class="k">renewals saved / qtr</div></div>
-        </div>
-      </div>
-      <!-- Mobile carousel: panels render side-by-side, snap-scroll horizontally -->
-      <div class="ops-slider" id="opsSlider" aria-label="Ops use cases carousel"></div>
-    </div>
-    <div class="ops-dots" id="opsDots" role="tablist" aria-label="Ops use cases">
-      <button class="dot active" type="button" data-tab="revenue" aria-label="Revenue Ops"></button>
-      <button class="dot" type="button" data-tab="finance" aria-label="Finance Ops"></button>
-      <button class="dot" type="button" data-tab="support" aria-label="Support Ops"></button>
-      <button class="dot" type="button" data-tab="supply"  aria-label="Supply Chain"></button>
-      <button class="dot" type="button" data-tab="people"  aria-label="People Ops"></button>
-    </div>
-  </div>
-</section>
-
-<!-- ─────────────── Tend Proof ─────────────── -->
-<section class="section-fill proof">
-  <div class="wrap">
-    <h2>Tend Proof</h2>
-    <div class="proof-stats">
-      <div class="proof-stat" data-img="proof-1">
-        <div class="v">&minus;61%</div>
-        <div class="k">reduction in time spent on work that shouldn't need a human</div>
-      </div>
-      <div class="proof-stat" data-img="proof-2">
-        <div class="v">3.2&times;</div>
-        <div class="k">more decisions made per week, per operator</div>
-      </div>
-      <div class="proof-stat" data-img="proof-3">
-        <div class="v">$2.8M</div>
-        <div class="k">average revenue activity unlocked per Tend Business deployment</div>
-      </div>
-    </div>
-    <div class="proof-quote">
-      <blockquote>"We replaced a Zapier graveyard and two contractors. The team gets two hours a day back, and we caught $400K of renewal risk we would have missed last quarter."</blockquote>
-      <a class="btn btn-primary" href="https://cal.com/kyros-sync/30min" target="_blank" rel="noopener" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}'>Book a call</a>
-    </div>
-  </div>
-</section>
-
-<!-- ─────────────── FAQ ─────────────── -->
-<section class="section-fill faq" id="resources">
-  <div class="wrap">
-    <div class="faq-grid">
-      <div>
-        <h2>Frequently asked questions</h2>
-        <p class="lede">If you don't see your question here, book a working session. We'll sketch it against your real stack.</p>
-      </div>
-      <div class="qa-list">
-        <div class="qa-item">
-          <button class="qa-q" aria-expanded="false">What can tend actually do for my business?<span class="sign">+</span></button>
-          <div class="qa-a"><div class="qa-a-inner">Anything repetitive that crosses your tools. Most customers start with one or two: chasing renewals before they slip, drafting follow-ups for every new lead, routing tickets by tier and risk, reconciling invoices and contracts, or surfacing churn risk weeks early. We start narrow, prove ROI on the first one, then expand.</div></div>
-        </div>
-        <div class="qa-item">
-          <button class="qa-q" aria-expanded="false">Do we have to rip out our existing tools?<span class="sign">+</span></button>
-          <div class="qa-a"><div class="qa-a-inner">No. Tend connects to the tools you already use and runs alongside them. We integrate with your CRM, billing, helpdesk, and docs, and the work shows up where your team already lives.</div></div>
-        </div>
-        <div class="qa-item">
-          <button class="qa-q" aria-expanded="false">How long until we see value?<span class="sign">+</span></button>
-          <div class="qa-a"><div class="qa-a-inner">First agent live in two to three weeks. Most teams see measurable ROI inside the first month. Usually time clawed back from work that shouldn't have needed a human in the first place.</div></div>
-        </div>
-        <div class="qa-item">
-          <button class="qa-q" aria-expanded="false">What about security and compliance?<span class="sign">+</span></button>
-          <div class="qa-a"><div class="qa-a-inner">SOC 2 Type II, encryption in transit and at rest, role-based access, and full audit logs. Data stays in your tenant. We don't train on your business.</div></div>
-        </div>
-        <div class="qa-item">
-          <button class="qa-q" aria-expanded="false">Where does the AI actually run? Can it go off the rails?<span class="sign">+</span></button>
-          <div class="qa-a"><div class="qa-a-inner">Agents run inside guardrails defined by your team. Scoped permissions, approval gates for anything irreversible, and dry-runs for the first few weeks. Every action is logged and reversible.</div></div>
-        </div>
-        <div class="qa-item">
-          <button class="qa-q" aria-expanded="false">How is this priced?<span class="sign">+</span></button>
-          <div class="qa-a"><div class="qa-a-inner">Per-agent, per-seat, or per-business deployment depending on plan. We size to the work being done, not the size of your data.</div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ─────────────── Footer ─────────────── -->
-<footer class="foot" id="company">
-  <div class="wrap">
-    <div class="foot-hero">
-      <img class="big-mark" src="images/tend-mark.png" alt="" aria-hidden="true" />
-      <h3>Less chaos. More revenue. Same team.</h3>
-      <a class="btn btn-outline" href="https://cal.com/kyros-sync/30min" target="_blank" rel="noopener" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}'>Book a demo</a>
-    </div>
-    <div class="foot-cols">
-      <a href="#top" class="brand-col" aria-label="Tend home">
-        <img class="mark" src="images/tend-mark.png" alt="" />
-        <span>Tend</span>
-      </a>
-      <div class="col socials">
-        <h4>Socials</h4>
-        <a href="https://instagram.com" target="_blank" rel="noopener">Instagram</a>
-        <a href="https://linkedin.com" target="_blank" rel="noopener">LinkedIn</a>
-      </div>
-      <div class="copyright">&copy; 2025-2026 Tend, Inc. All Rights Reserved.</div>
-    </div>
-  </div>
-</footer>
-
-<script>
-  // sticky nav background
-  const nav = document.getElementById('nav');
-  const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 8);
-  window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
-
-  // Belt-and-braces autoplay nudge: some mobile browsers (older iOS,
-  // low-power mode) need an explicit play() after metadata loads even
-  // though the element has autoplay+muted+playsinline.
-  document.querySelectorAll('.hero-orbs-video').forEach((v) => {
-    const tryPlay = () => v.play().catch(() => {});
-    tryPlay();
-    v.addEventListener('loadedmetadata', tryPlay, { once: true });
-    v.addEventListener('canplay', tryPlay, { once: true });
-  });
-
-  // mobile drawer
-  const navToggle = document.getElementById('navToggle');
-  if (navToggle) {
-    navToggle.addEventListener('click', () => {
-      const open = nav.classList.toggle('open');
-      navToggle.setAttribute('aria-expanded', String(open));
-    });
-    nav.querySelectorAll('.nav-drawer a').forEach((a) => {
-      a.addEventListener('click', () => {
-        nav.classList.remove('open');
-        navToggle.setAttribute('aria-expanded', 'false');
-      });
-    });
-  }
-
-  // Scroll-reveal: add .reveal to feature cards when they enter the viewport
-  if ('IntersectionObserver' in window) {
-    const cardObserver = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('reveal');
-          cardObserver.unobserve(entry.target);
-        }
-      });
-    }, { rootMargin: '0px 0px -10% 0px', threshold: 0.15 });
-    document.querySelectorAll('.feature-card').forEach((c) => cardObserver.observe(c));
-  } else {
-    document.querySelectorAll('.feature-card').forEach((c) => c.classList.add('reveal'));
-  }
-
-  // Proof beat animation: a 15s timeline driven by JS so each phase can be
-  // restarted on scroll-into-view and paused on tab blur.
-  (function () {
-    const stage = document.getElementById('pbStage');
-    if (!stage) return;
-    const card = document.getElementById('pbCard');
-    const why = document.getElementById('pbWhy');
-    const counter = document.getElementById('pbCounter');
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    function setPhase(p) {
-      card.classList.toggle('is-email', p >= 2);
-      card.classList.toggle('is-pressed', p === 4);
-      card.querySelectorAll('.pb-phase').forEach((el) => el.classList.remove('is-active'));
-      card.querySelector(p >= 2 ? '.pb-email' : '.pb-signal').classList.add('is-active');
-      why.classList.toggle('is-open', p >= 3);
-      counter.classList.toggle('is-ticked', p >= 5);
-    }
-
-    let timers = [];
-    function clearTimers() { timers.forEach(clearTimeout); timers = []; }
-    function runOnce() {
-      clearTimers();
-      setPhase(1);
-      timers.push(setTimeout(() => setPhase(2), 1400));   // draft
-      timers.push(setTimeout(() => setPhase(3), 3000));   // why panel
-      timers.push(setTimeout(() => setPhase(4), 5200));   // approve
-      timers.push(setTimeout(() => setPhase(5), 6200));   // counter
-      timers.push(setTimeout(() => runOnce(), 8200));     // loop (~2s hold)
-    }
-    function stop() { clearTimers(); }
-
-    if (reduceMotion) {
-      // Show the final, fully-explained state for users who opted out of motion.
-      setPhase(5);
-      return;
-    }
-
-    let started = false;
-    const obs = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          if (!started) { started = true; runOnce(); }
-        } else {
-          stop(); started = false;
-        }
-      });
-    }, { threshold: 0.4 });
-    obs.observe(stage);
-  })();
-
-  // FAQ accordion
-  document.querySelectorAll('.qa-q').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const item = btn.closest('.qa-item');
-      const open = item.classList.toggle('open');
-      btn.setAttribute('aria-expanded', String(open));
-      btn.querySelector('.sign').innerHTML = open ? '&minus;' : '+';
-    });
-  });
-
-  // Ops tabs
-  const opsContent = {
-    revenue: {
-      title: 'We deploy the AI',
-      body: "Practical AI agents that follow your team's playbook, not a generic one. They chase the follow-ups, route the tickets, and reconcile the books. Every action goes back into your tools so the team sees what happened.",
-      stats: [
-        { v: '3.2&times;', k: 'faster follow-up' },
-        { v: '&minus;18%', k: 'win rate' },
-        { v: '$400K',     k: 'renewals saved / qtr' },
-      ],
-    },
-    finance: {
-      title: 'Finance, on time, every time',
-      body: 'Tend reconciles invoices, flags anomalies, drafts AR follow-ups, and keeps a clean ledger in your books, without an extra hire.',
-      stats: [
-        { v: '&minus;72%', k: 'close cycle time' },
-        { v: '99.4%',      k: 'reconciliation accuracy' },
-        { v: '$120K',      k: 'recovered AR / qtr' },
-      ],
-    },
-    support: {
-      title: 'Tier-zero support, always on',
-      body: 'Triage every ticket by urgency and account tier, draft replies your team can ship in one click, and escalate only the ones that need a human.',
-      stats: [
-        { v: '&minus;61%', k: 'first response time' },
-        { v: '4.7 / 5',    k: 'CSAT after handoff' },
-        { v: '38%',        k: 'tickets fully resolved' },
-      ],
-    },
-    supply: {
-      title: 'Supply chain that watches itself',
-      body: 'Forecast demand, surface low-stock SKUs before they go critical, reconcile shipments and exceptions, and draft the POs your buyer would have written anyway.',
-      stats: [
-        { v: '&minus;24%', k: 'stockouts' },
-        { v: '+18%',       k: 'on-time fulfillment' },
-        { v: '$220K',      k: 'working capital freed' },
-      ],
-    },
-    people: {
-      title: 'People ops, without the busywork',
-      body: 'Schedule the loops, draft the offer letters, surface the team signals that matter, and keep onboarding moving from offer to first commit.',
-      stats: [
-        { v: '&minus;54%', k: 'time-to-hire' },
-        { v: '92%',        k: 'onboarding completion, week 1' },
-        { v: '+11pt',      k: 'engagement score' },
-      ],
-    },
-  };
-  const opsKicker = document.getElementById('opsKicker');
-  const opsTitle = document.getElementById('opsTitle');
-  const opsBody  = document.getElementById('opsBody');
-  const opsStats = document.getElementById('opsStats');
-  const opsSlider = document.getElementById('opsSlider');
-  const opsLabels = { revenue: 'Revenue Ops', finance: 'Finance Ops', support: 'Support Ops', supply: 'Supply Chain', people: 'People Ops' };
-  const opsOrder = ['revenue', 'finance', 'support', 'supply', 'people'];
-
-  // Build the mobile slider once with every slide pre-rendered so it can scroll-snap
-  if (opsSlider) {
-    opsSlider.innerHTML = opsOrder.map((key) => {
-      const d = opsContent[key];
-      const stats = d.stats.map((s) => `<div class="stat"><div class="v">${s.v}</div><div class="k">${s.k}</div></div>`).join('');
-      return `<article class="ops-slide" data-tab="${key}">
-        <div class="kicker">${opsLabels[key]}</div>
-        <h3>${d.title}</h3>
-        <p>${d.body}</p>
-        <div class="stats">${stats}</div>
-      </article>`;
-    }).join('');
-  }
-
-  function selectOpsTab(key, opts = {}) {
-    const data = opsContent[key];
-    if (!data) return;
-    document.querySelectorAll('.ops-tab').forEach((t) => t.classList.toggle('active', t.dataset.tab === key));
-    document.querySelectorAll('.ops-dots .dot').forEach((d) => d.classList.toggle('active', d.dataset.tab === key));
-    // Update the desktop panel (hidden on mobile)
-    opsKicker.textContent = opsLabels[key] || '';
-    opsTitle.textContent  = data.title;
-    opsBody.textContent   = data.body;
-    opsStats.innerHTML = data.stats.map((s) => `<div class="ops-stat"><div class="v">${s.v}</div><div class="k">${s.k}</div></div>`).join('');
-    // Snap the mobile slider to the matching slide
-    if (opsSlider && !opts.fromScroll) {
-      const slide = opsSlider.querySelector(`.ops-slide[data-tab="${key}"]`);
-      if (slide) slide.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-    }
-  }
-
-  document.querySelectorAll('.ops-tab').forEach((tab) => {
-    tab.addEventListener('click', () => selectOpsTab(tab.dataset.tab));
-  });
-  document.querySelectorAll('.ops-dots .dot').forEach((dot) => {
-    dot.addEventListener('click', () => selectOpsTab(dot.dataset.tab));
-  });
-  // Sync dots when the user swipes the mobile slider
-  if (opsSlider) {
-    let scrollTick;
-    opsSlider.addEventListener('scroll', () => {
-      clearTimeout(scrollTick);
-      scrollTick = setTimeout(() => {
-        const slides = [...opsSlider.querySelectorAll('.ops-slide')];
-        const center = opsSlider.scrollLeft + opsSlider.clientWidth / 2;
-        let nearest = slides[0], best = Infinity;
-        slides.forEach((s) => {
-          const mid = s.offsetLeft + s.offsetWidth / 2;
-          const d = Math.abs(mid - center);
-          if (d < best) { best = d; nearest = s; }
-        });
-        if (nearest && nearest.dataset.tab) selectOpsTab(nearest.dataset.tab, { fromScroll: true });
-      }, 80);
-    }, { passive: true });
-  }
-</script>
-
-<!-- Cal.com modal init: any element with data-cal-link opens the booking modal -->
-<script>
-  (function (C, A, L) {
-    let p = function (a, ar) { a.q.push(ar); };
-    let d = C.document;
-    C.Cal = C.Cal || function () {
-      let cal = C.Cal; let ar = arguments;
-      if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement('script')).src = A; cal.loaded = true; }
-      if (ar[0] === L) {
-        const api = function () { p(api, arguments); };
-        const namespace = ar[1]; api.q = api.q || [];
-        if (typeof namespace === 'string') {
-          cal.ns[namespace] = cal.ns[namespace] || api;
-          p(cal.ns[namespace], ar); p(cal, ['initNamespace', namespace]);
-        } else p(cal, ar);
-        return;
-      }
-      p(cal, ar);
-    };
-  })(window, 'https://app.cal.com/embed/embed.js', 'init');
-  Cal('init', '30min', { origin: 'https://app.cal.com' });
-  Cal.ns['30min']('ui', { hideEventTypeDetails: false, layout: 'month_view' });
-</script>
-
-<!-- Start of HubSpot Embed Code -->
-<script type="text/javascript" id="hs-script-loader" async defer src="//js-na2.hs-scripts.com/246121597.js"></script>
-<!-- End of HubSpot Embed Code -->
-</body>
+      <section class="closing">
+        <div class="closing-flower" aria-hidden="true">✳</div>
+        <p class="eyebrow">BUILD WITH TEND</p>
+        <h2>Give your agents<br />the context <em>to execute.</em></h2>
+        <a class="pill" href="/book"
+          >Scope your deployment <span aria-hidden="true">↗</span></a
+        >
+        <p>Define the workflow, the context, and the controls.</p>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <a class="wordmark" href="/" aria-label="Tend home"
+        ><img src="/images/tend-mark.png" width="24" height="24" alt="">Tend</a
+      >
+      <p>Shared context for AI execution.</p>
+      <nav aria-label="Footer navigation">
+        <a href="/about">About</a><a href="/platform">Platform</a
+        ><a href="mailto:hello@withtend.ai">Say hello ↗</a>
+      </nav>
+      <span>© 2026 Tend</span>
+    </footer>
+    <script src="/home.js" defer></script>
+  </body>
 </html>

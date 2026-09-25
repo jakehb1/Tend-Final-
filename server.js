@@ -122,11 +122,11 @@ const SEO_FAQ_SCHEMA = {
 
 const SEO_PAGES = {
   '/': {
-    title: 'Tend | AI Business Partner for Ops, Revenue, and Support Teams',
-    description: 'Tend connects to your business tools, surfaces what matters, and runs operational workflows like follow-ups, renewals, routing, reconciliation, and approvals.',
+    title: 'Tend | Shared context for AI execution',
+    description: 'Tend connects business data, relationships, and rules into shared context so AI agents can reason and execute across complex workflows.',
     priority: '1.0',
     changefreq: 'weekly',
-    schemas: ['organization', 'website', 'software', 'faq'],
+    schemas: ['organization', 'website', 'software'],
   },
   '/platform': {
     title: 'Tend Platform | Data Layer and AI Agents for Business Operations',
