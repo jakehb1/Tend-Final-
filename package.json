@@ -4,7 +4,8 @@
   "private": true,
   "description": "Tend marketing site and product surface. Node server with static frontend, Claude chat API, and Postgres-backed auth + conversation persistence.",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "test:navigation": "node --test tests/marketing-navigation.test.cjs"
   },
   "engines": {
     "node": ">=18"

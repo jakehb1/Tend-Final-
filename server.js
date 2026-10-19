@@ -1180,12 +1180,12 @@ function bookingPageHtml() {
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Book a call | Tend</title>
+<title>Book a demo | Tend</title>
 <style>
   :root { color-scheme: dark; --bg:#0f0f10; --panel:#171719; --text:#f4f1ea; --muted:#a8a29a; --line:#2b2927; --accent:#e7d8bd; }
   * { box-sizing: border-box; }
   body { margin:0; min-height:100vh; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background:var(--bg); color:var(--text); }
-  main { min-height:100vh; display:grid; place-items:center; padding:40px 18px; }
+  main { display:grid; place-items:center; padding:40px 18px; }
   .wrap { width:min(920px, 100%); display:grid; grid-template-columns:0.9fr 1.1fr; gap:28px; align-items:start; }
   .intro { padding:22px 0; }
   a.logo { color:var(--text); text-decoration:none; font-weight:700; letter-spacing:0; font-size:22px; }
@@ -1208,12 +1208,21 @@ function bookingPageHtml() {
   #cal-inline { width:100%; min-height:640px; background:var(--panel); border:1px solid var(--line); border-radius:8px; overflow:hidden; }
   @media (max-width: 760px) { .wrap { grid-template-columns:1fr; } h1 { margin-top:34px; } .grid { grid-template-columns:1fr; } #cal-inline { min-height:540px; } }
 </style>
+<link rel="stylesheet" href="/marketing-navigation.css">
 </head>
 <body>
+<header class="marketing-header">
+  <a class="marketing-brand" href="/" aria-label="Tend home">Tend</a>
+  <nav class="marketing-links" aria-label="Main navigation">
+    <a href="/#how-it-works">How it works</a>
+    <a href="/use-cases">Use cases</a>
+    <a href="/about">About</a>
+    <a class="marketing-demo" href="/book" aria-current="page">Book a demo</a>
+  </nav>
+</header>
 <main>
   <div class="wrap">
     <section class="intro">
-      <a class="logo" href="/">tend</a>
       <h1>Tell us what you want AI to fix.</h1>
       <p>Share a little context first. Then we will send you straight to the meeting scheduler so the call starts with the useful stuff already clear.</p>
     </section>
@@ -1578,6 +1587,13 @@ function resolveFile(urlPath) {
 
 function serveStatic(req, res) {
   const requestPath = (req.url || '/').split('?')[0];
+  const marketingAliases = { '/index.html': '/', '/about.html': '/about', '/platform.html': '/platform', '/use-cases.html': '/use-cases', '/org.html': '/org', '/book.html': '/book' };
+  if (Object.hasOwn(marketingAliases, requestPath)) {
+    const query = (req.url || '').includes('?') ? (req.url || '').slice((req.url || '').indexOf('?')) : '';
+    res.writeHead(308, { Location: marketingAliases[requestPath] + query });
+    res.end();
+    return;
+  }
   if (requestPath === '/robots.txt') return serveRobots(res);
   if (requestPath === '/sitemap.xml') return serveSitemap(res);
   if (requestPath === '/book.html' || requestPath === '/book') return serveBookingPage(res);
