@@ -122,8 +122,8 @@ const SEO_FAQ_SCHEMA = {
 
 const SEO_PAGES = {
   '/': {
-    title: 'Tend | Shared context for AI execution',
-    description: 'Tend connects business data, relationships, and rules into shared context so AI agents can reason and execute across complex workflows.',
+    title: 'Tend | Put AI to work across your business',
+    description: 'Tend connects your business systems so AI agents can work from the same information, coordinate tasks, and ask for approval when needed. Start with one workflow.',
     priority: '1.0',
     changefreq: 'weekly',
     schemas: ['organization', 'website', 'software'],

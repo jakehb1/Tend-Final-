@@ -3,276 +3,110 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Tend | Shared context for AI execution</title>
-    <meta
-      name="description"
-      content="Tend connects business data, relationships, and rules into shared context so AI agents can reason and execute across complex workflows."
-    />
-    <link rel="preconnect" href="https://www.withtend.ai" crossorigin />
-    <link href="/home-20260925.css" rel="stylesheet" />
-    <link href="/execution-map.css" rel="stylesheet" />
-  <link rel="stylesheet" href="/marketing-navigation.css">
-</head>
+    <title>Tend | Put AI to work across your business</title>
+    <meta name="description" content="Tend connects your business systems so AI agents can work from the same information, coordinate tasks, and ask for approval when needed. Start with one workflow." />
+    <link rel="stylesheet" href="/home-20260925.css" />
+    <link rel="stylesheet" href="/marketing-navigation.css" />
+    <link rel="stylesheet" href="/home-business-owner.css" />
+  </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>
     <header class="marketing-header">
-  <a class="marketing-brand" href="/" aria-label="Tend home"><img src="/images/tend-mark.png" alt="" width="24" height="24">Tend</a>
-  <nav class="marketing-links" aria-label="Main navigation">
-    <a href="/#how-it-works">How it works</a>
-    <a href="/use-cases">Use cases</a>
-    <a href="/about">About</a>
-    <a class="marketing-demo" href="/book">Book a demo</a>
-  </nav>
-</header>
+      <a class="marketing-brand" href="/" aria-label="Tend home"><img src="/images/tend-mark.png" alt="" width="24" height="24">Tend</a>
+      <nav class="marketing-links" aria-label="Main navigation">
+        <a href="/#how-it-works">How it works</a>
+        <a href="/use-cases">Use cases</a>
+        <a href="/about">About</a>
+        <a class="marketing-demo" href="/book">Book a demo</a>
+      </nav>
+    </header>
     <main id="main">
       <section class="hero" aria-labelledby="hero-title">
         <div class="hero-copy">
-          <h1 id="hero-title">Shared context.<br /><em>AI execution.</em></h1>
-          <p class="intro">
-            Tend connects your business data, relationships, and rules into shared
-            context. AI agents use that context to reason and execute across
-            systems, teams, and complex workflows.
-          </p>
-          <a class="pill" href="/book"
-            >Book a demo <span aria-hidden="true">↗</span></a
-          >
-          <p class="hero-note">
-            Multiple agents. Shared context. Defined controls.
-          </p>
+          <h1 id="hero-title">Put AI to work<br />across your business.</h1>
+          <p class="intro">Tend connects your business systems so AI agents can work from the same information, coordinate tasks, and ask for approval when needed.</p>
+          <a class="pill" href="/book">Find your first workflow <span aria-hidden="true">↗</span><span class="sr-only">: Book a demo</span></a>
+          <p class="hero-note">Book a demo to explore one process with the Tend team.</p>
+          <a class="example-link" href="#workflow-example">See an example: from order to invoice <span aria-hidden="true">↓</span></a>
         </div>
-        <div class="execution-map" aria-label="Illustrative order-to-cash workflow">
-          <div class="map-heading"><span>SYSTEMS → SHARED CONTEXT → AGENTS</span><span class="map-example">ILLUSTRATIVE MODEL</span></div>
-          <div class="map-sources"><div><span>CRM</span><strong>Accounts &amp; orders</strong></div><div><span>ERP</span><strong>Stock &amp; fulfillment</strong></div><div><span>FINANCE</span><strong>Terms &amp; credit</strong></div></div>
-          <div class="map-connector" aria-hidden="true"><i></i><i></i><i></i></div>
-          <div class="context-layer"><span class="layer-index">TEND / SHARED BUSINESS CONTEXT</span><h2>The context every agent works from.</h2><p>Entities, relationships, current state, and business rules.</p><div class="entity-chain"><span>Customer</span><b>↔</b><span>Order</span><b>↔</b><span>Inventory</span><b>↔</b><span>Invoice</span></div><div class="context-dimensions"><span>Source history</span><span>Permissions</span><span>Decision context</span></div></div>
-          <div class="map-link" aria-hidden="true"></div>
-          <div class="agent-fan" aria-label="Agents operating from shared context"><div><span class="agent-indicator"></span><strong>Operations agent</strong><small>Inventory &amp; fulfillment</small></div><div><span class="agent-indicator"></span><strong>Finance agent</strong><small>Credit &amp; invoicing</small></div><div><span class="agent-indicator"></span><strong>Revenue agent</strong><small>Accounts &amp; commitments</small></div></div>
-          <div class="map-link" aria-hidden="true"></div>
-          <div class="workflow-layer" id="workflow-example">
-            <div class="workflow-heading"><span class="layer-index">EXECUTION ACROSS SHARED CONTEXT</span><span>ORDER → CASH</span></div>
-            <div class="execution-branches"><div class="execution-node" data-node="inventory"><span class="node-light"></span><strong>Check inventory</strong><small>ERP · availability</small></div><div class="execution-node" data-node="credit"><span class="node-light"></span><strong>Evaluate credit</strong><small>Finance · policy</small></div></div>
-            <div class="branch-join" aria-hidden="true"></div>
-            <div class="approval-node" data-node="approval"><span class="gate-icon">◇</span><div><strong>Exception → human approval</strong><small>Credit limit exceeded · finance owner</small></div><span class="gate-status">GATED</span></div>
-            <div class="map-link" aria-hidden="true"></div>
-            <div class="execution-branches"><div class="execution-node" data-node="fulfill"><span class="node-light"></span><strong>Release fulfillment</strong><small>ERP · write back</small></div><div class="execution-node" data-node="invoice"><span class="node-light"></span><strong>Create invoice</strong><small>Finance · write back</small></div></div>
-          </div>
-          <div class="map-controls"><button id="workflow-run" type="button">Trace the workflow <span aria-hidden="true">↗</span></button><p id="workflow-status" role="status">Illustrative sequence. No systems connected.</p></div>
+        <aside class="workflow-preview" aria-labelledby="preview-title">
+          <p class="eyebrow">AN EXAMPLE, NOT A LIVE WORKFLOW</p>
+          <h2 id="preview-title">One order.<br />Several systems.<br /><span>One coordinated process.</span></h2>
+          <p>A customer places an order. Your sales, operations, and finance tools each hold part of the information needed to complete it.</p>
+          <div class="preview-systems"><span>Sales</span><span>Inventory</span><span>Finance</span></div>
+          <div class="preview-context"><img src="/images/tend-mark.png" alt="" width="28" height="28"><div><strong>Tend connects the pieces.</strong><p>Agents share the order details, business rules, and progress.</p></div></div>
+          <p class="preview-outcome">The goal: move the order forward without your team passing updates between tools.</p>
+        </aside>
+      </section>
+
+      <section class="workflow-story section-wrap" id="workflow-example" aria-labelledby="example-title">
+        <div class="section-intro">
+          <p class="eyebrow">WHAT THIS COULD LOOK LIKE IN YOUR BUSINESS</p>
+          <h2 id="example-title">From order received<br />to invoice ready.</h2>
+          <p>Here is how agents could coordinate an order using shared information. Connections and actions are scoped to your systems before implementation.</p>
         </div>
-        <div class="hero-footer">
-          <span>CONTEXT → DECISION → ACTION</span
-          ><a href="#a-lighter-day"
-            >Explore the capabilities <span aria-hidden="true">↓</span></a
-          ><span class="footer-flower" aria-hidden="true">✳</span>
-        </div>
+        <ol class="workflow-steps">
+          <li><span class="step-index">01 / CHECK</span><h3>Check the order.</h3><p>An operations agent checks stock against the customer’s order.</p><span class="step-system">Sales + inventory</span></li>
+          <li><span class="step-index">02 / REVIEW</span><h3>Apply your rules.</h3><p>A finance agent checks payment terms and the customer’s credit limit.</p><span class="step-system">Order + finance</span></li>
+          <li class="human-step"><span class="step-index">03 / APPROVE</span><h3>Ask when needed.</h3><p>If the order exceeds the credit limit, it waits for your team’s decision.</p><span class="step-system">Your team stays in control</span></li>
+          <li><span class="step-index">04 / ACT</span><h3>Move it forward.</h3><p>After approval, agents release the order for fulfillment and create the invoice.</p><span class="step-system">Inventory + finance</span></li>
+        </ol>
+        <p class="example-disclaimer">Illustrative workflow. No systems are connected and no actions are taken on this page.</p>
       </section>
 
       <section class="lighter section-wrap" id="a-lighter-day">
         <div class="section-intro">
-          <p class="eyebrow">A SHARED UNDERSTANDING OF YOUR BUSINESS</p>
-          <h2>
-            Give every agent<br /><em>the same business context.</em>
-          </h2>
-          <p>
-            Customer records, orders, and invoices live in different systems.
-            Tend connects them so agents can understand their relationships,
-            current status, and the rules that govern each action.
-          </p>
+          <p class="eyebrow">WHY SHARED CONTEXT MATTERS</p>
+          <h2>AI needs the whole picture.<br />Not another isolated chat.</h2>
+          <p>Shared context means agents work from the same connected business information. They can see how an order relates to a customer, an invoice, and the rules your team follows.</p>
         </div>
         <div class="editorial-rows">
-          <article class="editorial-row">
-            <span class="row-number">01</span>
-            <h3>Connected entities.<br />Shared meaning.</h3>
-            <div>
-              <p>
-                Link customers, orders, assets, and commitments across systems.
-                Give agents consistent definitions and a clear view of how records relate.
-              </p>
-              <span class="row-caption">ENTITIES &amp; RELATIONSHIPS</span>
-            </div>
-            <svg class="line-art" viewBox="0 0 120 90" aria-hidden="true">
-              <path d="M5 62C40 62 3 5 37 20S54 92 76 47S112 26 115 17" />
-              <circle cx="6" cy="62" r="4" />
-              <circle cx="115" cy="17" r="4" />
-            </svg>
-          </article>
-          <article class="editorial-row">
-            <span class="row-number">02</span>
-            <h3>Current state.<br />Informed actions.</h3>
-            <div>
-              <p>
-                Include workflow status, dependencies, and prior decisions in
-                the context agents use. Each agent can see what is complete,
-                what is pending, and what must happen next.
-              </p>
-              <span class="row-caption">STATE &amp; DECISION CONTEXT</span>
-            </div>
-            <svg class="line-art" viewBox="0 0 120 90" aria-hidden="true">
-              <path
-                d="M12 18L48 54L105 12M22 42L48 68L112 24M32 66L48 82L115 41"
-              />
-            </svg>
-          </article>
-          <article class="editorial-row">
-            <span class="row-number">03</span>
-            <h3>Defined permissions.<br />Controlled execution.</h3>
-            <div>
-              <p>
-                Define what agents can access, which actions they can take,
-                and when they need approval. Apply those rules across the systems
-                involved in each workflow.
-              </p>
-              <span class="row-caption">CLEAR CONTEXT &amp; YOUR APPROVAL</span>
-            </div>
-            <svg class="line-art" viewBox="0 0 120 90" aria-hidden="true">
-              <ellipse
-                cx="60"
-                cy="45"
-                rx="43"
-                ry="24"
-                transform="rotate(-25 60 45)"
-              />
-              <ellipse
-                cx="60"
-                cy="45"
-                rx="43"
-                ry="24"
-                transform="rotate(25 60 45)"
-              />
-              <circle cx="60" cy="45" r="7" />
-            </svg>
-          </article>
+          <article class="editorial-row"><span class="row-number">01</span><h3>Connect the information.</h3><div><p>Bring related records together across the tools involved in a workflow. Agents need the customer’s terms as well as the order details.</p></div></article>
+          <article class="editorial-row"><span class="row-number">02</span><h3>Coordinate the work.</h3><div><p>Give agents a shared view of what is done, what is waiting, and what needs to happen next.</p></div></article>
+          <article class="editorial-row"><span class="row-number">03</span><h3>Set the boundaries.</h3><div><p>Define which information agents can access, which actions they can take, and which decisions stay with your team.</p></div></article>
         </div>
-      </section>
-
-      <section class="breathing-room">
-        <span class="big-asterisk" aria-hidden="true">✳</span>
-        <p class="eyebrow">FROM SIGNAL TO EXECUTION</p>
-        <h2>Shared understanding.<br /><em>Coordinated agents.</em></h2>
-        <p>
-          Give agents a common view of the business,<br />wherever they need to act.
-        </p>
-        <span class="handwritten">Business rules travel with the context.</span>
+        <a class="text-link" href="/platform">Explore the technical details <span aria-hidden="true">↗</span></a>
       </section>
 
       <section class="how section-wrap" id="how-it-works">
         <span id="how" aria-hidden="true"></span>
         <div class="how-heading">
-          <p class="eyebrow">IMPLEMENTATION</p>
-          <h2>Connect the context.<br /><em>Put agents to work.</em></h2>
-          <p>
-            Choose a workflow, define the result, and establish the context
-            and controls agents need to execute it.
-          </p>
-          <div class="marketing-section-actions">
-          <a class="text-link" href="/platform">Explore platform details <span aria-hidden="true">↗</span></a>
-          <a class="text-link" href="/book"
-            >Book a demo <span aria-hidden="true">↗</span></a
-          >
-          </div>
+          <p class="eyebrow">HOW TO GET STARTED</p>
+          <h2>Start with one process.<br />Build from there.</h2>
+          <p>You do not need to map your entire business before the first conversation. Bring a recurring task that involves several tools or teams.</p>
+          <a class="text-link" href="/book">Book a demo <span aria-hidden="true">↗</span></a>
         </div>
         <ol class="steps">
-          <li>
-            <span>01</span>
-            <div>
-              <h3>Define the process.</h3>
-              <p>
-                Map the work, its system dependencies, and its decision points.
-                Agree on how to measure success.
-              </p>
-            </div>
-          </li>
-          <li>
-            <span>02</span>
-            <div>
-              <h3>Connect systems and rules.</h3>
-              <p>
-                Connect the relevant data and define its relationships.
-                Set the permissions and approval rules for each agent.
-              </p>
-            </div>
-          </li>
-          <li>
-            <span>03</span>
-            <div>
-              <h3>Validate, deploy, and refine.</h3>
-              <p>
-                Check results against your criteria, refine the workflow,
-                and expand once it performs as expected.
-              </p>
-            </div>
-          </li>
+          <li><span>01</span><div><h3>Show us where work gets stuck.</h3><p>On the first call, we review a workflow, the tools it uses, and the handoffs your team handles today.</p></div></li>
+          <li><span>02</span><div><h3>Agree on what AI should do.</h3><p>We scope the connections, actions, and approvals. Together, we define what a successful result looks like.</p></div></li>
+          <li><span>03</span><div><h3>Test before expanding.</h3><p>Validate the workflow against those criteria before putting it into use. Expand only once it performs as expected.</p></div></li>
         </ol>
       </section>
 
       <section class="questions section-wrap">
-        <div>
-          <p class="eyebrow">BEFORE WE GET STARTED</p>
-          <h2>Integration.<br /><em>Control. Deployment.</em></h2>
-        </div>
+        <div><p class="eyebrow">BEFORE YOU BOOK</p><h2>A few practical questions.</h2></div>
         <div class="faq-list">
-          <details>
-            <summary>
-              Do I need to change my tools?<span aria-hidden="true">+</span>
-            </summary>
-            <p>
-              Start with your existing tools. We identify the connections your
-              workflow needs and confirm support before implementation.
-            </p>
-          </details>
-          <details>
-            <summary>
-              How much control do I keep?<span aria-hidden="true">+</span>
-            </summary>
-            <p>
-              You define what agents can access and execute. We agree on which
-              actions require approval and which can run automatically.
-            </p>
-          </details>
-          <details>
-            <summary>
-              What makes a good first workflow?<span aria-hidden="true">+</span>
-            </summary>
-            <p>
-              Choose a process that depends on data and decisions across systems.
-              Order fulfillment, credit reviews, and account renewals are useful
-              starting points.
-            </p>
-          </details>
-          <details>
-            <summary>
-              What happens on the first call?<span aria-hidden="true">+</span>
-            </summary>
-            <p>
-              We review one workflow, the systems it uses, and the decisions it
-              requires. Then we outline the context, integrations, and controls
-              needed for deployment.
-            </p>
-          </details>
+          <details><summary>What is an AI agent?<span aria-hidden="true">+</span></summary><p>Software that uses AI to carry out tasks with connected tools. In Tend, agents use shared business information and operate within the access and approval rules defined for a workflow.</p></details>
+          <details><summary>Do I need to replace my tools?<span aria-hidden="true">+</span></summary><p>We start with your existing systems and confirm which connections your workflow needs. Integration support is checked before implementation.</p></details>
+          <details><summary>Will AI act without asking me?<span aria-hidden="true">+</span></summary><p>You decide which actions can run automatically and which need a person’s approval. Those boundaries are part of the workflow design.</p></details>
+          <details><summary>What should I bring to the demo?<span aria-hidden="true">+</span></summary><p>One process you want to improve and the names of the tools involved. We will discuss the work, where it gets stuck, and whether Tend is a fit. No technical specification is needed for the conversation.</p></details>
         </div>
       </section>
 
       <section class="closing">
         <div class="closing-flower" aria-hidden="true">✳</div>
-        <p class="eyebrow">BUILD WITH TEND</p>
-        <h2>Give your agents<br />the context <em>to execute.</em></h2>
-        <a class="pill" href="/book"
-          >Book a demo <span aria-hidden="true">↗</span></a
-        >
-        <p>Define the workflow, the context, and the controls.</p>
+        <p class="eyebrow">LET’S MAKE IT CONCRETE</p>
+        <h2>What work keeps getting<br />passed around your team?</h2>
+        <a class="pill" href="/book">Find your first workflow <span aria-hidden="true">↗</span><span class="sr-only">: Book a demo</span></a>
+        <p>Share a few details, then choose a time to talk with us.</p>
       </section>
     </main>
     <footer class="site-footer">
       <span id="contact" aria-hidden="true"></span>
-      <a class="wordmark" href="/" aria-label="Tend home"
-        ><img src="/images/tend-mark.png" width="24" height="24" alt="">Tend</a
-      >
-      <p>Shared context for AI execution.</p>
-      <nav aria-label="Footer navigation">
-        <a href="/about">About</a><a href="/platform">Platform</a
-        ><a href="mailto:hello@withtend.ai">Say hello ↗</a>
-      </nav>
+      <a class="wordmark" href="/" aria-label="Tend home"><img src="/images/tend-mark.png" width="24" height="24" alt="">Tend</a>
+      <p>Connected information. Coordinated work.</p>
+      <nav aria-label="Footer navigation"><a href="/about">About</a><a href="/platform">Platform</a><a href="mailto:hello@withtend.ai">Say hello ↗</a></nav>
       <span>© 2026 Tend</span>
     </footer>
-    <script src="/home.js" defer></script>
   </body>
 </html>

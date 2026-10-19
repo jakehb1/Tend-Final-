@@ -52,3 +52,15 @@ test('legacy addresses redirect without losing campaign parameters', async () =>
     assert.equal(response.headers.get('location'), `${canonical}?utm_source=test`);
   }
 });
+
+test('homepage explains the offer and clearly labels the example', async () => {
+  const html = await (await fetch(base)).text();
+  assert.match(html, /<title>Tend \| Put AI to work across your business<\/title>/);
+  assert.match(html, /Find your first workflow/);
+  assert.match(html, /AN EXAMPLE, NOT A LIVE WORKFLOW/);
+  assert.match(html, /No systems are connected and no actions are taken on this page/);
+  assert.ok(!html.includes('—'));
+  assert.ok(!html.includes('src="/home.js"'), 'Do not load the removed diagram interaction');
+  const css = await fetch(base + '/home-business-owner.css');
+  assert.equal(css.status, 200);
+});

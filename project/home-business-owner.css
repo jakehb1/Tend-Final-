@@ -1,0 +1,55 @@
+/* Homepage preview: keep Tend's identity, give the business story priority. */
+.hero { grid-template-columns: 1.12fr 1fr; gap: 52px; padding-top: 28px; padding-bottom: 64px; }
+.hero h1 { font-size: clamp(46px, 5.1vw, 76px); letter-spacing: -2.6px; line-height: 1.07; }
+.hero .intro { font-size: 18px; line-height: 1.65; max-width: 530px; }
+.hero-note { font-size: 13px; line-height: 1.6; }
+.pill { font-size: 12px; }
+.example-link { display: inline-block; margin-top: 26px; font-size: 14px; border-bottom: 1px solid #88aa9f; padding-bottom: 8px; }
+.example-link:hover { color: var(--moss); }
+.workflow-preview { background: #dfeeea; border: 1px solid #bfd7ce; border-radius: 12px; padding: 32px; }
+.workflow-preview h2 { font-size: clamp(28px, 2.8vw, 40px); line-height: 1.15; letter-spacing: -1px; margin: 20px 0; }
+.workflow-preview h2 span { color: #246453; }
+.workflow-preview p:not(.eyebrow) { font-size: 15px; line-height: 1.6; }
+.preview-systems { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0; }
+.preview-systems span { padding: 8px 12px; border: 1px solid #afc8be; border-radius: 5px; font-size: 12px; }
+.preview-context { display: flex; align-items: flex-start; gap: 16px; padding-top: 22px; border-top: 1px solid #b9d1c7; }
+.preview-context img { flex-shrink: 0; margin-top: 3px; }
+.preview-context strong { font-weight: 500; }
+.preview-context p { margin-top: 6px; }
+.workflow-preview .preview-outcome { margin-top: 24px; font-size: 14px; color: #33594d; }
+.section-wrap { padding-top: 80px; padding-bottom: 80px; }
+.workflow-story { border-top: 1px solid var(--line); }
+.section-intro > p:last-child { font-size: 16px; max-width: 420px; }
+.workflow-steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); padding: 0; list-style: none; gap: 14px; margin: 38px 0 20px; }
+.workflow-steps li { padding: 24px 20px; border: 1px solid #d8ded8; border-radius: 8px; background: #fff; }
+.workflow-steps .human-step { background: #dfeeea; border-color: #9bc3b5; }
+.step-index, .step-system { display: block; font-family: "ABC Favorit Mono", monospace; font-size: 10px; line-height: 1.6; color: #42685a; }
+.workflow-steps h3 { font-size: 23px; letter-spacing: -.5px; margin: 22px 0 12px; }
+.workflow-steps p { font-size: 15px; line-height: 1.6; }
+.step-system { margin-top: 22px; }
+.example-disclaimer { color: var(--muted); font-size: 12px; line-height: 1.6; }
+.lighter { border-top: 1px solid var(--line); }
+.editorial-row { grid-template-columns: 35px 1fr 1.2fr; }
+.editorial-row p, .steps p, .faq-list details p, .how-heading > p:not(.eyebrow) { font-size: 16px; }
+.faq-list summary { font-size: 16px; }
+.closing h2 { font-size: clamp(36px, 4.8vw, 66px); }
+.closing > p:last-child { font-size: 14px; line-height: 1.6; }
+@media (max-width: 1000px) {
+  .hero { gap: 28px; }
+  .workflow-preview { padding: 24px; }
+  .workflow-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 760px) {
+  .hero { grid-template-columns: 1fr; padding-top: 0; padding-bottom: 40px; }
+  .hero h1 { font-size: clamp(42px, 10.8vw, 64px); letter-spacing: -1.8px; }
+  .hero .intro { font-size: 17px; }
+  .hero-copy { padding-bottom: 8px; }
+  .section-wrap { padding-top: 52px; padding-bottom: 52px; }
+  .editorial-row { grid-template-columns: 26px 1fr; }
+  .editorial-row > div { grid-column: 2; }
+  .section-intro > p:last-child { font-size: 16px; }
+  .workflow-steps { grid-template-columns: 1fr; }
+  .workflow-steps li { padding: 22px; }
+  .workflow-steps h3 { margin-top: 12px; }
+  .step-system { margin-top: 14px; }
+}
