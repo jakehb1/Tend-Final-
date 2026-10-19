@@ -11,21 +11,19 @@
     <link rel="preconnect" href="https://www.withtend.ai" crossorigin />
     <link href="/home-20260925.css" rel="stylesheet" />
     <link href="/execution-map.css" rel="stylesheet" />
-  </head>
+  <link rel="stylesheet" href="/marketing-navigation.css">
+</head>
   <body>
     <a class="skip" href="#main">Skip to content</a>
-    <header class="header">
-      <a class="wordmark" href="/" aria-label="Tend home"
-        ><img src="/images/tend-mark.png" width="24" height="24" alt="">Tend</a
-      >
-      <nav aria-label="Main navigation">
-        <a href="#a-lighter-day">Capabilities</a
-        ><a href="#how-it-works">How it works</a
-        ><a class="nav-book" href="/book"
-          >Book a call <span aria-hidden="true">↗</span></a
-        >
-      </nav>
-    </header>
+    <header class="marketing-header">
+  <a class="marketing-brand" href="/" aria-label="Tend home"><img src="/images/tend-mark.png" alt="" width="24" height="24">Tend</a>
+  <nav class="marketing-links" aria-label="Main navigation">
+    <a href="/#how-it-works">How it works</a>
+    <a href="/use-cases">Use cases</a>
+    <a href="/about">About</a>
+    <a class="marketing-demo" href="/book">Book a demo</a>
+  </nav>
+</header>
     <main id="main">
       <section class="hero" aria-labelledby="hero-title">
         <div class="hero-copy">
@@ -36,7 +34,7 @@
             systems, teams, and complex workflows.
           </p>
           <a class="pill" href="/book"
-            >Discuss your deployment <span aria-hidden="true">↗</span></a
+            >Book a demo <span aria-hidden="true">↗</span></a
           >
           <p class="hero-note">
             Multiple agents. Shared context. Defined controls.
@@ -157,6 +155,7 @@
       </section>
 
       <section class="how section-wrap" id="how-it-works">
+        <span id="how" aria-hidden="true"></span>
         <div class="how-heading">
           <p class="eyebrow">IMPLEMENTATION</p>
           <h2>Connect the context.<br /><em>Put agents to work.</em></h2>
@@ -164,9 +163,12 @@
             Choose a workflow, define the result, and establish the context
             and controls agents need to execute it.
           </p>
+          <div class="marketing-section-actions">
+          <a class="text-link" href="/platform">Explore platform details <span aria-hidden="true">↗</span></a>
           <a class="text-link" href="/book"
-            >Scope your deployment <span aria-hidden="true">↗</span></a
+            >Book a demo <span aria-hidden="true">↗</span></a
           >
+          </div>
         </div>
         <ol class="steps">
           <li>
@@ -254,12 +256,13 @@
         <p class="eyebrow">BUILD WITH TEND</p>
         <h2>Give your agents<br />the context <em>to execute.</em></h2>
         <a class="pill" href="/book"
-          >Scope your deployment <span aria-hidden="true">↗</span></a
+          >Book a demo <span aria-hidden="true">↗</span></a
         >
         <p>Define the workflow, the context, and the controls.</p>
       </section>
     </main>
     <footer class="site-footer">
+      <span id="contact" aria-hidden="true"></span>
       <a class="wordmark" href="/" aria-label="Tend home"
         ><img src="/images/tend-mark.png" width="24" height="24" alt="">Tend</a
       >

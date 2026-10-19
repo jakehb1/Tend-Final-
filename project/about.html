@@ -117,39 +117,19 @@
   .tl-row { grid-template-columns: 1fr; gap: 4px; }
 }
 </style>
+<link rel="stylesheet" href="/marketing-navigation.css">
 </head>
 <body>
 
-<nav class="nav">
-  <div class="nav-inner">
-    <a class="brand" href="index.html" aria-label="Tend home">
-      <img class="mark" src="images/tend-mark.png" alt="" aria-hidden="true" />
-      <span>Tend</span>
-    </a>
-    <div class="nav-links">
-      <a href="platform.html">Platform</a>
-      <a href="use-cases.html">Solutions</a>
-      <a href="about.html">Resources</a>
-      <a href="org.html">Company</a>
-    </div>
-    <div class="nav-right">
-      <a class="btn btn-primary" href="https://cal.com/kyros-sync/30min" target="_blank" rel="noopener" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}'>Book a call</a>
-      <a class="btn btn-outline" href="index.html#how">See how it works</a>
-      <button type="button" class="nav-toggle" aria-controls="nav-drawer" aria-expanded="false" aria-label="Open menu">
-        <svg width="18" height="14" viewBox="0 0 18 14" aria-hidden="true"><g stroke="currentColor" stroke-width="1.5" stroke-linecap="square"><line x1="0" y1="2" x2="18" y2="2"/><line x1="0" y1="7" x2="18" y2="7"/><line x1="0" y1="12" x2="18" y2="12"/></g></svg>
-      </button>
-    </div>
-  </div>
-  <div class="nav-drawer" id="nav-drawer">
-    <a href="platform.html">Platform</a>
-    <a href="use-cases.html">Solutions</a>
-    <a href="about.html">Resources</a>
-    <a href="org.html">Company</a>
-    <div class="drawer-cta-row">
-      <a class="btn btn-primary" href="https://cal.com/kyros-sync/30min" target="_blank" rel="noopener" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}'>Book a call</a>
-    </div>
-  </div>
-</nav>
+<header class="marketing-header">
+  <a class="marketing-brand" href="/" aria-label="Tend home"><img src="/images/tend-mark.png" alt="" width="24" height="24">Tend</a>
+  <nav class="marketing-links" aria-label="Main navigation">
+    <a href="/#how-it-works">How it works</a>
+    <a href="/use-cases">Use cases</a>
+    <a href="/about">About</a>
+    <a class="marketing-demo" href="/book">Book a demo</a>
+  </nav>
+</header>
 
 <section class="page-head">
   <div class="wrap">
@@ -213,8 +193,7 @@
   <div class="wrap" style="text-align:center;padding:40px 0;">
     <h2 style="max-width:24ch;margin:0 auto 28px;">Come build the <span class="serif">substrate.</span></h2>
     <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-      <a href="#" class="btn primary">See open roles <span class="arr">→</span></a>
-      <a href="index.html#contact" class="btn">Talk to founders</a>
+      <a href="mailto:hello@withtend.ai" class="btn">Talk to founders</a>
     </div>
   </div>
 </section>
@@ -224,18 +203,14 @@
     <div class="foot-hero">
       <img class="big-mark" src="images/tend-mark.png" alt="" aria-hidden="true" />
       <h3>Less chaos. More revenue. Same team.</h3>
-      <a class="btn btn-outline" href="https://cal.com/kyros-sync/30min" target="_blank" rel="noopener" data-cal-link="kyros-sync/30min" data-cal-namespace="30min" data-cal-config='{"layout":"month_view"}'>Book a demo</a>
+      <a class="btn btn-outline" href="/book">Book a demo</a>
     </div>
     <div class="foot-cols">
-      <a href="index.html" class="brand-col" aria-label="Tend home">
+      <a href="/" class="brand-col" aria-label="Tend home">
         <img class="mark" src="images/tend-mark.png" alt="" />
         <span>Tend</span>
       </a>
-      <div class="col socials">
-        <h4>Socials</h4>
-        <a href="https://instagram.com" target="_blank" rel="noopener">Instagram</a>
-        <a href="https://linkedin.com" target="_blank" rel="noopener">LinkedIn</a>
-      </div>
+      <div class="col"><h4>Contact</h4><a href="mailto:hello@withtend.ai">Email Tend</a><a href="/platform">Platform details</a></div>
       <div class="copyright">&copy; 2025-2026 Tend, Inc. All Rights Reserved.</div>
     </div>
   </div>
